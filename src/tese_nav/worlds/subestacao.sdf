@@ -1,0 +1,141 @@
+<?xml version="1.0" ?>
+<!--
+  Mundo de subestação simplificado (S3.3) para Gazebo Fortress (ign-gazebo 6).
+  Coordenadas coerentes com config/waypoints.yaml e anomaly_simulator.py:
+    - transformador_1  em (10, 10)  -> anomalia térmica
+    - disjuntor_1      em (-5, 5)   -> anomalia acústica
+    - barramento       em (0, 15)   -> anomalia térmica
+  Cerca perimetral aproximada de 50x50 m. Sol e chão inline (sem Fuel/rede).
+-->
+<sdf version="1.8">
+  <world name="subestacao">
+
+    <physics name="default" type="ignored">
+      <max_step_size>0.004</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin filename="ignition-gazebo-physics-system"
+            name="ignition::gazebo::systems::Physics"/>
+    <plugin filename="ignition-gazebo-sensors-system"
+            name="ignition::gazebo::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="ignition-gazebo-scene-broadcaster-system"
+            name="ignition::gazebo::systems::SceneBroadcaster"/>
+    <plugin filename="ignition-gazebo-user-commands-system"
+            name="ignition::gazebo::systems::UserCommands"/>
+
+    <!-- Sol (luz direcional) -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>1 1 1 1</diffuse>
+      <specular>0.4 0.4 0.4 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <!-- Chão -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ============ Cerca perimetral (4 lados) ============ -->
+    <model name="cerca_norte">
+      <static>true</static>
+      <pose>0 25 1 0 0 0</pose>
+      <link name="link">
+        <collision name="col"><geometry><box><size>50 0.2 2</size></box></geometry></collision>
+        <visual name="vis">
+          <geometry><box><size>50 0.2 2</size></box></geometry>
+          <material><diffuse>0.6 0.6 0.6 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="cerca_sul">
+      <static>true</static>
+      <pose>0 -25 1 0 0 0</pose>
+      <link name="link">
+        <collision name="col"><geometry><box><size>50 0.2 2</size></box></geometry></collision>
+        <visual name="vis">
+          <geometry><box><size>50 0.2 2</size></box></geometry>
+          <material><diffuse>0.6 0.6 0.6 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="cerca_leste">
+      <static>true</static>
+      <pose>25 0 1 0 0 1.5708</pose>
+      <link name="link">
+        <collision name="col"><geometry><box><size>50 0.2 2</size></box></geometry></collision>
+        <visual name="vis">
+          <geometry><box><size>50 0.2 2</size></box></geometry>
+          <material><diffuse>0.6 0.6 0.6 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="cerca_oeste">
+      <static>true</static>
+      <pose>-25 0 1 0 0 1.5708</pose>
+      <link name="link">
+        <collision name="col"><geometry><box><size>50 0.2 2</size></box></geometry></collision>
+        <visual name="vis">
+          <geometry><box><size>50 0.2 2</size></box></geometry>
+          <material><diffuse>0.6 0.6 0.6 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ============ Transformador 1 (anomalia térmica) ============ -->
+    <model name="transformador_1">
+      <static>true</static>
+      <pose>10 10 0.75 0 0 0</pose>
+      <link name="link">
+        <collision name="col"><geometry><box><size>3 2 1.5</size></box></geometry></collision>
+        <visual name="vis">
+          <geometry><box><size>3 2 1.5</size></box></geometry>
+          <material><diffuse>0.3 0.3 0.8 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ============ Disjuntor 1 (anomalia acústica) ============ -->
+    <model name="disjuntor_1">
+      <static>true</static>
+      <pose>-5 5 1.0 0 0 0</pose>
+      <link name="link">
+        <collision name="col"><geometry><box><size>1 1 2</size></box></geometry></collision>
+        <visual name="vis">
+          <geometry><box><size>1 1 2</size></box></geometry>
+          <material><diffuse>0.8 0.5 0.2 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ============ Barramento (anomalia térmica) ============ -->
+    <model name="barramento_entrada">
+      <static>true</static>
+      <pose>0 15 2.5 0 0 0</pose>
+      <link name="link">
+        <collision name="col"><geometry><box><size>8 0.3 0.3</size></box></geometry></collision>
+        <visual name="vis">
+          <geometry><box><size>8 0.3 0.3</size></box></geometry>
+          <material><diffuse>0.7 0.7 0.2 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+  </world>
+</sdf>

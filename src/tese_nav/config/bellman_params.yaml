@@ -1,0 +1,29 @@
+# Hiperparâmetros da Bellman atratora / Stay Alert.
+# eta é o parâmetro varrido nos experimentos E2-E4 (0.3 / 0.5 / 0.8).
+
+bellman_node:
+  ros__parameters:
+    alpha: 0.1                  # taxa de aprendizado
+    gamma: 0.95                 # fator de desconto
+    eta: 0.5                    # peso do campo atrator (E3 = proposta)
+    cell_size: 1.0              # resolução da discretização de estado (m)
+    deviation_threshold: 0.45   # |Phi| acima disto conta como desvio de rota
+    reward_progress: 1.0        # recompensa base por progresso de missão
+
+stay_alert_node:
+  ros__parameters:
+    enter_threshold: 0.45       # entra em INVESTIGATE (dispara dentro do alcance)
+    exit_threshold: 0.25        # retorna a PATROL (histerese)
+    max_investigation_s: 40.0   # tempo máx. investigando (inclui ir até a anomalia)
+    dwell_s: 3.0                # observação parada após chegar na anomalia
+
+anomaly_simulator:
+  ros__parameters:
+    detection_radius: 5.0       # alcance do sensor simulado (m)
+    inspection_standoff: 2.0    # parada a 2 m da anomalia (não colide no equip.)
+    rate_hz: 2.0
+
+metrics_node:
+  ros__parameters:
+    output_dir: "~/tese_ws/results"
+    run_label: "E3"

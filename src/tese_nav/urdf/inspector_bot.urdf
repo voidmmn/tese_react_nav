@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+<!--
+  inspector_bot — robô diferencial simples para a simulação da tese (S2).
+  URDF único: alimenta o robot_state_publisher (árvore TF) e é spawnado no
+  Gazebo Harmonic, que carrega os plugins declarados em <gazebo>.
+
+  Frames: odom -> base_footprint (DiffDrive) -> base_link -> {rodas, base_scan}.
+-->
+<robot name="inspector_bot">
+
+  <material name="cinza"><color rgba="0.2 0.2 0.2 1"/></material>
+  <material name="preto"><color rgba="0.05 0.05 0.05 1"/></material>
+  <material name="vermelho"><color rgba="0.8 0.1 0.1 1"/></material>
+
+  <!-- ================= Links ================= -->
+  <link name="base_footprint"/>
+
+  <link name="base_link">
+    <inertial>
+      <mass value="3.0"/>
+      <inertia ixx="0.025" ixy="0" ixz="0" iyy="0.025" iyz="0" izz="0.045"/>
+    </inertial>
+    <collision>
+      <geometry><box size="0.30 0.30 0.15"/></geometry>
+    </collision>
+    <visual>
+      <geometry><box size="0.30 0.30 0.15"/></geometry>
+      <material name="cinza"/>
+    </visual>
+  </link>
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0.10" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Roda esquerda -->
+  <link name="left_wheel">
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.0002" ixy="0" ixz="0" iyy="0.0002" iyz="0" izz="0.0003"/>
+    </inertial>
+    <collision>
+      <origin rpy="1.5708 0 0"/>
+      <geometry><cylinder radius="0.05" length="0.04"/></geometry>
+    </collision>
+    <visual>
+      <origin rpy="1.5708 0 0"/>
+      <geometry><cylinder radius="0.05" length="0.04"/></geometry>
+      <material name="preto"/>
+    </visual>
+  </link>
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel"/>
+    <origin xyz="0 0.15 -0.05" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- Roda direita -->
+  <link name="right_wheel">
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.0002" ixy="0" ixz="0" iyy="0.0002" iyz="0" izz="0.0003"/>
+    </inertial>
+    <collision>
+      <origin rpy="1.5708 0 0"/>
+      <geometry><cylinder radius="0.05" length="0.04"/></geometry>
+    </collision>
+    <visual>
+      <origin rpy="1.5708 0 0"/>
+      <geometry><cylinder radius="0.05" length="0.04"/></geometry>
+      <material name="preto"/>
+    </visual>
+  </link>
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel"/>
+    <origin xyz="0 -0.15 -0.05" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- Roda boba (caster) -->
+  <link name="caster">
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="1e-5" ixy="0" ixz="0" iyy="1e-5" iyz="0" izz="1e-5"/>
+    </inertial>
+    <collision><geometry><sphere radius="0.025"/></geometry></collision>
+    <visual><geometry><sphere radius="0.025"/></geometry><material name="preto"/></visual>
+  </link>
+  <joint name="caster_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster"/>
+    <origin xyz="0.12 0 -0.075" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Lidar 2D -->
+  <link name="base_scan">
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="1e-4" ixy="0" ixz="0" iyy="1e-4" iyz="0" izz="1e-4"/>
+    </inertial>
+    <collision><geometry><cylinder radius="0.03" length="0.04"/></geometry></collision>
+    <visual><geometry><cylinder radius="0.03" length="0.04"/></geometry><material name="vermelho"/></visual>
+  </link>
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_scan"/>
+    <origin xyz="0 0 0.10" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ================= Plugins Gazebo Fortress (modelo) ================= -->
+  <gazebo>
+    <plugin filename="ignition-gazebo-diff-drive-system"
+            name="ignition::gazebo::systems::DiffDrive">
+      <left_joint>left_wheel_joint</left_joint>
+      <right_joint>right_wheel_joint</right_joint>
+      <wheel_separation>0.30</wheel_separation>
+      <wheel_radius>0.05</wheel_radius>
+      <max_linear_acceleration>1.0</max_linear_acceleration>
+      <odom_publish_frequency>30</odom_publish_frequency>
+      <topic>cmd_vel</topic>
+      <odom_topic>odom</odom_topic>
+      <frame_id>odom</frame_id>
+      <child_frame_id>base_footprint</child_frame_id>
+      <tf_topic>/tf</tf_topic>
+    </plugin>
+
+    <plugin filename="ignition-gazebo-joint-state-publisher-system"
+            name="ignition::gazebo::systems::JointStatePublisher">
+      <topic>joint_states</topic>
+    </plugin>
+  </gazebo>
+
+  <!-- Sensor lidar (renderizado pelo Sensors system declarado no mundo) -->
+  <gazebo reference="base_scan">
+    <sensor name="lidar" type="gpu_lidar">
+      <pose>0 0 0 0 0 0</pose>
+      <topic>scan</topic>
+      <update_rate>10</update_rate>
+      <always_on>1</always_on>
+      <visualize>true</visualize>
+      <lidar>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.141592</min_angle>
+            <max_angle>3.141592</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.12</min>
+          <max>12.0</max>
+          <resolution>0.015</resolution>
+        </range>
+      </lidar>
+    </sensor>
+  </gazebo>
+
+</robot>
