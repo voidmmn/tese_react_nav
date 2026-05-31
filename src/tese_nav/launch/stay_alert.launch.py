@@ -1,0 +1,70 @@
+"""
+Pilha Stay Alert (sem Gazebo/Nav2): bellman, stay_alert, anomaly simulator,
+mission e metrics. Inclua sobre o stack de navegação (ver experimento.launch.py)
+ou rode isolada para testar a lógica com /odom de um bag.
+
+Args:
+    run_label         rótulo do experimento gravado no CSV (E1..E5)
+    eta               peso do campo atrator (sobrescreve bellman_params.yaml)
+    enable_stay_alert true = Bellman+StayAlert ativos; false = baseline (só
+                      ronda Nav2 + métricas + anomalias, sem desvio) — E1
+    enable_anomaly    liga o simulador de anomalias
+    use_sim_time      true em simulação (relógio do Gazebo)
+
+Uso:
+    ros2 launch tese_nav stay_alert.launch.py run_label:=E3 eta:=0.5
+    ros2 launch tese_nav stay_alert.launch.py run_label:=E1 enable_stay_alert:=false
+"""
+import os
+
+from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition
+from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
+
+
+def generate_launch_description():
+    pkg = get_package_share_directory('tese_nav')
+    params = os.path.join(pkg, 'config', 'bellman_params.yaml')
+
+    run_label = LaunchConfiguration('run_label')
+    eta = LaunchConfiguration('eta')
+    enable_stay_alert = LaunchConfiguration('enable_stay_alert')
+    enable_anomaly = LaunchConfiguration('enable_anomaly')
+    use_sim_time = LaunchConfiguration('use_sim_time')
+
+    sim = {'use_sim_time': ParameterValue(use_sim_time, value_type=bool)}
+    eta_p = {'eta': ParameterValue(eta, value_type=float)}
+
+    return LaunchDescription([
+        DeclareLaunchArgument('run_label', default_value='E3'),
+        DeclareLaunchArgument('eta', default_value='0.5'),
+        DeclareLaunchArgument('enable_stay_alert', default_value='true'),
+        DeclareLaunchArgument('enable_anomaly', default_value='true'),
+        DeclareLaunchArgument('use_sim_time', default_value='true'),
+
+        # Núcleo reativo (desligado no baseline E1)
+        Node(package='tese_nav', executable='bellman_node',
+             name='bellman_node', output='screen',
+             parameters=[params, eta_p, sim],
+             condition=IfCondition(enable_stay_alert)),
+        Node(package='tese_nav', executable='stay_alert_node',
+             name='stay_alert_node', output='screen',
+             parameters=[params, sim],
+             condition=IfCondition(enable_stay_alert)),
+
+        # Sempre presentes: ronda, métricas, anomalias
+        Node(package='tese_nav', executable='mission_node',
+             name='mission_node', output='screen',
+             parameters=[params, sim]),
+        Node(package='tese_nav', executable='metrics_node',
+             name='metrics_node', output='screen',
+             parameters=[params, sim, {'run_label': run_label}]),
+        Node(package='tese_nav', executable='anomaly_simulator',
+             name='anomaly_simulator', output='screen',
+             parameters=[params, sim],
+             condition=IfCondition(enable_anomaly)),
+    ])
