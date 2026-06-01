@@ -1,0 +1,3 @@
+- [Ambiente da simulação da tese](tese-simulacao-ambiente.md) — ~/tese_ws independente do GO2; este Jetson é dedicado à simulação
+- [Hipótese e contribuição da tese](tese-hipotese-contribuicao.md) — atração/repulsão na Bellman; ronda = sensoriamento ativo (analogia do cão)
+- [Repositório GitHub](tese-repo-github.md) — github.com/voidmmn/tese_react_nav; raiz em ~/tese_ws, push via gh
