@@ -30,6 +30,7 @@ def generate_launch_description():
     headless = LaunchConfiguration('headless')
     rviz = LaunchConfiguration('rviz')
     sa_delay = LaunchConfiguration('sa_delay')
+    scenario = LaunchConfiguration('scenario')
 
     simulation = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -45,6 +46,7 @@ def generate_launch_description():
             'enable_stay_alert': enable_stay_alert,
             'enable_anomaly': 'true',
             'use_sim_time': 'true',
+            'scenario': scenario,
         }.items())
 
     return LaunchDescription([
@@ -56,6 +58,8 @@ def generate_launch_description():
         DeclareLaunchArgument('sa_delay', default_value='45.0',
                               description='Atraso (s) p/ subir o Stay Alert '
                                           'após o Nav2'),
+        DeclareLaunchArgument('scenario', default_value='default',
+                              description="'default' | 'adverse' (E5)"),
         simulation,
         TimerAction(period=sa_delay, actions=[stay_alert]),
     ])

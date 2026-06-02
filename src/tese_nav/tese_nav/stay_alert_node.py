@@ -102,9 +102,12 @@ class StayAlertNode(Node):
         timed_out = elapsed >= self.max_investigation_s
 
         if self.mode == self.INVESTIGATE:
-            if self.phi < self.exit_threshold:
-                self._exit('cooled', elapsed)
-            elif reached and now - self._reached_at >= self.dwell_s:
+            # NÃO sair por "cooled" (Φ<exit): a anomalia é marcada visitada no
+            # início da investigação, então Φ cai logo após o commit. Concluímos
+            # a aproximação (chegou + dwell) ou desistimos por tempo. Isso elimina
+            # a oscilação PATROL<->INVESTIGATE no vale de Φ entre anomalias e
+            # quando o waypoint fica colado na anomalia.
+            if reached and now - self._reached_at >= self.dwell_s:
                 self._exit('inspected', elapsed)
             elif timed_out:
                 self._exit('timeout', elapsed)

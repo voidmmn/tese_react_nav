@@ -65,6 +65,15 @@ def generate_launch_description():
         arguments=['--frame-id', 'base_scan',
                    '--child-frame-id', 'inspector_bot/base_footprint/lidar'])
 
+    # No WSL o lidar sensor do Fortress não inicializa (OGRE2 GL3PlusTextureGpu
+    # não implementado no Mesa/D3D12 virtual). Publica scan sintético (ranges =
+    # max_range) para destravar o AMCL e o Nav2. O global_costmap usa o mapa
+    # estático, então paths são corretos. A contribuição (Stay Alert) não depende
+    # de scan real.
+    fake_scan = Node(
+        package='tese_nav', executable='fake_scan_publisher', output='screen',
+        parameters=[{'use_sim_time': True}])
+
     return LaunchDescription([
         # Isola gz (ign-transport) E ROS (DDS) na loopback: evita o discovery
         # confuso por múltiplas interfaces (ex.: docker0 em 172.17.0.1).
@@ -84,4 +93,5 @@ def generate_launch_description():
         spawn,
         bridge,
         scan_tf,
+        fake_scan,
     ])

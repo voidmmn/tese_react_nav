@@ -53,7 +53,8 @@ def generate_launch_description():
         package='rviz2', executable='rviz2', name='rviz2', output='screen',
         condition=IfCondition(rviz),
         arguments=['-d', rviz_cfg],
-        parameters=[{'use_sim_time': True}])
+        parameters=[{'use_sim_time': True}],
+        additional_env={'DISPLAY': os.environ.get('DISPLAY', ':0')})
 
     return LaunchDescription([
         # ROS na loopback (evita discovery DDS confuso por múltiplas

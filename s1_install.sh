@@ -9,7 +9,9 @@
 # (rosdep update, .bashrc, colcon build) — ou deixe o assistente fazê-los.
 #
 # Idempotente: pode ser reexecutado com segurança.
-# Alvo: Ubuntu 22.04 (jammy), arm64/amd64. ROS2 Humble + Gazebo Harmonic + Nav2.
+# Alvo: Ubuntu 22.04 (jammy), amd64. ROS2 Humble + Gazebo Fortress + Nav2.
+# NOTA: ros-humble-ros-gz do apt do Humble é compilado para Fortress
+#       (libignition-transport11), NÃO para Harmonic (libgz-transport13).
 set -euo pipefail
 
 if [[ $EUID -ne 0 ]]; then
@@ -47,19 +49,19 @@ http://packages.osrfoundation.org/gazebo/ubuntu-stable ${UBUNTU_CODENAME} main" 
 apt-get update
 
 # --------------------------------------------------------------------------- #
-echo ">>> [4/5] Instalando ROS2 Humble + ferramentas + Gazebo + Nav2"
+echo ">>> [4/5] Instalando ROS2 Humble + ferramentas + Gazebo Fortress + Nav2"
 # NOTA: 'ros-humble-desktop' (não 'desktop-full', que é do ROS1).
-# NOTA: 'turtlebot3-gazebo' NÃO existe no repo (só targeta Gazebo Classic).
-#       No Harmonic, spawnamos o robô a partir de 'turtlebot3-description'
-#       via ros_gz (tratado no S2).
+# NOTA: 'turtlebot3-gazebo' NÃO existe no repo arm64; usando inspector_bot próprio.
+# NOTA: Gazebo Fortress = 'ignition-fortress' (não gz-harmonic).
 apt-get install -y \
   ros-humble-desktop \
   python3-colcon-common-extensions \
   python3-rosdep \
-  gz-harmonic \
+  ignition-fortress \
   ros-humble-ros-gz \
   ros-humble-navigation2 \
   ros-humble-nav2-bringup \
+  ros-humble-nav2-mppi-controller \
   ros-humble-slam-toolbox \
   ros-humble-turtlebot3 \
   ros-humble-turtlebot3-description \

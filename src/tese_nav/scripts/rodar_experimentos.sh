@@ -9,12 +9,11 @@
 #     MAX_RUN_S  timeout por execução em segundos (default 420)
 #
 # Subconjunto/smoke (sobrescreve a matriz por variável de ambiente):
-#   EXPERIMENTS="E3 0.5 true" bash rodar_experimentos.sh 1 180
+#   EXPERIMENTS="E3 0.5 true default" bash rodar_experimentos.sh 1 600
 #
-# Matriz default (label  eta  enable_stay_alert):
-#   E1  baseline (sem Stay Alert) · E2/E3/E4 = eta 0.3/0.5/0.8 · E5 = adverso
-# OBS: E5 ainda usa o mesmo mundo de E3 — cenário adverso (múltiplas anomalias
-#      simultâneas) precisa de um config próprio (TODO).
+# Matriz default (label  eta  enable_stay_alert  scenario):
+#   E1 baseline (sem Stay Alert) · E2/E3/E4 = eta 0.3/0.5/0.8 (cenário default)
+#   E5 = mesmo eta de E3 mas cenário ADVERSO (5 anomalias em clusters + 2 perigos)
 # ===========================================================================
 # Nota: sem 'set -u' — o setup.bash do ROS usa variáveis não definidas
 # (AMENT_TRACE_SETUP_FILES) e quebraria com nounset.
@@ -25,16 +24,18 @@ export ROS_LOCALHOST_ONLY=1 IGN_IP=127.0.0.1 IGN_PARTITION=tese_sim
 export QT_QPA_PLATFORM=offscreen
 
 REPS=${1:-10}
-MAX_RUN_S=${2:-420}
+# tempo de parede até COMPLETE ~= sa_delay(45s) + missão(~365s) ~= 410s; 600 dá folga
+MAX_RUN_S=${2:-600}
 RESULTS="$HOME/tese_ws/results"
 mkdir -p "$RESULTS"
 
 # matriz default (pode ser sobrescrita via env EXPERIMENTS, uma linha por exp)
-DEFAULT_MATRIX="E1 0.0 false
-E2 0.3 true
-E3 0.5 true
-E4 0.8 true
-E5 0.5 true"
+# colunas: label  eta  enable_stay_alert  scenario
+DEFAULT_MATRIX="E1 0.0 false default
+E2 0.3 true default
+E3 0.5 true default
+E4 0.8 true default
+E5 0.5 true adverse"
 MATRIX="${EXPERIMENTS:-$DEFAULT_MATRIX}"
 
 NODES='ign gazebo|ign-gazebo|parameter_bridge|robot_state_publisher|ros_gz_sim|static_transform_publisher|amcl|map_server|controller_server|planner_server|bt_navigator|behavior_server|smoother_server|velocity_smoother|waypoint_follower|lifecycle_manager|component_container|bellman_node|stay_alert_node|mission_node|metrics_node|anomaly_simulator|ros2 launch tese'
@@ -54,11 +55,12 @@ mission_complete() {
 }
 
 run_one() {
-  local label=$1 eta=$2 sa=$3 rep=$4
-  echo ">>> $(date +%H:%M:%S) $label rep $rep/$REPS (eta=$eta stay_alert=$sa)"
+  local label=$1 eta=$2 sa=$3 scen=$4 rep=$5
+  echo ">>> $(date +%H:%M:%S) $label rep $rep/$REPS (eta=$eta stay_alert=$sa scenario=$scen)"
   cleanup
   ros2 launch tese_nav experimento.launch.py \
-    run_label:="$label" eta:="$eta" enable_stay_alert:="$sa" headless:=true \
+    run_label:="$label" eta:="$eta" enable_stay_alert:="$sa" scenario:="$scen" \
+    headless:=true \
     > "$RESULTS/launch_${label}_r${rep}.log" 2>&1 &
   local t=0
   while [ "$t" -lt "$MAX_RUN_S" ]; do
@@ -70,9 +72,10 @@ run_one() {
 }
 
 echo "=== BATERIA: REPS=$REPS MAX_RUN_S=$MAX_RUN_S ==="
-while read -r label eta sa; do
+while read -r label eta sa scen; do
   [ -z "$label" ] && continue
-  for r in $(seq 1 "$REPS"); do run_one "$label" "$eta" "$sa" "$r"; done
+  scen=${scen:-default}
+  for r in $(seq 1 "$REPS"); do run_one "$label" "$eta" "$sa" "$scen" "$r"; done
 done <<< "$MATRIX"
 echo "=== BATERIA COMPLETA — CSVs em $RESULTS ==="
 ls -1 "$RESULTS"/metrics_*.csv 2>/dev/null | wc -l | xargs echo "total de CSVs:"

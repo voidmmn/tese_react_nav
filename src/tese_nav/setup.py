@@ -35,6 +35,7 @@ setup(
             'anomaly_simulator = tese_nav.anomaly_simulator:main',
             'mission_node = tese_nav.mission_node:main',
             'metrics_node = tese_nav.metrics_node:main',
+            'fake_scan_publisher = tese_nav.fake_scan_publisher:main',
         ],
     },
 )
