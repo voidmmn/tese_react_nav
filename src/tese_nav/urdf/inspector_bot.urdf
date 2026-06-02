@@ -133,9 +133,9 @@
     </plugin>
   </gazebo>
 
-  <!-- Sensor lidar (renderizado pelo Sensors system declarado no mundo) -->
+  <!-- Sensor lidar CPU-based (gpu_lidar falha no WSL — OGRE GL3PlusTextureGpu não implementado) -->
   <gazebo reference="base_scan">
-    <sensor name="lidar" type="gpu_lidar">
+    <sensor name="lidar" type="lidar">
       <pose>0 0 0 0 0 0</pose>
       <topic>scan</topic>
       <update_rate>10</update_rate>

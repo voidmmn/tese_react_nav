@@ -35,9 +35,11 @@ def generate_launch_description():
     enable_stay_alert = LaunchConfiguration('enable_stay_alert')
     enable_anomaly = LaunchConfiguration('enable_anomaly')
     use_sim_time = LaunchConfiguration('use_sim_time')
+    scenario = LaunchConfiguration('scenario')
 
     sim = {'use_sim_time': ParameterValue(use_sim_time, value_type=bool)}
     eta_p = {'eta': ParameterValue(eta, value_type=float)}
+    scen_p = {'scenario': scenario}
 
     return LaunchDescription([
         DeclareLaunchArgument('run_label', default_value='E3'),
@@ -45,6 +47,7 @@ def generate_launch_description():
         DeclareLaunchArgument('enable_stay_alert', default_value='true'),
         DeclareLaunchArgument('enable_anomaly', default_value='true'),
         DeclareLaunchArgument('use_sim_time', default_value='true'),
+        DeclareLaunchArgument('scenario', default_value='default'),
 
         # Núcleo reativo (desligado no baseline E1)
         Node(package='tese_nav', executable='bellman_node',
@@ -62,9 +65,9 @@ def generate_launch_description():
              parameters=[params, sim]),
         Node(package='tese_nav', executable='metrics_node',
              name='metrics_node', output='screen',
-             parameters=[params, sim, {'run_label': run_label}]),
+             parameters=[params, sim, scen_p, {'run_label': run_label}]),
         Node(package='tese_nav', executable='anomaly_simulator',
              name='anomaly_simulator', output='screen',
-             parameters=[params, sim],
+             parameters=[params, sim, scen_p],
              condition=IfCondition(enable_anomaly)),
     ])

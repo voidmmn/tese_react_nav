@@ -23,8 +23,9 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float64, Int32, String
 from nav_msgs.msg import Odometry
+from tf2_ros import Buffer, TransformListener, TransformException
 
-from tese_nav.anomaly_simulator import DEFAULT_HAZARDS
+from tese_nav.anomaly_simulator import scenario_events
 
 
 class MetricsNode(Node):
@@ -59,6 +60,18 @@ class MetricsNode(Node):
         self._mode = 'PATROL'
         self._invest_since = None
 
+        # distância ao perigo precisa da pose no frame MAP (igual ao
+        # anomaly_simulator): /odom está deslocado do spawn. Integral de
+        # distância percorrida pode usar /odom (é relativa).
+        self.declare_parameter('map_frame', 'map')
+        self.declare_parameter('robot_frame', 'base_footprint')
+        self.declare_parameter('scenario', 'default')
+        self.map_frame = self.get_parameter('map_frame').value
+        self.robot_frame = self.get_parameter('robot_frame').value
+        self._hazards = scenario_events(self.get_parameter('scenario').value)[1]
+        self.tf_buffer = Buffer()
+        self.tf_listener = TransformListener(self.tf_buffer, self)
+
         self.create_subscription(Odometry, '/odom', self._on_odom, 10)
         self.create_subscription(Int32, '/bellman/route_deviations',
                                  self._on_dev, 10)
@@ -81,9 +94,15 @@ class MetricsNode(Node):
             dy = y - self._last_xy[1]
             self.distance += (dx * dx + dy * dy) ** 0.5
         self._last_xy = (x, y)
-        # menor distância a qualquer perigo ao longo da missão (métrica de segurança)
-        for h in DEFAULT_HAZARDS:
-            d = math.hypot(x - h['x'], y - h['y'])
+        # menor distância a qualquer perigo (segurança) — no frame map via TF
+        try:
+            t = self.tf_buffer.lookup_transform(
+                self.map_frame, self.robot_frame, rclpy.time.Time())
+        except TransformException:
+            return
+        mx, my = t.transform.translation.x, t.transform.translation.y
+        for h in self._hazards:
+            d = math.hypot(mx - h['x'], my - h['y'])
             if d < self.min_hazard_dist:
                 self.min_hazard_dist = d
 
