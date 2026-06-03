@@ -45,12 +45,13 @@ DEFAULT_HAZARDS = [
     {'id': 100, 'x': 2.0, 'y': -13.0, 'intensity': 0.9},
 ]
 
-# Cenário ADVERSO (E5): mesma rota, mas mais eventos e DENSOS. Clusters de
-# anomalias (2 perto do transformador, 2 perto do disjuntor) fazem múltiplas
-# entrarem no raio ao mesmo tempo -> testa a arbitragem (qual investigar
-# primeiro) e o visitado-uma-vez sob carga. Dois perigos (um a mais na perna
-# leste->oeste est_transformador->est_barramento, com destino a oeste além
-# dele) -> dois recuos limpos. Todos posicionados p/ a missão ainda COMPLETAR.
+# Cenário ADVERSO (E5): mesma rota, mas anomalias mais DENSAS. Clusters (2 perto
+# do transformador, 2 perto do disjuntor) fazem múltiplas entrarem no raio ao
+# mesmo tempo -> testa a arbitragem (qual investigar primeiro) e o
+# visitado-uma-vez sob carga (5 anomalias vs 3 do default). Mantém o MESMO
+# perigo do default (recuo único limpo): um 2º perigo na rota travaria o robô
+# (objetivo "atrás" da zona -> AVOID infinito), então o eixo "adverso" aqui é a
+# densidade de anomalias, não de perigos.
 ADVERSE_ANOMALIES = [
     {'id': 0, 'x': 10.0, 'y': 10.0, 'type': 'thermal', 'intensity': 0.85},
     {'id': 1, 'x': 7.0, 'y': 8.0, 'type': 'acoustic', 'intensity': 0.78},   # cluster transformador
@@ -60,7 +61,6 @@ ADVERSE_ANOMALIES = [
 ]
 ADVERSE_HAZARDS = [
     {'id': 100, 'x': 2.0, 'y': -13.0, 'intensity': 0.9},
-    {'id': 101, 'x': 6.0, 'y': 15.0, 'intensity': 0.85},   # lateral da perna ->est_barramento
 ]
 
 SCENARIOS = {
