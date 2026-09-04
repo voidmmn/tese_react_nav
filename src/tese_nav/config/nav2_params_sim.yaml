@@ -278,7 +278,7 @@ global_costmap:
       robot_radius: 0.25
       resolution: 0.05
       track_unknown_space: true
-      plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
+      plugins: ["static_layer", "obstacle_layer", "hazard_layer", "inflation_layer"]
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
@@ -292,6 +292,25 @@ global_costmap:
           raytrace_max_range: 3.0
           raytrace_min_range: 0.0
           obstacle_max_range: 2.5
+          obstacle_min_range: 0.0
+      # C7: keepout afetivo em CAMADA ISOLADA — assim o raytrace de clearing do
+      # scan (obstacle_layer) NÃO apaga as marcas do keepout. Só marca, nunca
+      # limpa; a nuvem é re-publicada continuamente (latch) pelo anomaly_simulator
+      # enquanto a missão dura. As camadas se combinam por custo máximo.
+      hazard_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: True
+        observation_sources: hazard_cloud
+        hazard_cloud:
+          topic: /hazard_keepout_cloud
+          data_type: "PointCloud2"
+          marking: True
+          clearing: False
+          observation_persistence: 3.0
+          expected_update_rate: 0.0
+          min_obstacle_height: -0.5
+          max_obstacle_height: 2.0
+          obstacle_max_range: 20.0
           obstacle_min_range: 0.0
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"

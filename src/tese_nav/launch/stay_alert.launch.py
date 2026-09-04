@@ -21,7 +21,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 
@@ -36,10 +36,26 @@ def generate_launch_description():
     enable_anomaly = LaunchConfiguration('enable_anomaly')
     use_sim_time = LaunchConfiguration('use_sim_time')
     scenario = LaunchConfiguration('scenario')
+    reactive = LaunchConfiguration('reactive')   # 'stay_alert' | 'apf' | 'qdriven'
+
+    # condições combinadas: camada afetiva ligada E qual mecanismo reativo
+    def when(mech):
+        return IfCondition(PythonExpression(
+            ["'", enable_stay_alert, "' == 'true' and '", reactive, "' == '", mech, "'"]))
 
     sim = {'use_sim_time': ParameterValue(use_sim_time, value_type=bool)}
     eta_p = {'eta': ParameterValue(eta, value_type=float)}
     scen_p = {'scenario': scenario}
+    # keepout deliberativo (C7) é a expressão da repulsão afetiva -> só quando a
+    # camada afetiva está ligada (baseline E1 não projeta e passa reto no perigo)
+    keepout_p = {'publish_keepout': ParameterValue(enable_stay_alert, value_type=bool)}
+    # ruído de percepção (R1#3): sweep de robustez; default 0 = percepção ideal
+    noise_p = {
+        'noise_position_std': ParameterValue(
+            LaunchConfiguration('noise_pos'), value_type=float),
+        'noise_intensity_std': ParameterValue(
+            LaunchConfiguration('noise_int'), value_type=float),
+    }
 
     return LaunchDescription([
         DeclareLaunchArgument('run_label', default_value='E3'),
@@ -48,16 +64,32 @@ def generate_launch_description():
         DeclareLaunchArgument('enable_anomaly', default_value='true'),
         DeclareLaunchArgument('use_sim_time', default_value='true'),
         DeclareLaunchArgument('scenario', default_value='default'),
+        DeclareLaunchArgument('reactive', default_value='stay_alert',
+                              description="camada reativa: 'stay_alert'|'apf'|'qdriven'"),
+        DeclareLaunchArgument('noise_pos', default_value='0.0'),
+        DeclareLaunchArgument('noise_int', default_value='0.0'),
 
-        # Núcleo reativo (desligado no baseline E1)
+        # Método proposto (Stay Alert): bellman + FSM afetivo
         Node(package='tese_nav', executable='bellman_node',
              name='bellman_node', output='screen',
              parameters=[params, eta_p, sim],
-             condition=IfCondition(enable_stay_alert)),
+             condition=when('stay_alert')),
         Node(package='tese_nav', executable='stay_alert_node',
              name='stay_alert_node', output='screen',
              parameters=[params, sim],
-             condition=IfCondition(enable_stay_alert)),
+             condition=when('stay_alert')),
+
+        # Baseline APF (campo potencial) — mesma patrulha Nav2, camada reativa
+        Node(package='tese_nav', executable='apf_node',
+             name='apf_node', output='screen',
+             parameters=[params, sim, scen_p],
+             condition=when('apf')),
+
+        # Baseline Q-driven (RL comportamental, Q pré-treinada greedy)
+        Node(package='tese_nav', executable='qdriven_node',
+             name='qdriven_node', output='screen',
+             parameters=[params, sim, scen_p],
+             condition=when('qdriven')),
 
         # Sempre presentes: ronda, métricas, anomalias
         Node(package='tese_nav', executable='mission_node',
@@ -68,6 +100,6 @@ def generate_launch_description():
              parameters=[params, sim, scen_p, {'run_label': run_label}]),
         Node(package='tese_nav', executable='anomaly_simulator',
              name='anomaly_simulator', output='screen',
-             parameters=[params, sim, scen_p],
+             parameters=[params, sim, scen_p, keepout_p, noise_p],
              condition=IfCondition(enable_anomaly)),
     ])

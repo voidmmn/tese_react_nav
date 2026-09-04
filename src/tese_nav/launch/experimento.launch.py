@@ -47,6 +47,9 @@ def generate_launch_description():
             'enable_anomaly': 'true',
             'use_sim_time': 'true',
             'scenario': scenario,
+            'reactive': LaunchConfiguration('reactive'),
+            'noise_pos': LaunchConfiguration('noise_pos'),
+            'noise_int': LaunchConfiguration('noise_int'),
         }.items())
 
     return LaunchDescription([
@@ -59,7 +62,13 @@ def generate_launch_description():
                               description='Atraso (s) p/ subir o Stay Alert '
                                           'após o Nav2'),
         DeclareLaunchArgument('scenario', default_value='default',
-                              description="'default' | 'adverse' (E5)"),
+                              description="'default' | 'adverse' | 'route_hazard'"),
+        DeclareLaunchArgument('reactive', default_value='stay_alert',
+                              description="camada reativa: 'stay_alert'|'apf'|'qdriven'"),
+        DeclareLaunchArgument('noise_pos', default_value='0.0',
+                              description='σ (m) de ruído na posição do evento (R1#3)'),
+        DeclareLaunchArgument('noise_int', default_value='0.0',
+                              description='σ de ruído na intensidade do evento (R1#3)'),
         simulation,
         TimerAction(period=sa_delay, actions=[stay_alert]),
     ])
