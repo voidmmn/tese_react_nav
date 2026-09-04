@@ -61,6 +61,9 @@ class BellmanNode(Node):
 
         self.attraction_pub = self.create_publisher(Float64, '/stay_alert/attraction', 10)
         self.td_pub = self.create_publisher(Float64, '/bellman/td_error', 10)
+        # resíduo COMPLETO |alpha*td + eta*Phi| (inclui o termo afetivo) — é o
+        # que atesta estabilidade do update perturbado (R1#4/R2#4)
+        self.residual_pub = self.create_publisher(Float64, '/bellman/update_residual', 10)
         self.dev_pub = self.create_publisher(Int32, '/bellman/route_deviations', 10)
 
         # decaimento + publicação periódica
@@ -93,8 +96,13 @@ class BellmanNode(Node):
         action = self.q.best_action(state) if self.q.size() else 'forward'
 
         if self.prev_state is not None:
-            # recompensa: progresso de missão + bônus por atração positiva
-            reward = self.reward_progress + max(phi, 0.0)
+            # recompensa: apenas progresso de missão. O sinal afetivo Phi entra
+            # UMA única vez, pelo termo externo eta*Phi no update (antes ele
+            # aparecia também em max(phi,0) no reward -> dupla contagem da
+            # atração e assimetria com a repulsão). Manter Phi só em eta*Phi
+            # torna atração/repulsão simétricas e a distinção formal frente ao
+            # reward shaping defensável.
+            reward = self.reward_progress
             self.q.update(self.prev_state, self.prev_action, reward,
                           state, phi=phi, eta=self.eta)
 
@@ -115,6 +123,9 @@ class BellmanNode(Node):
         self._was_above = above
         self.dev_pub.publish(Int32(data=self.route_deviations))
 
+        # ler o resíduo completo ANTES do proxy (mean_abs_td reseta a janela
+        # compartilhada por ambos)
+        self.residual_pub.publish(Float64(data=float(self.q.mean_abs_full())))
         self.td_pub.publish(Float64(data=float(self.q.mean_abs_td())))
 
         if abs(phi) > 1e-3:

@@ -16,6 +16,7 @@ setup(
         # Recursos instalados (acessíveis via ament_index em runtime)
         (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
         (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
+        (os.path.join('share', package_name, 'config'), glob('config/*.json')),
         (os.path.join('share', package_name, 'worlds'), glob('worlds/*.sdf')),
         (os.path.join('share', package_name, 'urdf'), glob('urdf/*')),
         (os.path.join('share', package_name, 'config', 'maps'),
@@ -32,6 +33,8 @@ setup(
         'console_scripts': [
             'bellman_node = tese_nav.bellman_node:main',
             'stay_alert_node = tese_nav.stay_alert_node:main',
+            'apf_node = tese_nav.apf_node:main',
+            'qdriven_node = tese_nav.qdriven_node:main',
             'anomaly_simulator = tese_nav.anomaly_simulator:main',
             'mission_node = tese_nav.mission_node:main',
             'metrics_node = tese_nav.metrics_node:main',

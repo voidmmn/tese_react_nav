@@ -49,11 +49,25 @@ class MetricsNode(Node):
         self.distance = 0.0
         self.route_deviations = 0
         self.investigation_time = 0.0
-        self.anomalies_detected = 0      # nº de investigate_start (eventos)
-        self.anomalies_unique = 0        # nº de anomalias únicas inspecionadas
+        self.anomalies_detected = 0      # nº de investigate_start (commits)
+        self.anomalies_unique = 0        # nº de anomalias inspeção CONCLUÍDA
+        self.investigation_timeouts = 0  # investigate_end reason=timeout (R2#8)
         self.hazard_avoidances = 0       # nº de eventos de recuo (avoid_start)
         self.min_hazard_dist = float('inf')   # menor distância a um perigo (m)
         self.td_error = 0.0
+        self.update_residual = 0.0       # |alpha*td + eta*Phi| (resíduo completo)
+        # --- segurança (R2#6/R3#2/R4#3): só significativas no cenário
+        #     perigo-sobre-a-rota, mas medidas em qualquer cenário ---
+        self.collisions = 0              # nº de entradas em raio de colisão
+        self._in_collision = False       # borda p/ não recontar o mesmo evento
+        self.time_below_clearance = 0.0  # s abaixo da folga de segurança
+        self.safety_zone_violations = 0  # nº de entradas na zona de folga
+        self._in_clearance = False
+        self.min_ttc = float('inf')      # menor tempo-para-colisão (s)
+        self.avoid_success = 0           # recuos concluídos (safe/retreated)
+        self.avoid_timeout = 0           # recuos abortados por tempo
+        self._prev_haz_dist = None
+        self._prev_haz_t = None
         self.mission_start = None
         self.mission_end = None
         self._last_xy = None
@@ -66,8 +80,12 @@ class MetricsNode(Node):
         self.declare_parameter('map_frame', 'map')
         self.declare_parameter('robot_frame', 'base_footprint')
         self.declare_parameter('scenario', 'default')
+        self.declare_parameter('collision_radius', 0.5)    # m: contato efetivo
+        self.declare_parameter('clearance_threshold', 2.0) # m: zona de folga
         self.map_frame = self.get_parameter('map_frame').value
         self.robot_frame = self.get_parameter('robot_frame').value
+        self.collision_radius = self.get_parameter('collision_radius').value
+        self.clearance_threshold = self.get_parameter('clearance_threshold').value
         self._hazards = scenario_events(self.get_parameter('scenario').value)[1]
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
@@ -76,6 +94,8 @@ class MetricsNode(Node):
         self.create_subscription(Int32, '/bellman/route_deviations',
                                  self._on_dev, 10)
         self.create_subscription(Float64, '/bellman/td_error', self._on_td, 10)
+        self.create_subscription(Float64, '/bellman/update_residual',
+                                 self._on_residual, 10)
         self.create_subscription(String, '/stay_alert/event', self._on_event, 10)
         self.create_subscription(String, '/stay_alert/mode', self._on_mode, 10)
         self.create_subscription(String, '/mission/state', self._on_mission, 10)
@@ -101,10 +121,40 @@ class MetricsNode(Node):
         except TransformException:
             return
         mx, my = t.transform.translation.x, t.transform.translation.y
-        for h in self._hazards:
-            d = math.hypot(mx - h['x'], my - h['y'])
-            if d < self.min_hazard_dist:
-                self.min_hazard_dist = d
+        if not self._hazards:
+            return
+        d_now = min(math.hypot(mx - h['x'], my - h['y']) for h in self._hazards)
+        if d_now < self.min_hazard_dist:
+            self.min_hazard_dist = d_now
+
+        now = self.now_s()
+        # colisão (borda de entrada no raio de contato)
+        if d_now < self.collision_radius:
+            if not self._in_collision:
+                self.collisions += 1
+                self._in_collision = True
+        else:
+            self._in_collision = False
+        # tempo/violações abaixo da folga de segurança
+        if d_now < self.clearance_threshold:
+            if not self._in_clearance:
+                self.safety_zone_violations += 1
+                self._in_clearance = True
+            if self._prev_haz_t is not None:
+                self.time_below_clearance += now - self._prev_haz_t
+        else:
+            self._in_clearance = False
+        # tempo-para-colisão: dist / velocidade de aproximação ao perigo
+        if self._prev_haz_dist is not None and self._prev_haz_t is not None:
+            dt = now - self._prev_haz_t
+            if dt > 1e-3:
+                closing = (self._prev_haz_dist - d_now) / dt   # >0 = aproximando
+                if closing > 1e-3:
+                    ttc = d_now / closing
+                    if ttc < self.min_ttc:
+                        self.min_ttc = ttc
+        self._prev_haz_dist = d_now
+        self._prev_haz_t = now
 
     def _on_unique(self, msg: Int32):
         self.anomalies_unique = msg.data
@@ -115,11 +165,21 @@ class MetricsNode(Node):
     def _on_td(self, msg: Float64):
         self.td_error = msg.data
 
+    def _on_residual(self, msg: Float64):
+        self.update_residual = msg.data
+
     def _on_event(self, msg: String):
         if msg.data.startswith('investigate_start'):
             self.anomalies_detected += 1
+        elif msg.data.startswith('investigate_end') and 'reason=timeout' in msg.data:
+            self.investigation_timeouts += 1
         elif msg.data.startswith('avoid_start'):
             self.hazard_avoidances += 1
+        elif msg.data.startswith('avoid_end'):
+            if 'reason=timeout' in msg.data:
+                self.avoid_timeout += 1
+            else:                                   # safe | retreated
+                self.avoid_success += 1
 
     def _on_mode(self, msg: String):
         now = self.now_s()
@@ -155,15 +215,23 @@ class MetricsNode(Node):
         min_haz = (self.min_hazard_dist if self.min_hazard_dist != float('inf')
                    else -1.0)
         rows = {
-            'anomalies_detected': self.anomalies_detected,   # eventos de investida
-            'anomalies_unique': self.anomalies_unique,       # anomalias únicas
+            'anomalies_detected': self.anomalies_detected,   # commits (investida)
+            'anomalies_unique': self.anomalies_unique,       # inspeção concluída
+            'investigation_timeouts': self.investigation_timeouts,  # abortadas p/ tempo
             'mission_duration_s': duration,
             'distance_traveled_m': self.distance,
             'route_deviations': self.route_deviations,
             'investigation_time_s': live_invest,
             'hazard_avoidances': self.hazard_avoidances,     # nº de recuos
             'min_hazard_distance_m': min_haz,                # segurança (maior=melhor)
-            'q_convergence': self.td_error,
+            'collisions': self.collisions,
+            'time_below_clearance_s': self.time_below_clearance,
+            'safety_zone_violations': self.safety_zone_violations,
+            'min_ttc_s': (self.min_ttc if self.min_ttc != float('inf') else -1.0),
+            'avoid_success': self.avoid_success,
+            'avoid_timeout': self.avoid_timeout,
+            'q_convergence': self.td_error,           # proxy SEM termo afetivo
+            'update_residual': self.update_residual,  # |alpha*td+eta*Phi| completo
         }
         for k, v in rows.items():
             self._csv.writerow([f'{t:.3f}', k, v])

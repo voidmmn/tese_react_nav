@@ -44,11 +44,17 @@ class StayAlertNode(Node):
         self.declare_parameter('max_investigation_s', 15.0)
         # tempo de observação parado após chegar na pose de inspeção
         self.declare_parameter('dwell_s', 3.0)
+        # C7: refratário após um recuo. Impede re-disparo imediato de AVOID
+        # (recua->reaproxima->recua) enquanto o keepout no costmap faz o Nav2
+        # replanejar e contornar o perigo. Dá a hand-off reflexo->deliberativo.
+        self.declare_parameter('avoid_refractory_s', 8.0)
 
         self.enter_threshold = self.get_parameter('enter_threshold').value
         self.exit_threshold = self.get_parameter('exit_threshold').value
         self.max_investigation_s = self.get_parameter('max_investigation_s').value
         self.dwell_s = self.get_parameter('dwell_s').value
+        self.avoid_refractory_s = self.get_parameter('avoid_refractory_s').value
+        self._avoid_until = 0.0   # instante até o qual AVOID fica bloqueado
 
         self.mode = self.PATROL
         self.phi = 0.0
@@ -90,8 +96,10 @@ class StayAlertNode(Node):
         now = self.now_s()
 
         if self.mode == self.PATROL:
-            # repulsão tem prioridade (segurança antes de inspeção)
-            if self.phi <= -self.enter_threshold and self.retreat_pose is not None:
+            # repulsão tem prioridade (segurança antes de inspeção), exceto
+            # durante o refratário pós-recuo (deixa o keepout/Nav2 contornar)
+            if (self.phi <= -self.enter_threshold and self.retreat_pose is not None
+                    and now >= self._avoid_until):
                 self._enter(self.AVOID, self.retreat_pose, now)
             elif self.phi >= self.enter_threshold and self.target_pose is not None:
                 self._enter(self.INVESTIGATE, self.target_pose, now)
@@ -137,6 +145,8 @@ class StayAlertNode(Node):
 
     def _exit(self, reason, elapsed):
         ending = self.mode
+        if ending == self.AVOID:   # arma o refratário pós-recuo (C7)
+            self._avoid_until = self.now_s() + self.avoid_refractory_s
         self.mode = self.PATROL
         self._cancel_goal()
         self.active_pub.publish(Bool(data=False))    # mission retoma a ronda
