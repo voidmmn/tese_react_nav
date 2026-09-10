@@ -35,6 +35,7 @@ class MetricsNode(Node):
 
         self.declare_parameter('output_dir', os.path.expanduser('~/tese_ws/results'))
         self.declare_parameter('run_label', 'run')
+        self.declare_parameter('run_seed', -1)   # §13: semente da run (reprodutib.)
         out_dir = os.path.expanduser(self.get_parameter('output_dir').value)
         label = self.get_parameter('run_label').value
         os.makedirs(out_dir, exist_ok=True)
@@ -53,6 +54,10 @@ class MetricsNode(Node):
         self.anomalies_unique = 0        # nº de anomalias inspeção CONCLUÍDA
         self.investigation_timeouts = 0  # investigate_end reason=timeout (R2#8)
         self.hazard_avoidances = 0       # nº de eventos de recuo (avoid_start)
+        self.investigation_deferred = 0  # §10: investida interrompida por perigo
+        self.nav_aborted = 0             # §6/§13: navegações reativas ABORTED
+        self.nav_canceled = 0            # §6/§13: CANCELED
+        self.nav_rejected = 0            # §6/§13: REJEITADAS pelo Nav2
         self.min_hazard_dist = float('inf')   # menor distância a um perigo (m)
         self.td_error = 0.0
         self.update_residual = 0.0       # |alpha*td + eta*Phi| (resíduo completo)
@@ -169,17 +174,28 @@ class MetricsNode(Node):
         self.update_residual = msg.data
 
     def _on_event(self, msg: String):
-        if msg.data.startswith('investigate_start'):
+        d = msg.data
+        if d.startswith('investigate_start'):
             self.anomalies_detected += 1
-        elif msg.data.startswith('investigate_end') and 'reason=timeout' in msg.data:
-            self.investigation_timeouts += 1
-        elif msg.data.startswith('avoid_start'):
+        elif d.startswith('investigate_end'):
+            if 'reason=timeout' in d:
+                self.investigation_timeouts += 1
+            elif 'reason=deferred_hazard' in d:     # §10
+                self.investigation_deferred += 1
+        elif d.startswith('avoid_start'):
             self.hazard_avoidances += 1
-        elif msg.data.startswith('avoid_end'):
-            if 'reason=timeout' in msg.data:
+        elif d.startswith('avoid_end'):
+            if 'reason=timeout' in d:
                 self.avoid_timeout += 1
             else:                                   # safe | retreated
                 self.avoid_success += 1
+        elif d.startswith('nav_result'):            # §6/§13: desfechos de navegação
+            if 'outcome=aborted' in d:
+                self.nav_aborted += 1
+            elif 'outcome=canceled' in d:
+                self.nav_canceled += 1
+            elif 'outcome=rejected' in d:
+                self.nav_rejected += 1
 
     def _on_mode(self, msg: String):
         now = self.now_s()
@@ -232,6 +248,11 @@ class MetricsNode(Node):
             'avoid_timeout': self.avoid_timeout,
             'q_convergence': self.td_error,           # proxy SEM termo afetivo
             'update_residual': self.update_residual,  # |alpha*td+eta*Phi| completo
+            'investigation_deferred': self.investigation_deferred,  # §10
+            'nav_aborted': self.nav_aborted,          # §6/§13 desfechos de navegação
+            'nav_canceled': self.nav_canceled,
+            'nav_rejected': self.nav_rejected,
+            'run_seed': self.get_parameter('run_seed').value,  # §13 reprodutibilidade
         }
         for k, v in rows.items():
             self._csv.writerow([f'{t:.3f}', k, v])

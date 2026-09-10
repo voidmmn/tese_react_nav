@@ -104,14 +104,14 @@ SCENARIOS = {
     'conflict': (CONFLICT_ANOMALIES, CONFLICT_HAZARDS),
 }
 
-# Cenários com perigo SOBRE a rota: só nesses o keepout deliberativo + a
-# delegação pós-reflexo ficam ativos (resposta de segurança em DOIS TEMPOS:
-# recuo reflexo rápido + keepout que faz o Nav2 contornar). A instabilidade
-# observada antes era degradação do sistema (máquina ligada há dias), não o
-# mecanismo: numa máquina fresca o keepout completa limpo (dist~88, anom=3,
-# min_hazard~1.72, recuo único). Nos demais cenários (perigo ao lado) a camada
-# reativa sozinha basta -> E1-E5 permanecem a arquitetura original (comparável).
-KEEPOUT_SCENARIOS = {'route_hazard'}
+# §8: o keepout deliberativo NÃO é mais gated por nome de cenário. É um canal
+# deliberativo geral, controlado pelo parâmetro `publish_keepout`, que projeta um
+# perigo DETECTADO (dentro do raio sensorial, na posição PERCEBIDA) no costmap
+# global para o Nav2 contornar. Assim a resposta em dois tempos (recuo reflexo +
+# keepout) usa só informação detectada — sem verdade de terreno nem projeção
+# antecipada — e a ativação vira uma regra operacional, não conhecimento do
+# cenário. Os experimentos escolhem publish_keepout/enable_reactive_avoid via
+# launch para a ablação causal (recuo-só / keepout-só / ambos).
 
 
 def scenario_events(name):
@@ -153,18 +153,29 @@ class AnomalySimulator(Node):
         #     expressão DELIBERATIVA da repulsão afetiva; gated por publish_keepout
         #     (ligado junto com a camada afetiva). ---
         self.declare_parameter('publish_keepout', True)
-        self.declare_parameter('keepout_project_radius', 8.0)  # m: quando projetar
+        # §8: projeta só quando o perigo está DENTRO do raio sensorial (não antes).
+        # 0.0 => auto (= detection_radius). Antes era 8 m (> sensor de 5 m), o que
+        # dava ao planejador informação antecipada não disponível ao recuo reativo.
+        self.declare_parameter('keepout_project_radius', 0.0)
         self.declare_parameter('keepout_radius', 1.2)          # m: raio do disco
+        # §6: distância (robô->alvo verdadeiro) para o avaliador independente
+        # CONFIRMAR a inspeção. 0.0 => auto (standoff + margem + folga de 0.5 m).
+        self.declare_parameter('inspect_confirm_dist', 0.0)
         self.publish_keepout = self.get_parameter('publish_keepout').value
-        self.keepout_project_radius = self.get_parameter('keepout_project_radius').value
+        _kpr = self.get_parameter('keepout_project_radius').value  # resolvido abaixo
         self.keepout_radius = self.get_parameter('keepout_radius').value
         self.map_frame = self.get_parameter('map_frame').value
         self.robot_frame = self.get_parameter('robot_frame').value
         self.scenario = self.get_parameter('scenario').value
         self.detection_radius = self.get_parameter('detection_radius').value
+        # §8: projeção do keepout só dentro do alcance sensorial (sem antecipação)
+        self.keepout_project_radius = _kpr if _kpr > 0.0 else self.detection_radius
         self.standoff = self.get_parameter('inspection_standoff').value
         self.dwell_s = self.get_parameter('dwell_s').value
         self.completion_margin = self.get_parameter('completion_margin').value
+        _cfd = self.get_parameter('inspect_confirm_dist').value
+        self.inspect_confirm_dist = _cfd if _cfd > 0.0 \
+            else self.standoff + self.completion_margin + 0.5
         self.retreat_dist = self.detection_radius + \
             self.get_parameter('retreat_extra').value
         rate = self.get_parameter('rate_hz').value
@@ -181,11 +192,16 @@ class AnomalySimulator(Node):
         # em completed -> reportado como outcome separado, nunca como inspeção.
         self.committed = set()         # ids em investigação (suprime re-atração)
         self.completed = set()         # ids com inspeção concluída (reached+dwell)
-        self._keepout_latched = set()  # ids de perigos com keepout travado (C7)
-        self._hazard_delegated = set() # perigos entregues ao keepout deliberativo
-                                       # (após 1 recuo reflexo) -> param de repulsão
+        self.failed = set()            # §10: investigação por timeout (não inspecionada)
+        self.deferred = set()          # §10: investigação interrompida por perigo
+        self._keepout_latched = set()  # ids de perigos com keepout travado
+        self._keepout_pos = {}         # id -> (px,py) PERCEBIDO no 1º detecção (§8)
+        self._hazard_delegated = set() # ids entregues ao keepout deliberativo (§8)
         self.target_id = None          # anomalia cuja inspection_pose foi publicada
         self._active_target = None     # alvo do investigate corrente (p/ o end)
+        # §10: pesos de saliência (iguais ao AttractionField) p/ escolher o alvo
+        # como o evento que DOMINA Phi, não o mais próximo.
+        self.attr_weights = {'thermal': 1.0, 'acoustic': 1.2}
         self.robot_x = 0.0
         self.robot_y = 0.0
         self.have_pose = False
@@ -205,6 +221,9 @@ class AnomalySimulator(Node):
         self.retreat_pub = self.create_publisher(
             PoseStamped, '/hazard/retreat_pose', 10)
         self.unique_pub = self.create_publisher(Int32, '/anomaly/unique_detected', 10)
+        # §10: id do evento-alvo (o mais saliente no raio) — a camada reativa
+        # ecoa esse id no investigate_start p/ o crédito ser por identidade.
+        self.target_id_pub = self.create_publisher(Int32, '/anomaly/target_id', 10)
         self.keepout_pub = self.create_publisher(
             PointCloud2, '/hazard_keepout_cloud', 10)
 
@@ -230,17 +249,22 @@ class AnomalySimulator(Node):
         self.have_pose = True
         return True
 
-    def _nearest_anom_id(self, radius, exclude):
-        """id da anomalia mais próxima do robô dentro de `radius` e fora de
-        `exclude`, ou None."""
-        best = None
-        for a in self.anomalies:
-            if a['id'] in exclude:
-                continue
-            d = math.hypot(self.robot_x - a['x'], self.robot_y - a['y'])
-            if d < radius and (best is None or d < best[1]):
-                best = (a['id'], d)
-        return best[0] if best else None
+    @staticmethod
+    def _parse_id(msg: str):
+        """§10: extrai `id=<n>` da mensagem de evento (ecoado pela camada reativa).
+        Retorna int ou None se ausente/malformado."""
+        for tok in msg.split():
+            if tok.startswith('id='):
+                try:
+                    return int(tok[3:])
+                except ValueError:
+                    return None
+        return None
+
+    def _true_pos(self, eid):
+        """Posição VERDADEIRA (referência do avaliador) do evento por id."""
+        a = next((a for a in self.anomalies if a['id'] == eid), None)
+        return (round(a['x'], 2), round(a['y'], 2)) if a else None
 
     def _on_event(self, msg: String):
         d = msg.data
@@ -248,29 +272,56 @@ class AnomalySimulator(Node):
         # disparou o investigate (está a <detection_radius). Latchar no início e
         # creditar no fim é robusto à posição exata no instante do evento.
         if d.startswith('investigate_start'):
-            # raio generoso (2×detection): o baseline APF calcula a força da
-            # posição real e dispara o investigate mais longe que o alcance de
-            # publicação do Φ (~8.5 m vs 5 m); o alvo é sempre a anomalia
-            # não-concluída mais próxima. reason=inspected no fim garante que o
-            # robô de fato chegou (reached+dwell), então o crédito é seguro.
-            self._active_target = self._nearest_anom_id(
-                2.0 * self.detection_radius, self.completed)
+            # §10: LATCHA o alvo pelo ID ECOADO na mensagem (o evento mais saliente
+            # que o simulador selecionou e a camada reativa navegou), não por
+            # re-derivação da mais próxima. Fallback ao target_id corrente se a
+            # mensagem não trouxer id (ex.: nó reativo antigo).
+            eid = self._parse_id(d)
+            self._active_target = eid if eid is not None else self.target_id
             if self._active_target is not None:
                 self.committed.add(self._active_target)      # suprime re-atração
-        # CONCLUÍDA (R2#8): SÓ via investigate_end reason=inspected (a camada
-        # reativa garante reached+dwell). Credita o alvo latchado. Assim: baseline
-        # sem camada reativa não emite evento -> 0 (não credita fly-bys da ronda);
-        # timeout NÃO credita; o latch evita o desync de alvo do APF.
-        elif d.startswith('investigate_end'):
-            if ('reason=inspected' in d and self._active_target is not None
-                    and self._active_target not in self.completed):
-                self.completed.add(self._active_target)
+                self.deferred.discard(self._active_target)   # nova tentativa
                 self.get_logger().info(
-                    f"anomalia {self._active_target} INSPECIONADA "
-                    f"({len(self.completed)}/{len(self.anomalies)})")
+                    f"investigate_start alvo={self._active_target} "
+                    f"(pos_verdadeira={self._true_pos(self._active_target)})")
+        # CONCLUÍDA: SÓ via investigate_end reason=inspected + confirmação de pose
+        # independente (§6). timeout -> 'failed'; interrupção por perigo ->
+        # 'deferred' (§10): estados distintos, nunca confundidos com 'completed'.
+        elif d.startswith('investigate_end'):
+            tid = self._active_target
+            if ('reason=inspected' in d and tid is not None
+                    and tid not in self.completed):
+                tgt = next((a for a in self.anomalies if a['id'] == tid), None)
+                d_robot = (math.hypot(self.robot_x - tgt['x'], self.robot_y - tgt['y'])
+                           if tgt else float('inf'))
+                if tgt is not None and d_robot <= self.inspect_confirm_dist:
+                    self.completed.add(tid)
+                    self.get_logger().info(
+                        f"anomalia {tid} INSPECIONADA (robô a {d_robot:.2f} m; "
+                        f"{len(self.completed)}/{len(self.anomalies)})")
+                else:
+                    self.failed.add(tid)
+                    self.get_logger().warn(
+                        f"inspeção de {tid} NÃO confirmada "
+                        f"(robô a {d_robot:.2f} m > {self.inspect_confirm_dist:.2f} m)")
+            elif 'reason=timeout' in d and tid is not None:
+                self.failed.add(tid)
+                self.get_logger().warn(f"investigação de {tid} FALHOU (timeout)")
+            elif 'reason=deferred_hazard' in d and tid is not None:
+                self.deferred.add(tid)
+                self.committed.discard(tid)   # liberado p/ nova tentativa
+                self.get_logger().info(f"investigação de {tid} ADIADA (perigo)")
             self._active_target = None
-        # RECUO reflexo disparou -> delega o perigo ao keepout deliberativo (C7).
-        elif d.startswith('avoid_start') and self.scenario in KEEPOUT_SCENARIOS:
+        # §8 hand-off reflexo->deliberativo: após um recuo, se o keepout está ativo
+        # (publish_keepout), o perigo é DELEGADO ao canal deliberativo e seu sinal
+        # reativo (Phi) deixa de ser publicado -> evita a oscilação recuo/reaproxima
+        # /recua enquanto o Nav2 contorna. Isto é um estado DISTINTO e auditável (o
+        # perigo latchado no keepout continua roteando o Nav2), e NÃO se confunde
+        # com segurança: as métricas de clearance/TTC/colisão medem a distância
+        # VERDADEIRA ao perigo (metrics_node, via TF), independente de Phi. Sem
+        # keepout (ex.: ablação recuo-só) NÃO há delegação -> Phi honesto e o recuo
+        # isolado pode oscilar/falhar, que é o resultado esperado da ablação.
+        elif d.startswith('avoid_start') and self.publish_keepout:
             near = [h for h in self.hazards
                     if math.hypot(self.robot_x - h['x'],
                                   self.robot_y - h['y']) < self.detection_radius]
@@ -279,7 +330,7 @@ class AnomalySimulator(Node):
                                                        self.robot_y - h['y']))
                 self._hazard_delegated.add(h['id'])
                 self.get_logger().info(
-                    f"perigo {h['id']} DELEGADO ao keepout (pós-reflexo)")
+                    f"perigo {h['id']} DELEGADO ao keepout (pós-recuo)")
 
     def _dist(self, e):
         return math.hypot(self.robot_x - e['x'], self.robot_y - e['y'])
@@ -299,31 +350,33 @@ class AnomalySimulator(Node):
         return max(0.0, val)
 
     def _emit_keepout(self):
-        """Projeta a repulsão afetiva no costmap global como nuvem de pontos ao
-        redor de cada perigo dentro do raio de projeção. Posição VERDADEIRA do
-        perigo (a projeção deliberativa é estável, sem ruído). Marca expira via
-        observation_persistence do obstacle_layer quando paramos de publicar."""
-        if (not self.publish_keepout or self.scenario not in KEEPOUT_SCENARIOS
-                or not self.hazards):
+        """§8: projeta o perigo DETECTADO no costmap global como nuvem de pontos.
+        Usa a posição PERCEBIDA (com ruído, como o resto da percepção), latchada
+        no 1º instante em que o perigo entra no raio SENSORIAL de projeção — sem
+        verdade de terreno nem antecipação além do sensor. Controlado só por
+        `publish_keepout` (ablação: keepout ligado/desligado independente do recuo)."""
+        if not self.publish_keepout or not self.hazards:
             return
-        # LATCH: assim que um perigo entra no raio de projeção uma vez, seu
-        # keepout fica travado até o fim da missão. Isso faz o plano global
-        # COMMITAR num desvio único e o robô contornar de uma vez, em vez de
-        # recuar->reaproximar->recuar quando a marca expira ao sair do raio.
+        # LATCH: ao ser detectado uma vez, o keepout do perigo fica travado (na
+        # posição percebida daquele instante) até o fim da missão -> o plano
+        # global commita num desvio único em vez de oscilar quando a marca expira.
         for h in self.hazards:
-            if math.hypot(self.robot_x - h['x'], self.robot_y - h['y']) \
+            if h['id'] in self._keepout_latched:
+                continue
+            px, py = self._perc_pos(h['x'], h['y'])
+            if math.hypot(self.robot_x - px, self.robot_y - py) \
                     <= self.keepout_project_radius:
                 self._keepout_latched.add(h['id'])
+                self._keepout_pos[h['id']] = (px, py)   # posição PERCEBIDA latchada
         pts, step = [], 0.15
         n = int(self.keepout_radius / step)
-        for h in self.hazards:
-            if h['id'] not in self._keepout_latched:
-                continue
+        for hid in self._keepout_latched:
+            cx, cy = self._keepout_pos[hid]
             for i in range(-n, n + 1):
                 for j in range(-n, n + 1):
                     px, py = i * step, j * step
                     if px * px + py * py <= self.keepout_radius ** 2:
-                        pts.append((h['x'] + px, h['y'] + py, 0.1))
+                        pts.append((cx + px, cy + py, 0.1))
         if pts:
             header = Header()
             header.stamp = self.get_clock().now().to_msg()
@@ -345,11 +398,16 @@ class AnomalySimulator(Node):
         if self.noise_r:
             r = max(0.5, r + self._rng.gauss(0.0, self.noise_r))
 
-        # ---- PERIGO (repulsão) tem prioridade: segurança antes de inspeção ----
+        # ---- PERIGO (repulsão) ----
+        # §7.3: publica TODOS os eventos detectados (perigo E anomalias) no mesmo
+        # tick. A PRECEDÊNCIA de segurança é decidida no CAMPO/decisor (Eq. 4),
+        # não suprimindo a atração na percepção. Antes o simulador dava `return`
+        # após o perigo e a anomalia nunca chegava ao campo — a arbitragem não
+        # era exercitada.
         best_h = None   # (dist, px, py, h) na posição PERCEBIDA
         for h in self.hazards:
-            if h['id'] in self._hazard_delegated:   # já entregue ao planejador
-                continue
+            if h['id'] in self._hazard_delegated:   # §8: já entregue ao keepout
+                continue                            # (Phi suprimido; clearance segue medido)
             px, py = self._perc_pos(h['x'], h['y'])
             d = math.hypot(self.robot_x - px, self.robot_y - py)
             if d < r and (best_h is None or d < best_h[0]):
@@ -360,10 +418,16 @@ class AnomalySimulator(Node):
             self.hazard_pub.publish(Float64(data=float(intensity)))
             self._publish_pose(self.retreat_pub, px, py,
                                self.retreat_dist, face_away=True)
-            return   # perto de perigo: não investiga anomalia neste tick
+            # NÃO retorna: as anomalias no raio também são publicadas abaixo, e o
+            # campo aplica a precedência (perigo > atração) ao compor Phi.
 
         # ---- ATRAÇÃO (anomalias não committed) ----
-        nearest = None   # (dist, px, py, a) na posição PERCEBIDA
+        # §10: o ALVO é o evento mais SALIENTE no raio (max |w·intensidade|), o
+        # MESMO que domina Phi — não o mais próximo. Antes a pose/crédito iam para
+        # a anomalia mais próxima, que podia divergir do evento que erguia Phi em
+        # cenários densos (E5) ou com ruído (N1/N2). Publica o id do alvo p/ a
+        # camada reativa ecoar e o crédito ser por identidade.
+        best_a = None   # (saliency, px, py, a) na posição PERCEBIDA
         for a in self.anomalies:
             if a['id'] in self.committed:   # já em investigação/inspecionada
                 continue
@@ -376,11 +440,13 @@ class AnomalySimulator(Node):
                     self.thermal_pub.publish(msg)
                 else:
                     self.acoustic_pub.publish(msg)
-                if nearest is None or dist < nearest[0]:
-                    nearest = (dist, px, py, a)
-        if nearest is not None:
-            self.target_id = nearest[3]['id']
-            self._publish_pose(self.inspect_pub, nearest[1], nearest[2],
+                saliency = self.attr_weights.get(a['type'], 1.0) * intensity
+                if best_a is None or saliency > best_a[0]:
+                    best_a = (saliency, px, py, a)
+        if best_a is not None:
+            self.target_id = best_a[3]['id']
+            self.target_id_pub.publish(Int32(data=int(self.target_id)))
+            self._publish_pose(self.inspect_pub, best_a[1], best_a[2],
                                self.standoff, face_away=False)
 
     def _publish_pose(self, pub, ex, ey, standoff, face_away):

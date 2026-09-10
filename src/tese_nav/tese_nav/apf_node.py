@@ -89,7 +89,7 @@ class ApfNode(Node):
         anomalies, hazards = scenario_events(self.scenario)
         self.anomalies = [dict(a) for a in anomalies]
         self.hazards = [dict(h) for h in hazards]
-        self.visited = set()
+        self.committed = set()   # §10: alvos em investigação (era 'visited')
 
         self.mode = self.PATROL
         self.target = None            # anomalia-alvo do INVESTIGATE
@@ -132,7 +132,7 @@ class ApfNode(Node):
         fx = fy = 0.0
         best = None
         for a in self.anomalies:
-            if a['id'] in self.visited:
+            if a['id'] in self.committed:
                 continue
             dx, dy = a['x'] - x, a['y'] - y
             d = math.hypot(dx, dy)
@@ -209,7 +209,7 @@ class ApfNode(Node):
                 if self._reached_since is None:
                     self._reached_since = now
                 elif now - self._reached_since >= self.dwell_s:
-                    self.visited.add(self.target['id'])
+                    self.committed.add(self.target['id'])
                     self._exit('inspected', elapsed)
                 return
             if elapsed >= self.max_investigation_s:
@@ -255,7 +255,9 @@ class ApfNode(Node):
         self.active_pub.publish(Bool(data=True))    # pausa a ronda (Nav2 idle)
         self._publish_mode()
         tag = 'investigate_start' if mode == self.INVESTIGATE else 'avoid_start'
-        self.event_pub.publish(String(data=f'{tag} apf'))
+        # §10: ecoa o id do alvo (APF o conhece: seleciona da própria geometria)
+        eid = target['id'] if (mode == self.INVESTIGATE and target) else -1
+        self.event_pub.publish(String(data=f'{tag} id={eid} apf'))
         self.get_logger().info(f'APF -> {mode}')
 
     def _exit(self, reason, elapsed):

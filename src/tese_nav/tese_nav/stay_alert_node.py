@@ -25,9 +25,10 @@ Saídas:
 import rclpy
 from rclpy.action import ActionClient
 from rclpy.node import Node
-from std_msgs.msg import Float64, Bool, String
+from std_msgs.msg import Float64, Bool, String, Int32
 from geometry_msgs.msg import PoseStamped
 from nav2_msgs.action import NavigateToPose
+from action_msgs.msg import GoalStatus
 
 
 class StayAlertNode(Node):
@@ -48,12 +49,16 @@ class StayAlertNode(Node):
         # (recua->reaproxima->recua) enquanto o keepout no costmap faz o Nav2
         # replanejar e contornar o perigo. Dá a hand-off reflexo->deliberativo.
         self.declare_parameter('avoid_refractory_s', 8.0)
+        # §8 ablação: desliga o RECUO reativo (mantém investigação). Permite o
+        # experimento (a) keepout-só vs (b) recuo-só vs (c) ambos.
+        self.declare_parameter('enable_reactive_avoid', True)
 
         self.enter_threshold = self.get_parameter('enter_threshold').value
         self.exit_threshold = self.get_parameter('exit_threshold').value
         self.max_investigation_s = self.get_parameter('max_investigation_s').value
         self.dwell_s = self.get_parameter('dwell_s').value
         self.avoid_refractory_s = self.get_parameter('avoid_refractory_s').value
+        self.enable_reactive_avoid = self.get_parameter('enable_reactive_avoid').value
         self._avoid_until = 0.0   # instante até o qual AVOID fica bloqueado
 
         self.mode = self.PATROL
@@ -62,13 +67,18 @@ class StayAlertNode(Node):
         self.target_pose = None       # pose de inspeção (atração)
         self.retreat_pose = None      # pose de recuo (repulsão)
         self._goal_handle = None       # goal Nav2 corrente (investigação/recuo)
-        self._reached_at = None        # quando chegou ao destino
+        self._reached_at = None        # quando chegou ao destino (SÓ em SUCCEEDED)
+        self._goal_epoch = 0           # id do episódio reativo corrente
+        self._nav_outcome = None       # último desfecho Nav2 (diag/métricas)
+        self._target_id = -1           # §10: id do evento-alvo (ecoado do simulador)
 
         self.create_subscription(Float64, '/stay_alert/attraction', self._on_phi, 10)
         self.create_subscription(PoseStamped, '/anomaly/inspection_pose',
                                  self._on_inspection_pose, 10)
         self.create_subscription(PoseStamped, '/hazard/retreat_pose',
                                  self._on_retreat_pose, 10)
+        self.create_subscription(Int32, '/anomaly/target_id',
+                                 self._on_target_id, 10)
 
         self.nav_client = ActionClient(self, NavigateToPose, 'navigate_to_pose')
 
@@ -89,19 +99,33 @@ class StayAlertNode(Node):
     def _on_inspection_pose(self, msg: PoseStamped):
         self.target_pose = msg
 
+    def _on_target_id(self, msg: Int32):
+        self._target_id = msg.data   # §10: id do evento-alvo mais saliente
+
     def _on_retreat_pose(self, msg: PoseStamped):
         self.retreat_pose = msg
 
     def _update(self):
         now = self.now_s()
 
+        # §7.1 PREEMPÇÃO DE SEGURANÇA: um perigo acima do limiar interrompe
+        # QUALQUER estado (Patrol OU Investigate) e força AVOID — a precedência
+        # categórica de Phi (Eq. 4) vale mesmo durante uma aproximação já em
+        # curso, não só na patrulha. O guard do refratário pós-recuo preserva o
+        # hand-off reflexo->keepout deliberativo (documentado no Algoritmo 1).
+        if (self.enable_reactive_avoid
+                and self.mode != self.AVOID
+                and self.phi <= -self.enter_threshold
+                and self.retreat_pose is not None
+                and now >= self._avoid_until):
+            if self.mode == self.INVESTIGATE:   # §10: investigação preemptada por perigo
+                self._exit('deferred_hazard', now - self._investigate_start)
+            self._enter(self.AVOID, self.retreat_pose, now)
+            return
+
         if self.mode == self.PATROL:
-            # repulsão tem prioridade (segurança antes de inspeção), exceto
-            # durante o refratário pós-recuo (deixa o keepout/Nav2 contornar)
-            if (self.phi <= -self.enter_threshold and self.retreat_pose is not None
-                    and now >= self._avoid_until):
-                self._enter(self.AVOID, self.retreat_pose, now)
-            elif self.phi >= self.enter_threshold and self.target_pose is not None:
+            # sem perigo preemptivo: só a atração pode tirar da patrulha
+            if self.phi >= self.enter_threshold and self.target_pose is not None:
                 self._enter(self.INVESTIGATE, self.target_pose, now)
             return
 
@@ -133,11 +157,14 @@ class StayAlertNode(Node):
         self.mode = mode
         self._investigate_start = now
         self._reached_at = None
+        self._goal_epoch += 1                        # novo episódio reativo
         self.active_pub.publish(Bool(data=True))     # mission pausa a ronda
         self._publish_mode()
         tag = 'investigate_start' if mode == self.INVESTIGATE else 'avoid_start'
-        self.event_pub.publish(String(data=f'{tag} phi={self.phi:.3f}'))
-        self._send_goal(pose)
+        # §10: ecoa o id do evento-alvo p/ o simulador creditar por identidade
+        eid = self._target_id if mode == self.INVESTIGATE else -1
+        self.event_pub.publish(String(data=f'{tag} id={eid} phi={self.phi:.3f}'))
+        self._send_goal(pose, self._goal_epoch)
         p = pose.pose.position
         arrow = '>>' if mode == self.INVESTIGATE else '!!'
         self.get_logger().info(
@@ -149,6 +176,7 @@ class StayAlertNode(Node):
             self._avoid_until = self.now_s() + self.avoid_refractory_s
         self.mode = self.PATROL
         self._cancel_goal()
+        self._goal_epoch += 1                        # encerra o episódio: callbacks tardios viram stale
         self.active_pub.publish(Bool(data=False))    # mission retoma a ronda
         self._publish_mode()
         tag = 'investigate_end' if ending == self.INVESTIGATE else 'avoid_end'
@@ -157,26 +185,46 @@ class StayAlertNode(Node):
         self.get_logger().info(f'<< PATROL (motivo={reason}, {elapsed:.1f}s)')
 
     # --------------------------- Nav2 goal ----------------------------- #
-    def _send_goal(self, pose):
+    def _send_goal(self, pose, epoch):
         if not self.nav_client.wait_for_server(timeout_sec=2.0):
             self.get_logger().warn('Nav2 indisponível; ação reativa sem deslocamento')
+            self._nav_outcome = 'unavailable'
             return
         goal = NavigateToPose.Goal()
         goal.pose = pose
         goal.pose.header.stamp = self.get_clock().now().to_msg()
-        self.nav_client.send_goal_async(goal).add_done_callback(self._on_goal_resp)
+        self.nav_client.send_goal_async(goal).add_done_callback(
+            lambda f: self._on_goal_resp(f, epoch))
 
-    def _on_goal_resp(self, future):
+    def _on_goal_resp(self, future, epoch):
+        if epoch != self._goal_epoch:
+            return                                   # resposta de episódio já encerrado
         handle = future.result()
-        if not handle.accepted:
+        if not handle.accepted:                      # REJEITADO é desfecho próprio
+            self._nav_outcome = 'rejected'
+            self.event_pub.publish(String(data='nav_result outcome=rejected'))
+            self.get_logger().warn('Nav2 REJEITOU a meta reativa')
             return
         self._goal_handle = handle
-        handle.get_result_async().add_done_callback(self._on_goal_done)
+        handle.get_result_async().add_done_callback(
+            lambda f: self._on_goal_done(f, epoch))
 
-    def _on_goal_done(self, _future):
-        # chegou ao destino reativo -> marca o instante (dwell/retreated)
-        if self.mode in (self.INVESTIGATE, self.AVOID) and self._reached_at is None:
-            self._reached_at = self.now_s()
+    def _on_goal_done(self, future, epoch):
+        # callback de episódio anterior (meta cancelada) NÃO conclui o atual
+        if epoch != self._goal_epoch:
+            return
+        status = future.result().status
+        if status == GoalStatus.STATUS_SUCCEEDED:
+            self._nav_outcome = 'succeeded'
+            # chegou de fato ao destino reativo -> marca o instante (dwell/retreated)
+            if self.mode in (self.INVESTIGATE, self.AVOID) and self._reached_at is None:
+                self._reached_at = self.now_s()
+        else:                                        # ABORTED/CANCELED/outro: NÃO é chegada
+            name = {GoalStatus.STATUS_ABORTED: 'aborted',
+                    GoalStatus.STATUS_CANCELED: 'canceled'}.get(status, f'status{status}')
+            self._nav_outcome = name
+            self.event_pub.publish(String(data=f'nav_result outcome={name}'))
+            self.get_logger().warn(f'navegação reativa não concluída: {name}')
 
     def _cancel_goal(self):
         if self._goal_handle is not None:
