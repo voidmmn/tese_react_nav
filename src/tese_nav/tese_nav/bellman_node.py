@@ -123,7 +123,9 @@ class BellmanNode(Node):
         """§11: ação discreta inferida do deslocamento real desde a última odom."""
         dist = math.hypot(x - self.x, y - self.y)
         dyaw = math.atan2(math.sin(yaw - self._yaw), math.cos(yaw - self._yaw))
-        if dist < self._move_eps:
+        # 'stop' só quando NÃO há translação NEM rotação (senão uma rotação pura,
+        # dist~0 mas |dyaw| grande, era erroneamente classificada como 'stop')
+        if dist < self._move_eps and abs(dyaw) < self._turn_eps:
             return 'stop'
         if abs(dyaw) > self._turn_eps:
             return 'left' if dyaw > 0 else 'right'

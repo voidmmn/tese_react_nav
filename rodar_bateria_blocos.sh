@@ -38,15 +38,17 @@ run_block() {
 }
 
 echo "########## BATERIA EM BLOCOS: início $(date '+%F %T') ##########"
-# ORDEM: fix-críticos primeiro (§7/§8: conflito, segurança, ablações) — se a
-# degradação bater tarde (~9h na bateria anterior), perdem-se os menos críticos
-# (ruído/APF), não os ligados às correções do parecer.
-# RETOMADA (2026-09-09): E3 e CONF já completos (10/10) antes do reboot
-# espontâneo — pulados. Segurança/ablação primeiro (mais críticos restantes).
+# MATRIZ COMPLETA (16 configs) gerada do zero, ordem: fix-críticos (§7/§8:
+# conflito, segurança, ablações, ensaio dirigido) primeiro; ruído/APF por último.
+# colunas: label eta stay_alert scenario reactive keepout avoid [npos nint]
+run_block E3   0.5 true  default      stay_alert false true
+run_block CONF 0.5 true  conflict     stay_alert false true
 run_block RHM  0.5 true  route_hazard stay_alert true  true
 run_block RHB  0.0 false route_hazard stay_alert false true
 run_block KOa  0.5 true  route_hazard stay_alert true  false
 run_block KOb  0.5 true  route_hazard stay_alert false true
+run_block DHa  0.5 true  dyn_hazard   stay_alert true  true   # perigo durante investig.: recuo+keepout
+run_block DHb  0.5 true  dyn_hazard   stay_alert true  false  # perigo durante investig.: keepout-só
 run_block E1   0.0 false default      stay_alert false true
 run_block E0   0.0 true  default      stay_alert false true
 run_block E2   0.3 true  default      stay_alert false true

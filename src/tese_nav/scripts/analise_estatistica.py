@@ -53,7 +53,18 @@ SUMMARY_METRICS = [
     'nav_aborted', 'nav_canceled', 'nav_rejected',
 ]
 CONFIGS = ['E1', 'E0', 'E2', 'E3', 'E4', 'E5', 'APF', 'RHM', 'RHB',
-           'N1', 'N2', 'CONF']
+           'N1', 'N2', 'CONF', 'KOa', 'KOb', 'DHa', 'DHb']
+
+# Nº de anomalias elegíveis POR CENÁRIO (denominador da "inspeção completa"),
+# definido a priori pela configuração do cenário --- NÃO derivado do máximo
+# observado nos resultados (que subestimaria em grupos degenerados como KOb).
+TARGET_ANOM = {
+    'E1': 3, 'E0': 3, 'E2': 3, 'E3': 3, 'E4': 3, 'APF': 3, 'N1': 3, 'N2': 3,
+    'CONF': 3,                       # 3 elegíveis; a 4ª (co-localizada) é suprimida
+    'E5': 5,                         # cenário denso
+    'RHM': 3, 'RHB': 3, 'KOa': 3, 'KOb': 3,   # perigo-na-rota: 3 anomalias
+    'DHa': 1, 'DHb': 1,                        # ensaio dirigido: 1 anomalia
+}
 
 # Família confirmatória (Holm dentro dela).
 CONFIRMATORY = [
@@ -77,6 +88,10 @@ SECONDARY = [
     ('E3 vs N2', 'E3', 'N2', 'min_hazard_distance_m', 'Min. hazard dist. [m]'),
     ('E3 vs E5', 'E3', 'E5', 'anomalies_unique', 'Anomalies inspected'),
     ('E3 vs E5', 'E3', 'E5', 'mission_duration_s', 'Mission time [s]'),
+    # ensaio dirigido: benefício transiente do recuo (perigo durante investigação)
+    ('DHb vs DHa', 'DHb', 'DHa', 'min_hazard_distance_m', 'Min. hazard dist. [m]'),
+    ('DHb vs DHa', 'DHb', 'DHa', 'min_ttc_s', 'Min. time-to-collision [s]'),
+    ('DHb vs DHa', 'DHb', 'DHa', 'time_below_clearance_s', 'Time below clearance [s]'),
 ]
 
 
@@ -165,8 +180,11 @@ def wilson_ci(k, n, z=1.96):
 def tost(a, b, margin):
     """§12.2: dois testes unilaterais (Welch) para EQUIVALÊNCIA dentro de
     +/-margin. Retorna (p_tost, diff): equivalência declarada se p_tost < 0.05.
-    Efeito de tamanho + IC continuam sendo a evidência principal; o TOST torna a
-    afirmação de equivalência um teste, não a mera ausência de significância."""
+    O TOST exige VARIÂNCIA POSITIVA: para braços constantes (variância zero,
+    ex.: contagens todas iguais no teto da escala) NÃO há evidência inferencial
+    de equivalência --- a ausência de dispersão em duas amostras pequenas não
+    demonstra ausência de variabilidade populacional. Nesse caso retorna None
+    (reportar como 'desempenho observado idêntico', não como equivalência)."""
     na, nb = len(a), len(b)
     if na < 2 or nb < 2:
         return None
@@ -174,8 +192,8 @@ def tost(a, b, margin):
     va, vb = a.var(ddof=1), b.var(ddof=1)
     se = math.sqrt(va / na + vb / nb)
     diff = mb - ma
-    if se == 0.0:
-        return (0.0 if abs(diff) < margin else 1.0, diff)
+    if se == 0.0:                      # braço(s) constante(s): TOST não se aplica
+        return None
     df = (va / na + vb / nb) ** 2 / (
         (va / na) ** 2 / (na - 1) + (vb / nb) ** 2 / (nb - 1))
     t_low = (diff + margin) / se
@@ -278,7 +296,11 @@ def main():
     for lab, a, b, mk, pretty, margin in TOST_PAIRS:
         A, B = vals(runs, a, mk), vals(runs, b, mk)
         res = tost(A, B, margin)
-        if res is None:
+        if res is None:   # braço(s) constante(s): TOST não se aplica
+            diff = (B.mean() - A.mean()) if len(A) and len(B) else float('nan')
+            note = 'idênticos' if abs(diff) < 1e-9 else 'obs. difere'
+            print(f'{lab:<12}{pretty:<26}{("+-"+str(margin)):>8}{diff:>+9.2f}'
+                  f'{"n/a":>10}{note:>12}')
             continue
         p_tost, diff = res
         eq = 'sim' if p_tost < 0.05 else 'não'
@@ -294,11 +316,11 @@ def main():
         if not v:
             continue
         insp = [r.get('anomalies_unique', 0.0) for r in v]
-        target = max(insp) if insp else 0.0
-        if target > 0:      # inspeção completa (só configs com anomalias)
+        target = TARGET_ANOM.get(c, 0)   # §8.3: alvo do CENÁRIO, não o máx. observado
+        if target > 0 and c != 'E1' and c != 'RHB':   # configs que inspecionam
             k = sum(1 for x in insp if x >= target)
             lo, hi = wilson_ci(k, len(v))
-            print(f'{c:<7}{"inspeção completa":<26}{f"{k}/{len(v)}":>8}'
+            print(f'{c:<7}{f"inspeção completa (/{target})":<26}{f"{k}/{len(v)}":>8}'
                   f'{k/len(v):>7.2f}{f"[{lo:.2f},{hi:.2f}]":>20}')
         coll = [r.get('collisions', 0.0) for r in v]
         kc = sum(1 for x in coll if x == 0)
