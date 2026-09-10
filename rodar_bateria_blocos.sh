@@ -27,30 +27,36 @@ deep_clean() {
   sleep 12
 }
 
-# BLOCOS: label eta stay_alert scenario reactive [NOISE_POS NOISE_INT]
+# BLOCOS: label eta stay_alert scenario reactive keepout avoid [npos nint]
 run_block() {
-  local label=$1 eta=$2 sa=$3 scen=$4 react=$5 npos=${6:-0.0} nint=${7:-0.0}
+  local label=$1 eta=$2 sa=$3 scen=$4 react=$5 keepout=${6:-false} avoid=${7:-true} npos=${8:-0.0} nint=${9:-0.0}
   echo "===== BLOCO $label ($(date '+%F %T')) ====="
   deep_clean
-  NOISE_POS=$npos NOISE_INT=$nint EXPERIMENTS="$label $eta $sa $scen $react" \
+  EXPERIMENTS="$label $eta $sa $scen $react $keepout $avoid $npos $nint" \
     bash "$WS/src/tese_nav/scripts/rodar_experimentos.sh" "$REPS" "$MAXS"
   echo "===== FIM BLOCO $label ($(date '+%F %T')) ====="
 }
 
 echo "########## BATERIA EM BLOCOS: início $(date '+%F %T') ##########"
-run_block E1  0.0 false default      stay_alert
-run_block E0  0.0 true  default      stay_alert
-run_block E2  0.3 true  default      stay_alert
-run_block E3  0.5 true  default      stay_alert
-run_block E4  0.8 true  default      stay_alert
-run_block E5  0.5 true  adverse      stay_alert
-run_block APF 0.5 true  default      apf
-run_block RHM 0.5 true  route_hazard stay_alert
-run_block RHB 0.0 false route_hazard stay_alert
-run_block N1  0.5 true  default      stay_alert 0.3 0.05
-run_block N2  0.5 true  default      stay_alert 0.6 0.10
+# ORDEM: fix-críticos primeiro (§7/§8: conflito, segurança, ablações) — se a
+# degradação bater tarde (~9h na bateria anterior), perdem-se os menos críticos
+# (ruído/APF), não os ligados às correções do parecer.
+# RETOMADA (2026-09-09): E3 e CONF já completos (10/10) antes do reboot
+# espontâneo — pulados. Segurança/ablação primeiro (mais críticos restantes).
+run_block RHM  0.5 true  route_hazard stay_alert true  true
+run_block RHB  0.0 false route_hazard stay_alert false true
+run_block KOa  0.5 true  route_hazard stay_alert true  false
+run_block KOb  0.5 true  route_hazard stay_alert false true
+run_block E1   0.0 false default      stay_alert false true
+run_block E0   0.0 true  default      stay_alert false true
+run_block E2   0.3 true  default      stay_alert false true
+run_block E4   0.8 true  default      stay_alert false true
+run_block E5   0.5 true  adverse      stay_alert false true
+run_block APF  0.5 true  default      apf        false true
+run_block N1   0.5 true  default      stay_alert false true 0.3 0.05
+run_block N2   0.5 true  default      stay_alert false true 0.6 0.10
 deep_clean
 echo "########## BATERIA EM BLOCOS: fim $(date '+%F %T') ##########"
-echo ">>> análise..."
-python3 "$WS/src/tese_nav/scripts/analise_resultados.py" "$WS/results" 2>/dev/null || \
+echo ">>> análise (distribution-free canônica)..."
+python3 "$WS/src/tese_nav/scripts/analise_estatistica.py" "$WS/results" 2>/dev/null || \
   echo "[aviso] análise falhou; CSVs salvos"

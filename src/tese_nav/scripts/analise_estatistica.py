@@ -48,6 +48,9 @@ SUMMARY_METRICS = [
     'anomalies_unique', 'route_deviations', 'hazard_avoidances',
     'min_hazard_distance_m', 'min_ttc_s', 'collisions',
     'mission_duration_s', 'distance_traveled_m', 'update_residual',
+    # §10/§13: desfechos separados (auditoria de sucesso vs falha/adiamento)
+    'investigation_timeouts', 'investigation_deferred',
+    'nav_aborted', 'nav_canceled', 'nav_rejected',
 ]
 CONFIGS = ['E1', 'E0', 'E2', 'E3', 'E4', 'E5', 'APF', 'RHM', 'RHB',
            'N1', 'N2', 'CONF']
@@ -126,9 +129,16 @@ def boot_ci(a, b, n=10000, seed=0):
 
 def mwu(a, b):
     if a.std() == 0 and b.std() == 0:
-        return 1.0 if a.mean() == b.mean() else 0.0
+        if a.mean() == b.mean():
+            return 1.0
+        # arms constantes disjuntos: p EXATO de permutação (2 caudas)
+        return 2.0 / math.comb(len(a) + len(b), len(a))
     try:
-        _, p = stats.mannwhitneyu(a, b, alternative='two-sided', method='auto')
+        # permutação exata quando não há empates entre grupos; senão assintótico
+        ties = len(set(a).intersection(set(b))) > 0 or \
+            len(set(np.concatenate([a, b]))) < len(a) + len(b)
+        method = 'asymptotic' if (ties or len(a) + len(b) > 20) else 'exact'
+        _, p = stats.mannwhitneyu(a, b, alternative='two-sided', method=method)
         return p
     except Exception:
         return float('nan')
@@ -141,6 +151,39 @@ def holm(ps):
     return out
 
 
+def wilson_ci(k, n, z=1.96):
+    """§12.3: IC de Wilson (95%) para proporção binária (sucesso por missão)."""
+    if n == 0:
+        return (0.0, 0.0)
+    p = k / n
+    denom = 1 + z * z / n
+    center = p + z * z / (2 * n)
+    half = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))
+    return ((center - half) / denom, (center + half) / denom)
+
+
+def tost(a, b, margin):
+    """§12.2: dois testes unilaterais (Welch) para EQUIVALÊNCIA dentro de
+    +/-margin. Retorna (p_tost, diff): equivalência declarada se p_tost < 0.05.
+    Efeito de tamanho + IC continuam sendo a evidência principal; o TOST torna a
+    afirmação de equivalência um teste, não a mera ausência de significância."""
+    na, nb = len(a), len(b)
+    if na < 2 or nb < 2:
+        return None
+    ma, mb = a.mean(), b.mean()
+    va, vb = a.var(ddof=1), b.var(ddof=1)
+    se = math.sqrt(va / na + vb / nb)
+    diff = mb - ma
+    if se == 0.0:
+        return (0.0 if abs(diff) < margin else 1.0, diff)
+    df = (va / na + vb / nb) ** 2 / (
+        (va / na) ** 2 / (na - 1) + (vb / nb) ** 2 / (nb - 1))
+    t_low = (diff + margin) / se
+    t_up = (diff - margin) / se
+    p_tost = max(stats.t.sf(t_low, df), stats.t.cdf(t_up, df))
+    return (p_tost, diff)
+
+
 def stat_row(runs, a, b, metric):
     A, B = vals(runs, a, metric), vals(runs, b, metric)
     if len(A) < 1 or len(B) < 1:
@@ -151,7 +194,10 @@ def stat_row(runs, a, b, metric):
 
 
 def fmt_p(p):
-    return '<0.001' if p < 0.001 else f'{p:.3g}'
+    # §12.1: valor NUMÉRICO (notação científica p/ pequenos), nunca só "<0.001"
+    if p != p:            # nan
+        return 'nan'
+    return f'{p:.2e}' if p < 1e-3 else f'{p:.3f}'
 
 
 def write_summary(runs, results_dir):
@@ -198,23 +244,67 @@ def main():
             for lab, a, b, mk, pretty in CONFIRMATORY]
     rows = [(lab, pr, r) for lab, pr, r in rows if r]
     hp = holm([r['p'] for _, _, r in rows])
-    print('\n=== FAMÍLIA CONFIRMATÓRIA (Holm dentro da família) ===')
-    print(f'{"pair":<12}{"metric":<26}{"Δ":>9}{"δ":>7}{"95% CI":>20}{"p":>9}{"p_H":>9}')
+    print('\n=== FAMÍLIA CONFIRMATÓRIA (Mann-Whitney; Holm dentro da família) ===')
+    print(f'{"pair":<12}{"metric":<26}{"n":>7}{"Δ":>9}{"δ":>7}{"95% CI":>20}{"p":>11}{"p_H":>11}')
     for (lab, pr, r), h in zip(rows, hp):
         ci = f'[{r["ci"][0]:+.2f},{r["ci"][1]:+.2f}]'
-        print(f'{lab:<12}{pr:<26}{r["delta"]:>+9.2f}{r["cliff"]:>+7.2f}'
-              f'{ci:>20}{fmt_p(r["p"]):>9}{fmt_p(h):>9}')
+        n = f'{r["nA"]}/{r["nB"]}'
+        print(f'{lab:<12}{pr:<26}{n:>7}{r["delta"]:>+9.2f}{r["cliff"]:>+7.2f}'
+              f'{ci:>20}{fmt_p(r["p"]):>11}{fmt_p(h):>11}')
 
-    # 2) família secundária (equivalência / robustez / custo) — efeito + IC
+    # 2) família secundária (equivalência / robustez / custo) — efeito + IC (+TOST)
     print('\n=== FAMÍLIA SECUNDÁRIA (equivalência/robustez/custo — efeito+IC) ===')
-    print(f'{"pair":<12}{"metric":<26}{"Δ":>9}{"δ":>7}{"95% CI":>20}{"p":>9}')
+    print(f'{"pair":<12}{"metric":<26}{"n":>7}{"Δ":>9}{"δ":>7}{"95% CI":>20}{"p":>11}')
     for lab, a, b, mk, pretty in SECONDARY:
         r = stat_row(runs, a, b, mk)
         if not r:
             continue
         ci = f'[{r["ci"][0]:+.2f},{r["ci"][1]:+.2f}]'
-        print(f'{lab:<12}{pretty:<26}{r["delta"]:>+9.2f}{r["cliff"]:>+7.2f}'
-              f'{ci:>20}{fmt_p(r["p"]):>9}')
+        n = f'{r["nA"]}/{r["nB"]}'
+        print(f'{lab:<12}{pretty:<26}{n:>7}{r["delta"]:>+9.2f}{r["cliff"]:>+7.2f}'
+              f'{ci:>20}{fmt_p(r["p"]):>11}')
+
+    # 3) EQUIVALÊNCIA por TOST (§12.2): ausência de diferença != equivalência.
+    # Margens declaradas A PRIORI: tempo de missão +/-5 s; anomalias +/-0.5.
+    print('\n=== EQUIVALÊNCIA (TOST; margem declarada a priori) ===')
+    print(f'{"pair":<12}{"metric":<26}{"margem":>8}{"Δ":>9}{"p_TOST":>10}{"equiv?":>8}')
+    TOST_PAIRS = [
+        ('E0 vs E3', 'E0', 'E3', 'mission_duration_s', 'Mission time [s]', 5.0),
+        ('E0 vs E2', 'E0', 'E2', 'mission_duration_s', 'Mission time [s]', 5.0),
+        ('E0 vs E4', 'E0', 'E4', 'mission_duration_s', 'Mission time [s]', 5.0),
+        ('E3 vs N1', 'E3', 'N1', 'anomalies_unique', 'Anomalies inspected', 0.5),
+        ('E3 vs N2', 'E3', 'N2', 'anomalies_unique', 'Anomalies inspected', 0.5),
+    ]
+    for lab, a, b, mk, pretty, margin in TOST_PAIRS:
+        A, B = vals(runs, a, mk), vals(runs, b, mk)
+        res = tost(A, B, margin)
+        if res is None:
+            continue
+        p_tost, diff = res
+        eq = 'sim' if p_tost < 0.05 else 'não'
+        print(f'{lab:<12}{pretty:<26}{("+-"+str(margin)):>8}{diff:>+9.2f}'
+              f'{fmt_p(p_tost):>10}{eq:>8}')
+
+    # 4) SUCESSO POR MISSÃO (§12.3): binário por run + IC de Wilson (NÃO tratar as
+    # 3 anomalias de uma missão como 3 repetições independentes).
+    print('\n=== SUCESSO POR MISSÃO (IC de Wilson 95%) ===')
+    print(f'{"config":<7}{"métrica":<26}{"k/n":>8}{"taxa":>7}{"IC 95% Wilson":>20}')
+    for c in CONFIGS:
+        v = valid(runs, c)
+        if not v:
+            continue
+        insp = [r.get('anomalies_unique', 0.0) for r in v]
+        target = max(insp) if insp else 0.0
+        if target > 0:      # inspeção completa (só configs com anomalias)
+            k = sum(1 for x in insp if x >= target)
+            lo, hi = wilson_ci(k, len(v))
+            print(f'{c:<7}{"inspeção completa":<26}{f"{k}/{len(v)}":>8}'
+                  f'{k/len(v):>7.2f}{f"[{lo:.2f},{hi:.2f}]":>20}')
+        coll = [r.get('collisions', 0.0) for r in v]
+        kc = sum(1 for x in coll if x == 0)
+        lo, hi = wilson_ci(kc, len(v))
+        print(f'{c:<7}{"sem colisão":<26}{f"{kc}/{len(v)}":>8}'
+              f'{kc/len(v):>7.2f}{f"[{lo:.2f},{hi:.2f}]":>20}')
 
 
 if __name__ == '__main__':

@@ -50,6 +50,9 @@ def generate_launch_description():
             'reactive': LaunchConfiguration('reactive'),
             'noise_pos': LaunchConfiguration('noise_pos'),
             'noise_int': LaunchConfiguration('noise_int'),
+            'publish_keepout': LaunchConfiguration('publish_keepout'),
+            'enable_reactive_avoid': LaunchConfiguration('enable_reactive_avoid'),
+            'run_seed': LaunchConfiguration('run_seed'),
         }.items())
 
     return LaunchDescription([
@@ -69,6 +72,12 @@ def generate_launch_description():
                               description='σ (m) de ruído na posição do evento (R1#3)'),
         DeclareLaunchArgument('noise_int', default_value='0.0',
                               description='σ de ruído na intensidade do evento (R1#3)'),
+        DeclareLaunchArgument('publish_keepout', default_value='false',
+                              description='§8: keepout deliberativo (RHM/ablação a,c)'),
+        DeclareLaunchArgument('enable_reactive_avoid', default_value='true',
+                              description='§8: recuo reativo (false = ablação keepout-só)'),
+        DeclareLaunchArgument('run_seed', default_value='0',
+                              description='§13: semente por run (ruído independente + registro)'),
         simulation,
         TimerAction(period=sa_delay, actions=[stay_alert]),
     ])

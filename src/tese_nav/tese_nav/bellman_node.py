@@ -13,6 +13,8 @@ Responsabilidades:
   - Publica o nível de atração corrente em /stay_alert/attraction, consumido
     pelo stay_alert_node, e o estado de convergência em /bellman/td_error.
 """
+import math
+
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float64, Int32
@@ -48,6 +50,9 @@ class BellmanNode(Node):
         # ---- Estado de navegação ---- #
         self.x = 0.0
         self.y = 0.0
+        self._yaw = 0.0
+        self._move_eps = 0.01     # m: abaixo disso, ação executada = 'stop'
+        self._turn_eps = 0.05     # rad: acima disso, ação = 'left'/'right'
         self.prev_state = None
         self.prev_action = 'forward'
         self.route_deviations = 0
@@ -85,29 +90,44 @@ class BellmanNode(Node):
 
     # ------------------------------------------------------------------ #
     def _on_odom(self, msg: Odometry):
-        self.x = msg.pose.pose.position.x
-        self.y = msg.pose.pose.position.y
+        x = msg.pose.pose.position.x
+        y = msg.pose.pose.position.y
+        q = msg.pose.pose.orientation
+        yaw = math.atan2(2.0 * (q.w * q.z + q.x * q.y),
+                         1.0 - 2.0 * (q.y * q.y + q.z * q.z))
 
         phi = self.field.value
-        state = discretize(self.x, self.y, abs(phi), cell_size=self.cell_size)
-
-        # política greedy sobre Q (interpretável; exploração fica a cargo da
-        # camada Stay Alert que decide investigar ou seguir rota)
-        action = self.q.best_action(state) if self.q.size() else 'forward'
+        state = discretize(x, y, abs(phi), cell_size=self.cell_size)
 
         if self.prev_state is not None:
+            # §11: a ação atualizada é a EFETIVAMENTE EXECUTADA (inferida do
+            # movimento real via odometria), não a greedy da tabela. Q-learning é
+            # off-policy, mas o par (s,a) atualizado deve refletir a ação que
+            # produziu a transição — senão a tabela não é interpretável como valor
+            # das ações forward/left/right/stop.
+            action = self._executed_action(x, y, yaw)
             # recompensa: apenas progresso de missão. O sinal afetivo Phi entra
-            # UMA única vez, pelo termo externo eta*Phi no update (antes ele
-            # aparecia também em max(phi,0) no reward -> dupla contagem da
-            # atração e assimetria com a repulsão). Manter Phi só em eta*Phi
-            # torna atração/repulsão simétricas e a distinção formal frente ao
+            # UMA única vez, pelo termo externo eta*Phi no update (antes aparecia
+            # também em max(phi,0) no reward -> dupla contagem). Manter Phi só em
+            # eta*Phi torna atração/repulsão simétricas e a distinção frente ao
             # reward shaping defensável.
             reward = self.reward_progress
-            self.q.update(self.prev_state, self.prev_action, reward,
+            self.q.update(self.prev_state, action, reward,
                           state, phi=phi, eta=self.eta)
+            self.prev_action = action
 
         self.prev_state = state
-        self.prev_action = action
+        self.x, self.y, self._yaw = x, y, yaw
+
+    def _executed_action(self, x, y, yaw):
+        """§11: ação discreta inferida do deslocamento real desde a última odom."""
+        dist = math.hypot(x - self.x, y - self.y)
+        dyaw = math.atan2(math.sin(yaw - self._yaw), math.cos(yaw - self._yaw))
+        if dist < self._move_eps:
+            return 'stop'
+        if abs(dyaw) > self._turn_eps:
+            return 'left' if dyaw > 0 else 'right'
+        return 'forward'
 
     # ------------------------------------------------------------------ #
     def _tick(self):

@@ -46,16 +46,26 @@ def generate_launch_description():
     sim = {'use_sim_time': ParameterValue(use_sim_time, value_type=bool)}
     eta_p = {'eta': ParameterValue(eta, value_type=float)}
     scen_p = {'scenario': scenario}
-    # keepout deliberativo (C7) é a expressão da repulsão afetiva -> só quando a
-    # camada afetiva está ligada (baseline E1 não projeta e passa reto no perigo)
-    keepout_p = {'publish_keepout': ParameterValue(enable_stay_alert, value_type=bool)}
-    # ruído de percepção (R1#3): sweep de robustez; default 0 = percepção ideal
+    # §8: keepout deliberativo é um canal de mapa controlado EXPLICITAMENTE
+    # (default off); RHM e a ablação de keepout ligam via `publish_keepout`. Sem
+    # gating por nome de cenário no nó -> variante de arquitetura explícita.
+    keepout_p = {'publish_keepout': ParameterValue(
+        LaunchConfiguration('publish_keepout'), value_type=bool)}
+    # §8 ablação: liga/desliga o RECUO reativo (keepout-só vs recuo-só vs ambos)
+    avoid_p = {'enable_reactive_avoid': ParameterValue(
+        LaunchConfiguration('enable_reactive_avoid'), value_type=bool)}
+    # ruído de percepção (R1#3): sweep de robustez; default 0 = percepção ideal.
+    # §13/§14: semente por RUN (não fixa em 0) p/ realizações de ruído independentes.
     noise_p = {
         'noise_position_std': ParameterValue(
             LaunchConfiguration('noise_pos'), value_type=float),
         'noise_intensity_std': ParameterValue(
             LaunchConfiguration('noise_int'), value_type=float),
+        'noise_seed': ParameterValue(
+            LaunchConfiguration('run_seed'), value_type=int),
     }
+    seed_p = {'run_seed': ParameterValue(
+        LaunchConfiguration('run_seed'), value_type=int)}
 
     return LaunchDescription([
         DeclareLaunchArgument('run_label', default_value='E3'),
@@ -68,6 +78,12 @@ def generate_launch_description():
                               description="camada reativa: 'stay_alert'|'apf'|'qdriven'"),
         DeclareLaunchArgument('noise_pos', default_value='0.0'),
         DeclareLaunchArgument('noise_int', default_value='0.0'),
+        DeclareLaunchArgument('publish_keepout', default_value='false',
+                              description='§8: projeta keepout deliberativo (RHM/ablação)'),
+        DeclareLaunchArgument('enable_reactive_avoid', default_value='true',
+                              description='§8 ablação: recuo reativo (false = keepout-só)'),
+        DeclareLaunchArgument('run_seed', default_value='0',
+                              description='§13: semente por run (ruído + registro)'),
 
         # Método proposto (Stay Alert): bellman + FSM afetivo
         Node(package='tese_nav', executable='bellman_node',
@@ -76,7 +92,7 @@ def generate_launch_description():
              condition=when('stay_alert')),
         Node(package='tese_nav', executable='stay_alert_node',
              name='stay_alert_node', output='screen',
-             parameters=[params, sim],
+             parameters=[params, sim, avoid_p],
              condition=when('stay_alert')),
 
         # Baseline APF (campo potencial) — mesma patrulha Nav2, camada reativa
@@ -97,7 +113,7 @@ def generate_launch_description():
              parameters=[params, sim]),
         Node(package='tese_nav', executable='metrics_node',
              name='metrics_node', output='screen',
-             parameters=[params, sim, scen_p, {'run_label': run_label}]),
+             parameters=[params, sim, scen_p, seed_p, {'run_label': run_label}]),
         Node(package='tese_nav', executable='anomaly_simulator',
              name='anomaly_simulator', output='screen',
              parameters=[params, sim, scen_p, keepout_p, noise_p],
