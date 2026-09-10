@@ -97,11 +97,25 @@ CONFLICT_HAZARDS = [
     {'id': 100, 'x': 2.0, 'y': -13.0, 'intensity': 0.70},   # co-localizado, mais fraco em |w*i|
 ]
 
+# ENSAIO DIRIGIDO -- perigo que SURGE DURANTE a investigação (R4.2/§6 do parecer):
+# uma anomalia térmica na aproximação da 1ª perna e um perigo CO-LOCALIZADO que só
+# ATIVA (passa a ser publicado) quando o robô chega a <= activate_radius (3 m), i.e.,
+# já comprometido com a investigação e aproximando-se. Isola o VALOR DO RECUO reativo:
+# com recuo (avoid on, DHa) o robô foge de imediato via preempção; sem recuo (keepout
+# só, DHb) depende do replanejamento do Nav2, mais lento -> aproxima-se mais do perigo.
+DYNHAZ_ANOMALIES = [
+    {'id': 0, 'x': 2.0, 'y': -13.0, 'type': 'thermal', 'intensity': 0.90},
+]
+DYNHAZ_HAZARDS = [
+    {'id': 100, 'x': 2.0, 'y': -13.0, 'intensity': 0.90, 'activate_radius': 3.0},
+]
+
 SCENARIOS = {
     'default': (DEFAULT_ANOMALIES, DEFAULT_HAZARDS),
     'adverse': (ADVERSE_ANOMALIES, ADVERSE_HAZARDS),
     'route_hazard': (ROUTE_HAZARD_ANOMALIES, ROUTE_HAZARD_HAZARDS),
     'conflict': (CONFLICT_ANOMALIES, CONFLICT_HAZARDS),
+    'dyn_hazard': (DYNHAZ_ANOMALIES, DYNHAZ_HAZARDS),
 }
 
 # §8: o keepout deliberativo NÃO é mais gated por nome de cenário. É um canal
@@ -197,6 +211,7 @@ class AnomalySimulator(Node):
         self._keepout_latched = set()  # ids de perigos com keepout travado
         self._keepout_pos = {}         # id -> (px,py) PERCEBIDO no 1º detecção (§8)
         self._hazard_delegated = set() # ids entregues ao keepout deliberativo (§8)
+        self._hazard_active = set()    # ids de perigos dinâmicos já ATIVADOS (proximidade)
         self.target_id = None          # anomalia cuja inspection_pose foi publicada
         self._active_target = None     # alvo do investigate corrente (p/ o end)
         # §10: pesos de saliência (iguais ao AttractionField) p/ escolher o alvo
@@ -408,6 +423,16 @@ class AnomalySimulator(Node):
         for h in self.hazards:
             if h['id'] in self._hazard_delegated:   # §8: já entregue ao keepout
                 continue                            # (Phi suprimido; clearance segue medido)
+            # perigo DINÂMICO: só publica após ativar (robô <= activate_radius, na
+            # posição VERDADEIRA -- é o ambiente decidindo quando o perigo "surge")
+            ar = h.get('activate_radius', 0.0)
+            if ar > 0.0 and h['id'] not in self._hazard_active:
+                if math.hypot(self.robot_x - h['x'], self.robot_y - h['y']) <= ar:
+                    self._hazard_active.add(h['id'])
+                    self.get_logger().info(
+                        f"perigo {h['id']} ATIVADO (robô a <= {ar:.1f} m, durante aproximação)")
+                else:
+                    continue                        # ainda inativo: não publica
             px, py = self._perc_pos(h['x'], h['y'])
             d = math.hypot(self.robot_x - px, self.robot_y - py)
             if d < r and (best_h is None or d < best_h[0]):

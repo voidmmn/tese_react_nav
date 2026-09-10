@@ -141,6 +141,8 @@ class StayAlertNode(Node):
             # quando o waypoint fica colado na anomalia.
             if reached and now - self._reached_at >= self.dwell_s:
                 self._exit('inspected', elapsed)
+            elif self._nav_outcome in ('aborted', 'canceled', 'rejected'):
+                self._exit('failed', elapsed)   # não espera o timeout após falha
             elif timed_out:
                 self._exit('timeout', elapsed)
 
@@ -197,9 +199,13 @@ class StayAlertNode(Node):
             lambda f: self._on_goal_resp(f, epoch))
 
     def _on_goal_resp(self, future, epoch):
-        if epoch != self._goal_epoch:
-            return                                   # resposta de episódio já encerrado
         handle = future.result()
+        if epoch != self._goal_epoch:
+            # §5.3: resposta TARDIA de um episódio já encerrado -> cancela a meta
+            # se foi aceita, para o robô não perseguir um objetivo obsoleto
+            if handle is not None and handle.accepted:
+                handle.cancel_goal_async()
+            return
         if not handle.accepted:                      # REJEITADO é desfecho próprio
             self._nav_outcome = 'rejected'
             self.event_pub.publish(String(data='nav_result outcome=rejected'))

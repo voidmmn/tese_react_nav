@@ -178,8 +178,9 @@ class MetricsNode(Node):
         if d.startswith('investigate_start'):
             self.anomalies_detected += 1
         elif d.startswith('investigate_end'):
-            if 'reason=timeout' in d:
-                self.investigation_timeouts += 1
+            if 'reason=timeout' in d or 'reason=failed' in d:
+                self.investigation_timeouts += 1    # investigação não concluída
+                                                    # (causa nav em nav_aborted/...)
             elif 'reason=deferred_hazard' in d:     # §10
                 self.investigation_deferred += 1
         elif d.startswith('avoid_start'):
