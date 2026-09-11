@@ -53,6 +53,7 @@ class MetricsNode(Node):
         self.anomalies_detected = 0      # nº de investigate_start (commits)
         self.anomalies_unique = 0        # nº de anomalias inspeção CONCLUÍDA
         self.investigation_timeouts = 0  # investigate_end reason=timeout (R2#8)
+        self.investigation_failed = 0    # investigate_end reason=failed (nav abortada/cancelada/rejeitada)
         self.hazard_avoidances = 0       # nº de eventos de recuo (avoid_start)
         self.investigation_deferred = 0  # §10: investida interrompida por perigo
         self.nav_aborted = 0             # §6/§13: navegações reativas ABORTED
@@ -178,9 +179,15 @@ class MetricsNode(Node):
         if d.startswith('investigate_start'):
             self.anomalies_detected += 1
         elif d.startswith('investigate_end'):
-            if 'reason=timeout' in d or 'reason=failed' in d:
-                self.investigation_timeouts += 1    # investigação não concluída
-                                                    # (causa nav em nav_aborted/...)
+            # §P0-3 (3ª rodada): separa as CAUSAS de investigação malsucedida.
+            # 'timeout' (orçamento esgotado) e 'failed' (navegação abortada/
+            # cancelada/rejeitada) são contados em campos distintos — o nome
+            # 'investigation_timeouts' volta a representar só o timeout. A causa
+            # de navegação de um 'failed' está em nav_aborted/canceled/rejected.
+            if 'reason=timeout' in d:
+                self.investigation_timeouts += 1
+            elif 'reason=failed' in d:
+                self.investigation_failed += 1
             elif 'reason=deferred_hazard' in d:     # §10
                 self.investigation_deferred += 1
         elif d.startswith('avoid_start'):
@@ -234,7 +241,8 @@ class MetricsNode(Node):
         rows = {
             'anomalies_detected': self.anomalies_detected,   # commits (investida)
             'anomalies_unique': self.anomalies_unique,       # inspeção concluída
-            'investigation_timeouts': self.investigation_timeouts,  # abortadas p/ tempo
+            'investigation_timeouts': self.investigation_timeouts,  # só timeout (orçamento)
+            'investigation_failed': self.investigation_failed,      # nav abortada/cancelada/rejeitada
             'mission_duration_s': duration,
             'distance_traveled_m': self.distance,
             'route_deviations': self.route_deviations,

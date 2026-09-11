@@ -212,6 +212,7 @@ class AnomalySimulator(Node):
         self._keepout_pos = {}         # id -> (px,py) PERCEBIDO no 1º detecção (§8)
         self._hazard_delegated = set() # ids entregues ao keepout deliberativo (§8)
         self._hazard_active = set()    # ids de perigos dinâmicos já ATIVADOS (proximidade)
+        self._hazard_reactive_pub = set()  # §P0-1: ids com 1ª publicação reativa (auditoria)
         self.target_id = None          # anomalia cuja inspection_pose foi publicada
         self._active_target = None     # alvo do investigate corrente (p/ o end)
         # §10: pesos de saliência (iguais ao AttractionField) p/ escolher o alvo
@@ -322,6 +323,13 @@ class AnomalySimulator(Node):
             elif 'reason=timeout' in d and tid is not None:
                 self.failed.add(tid)
                 self.get_logger().warn(f"investigação de {tid} FALHOU (timeout)")
+            elif 'reason=failed' in d and tid is not None:
+                # §P0-3 (3ª rodada): término por navegação abortada/cancelada/
+                # rejeitada. Antes NÃO era classificado -> o alvo ficava preso em
+                # 'committed' sem entrar em 'failed'. Agora entra em 'failed'
+                # (não inspecionado), mesma semântica do timeout.
+                self.failed.add(tid)
+                self.get_logger().warn(f"investigação de {tid} FALHOU (navegação)")
             elif 'reason=deferred_hazard' in d and tid is not None:
                 self.deferred.add(tid)
                 self.committed.discard(tid)   # liberado p/ nova tentativa
@@ -351,6 +359,32 @@ class AnomalySimulator(Node):
         return math.hypot(self.robot_x - e['x'], self.robot_y - e['y'])
 
     # ------------------------------------------------------------------ #
+    def _update_hazard_activation(self):
+        """§P0-1 (3ª rodada): ATIVAÇÃO AMBIENTAL do perigo dinâmico, decidida
+        ANTES de distribuir a observação a qualquer canal. Um perigo com
+        `activate_radius>0` só "surge" (passa a existir para reativo E keepout)
+        quando o robô — posição VERDADEIRA — entra no raio de ativação. Antes
+        disso ele não é conhecido por nenhuma camada. Registra o instante da
+        ativação para a auditoria por episódio."""
+        for h in self.hazards:
+            ar = h.get('activate_radius', 0.0)
+            if ar > 0.0 and h['id'] not in self._hazard_active:
+                if math.hypot(self.robot_x - h['x'], self.robot_y - h['y']) <= ar:
+                    self._hazard_active.add(h['id'])
+                    self.get_logger().info(
+                        f"HAZARD_ACTIVATED id={h['id']} t={self.now_s():.3f} "
+                        f"robot=({self.robot_x:.2f},{self.robot_y:.2f}) ar={ar:.1f}")
+
+    def _hazard_live(self, h) -> bool:
+        """Perigo elegível para QUALQUER canal (reativo/keepout): estático (sem
+        `activate_radius`) é sempre vivo; dinâmico só depois de ativado pelo
+        ambiente em `_update_hazard_activation`."""
+        return h.get('activate_radius', 0.0) <= 0.0 or h['id'] in self._hazard_active
+
+    def now_s(self) -> float:
+        return self.get_clock().now().nanoseconds / 1e9
+
+    # ------------------------------------------------------------------ #
     def _perc_pos(self, ex, ey):
         """Posição percebida do evento (com ruído gaussiano se noise_p>0)."""
         if not self.noise_p:
@@ -378,11 +412,16 @@ class AnomalySimulator(Node):
         for h in self.hazards:
             if h['id'] in self._keepout_latched:
                 continue
+            if not self._hazard_live(h):   # §P0-1: dinâmico inativo NÃO é projetado
+                continue                   # (antes o keepout via o perigo antes de ativar)
             px, py = self._perc_pos(h['x'], h['y'])
             if math.hypot(self.robot_x - px, self.robot_y - py) \
                     <= self.keepout_project_radius:
                 self._keepout_latched.add(h['id'])
                 self._keepout_pos[h['id']] = (px, py)   # posição PERCEBIDA latchada
+                self.get_logger().info(                 # §P0-1: 1ª projeção no keepout
+                    f"KEEPOUT_FIRST id={h['id']} t={self.now_s():.3f} "
+                    f"robot=({self.robot_x:.2f},{self.robot_y:.2f})")
         pts, step = [], 0.15
         n = int(self.keepout_radius / step)
         for hid in self._keepout_latched:
@@ -408,6 +447,10 @@ class AnomalySimulator(Node):
         self.unique_pub.publish(Int32(data=len(self.completed)))
         if not self._update_pose():
             return   # TF map->base ainda indisponível; aguarda
+        # §P0-1: o AMBIENTE decide o que "surgiu" ANTES de qualquer canal ver o
+        # perigo — assim keepout e canal reativo recebem a mesma informação, e só
+        # a partir da ativação (nunca antes).
+        self._update_hazard_activation()
         self._emit_keepout()      # C7: keepout deliberativo (repulsão no costmap)
         r = self.detection_radius
         if self.noise_r:
@@ -423,16 +466,8 @@ class AnomalySimulator(Node):
         for h in self.hazards:
             if h['id'] in self._hazard_delegated:   # §8: já entregue ao keepout
                 continue                            # (Phi suprimido; clearance segue medido)
-            # perigo DINÂMICO: só publica após ativar (robô <= activate_radius, na
-            # posição VERDADEIRA -- é o ambiente decidindo quando o perigo "surge")
-            ar = h.get('activate_radius', 0.0)
-            if ar > 0.0 and h['id'] not in self._hazard_active:
-                if math.hypot(self.robot_x - h['x'], self.robot_y - h['y']) <= ar:
-                    self._hazard_active.add(h['id'])
-                    self.get_logger().info(
-                        f"perigo {h['id']} ATIVADO (robô a <= {ar:.1f} m, durante aproximação)")
-                else:
-                    continue                        # ainda inativo: não publica
+            if not self._hazard_live(h):            # §P0-1: dinâmico ainda inativo
+                continue                            # (ativação já decidida acima)
             px, py = self._perc_pos(h['x'], h['y'])
             d = math.hypot(self.robot_x - px, self.robot_y - py)
             if d < r and (best_h is None or d < best_h[0]):
@@ -443,6 +478,11 @@ class AnomalySimulator(Node):
             self.hazard_pub.publish(Float64(data=float(intensity)))
             self._publish_pose(self.retreat_pub, px, py,
                                self.retreat_dist, face_away=True)
+            if h['id'] not in self._hazard_reactive_pub:  # §P0-1: 1ª publicação reativa
+                self._hazard_reactive_pub.add(h['id'])
+                self.get_logger().info(
+                    f"REACTIVE_FIRST id={h['id']} t={self.now_s():.3f} "
+                    f"robot=({self.robot_x:.2f},{self.robot_y:.2f})")
             # NÃO retorna: as anomalias no raio também são publicadas abaixo, e o
             # campo aplica a precedência (perigo > atração) ao compor Phi.
 
