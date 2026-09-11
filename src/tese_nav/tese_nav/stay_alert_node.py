@@ -159,6 +159,11 @@ class StayAlertNode(Node):
         self.mode = mode
         self._investigate_start = now
         self._reached_at = None
+        # §5.2 (3ª rodada): zera o desfecho de navegação AO INICIAR o episódio.
+        # Sem isso, um 'aborted' do episódio ANTERIOR persistia e o _update
+        # encerrava a investigação NOVA como 'failed' já no 1º tick (antes de a
+        # nova meta ser aceita). O desfecho passa a valer só para este episódio.
+        self._nav_outcome = None
         self._goal_epoch += 1                        # novo episódio reativo
         self.active_pub.publish(Bool(data=True))     # mission pausa a ronda
         self._publish_mode()

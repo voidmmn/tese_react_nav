@@ -49,9 +49,14 @@ SUMMARY_METRICS = [
     'min_hazard_distance_m', 'min_ttc_s', 'collisions',
     'mission_duration_s', 'distance_traveled_m', 'update_residual',
     # §10/§13: desfechos separados (auditoria de sucesso vs falha/adiamento)
-    'investigation_timeouts', 'investigation_deferred',
+    'investigation_timeouts', 'investigation_failed', 'investigation_deferred',
     'nav_aborted', 'nav_canceled', 'nav_rejected',
 ]
+# §P0-3 (3ª rodada): métricas ausentes nos CSVs LEGADOS valem 0 (não excluem o
+# run da média). `investigation_failed` foi separado de `investigation_timeouts`
+# nesta rodada; os 140 CSVs anteriores não têm a chave, mas também têm 0
+# abortos/cancelamentos/rejeições -> 0 términos 'failed'. Tratar como 0 é fiel.
+ZERO_IF_ABSENT = {'investigation_failed'}
 CONFIGS = ['E1', 'E0', 'E2', 'E3', 'E4', 'E5', 'APF', 'RHM', 'RHB',
            'N1', 'N2', 'CONF', 'KOa', 'KOb', 'DHa', 'DHb']
 
@@ -124,8 +129,16 @@ def valid(runs, cfg):
 
 
 def vals(runs, cfg, metric):
-    xs = [r[metric] for r in valid(runs, cfg)
-          if metric in r and np.isfinite(r[metric])]
+    xs = []
+    for r in valid(runs, cfg):
+        if metric in r:
+            x = r[metric]
+        elif metric in ZERO_IF_ABSENT:   # §P0-3: chave nova ausente em CSV legado -> 0
+            x = 0.0
+        else:
+            continue
+        if np.isfinite(x):
+            xs.append(x)
     return np.array(xs, dtype=float)
 
 
