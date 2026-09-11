@@ -7,27 +7,42 @@ correspondência por commit**, que a tag sozinha não garante.
 
 ## Commits por rodada
 
-| Rodada | Commit | Papel |
+| Commit examinado | Papel | Dados de métricas |
 |---|---|---|
-| 3ª | `c142b3fd5a3a8106d8a51fa9ccabbd08bb9948d8` | bateria de 160 (ensaio dirigido DHa/DHb inicial) |
-| 4ª | `12081a70ed645a78a348440e8d1623ac6678e781` | correções P0 + re-run E5/DHa/DHb |
-| 5ª (esta) | ver `git rev-parse v1.0-resubmission` | correções direcionadas (auditoria, totais, texto); **dados de métricas inalterados** vs 4ª |
+| `c142b3fd5a3a8106d8a51fa9ccabbd08bb9948d8` | bateria de 160 (ensaio dirigido DHa/DHb inicial) | coleta rodada 3 |
+| `12081a70ed645a78a348440e8d1623ac6678e781` | correções P0 + re-run E5/DHa/DHb | E5/DHa/DHb recoletados |
+| `e7c04223c31695aee7a6074d6e67cfe32edd2e02` | esquema/escopo da auditoria + proveniência | **inalterados** vs anterior |
+| atual (`git rev-parse v1.0-resubmission`) | Fig 5, TTC global, harmonização de texto, precisões de proveniência | **inalterados** vs anterior |
+
+A tag `v1.0-resubmission` é móvel; identifique o pacote pelo **commit** (a linha
+"atual" acima), não apenas pela tag.
 
 Os hashes SHA-256 dos 160 CSVs estão em [`CHECKSUMS.sha256`](CHECKSUMS.sha256).
 
 ## Lotes de coleta
 
-| Config | n | Coleta | Versão de código da coleta | Observação |
-|---|---:|---|---|---|
-| E3, CONF | 10 | 2026-09-08 | rodada 3 (`c142b3f`) | reaproveitado |
-| E0, E1, E2, E4, E5*, N1, N2, APF, RHM, RHB, KOa, KOb | 10 | 2026-09-09 | rodada 3 (`c142b3f`) | reaproveitado (exceto E5) |
-| **E5** | 10 | 2026-09-10 | **rodada 4 (`12081a7`)** | recoletado |
-| **DHa** | 10 | 2026-09-10 | **rodada 4 (`12081a7`)** | recoletado |
-| **DHb** | 10 | 2026-09-10 | **rodada 4 (`12081a7`)** | recoletado |
+A coluna "Snapshot de referência" indica o commit que **contém e reproduz** o lote,
+não uma prova de que todo o código desse commit foi executado na coleta original
+(há reaproveitamento entre rodadas). Para os lotes reaproveitados, a justificativa
+de compatibilidade está na seção final (0 abortos → caminho alterado não roda).
 
-`*` E5 aparece nas duas datas apenas porque a coleta antiga (2026-09-09) foi
-**substituída**; os CSVs antigos de E5/DHa/DHb estão preservados, fora da árvore
-versionada, em `results/_pre_rerun_P0/`.
+| Config | n | Coleta | Snapshot de referência (reproduz o lote) | Observação |
+|---|---:|---|---|---|
+| E3, CONF | 10 | 2026-09-08 | `c142b3f` (rodada 3) | reaproveitado |
+| E0, E1, E2, E4, N1, N2, APF, RHM, RHB, KOa, KOb | 10 | 2026-09-09 | `c142b3f` (rodada 3) | reaproveitado |
+| **E5** | 10 | 2026-09-10 | **`12081a7` (rodada 4)** | recoletado |
+| **DHa** | 10 | 2026-09-10 | **`12081a7` (rodada 4)** | recoletado |
+| **DHb** | 10 | 2026-09-10 | **`12081a7` (rodada 4)** | recoletado |
+
+### Dados substituídos (E5/DHa/DHb antigos)
+
+A coleta antiga de E5/DHa/DHb (E5 de 2026-09-09; DHa/DHb de 2026-09-10 manhã) foi
+**substituída** pela recoleta sob o código corrigido. Os arquivos anteriores são
+identificáveis publicamente **no commit da 3ª rodada `c142b3f`**, sob os mesmos
+caminhos `results/metrics_{E5,DHa,DHb}_*.csv` daquele snapshot (por exemplo,
+`git show c142b3f -- results/metrics_E5_20260909_*.csv`). Uma cópia local também
+foi arquivada em `results/_pre_rerun_P0/`, mas essa pasta **não** integra a árvore
+versionada pública; para auditoria, use os caminhos do commit `c142b3f`.
 
 ## Sementes e reprodutibilidade
 
