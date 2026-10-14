@@ -18,8 +18,8 @@ F3 plano de análise       ██████████░░  85%  falta comm
 F4 bateria noite 1        ████████████ 100%  7/7 blocos, 68 runs, 2 timeouts
 F5 bateria noite 2        ████████████ 100%  6/6 blocos, 59 runs, 1 timeout
 F6 análises retrospectivas██████░░░░░░  50%  F6.1/F6.2 feitos, F6.3 dispensado
-F7 reanálise + figuras    ████░░░░░░░░  35%  estatística feita
-F8 reescrita              ░░░░░░░░░░░░   0%  ← AQUI
+F7 reanálise + figuras    █████████░░░  75%  Fig. resíduo + tabelas novas
+F8 reescrita              ███████████░  92%  ← AQUI (falta F9)
 F9 empacotamento          ░░░░░░░░░░░░   0%
 ```
 
@@ -464,19 +464,62 @@ está implementado como especificado e é estável**, e nada sobre comportamento
 
 | id | tarefa | comentário atendido | status |
 |---|---|---|---|
-| F8.1 | Título, keywords (fora: Bellman, RL, **e risk-aware**), abstract, contribuições, conclusão | R3#1, R3-m1 | `[ ]` |
-| F8.2 | Abstract: unidades e denominadores de "all of them" / 4-9 / 9-10 | R2#7 | `[ ]` |
-| F8.3 | Abstract: bound na **mesma frase** da ausência de contatos; 1.71 m **dentro** da faixa de 2 m | R2#4 | `[ ]` |
-| F8.4 | Atribuição do ganho de segurança ao keepout (com KOF) | R3#2 | `[ ]` |
-| F8.5 | Nomenclatura: região de contato **definida operacionalmente**; 2 m = **limiar diagnóstico**, não requisito; calibração `robot_radius=0.25` | R3#2, v3§2 | `[ ]` |
-| F8.6 | Rebaixar o update: apêndice, **sem lema e sem ponto fixo**; usar "Q não seleciona as ações executadas" | R2#1, R2#2 | `[ ]` |
+| F8.1 | Título, keywords (fora: Bellman, RL, **e risk-aware**), abstract, contribuições, conclusão | R3#1, R3-m1 | `[x]` |
+| F8.2 | Abstract: unidades e denominadores de "all of them" / 4-9 / 9-10 | R2#7 | `[x]` |
+| F8.3 | Abstract: bound na **mesma frase** da ausência de contatos; 1.71 m **dentro** da faixa de 2 m | R2#4 | `[x]` |
+| F8.4 | Atribuição do ganho de segurança ao keepout (com KOF) | R3#2 | `[x]` |
+| F8.5 | Nomenclatura: região de contato **definida operacionalmente**; 2 m = **limiar diagnóstico**, não requisito; calibração `robot_radius=0.25` | R3#2, v3§2 | `[x]` |
+| F8.6 | Rebaixar o update: apêndice, **sem lema e sem ponto fixo**; usar "Q não seleciona as ações executadas" | R2#1, R2#2 | `[x]` |
 | F8.7 | Circularidade do \|Φ\|: módulo colapsa atração/repulsão; bucket satura (bucket 3 cobre \|Φ\|∈[0.75,2.0]) | R2#10 | `[ ]` |
-| F8.8 | Fronteira confirmatório × exploratório marcada por alegação | R2#4 | `[ ]` |
-| F8.9 | Tab. 1: de matriz de features para **comparação de premissas** | R2-Q3 | `[ ]` |
-| F8.10 | Related work: risk-aware/safety-filtered + keepout, **por lacuna argumentativa** | R3-Q4 | `[ ]` |
-| F8.11 | Mover configs secundárias p/ apêndice (encurtar main text) | R3-m3 | `[ ]` |
-| F8.12 | Proveniência: Φ do update lido no callback de odometria × Φ publicado no timer de 1 Hz | — | `[ ]` |
-| F8.13 | §limitações apontando para os novos experimentos, não só declarando | R2-Q3 | `[ ]` |
+| F8.8 | Fronteira confirmatório × exploratório marcada por alegação | R2#4 | `[x]` |
+| F8.9 | Tab. 1: de matriz de features para **comparação de premissas** | R2-Q3 | `[x]` |
+| F8.10 | Related work: risk-aware/safety-filtered + keepout, **por lacuna argumentativa** | R3-Q4 | `[x]` |
+| F8.11 | Mover configs secundárias p/ apêndice (encurtar main text) | R3-m3 | `[x]` |
+| F8.12 | Proveniência: Φ do update lido no callback de odometria × Φ publicado no timer de 1 Hz | — | `[x]` |
+| F8.13 | §limitações apontando para os novos experimentos, não só declarando | R2-Q3 | `[x]` |
+
+---
+
+### F8 — reescrita CONCLUÍDA (2026-10-14)
+
+Os 18 comentários (R2 #1–#10 + Q3; R3 #1–#3, m1–m3, Q4) têm **marcador `%%`
+rastreável** no ponto do texto que os atende — é o que vai alimentar a carta (F9.2).
+
+Mudanças estruturais, não só de redação:
+
+| o que | onde | comentário |
+|---|---|---|
+| Título sem "Affective" e sem "Autonomous" | `access.tex` | R3#1, R3-m1 |
+| Keywords sem Bellman/RL; **sem** "risk-aware" | `access.tex` | R3#1 |
+| Abstract reescrito (7 correções) | `access.tex` | R3#1/#2, R2#3/#4/#6/#7, R3-m1 |
+| Contribuições: 4 itens → 3 por **tipo** | §I | R3#1, R2-Q3 |
+| §III-B deixa de liderar pelo Bellman | §III | R2#1 |
+| Atualização de valor → Apêndice `app:update` | §VII | R2#1, R2#2 |
+| §V-C nova: isolamento do campo (HEU/HEU-sel) | §V | **R2#3** |
+| KOF na ablação de segurança | §V | **R3#2** |
+| §V nova: custo da precedência + varreduras | §V | R2#6, R3#3 |
+| Re-scoring da confirmação + fronteira d=R | §V | R2#5, R2#8 |
+| Tab. 1 vira comparação de **premissas** | §II | R2-Q3 |
+| §II nova: risk-aware / safety filters / keep-out | §II | **R3-Q4** |
+| Declaração confirmatório × exploratório | §V | R2#4 |
+| Assimetria das exclusões + n por config | §V | R3-m2 |
+| Calibração dos instrumentos (`robot_radius`) | §IV | R3#2 |
+| η sai do corpo → apêndice | §V→§VII | R3-m3 |
+
+**Correção material que a reescrita produziu:** a versão submetida dizia que o
+resíduo era "comparable across $\eta$ ($\approx$0.02)". Isso só vale no **fim da
+missão**, onde $\Phi=0$ para qualquer $\eta$. Ao longo da missão ele separa
+limpo (difere de $\alpha|\delta|$ em ~64% das amostras para todo $\eta>0$ e em
+nenhuma para $\eta=0$). O texto agora diz isso e aponta o artefato.
+
+> ### ⚠ PENDÊNCIA QUE SÓ O AUTOR PODE RESOLVER
+> As 4 referências novas (`ames2019cbf`, `wabersich2021filter`, `macenski2022ros2`,
+> `macenski2023survey`) foram escritas **de memória**: este ambiente não tem acesso
+> a base bibliográfica. **Conferir autores, volume, páginas, ano e DOI de cada uma
+> antes de submeter.** O aviso está também no topo do bloco em `references.bib`.
+> Igualmente: **não foi possível compilar** (`ieeeaccess.cls` ausente). As tabelas
+> foram escritas sem `\multirow` de propósito, para não depender de pacote não
+> verificável, mas a compilação precisa ser feita no Overleaf antes do submit.
 
 ---
 

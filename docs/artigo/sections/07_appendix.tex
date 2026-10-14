@@ -226,6 +226,36 @@ $Q$ would select actions and $\eta\Phi$ would shape their values---rather than a
 the mechanism controlling the robot in these experiments.
 
 
+\paragraph*{The $\eta$ sweep is a numerical analysis, not a behavioral one}
+%% Movido da Secao V (R3-m3: encurtar o corpo; e coerencia com o
+%% rebaixamento -- manter secao propria para eta no corpo contradiz a
+%% afirmacao de que o termo nao governa comportamento).
+The ablation E0 ($\eta=0$) reproduces the behavior
+of E2--E4 on every \emph{discrete} behavioral metric---anomalies inspected,
+route deviations, and hazard avoidances are identical across E0--E4
+(Table~\ref{tab:results}); the sub-$0.03$\,m spread in minimum clearance and the
+sub-$0.2$\,m spread in distance are run-to-run stochasticity, not an $\eta$
+effect. The equivalence is established by a formal test, not by the mere absence of
+significance: E0 and E3 are identical on inspection (Cliff's $\delta=0$) and
+\emph{equivalent} on mission time by a two one-sided test within a $\pm5$\,s margin
+($\Delta=+0.7$\,s, $95\%$ CI $[-0.4,+1.7]$, $p_{\mathrm{TOST}}<10^{-6}$), and the
+same holds for E0 vs.\ E2 and E0 vs.\ E4 (Appendix~\ref{app:stats},
+Table~\ref{tab:allstats})---confirming that the executed trajectory is governed by
+thresholds on the raw field $\Phi$ and is invariant to $\eta$. The internal value quantities, by contrast, \emph{are}
+affected, and the previous version of this article understated this: the
+end-of-mission residual is indeed comparable across $\eta$ ($\approx0.02$), but that
+is an artifact of the final averaging window, in which the robot has returned to the
+patrol and the field has decayed to zero, so the term $\eta\Phi$ contributes nothing
+there for any $\eta$. Over the mission as a whole the residual separates cleanly by
+$\eta$ (Fig.~\ref{fig:qconv}): it differs from $\alpha|\delta|$ in ${\approx}64\%$ of
+samples for every $\eta>0$ and in none for $\eta=0$. The correct statement is that
+the affective term is \emph{transient but not negligible}---large during an event,
+decayed by mission end---and that it leaves a measurable imprint on the value table
+while never touching the executed actions. We therefore
+present the invariance to $\eta$ as expected from the architecture---and as the
+empirical basis for offering the value update as a substrate for a future
+\emph{learned} policy---rather than as behavioral robustness to a tuned weight.
+
 \paragraph*{Stability of the increments}
 We assess stability with the \emph{complete} update residual
 $|\alpha\delta+\eta\Phi|$, which---unlike a TD-error proxy that excludes the
@@ -247,6 +277,9 @@ tabular-Q convergence do not apply, so we make no formal convergence claim.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{qconv}
+%% R2#9: "the band is inter-run spread rather than a confidence interval of the
+%% mean... it might be worth stating in the caption rather than only in the text,
+%% since readers often interpret such bands as inferential."
 \caption{Complete update residual $|\alpha\delta+\eta\Phi|$ over per-run series
 resampled onto a common normalized-time grid, for $\eta\in\{0,0.3,0.5,0.8\}$
 (configurations E0, E2, E3, E4). Each curve is the \emph{across-run mean}; the shaded

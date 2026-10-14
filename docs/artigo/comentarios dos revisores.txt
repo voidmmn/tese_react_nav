@@ -1,0 +1,214 @@
+Reviewers' Comments to Author:
+
+Reviewer: 1
+
+Comments:
+The manuscript addresses a relevant problem in autonomous robotic inspection of electrical substations and presents a two-layer navigation architecture that combines a deliberative patrol with a reactive affective mechanism. The overall system design is clearly motivated, and the integration with ROS 2, Nav2, MPPI, and Gazebo provides a practical implementation framework. This topic is highly relevant and aligns well with the scope of the IEEE Access Journal, however, several concerns regarding the manuscript need to be addressed as follows:
+
+1 The authors themselves acknowledge that a potential-based formulation capable of providing policy-invariance guarantees is not presently used and that the convergence properties of the proposed perturbation are assessed empirically. That admission is appropriate, but it also limits the strength of the theoretical contribution. If the intention is to retain the present formulation, the manuscript should avoid implying that the modified Bellman equation inherits the theoretical properties of standard Q-learning. Alternatively, a stronger theoretical treatment could establish sufficient conditions under which the bounded, decaying affective perturbation preserves convergence or characterize how it alters the fixed point.
+
+2 Ten runs per configuration are reported, and Welch's (t)-test is used for the baseline-versus-method comparisons. Several metrics, however, are degenerate or nearly so. Anomaly inspection is exactly zero for E1 and exactly three for E3 and E4, while route deviations exhibit similarly constrained distributions. The revised manuscript should report effect sizes and confidence intervals and consider exact, permutation-based, or other distribution-free procedures where the data structure warrants them. Because multiple metrics and configurations are examined, the possibility of inflated type-I error should also be addressed.
+
+3 The adverse scenario increases the number of anomalies from three to five and introduces spatial clustering, which is a reasonable first stress test. It does not, however, establish general robustness to changing environmental conditions. A more convincing analysis would perturb event locations, event intensities, detection radius, event persistence, hazard placement, localization error, sensor uncertainty, and map geometry. Noise injection would be particularly useful because the current event abstraction assumes that the perception layer supplies modality, intensity, and position without uncertainty.
+
+4 Figure 7 shows decreasing mean absolute TD error during one representative run, and this is interpreted as evidence that the update remains stable. One trajectory cannot establish convergence properties, particularly for an update rule that differs from standard Q-learning. The analysis should preferably include TD-error trajectories from all runs, or at least aggregated convergence statistics with uncertainty. It would also be useful to compare the proposed update against ordinary tabular Q-learning under the same environmental and initialization conditions.
+
+5 The current reference list contains several appropriate classical sources, but the literature synthesis does not yet reflect the breadth of contemporary work on substation robotics and learning-based navigation. The recent literature includes substation-specific path-planning methods based on deep reinforcement learning and ant-colony optimization, as well as comparisons involving PPO, DDQN, and A*. The authors should position their method against these approaches using a concise comparative table covering learning strategy, reactive mechanism, active sensing, safety handling, simulation or physical validation, and performance metrics.
+
+6 One could also question whether the reported mission-time result captures the actual cost of inspection adequately. E3 increases travelled distance from approximately 72 m in the baseline to more than 86 m, while E5 reaches approximately 91.5 m. The additional travel is not necessarily problematic, but it should be analyzed as part of the mission trade-off rather than treated only as a secondary consequence. Metrics such as inspection success per additional meter, inspection time per event, safety clearance, and total mission utility could provide a more meaningful evaluation of whether the proposed behavior offers an operational advantage.
+
+7 The abstract is concise and contains the principal components expected in an IEEE Access research article. Its wording should nevertheless be aligned more closely with what is demonstrated. In particular, the distinction between the affective state machine and the Bellman-value modification should be explicit. The statement concerning value-update stability would also benefit from qualification because the evidence is empirical rather than theoretical.
+
+
+Additional Questions:
+Please confirm that you have reviewed all relevant files, including supplementary files and any author response files, which can be found in the "View Author's Response" link above (author responses will only appear for resubmissions): Yes, all files have been reviewed
+
+1) Does the paper contribute to the body of knowledge?: Yes, the paper offers a potentially useful contribution by integrating a reactive attraction–repulsion mechanism with a deliberative inspection-navigation framework for electrical substations. The separation between routine patrol and event-triggered inspection is practically relevant, although the novelty of the affective value-modulation component requires stronger differentiation from reward shaping, artificial potential fields, and recent learning-based navigation approaches.
+
+2) Is the paper technically sound?: The proposed system is technically plausible and the implementation is described with sufficient detail to reproduce the basic simulation. However, the current validation does not fully substantiate the stronger methodological claims. In particular, the baseline selection, statistical treatment, limited robustness analysis, and unclear experimental role of the modified Bellman update should be strengthened before the technical soundness can be considered fully established.
+
+3) Is the subject matter presented in a comprehensive manner?: The manuscript presents the architecture, methodology, experimental configuration, results, and limitations in a generally coherent manner. Nevertheless, the treatment is not yet fully comprehensive because the recent state of the art is insufficiently synthesized, comparative benchmarking is limited, and aspects such as uncertainty, perception errors, generalizability, and deployment conditions receive relatively little experimental attention.
+
+4) Are the references provided applicable and sufficient?: All of the references provided are applicable and sufficient
+
+5) Are there references that are not appropriate for the topic being discussed?: No
+
+5a) If yes, then please indicate which references should be removed.:
+
+
+Reviewer: 2
+
+Comments:
+The manuscript proposes a two-layer architecture for inspection navigation in electrical substations. A Nav2/MPPI waypoint patrol is combined with a reactive “Stay Alert” layer that approaches simulated anomalies and retreats from simulated hazards. The paper is clearly structured, the implementation is described with useful parameters, and the commitment to releasing the code and experimental environment is appreciated. However, substantial revisions are necessary before the manuscript’s principal claims can be supported.
+
+Major comments
+
+1. The principal Bellman-update contribution is not demonstrated by the experiments.
+
+The manuscript states that the immediate attraction and avoidance behavior is governed by thresholds on the raw affective field Φ. Algorithm 1 shows that the finite-state machine directly pauses the patrol and sends an inspection or retreat goal. It is therefore unclear whether the learned Q-values have any influence on the robot’s executed actions.
+
+Please explain precisely:
+
+(a) how actions {forward, left, right, stop} are selected from Q;
+(b) whether an ε-greedy or another exploration policy is used;
+(c) how these discrete actions relate to Nav2/MPPI velocity commands;
+(d) when and how often Q is updated; and
+(e) what observable behavior changes when the ηΦ term is removed while the finite-state machine is retained.
+
+At minimum, an ablation consisting of Nav2 + the same threshold/FSM layer but without the Q-learning term is required. If this ablation reproduces the reported performance, then the experimental contribution is a reactive finite-state supervisor rather than affectively modulated reinforcement learning.
+
+2. The distinction between the proposed update and reward shaping is not adequately established.
+
+Equation (1) adds ηΦ to the Q-value increment. For a fixed learning rate, this additive term can be represented as an additional reward-like component with appropriate scaling. Moreover, the manuscript already includes max(Φ,0) in the reward, meaning that affective information appears in both r and ηΦ.
+
+Please provide a rigorous derivation explaining how the proposed formulation differs mathematically and behaviorally from reward augmentation or shaping. The authors should also explain why the attraction component is included in both the reward and the external update term, while repulsion is apparently applied only through the latter. Claims of novelty relative to reward shaping should be moderated unless a formal distinction and experimental comparison are supplied.
+
+3. The effect of η is not tested meaningfully.
+
+The authors acknowledge that the state-machine transitions are based on raw Φ and not on η. Therefore, the η sweep cannot meaningfully evaluate navigation sensitivity to the Bellman-modulation weight. The manuscript also attributes the lower performance at η = 0.3 to stochasticity rather than to η itself. This makes the stated robustness-to-η conclusion largely predetermined by the architecture.
+
+Please either:
+
+(a) connect Q and η to the executed navigation policy and then repeat the sweep; or
+(b) present the current sweep only as a numerical analysis of the Q table, without claiming that it demonstrates behavioral robustness.
+
+A factorial experiment that independently enables and disables the FSM and Bellman term would clarify the contribution of each component.
+
+4. The value-function stability claim is not supported by the reported metric.
+
+Section V-C states that the TD-error proxy excludes the affective term. Consequently, this metric cannot establish that the affective term “does not destabilize the update.” In addition, Figure 7 presents only one representative run. A decreasing moving average during one finite mission is not evidence of Q-learning convergence.
+
+Please calculate the complete update residual, including ηΦ, and report results across all runs using uncertainty intervals. Also discuss whether the assumptions required for tabular Q-learning convergence apply when Φ is time-varying, decaying, event-dependent, and not formulated as a policy-invariant potential term. Unless formal or substantially stronger empirical evidence is supplied, “stable during the evaluated simulations” would be more defensible than “convergent.”
+
+5. Stronger and fairer baselines are needed.
+
+The baseline follows fixed waypoints and has no mechanism for approaching anomalies. It is therefore expected by construction to inspect zero off-route anomalies. The comparison demonstrates that adding an anomaly-response mechanism produces anomaly responses, but it does not establish the value of the proposed Bellman formulation.
+
+Please compare against at least:
+
+(a) Nav2 plus the same FSM without Q-learning;
+(b) a conventional artificial-potential-field or local reactive method;
+(c) conventional reward-augmented Q-learning; and
+(d) where feasible, a recent learning-based reactive navigation method.
+
+These comparisons are necessary to determine whether the proposed formulation offers an advantage in inspection completion, safety, efficiency, or stability.
+
+6. The safety claim is presently weak.
+
+The minimum hazard distance is not significantly improved: E1 reports 5.48 ± 2.42 m and E3 reports 4.87 ± 0.02 m, with p = 0.45. “Hazard avoidance” is defined as the occurrence of a programmed retreat event, so counting that event does not independently demonstrate improved safety. The hazard is also positioned beside rather than across the planned path.
+
+Please test hazards that intersect or dynamically intrude upon the route and report safety-oriented outcomes such as collision rate, safety-zone violations, time below a specified clearance, minimum time-to-collision, retreat success rate, and mission recovery. The current findings support more consistent response behavior, but not yet a general safety advantage.
+
+7. The statistical analysis requires strengthening.
+
+Welch’s t-test may be unsuitable for bounded count outcomes with groups having zero variance, such as 0.0 ± 0.0 versus 3.0 ± 0.0. Several outcomes are also analyzed without correction for multiple comparisons. Please provide:
+
+(a) the exact comparison performed for every reported p-value;
+(b) exact p-values rather than only p < 0.001;
+(c) effect sizes and 95% confidence intervals;
+(d) a multiplicity-control procedure where appropriate;
+(e) methods appropriate for bounded counts or success proportions; and
+(f) sensitivity results with and without the two timeout runs.
+
+Because only ten runs were conducted per configuration, raw per-run results should also be provided.
+
+8. The event and inspection definitions require clarification.
+
+Algorithm 1 marks an anomaly as visited at the start of investigation, before the robot reaches the inspection pose and completes the dwell time. Please clarify whether “anomalies inspected” counts committed targets or successfully reached-and-dwelled targets. A timed-out investigation must not be counted as a completed inspection. Detection, investigation initiated, inspection completed, and timeout should be reported as separate outcomes.
+
+The arbitration rule in Equation (4) also needs clarification when multiple events are simultaneously visible, especially when attraction and repulsion events have similar magnitudes. Please explain tie handling, target identity retention, switching behavior, and how hazard priority in the FSM interacts with magnitude-based event selection.
+
+9. Several statements should be corrected or moderated.
+
+The abstract and conclusion state that Stay Alert inspects all anomalies. However, E2 reports 2.7 ± 0.9 of three anomalies, so the statement is not true for every tested configuration. “At no significant increase in mission time” should identify the specific comparison and should not be interpreted as equivalence; failure to reject a difference is not proof of equal performance. “Detection scales to denser layouts” is also too strong based on only one five-anomaly scenario.
+
+10. The literature review is too limited for the breadth of the novelty claim.
+
+Only 14 references are provided, including two arXiv entries. The manuscript should engage more substantially with recent peer-reviewed work on active perception, informative path planning, anomaly-aware inspection, hierarchical or hybrid navigation, safe reinforcement learning, potential-based shaping, behavior arbitration, and substation inspection robotics. The statement “to our knowledge” should be supported by a transparent and sufficiently broad literature analysis.
+
+Minor comments
+
+1. Equation (3) gives an intensity of Ie/2 at d = R, followed by an abrupt disappearance beyond R. Please justify this profile and test sensitivity to the detection model.
+
+2. The notation in Equation (4), particularly the signed argmax-by-magnitude operation, should be rewritten more formally.
+
+3. Φ is written as Φ(s,a), but the presented field calculation appears to depend on event modality, intensity, and distance rather than on action a. Define the action dependence explicitly or revise the notation.
+
+4. Explain why the baseline Q TD-error is reported as zero and whether Q-learning is disabled or merely unlogged in E1.
+
+5. Please report random seeds, initialization rules, simulator real-time factor, computing hardware, software commit identifier, and the precise code version used to generate the submitted results.
+
+6. Verify the final production metadata. The template still displays “Submitted…; revised…; accepted…,” an apparent placeholder DOI, and “VOLUME 11, 2023.”
+
+Overall, the practical reactive-supervision concept is promising, but the experiments currently validate the FSM-based attraction and retreat behavior rather than the claimed affective Bellman-value modulation. A revised manuscript should align its claims with the mechanism actually controlling the robot or provide the missing ablation, baseline, and learned-policy experiments.
+
+Additional Questions:
+Please confirm that you have reviewed all relevant files, including supplementary files and any author response files, which can be found in the "View Author's Response" link above (author responses will only appear for resubmissions): Yes, all files have been reviewed
+
+1) Does the paper contribute to the body of knowledge?: Potentially/Partially. The two-layer implementation is useful, but the claimed Bellman-modulation contribution is not experimentally demonstrated.
+
+2) Is the paper technically sound?: No, in its current form. Major methodological and validation issues remain.
+
+3) Is the subject matter presented in a comprehensive manner?: No. Important theoretical, comparative, statistical, and real-world validation details are insufficient.
+
+4) Are the references provided applicable and sufficient?: Applicable but not sufficient. The references are relevant, but the review contains only 14 sources and offers limited coverage of recent reactive inspection navigation, safe RL, active perception, and hybrid deliberative-reactive control.
+
+5) Are there references that are not appropriate for the topic being discussed?: No
+
+5a) If yes, then please indicate which references should be removed.:
+
+
+Reviewer: 3
+
+Comments:
+The framework is interesting.
+1. The actual robot behavior seems triggered by the threshold-based affective field Φ. Please clarify clearly what additional benefit is brought by Bellman value modulation itself.
+2. The safety evaluation could be slightly strenghtened. Currently, the minimum hazard distance not significantly improved over the baseline. A simple case with the hazard directly on the patrol route may better demonstrate the advantage.
+3. Fig.7 shows one representative TD-error curve. It may be better to describe this as empirical stability rather than convergence, unless more evidence provided.
+
+
+Additional Questions:
+Please confirm that you have reviewed all relevant files, including supplementary files and any author response files, which can be found in the "View Author's Response" link above (author responses will only appear for resubmissions): Yes, all files have been reviewed
+
+1) Does the paper contribute to the body of knowledge?: yes
+
+2) Is the paper technically sound?: yes
+
+3) Is the subject matter presented in a comprehensive manner?: yes
+
+4) Are the references provided applicable and sufficient?: yes
+
+5) Are there references that are not appropriate for the topic being discussed?: No
+
+5a) If yes, then please indicate which references should be removed.:
+
+
+Reviewer: 4
+
+Comments:
+This paper proposes a two-layer navigation method for autonomous substation inspection. A deliberative Nav2/MPPI patrol carries the sensors around the site, and a reactive layer named Stay Alert turns sensed events into an attraction/repulsion field that triggers an approach or a retreat and is also added to a tabular Bellman update. The method is evaluated in Gazebo Fortress across five configurations with ten runs each. The motivation is clear, the system is described in enough detail to be reimplemented, and the released code and world are a real asset. My concerns are about what the experiments establish rather than about the implementation.
+
+1. The value-update term is the contribution named in the title, but the experiments do not test it. Section III-A states that in the tabular instantiation the immediate behavior is governed by the thresholds on Phi, and Section V-C states that the reactive transitions depend on the raw field rather than on eta and that the TD-error proxy excludes the affective term. If this is the case, E2 to E4 differ only in a quantity with no path to any metric in Table 3, and the invariance across eta is expected rather than a robustness finding. The Q-table also never appears to select an action, since motion comes from Nav2 goals. Please add a run with eta = 0 and Stay Alert enabled. If it reproduces E3, the value-update formulation should be presented as a design proposal for future learned policies, and the title, the abstract and the second contribution bullet adjusted to match.
+
+2. The baseline cannot inspect anomalies by construction, so the headline comparison carries little information. E1 has no mechanism to leave the patrol, and 0 of 3 is a property of the setup rather than a measurement. A comparison against a reactive scheme of similar simplicity would be more useful, for example the artificial potential field of [10] or a plain detour-on-detection heuristic without the value term, run on the same events. That would show what the affective formulation adds beyond threshold-triggered goal preemption.
+
+3. The safety claim is stronger than the evidence. In Table 3 the minimum hazard distance of E3 is 4.87 m against 5.48 m for the baseline, and Section V-B correctly attributes the non-significant difference to the hazard lying beside rather than on the route. The abstract and the conclusion still present the consistent hazard-avoidance maneuver as a safety result. Either soften those statements or add a scenario with a hazard on a patrol leg, which is the case the repulsion is meant to handle. On a related point, the adverse scenario is described as requiring arbitration between clustered events, but Eq. (4) keeps only the single largest contribution and the hazard is unchanged at (2, -13), far from both anomaly clusters, so no attraction against repulsion conflict is ever exercised.
+
+Minor points. In Eq. (3) the intensity is 0.5 I_e at d = R and zero beyond, so Phi jumps at the detection boundary; a sentence on whether this causes chattering near R would help. Several Welch tests compare groups with zero variance in both arms, such as anomalies inspected for E1 = 0 against E3 = 3.0 +- 0.0, where the reported p values are not meaningful and stating the counts would be clearer. The figure list in the Acknowledgment is out of order (Figs. 4, 6, 5, and 7).
+
+The system is well built and the reproducibility package is above average for this kind of paper. With the eta ablation, one comparable reactive baseline and the claims brought in line with Section V-C, this would be a useful contribution.
+
+Additional Questions:
+Please confirm that you have reviewed all relevant files, including supplementary files and any author response files, which can be found in the "View Author's Response" link above (author responses will only appear for resubmissions): Yes, all files have been reviewed
+
+1) Does the paper contribute to the body of knowledge?: Partly. The two-layer design and the released ROS 2 / Gazebo implementation are useful to the substation inspection community. The specific novelty named in the title, modulation of the Bellman value update, is not shown to affect any reported result, so the contribution as demonstrated is the reactive layer plus its integration, not the value modulation.
+
+2) Is the paper technically sound?: The implementation and the simulation are sound and the numbers in Table 3 are internally consistent with the text. Two things weaken it. The link between the value update and the observed behavior is not established, and the baseline (E1) has no mechanism to leave the patrol, so the main comparison is decided by construction.
+
+3) Is the subject matter presented in a comprehensive manner?: Yes, for the most part. The method, the algorithm and the figures are clear enough to reimplement. The abstract and the conclusion state the result more strongly than Section V-C supports, and this should be brought into line.
+
+4) Are the references provided applicable and sufficient?: The 14 references are appropriate but thin for a journal article. Substation inspection navigation rests on [1] and [2] alone, and recent work on reactive and learning-based navigation from the last few years is largely absent. I would ask the authors to broaden this coverage themselves rather than suggest specific items.
+
+5) Are there references that are not appropriate for the topic being discussed?: No
+
+5a) If yes, then please indicate which references should be removed.:
