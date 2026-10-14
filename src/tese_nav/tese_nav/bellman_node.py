@@ -36,6 +36,16 @@ class BellmanNode(Node):
         self.declare_parameter('cell_size', 1.0)
         self.declare_parameter('deviation_threshold', 0.6)
         self.declare_parameter('reward_progress', 1.0)
+        # --- R2#6 (resubmissão): limiares de ELEGIBILIDADE por modalidade. ---
+        # Antes eram defaults hardcoded na dataclass AttractionField, o que
+        # impedia a varredura de sensibilidade da PRECEDÊNCIA. Atenção à divisão
+        # de papéis: o limiar de modalidade governa a ENTRADA de novos eventos no
+        # canal; o epsilon do campo governa o ENCERRAMENTO da precedência durante
+        # o decaimento; e enter_threshold (stay_alert_node) governa a AÇÃO.
+        # -1.0 => mantém o default da dataclass (não sobrescreve).
+        self.declare_parameter('thermal_threshold', -1.0)
+        self.declare_parameter('acoustic_threshold', -1.0)
+        self.declare_parameter('hazard_threshold', -1.0)
 
         self.alpha = self.get_parameter('alpha').value
         self.gamma = self.get_parameter('gamma').value
@@ -46,6 +56,11 @@ class BellmanNode(Node):
 
         self.q = QTable(alpha=self.alpha, gamma=self.gamma)
         self.field = AttractionField()
+        # R2#6: sobrescreve só os limiares explicitamente informados (>= 0)
+        for _mod in ('thermal', 'acoustic', 'hazard'):
+            _v = self.get_parameter(f'{_mod}_threshold').value
+            if _v is not None and _v >= 0.0:
+                self.field.thresholds[_mod] = float(_v)
 
         # ---- Estado de navegação ---- #
         self.x = 0.0
@@ -76,7 +91,8 @@ class BellmanNode(Node):
 
         self.get_logger().info(
             f'bellman_node iniciado | alpha={self.alpha} gamma={self.gamma} '
-            f'eta={self.eta} limiar_desvio={self.deviation_threshold}')
+            f'eta={self.eta} limiar_desvio={self.deviation_threshold} '
+            f'limiares_modalidade={self.field.thresholds}')
 
     # ------------------------------------------------------------------ #
     def _on_thermal(self, msg: Float64):

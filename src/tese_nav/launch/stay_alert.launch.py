@@ -66,6 +66,28 @@ def generate_launch_description():
     }
     seed_p = {'run_seed': ParameterValue(
         LaunchConfiguration('run_seed'), value_type=int)}
+    # --- R2#3: contrastes de um fator (HEU/HEU-sel). Defaults preservam o método. ---
+    sel_p = {'selection_mode': LaunchConfiguration('selection_mode')}
+    trig_p = {'trigger_mode': LaunchConfiguration('trigger_mode')}
+    # --- R2#6: varredura de limiar de modalidade (precedência) e do par
+    #     entrada/saída da FSM (ação × largura de histerese). -1.0 = usa o default. ---
+    modthr_p = {
+        'thermal_threshold': ParameterValue(
+            LaunchConfiguration('thermal_threshold'), value_type=float),
+        'acoustic_threshold': ParameterValue(
+            LaunchConfiguration('acoustic_threshold'), value_type=float),
+        'hazard_threshold': ParameterValue(
+            LaunchConfiguration('hazard_threshold'), value_type=float),
+    }
+    fsmthr_p = {
+        'enter_threshold': ParameterValue(
+            LaunchConfiguration('enter_threshold'), value_type=float),
+        'exit_threshold': ParameterValue(
+            LaunchConfiguration('exit_threshold'), value_type=float),
+    }
+    # --- R2#5: distância de confirmação (sensibilidade do critério). 0.0 = auto. ---
+    conf_p = {'inspect_confirm_dist': ParameterValue(
+        LaunchConfiguration('inspect_confirm_dist'), value_type=float)}
 
     return LaunchDescription([
         DeclareLaunchArgument('run_label', default_value='E3'),
@@ -84,15 +106,31 @@ def generate_launch_description():
                               description='§8 ablação: recuo reativo (false = keepout-só)'),
         DeclareLaunchArgument('run_seed', default_value='0',
                               description='§13: semente por run (ruído + registro)'),
+        DeclareLaunchArgument('selection_mode', default_value='saliency',
+                              description="R2#3: 'saliency' (método) | 'nearest' (HEU)"),
+        DeclareLaunchArgument('trigger_mode', default_value='phi',
+                              description="R2#3: 'phi' (método) | 'range' (HEU)"),
+        DeclareLaunchArgument('thermal_threshold', default_value='-1.0',
+                              description='R2#6: elegibilidade térmica (-1 = default)'),
+        DeclareLaunchArgument('acoustic_threshold', default_value='-1.0',
+                              description='R2#6: elegibilidade acústica (-1 = default)'),
+        DeclareLaunchArgument('hazard_threshold', default_value='-1.0',
+                              description='R2#6: elegibilidade do perigo = PRECEDÊNCIA'),
+        DeclareLaunchArgument('enter_threshold', default_value='0.45',
+                              description='R2#6: limiar de AÇÃO da FSM'),
+        DeclareLaunchArgument('exit_threshold', default_value='0.25',
+                              description='R2#6: saída (largura de histerese)'),
+        DeclareLaunchArgument('inspect_confirm_dist', default_value='0.0',
+                              description='R2#5: confirmação (0 = auto = 3.3 m)'),
 
         # Método proposto (Stay Alert): bellman + FSM afetivo
         Node(package='tese_nav', executable='bellman_node',
              name='bellman_node', output='screen',
-             parameters=[params, eta_p, sim],
+             parameters=[params, eta_p, sim, modthr_p],
              condition=when('stay_alert')),
         Node(package='tese_nav', executable='stay_alert_node',
              name='stay_alert_node', output='screen',
-             parameters=[params, sim, avoid_p],
+             parameters=[params, sim, avoid_p, trig_p, fsmthr_p],
              condition=when('stay_alert')),
 
         # Baseline APF (campo potencial) — mesma patrulha Nav2, camada reativa
@@ -116,6 +154,7 @@ def generate_launch_description():
              parameters=[params, sim, scen_p, seed_p, {'run_label': run_label}]),
         Node(package='tese_nav', executable='anomaly_simulator',
              name='anomaly_simulator', output='screen',
-             parameters=[params, sim, scen_p, keepout_p, noise_p],
+             parameters=[params, sim, scen_p, keepout_p, noise_p,
+                         sel_p, conf_p],
              condition=IfCondition(enable_anomaly)),
     ])

@@ -33,104 +33,17 @@ from std_msgs.msg import Header
 from tf2_ros import Buffer, TransformListener, TransformException
 
 
-# anomalias de ATRAÇÃO (id, x, y, tipo, intensidade) — coerentes com subestacao.sdf
-DEFAULT_ANOMALIES = [
-    {'id': 0, 'x': 10.0, 'y': 10.0, 'type': 'thermal', 'intensity': 0.85},
-    {'id': 1, 'x': 0.0, 'y': 15.0, 'type': 'thermal', 'intensity': 0.91},
-    {'id': 2, 'x': -5.0, 'y': 5.0, 'type': 'acoustic', 'intensity': 0.72},
-]
-
-# zonas de PERIGO (repulsão), persistentes. Posicionado ao LADO da 1ª perna
-# (spawn -10,-10 -> transit_sul 13,-8), com o destino ALÉM dele (a leste): o
-# robô passa a ~3 m, o recuo radial o empurra para o norte e ele segue a leste
-# sem reentrar na zona -> UM recuo limpo (vs oscilação quando o perigo fica ao
-# lado de uma perna cujo objetivo está "atrás" da zona).
-DEFAULT_HAZARDS = [
-    {'id': 100, 'x': 2.0, 'y': -13.0, 'intensity': 0.9},
-]
-
-# Cenário ADVERSO (E5): mesma rota, mas anomalias mais DENSAS. Clusters (2 perto
-# do transformador, 2 perto do disjuntor) fazem múltiplas entrarem no raio ao
-# mesmo tempo -> testa a arbitragem (qual investigar primeiro) e o
-# visitado-uma-vez sob carga (5 anomalias vs 3 do default). Mantém o MESMO
-# perigo do default (recuo único limpo): um 2º perigo na rota travaria o robô
-# (objetivo "atrás" da zona -> AVOID infinito), então o eixo "adverso" aqui é a
-# densidade de anomalias, não de perigos.
-ADVERSE_ANOMALIES = [
-    {'id': 0, 'x': 10.0, 'y': 10.0, 'type': 'thermal', 'intensity': 0.85},
-    {'id': 1, 'x': 7.0, 'y': 8.0, 'type': 'acoustic', 'intensity': 0.78},   # cluster transformador
-    {'id': 2, 'x': 0.0, 'y': 15.0, 'type': 'thermal', 'intensity': 0.91},
-    {'id': 3, 'x': -5.0, 'y': 5.0, 'type': 'acoustic', 'intensity': 0.72},
-    {'id': 4, 'x': -8.0, 'y': 8.0, 'type': 'thermal', 'intensity': 0.80},   # cluster disjuntor
-]
-ADVERSE_HAZARDS = [
-    {'id': 100, 'x': 2.0, 'y': -13.0, 'intensity': 0.9},
-]
-
-# Cenário PERIGO-SOBRE-A-ROTA (safety): perigo em cima da 1ª perna da patrulha
-# (spawn -10,-10 -> transit_sul 13,-8), em ~(1.5,-9). O baseline (sem camada
-# afetiva) passa por cima; o método recua (reflexo reativo) E projeta um keepout
-# no costmap global (repulsão afetiva -> planejador deliberativo replaneja e
-# contorna). Anomalias iguais ao default para a missão também inspecionar.
-ROUTE_HAZARD_ANOMALIES = list(DEFAULT_ANOMALIES)
-ROUTE_HAZARD_HAZARDS = [
-    {'id': 100, 'x': 1.5, 'y': -9.0, 'intensity': 0.9},   # SOBRE a 1ª perna
-]
-
-# Cenário CONFLITO atração×repulsão (R2#8/R4#3): um perigo FRACO co-localizado
-# com uma anomalia FORTE, ambos dentro do raio de detecção ao mesmo tempo quando
-# o robô passa pela 1ª perna (~(2,-8.96)). Testa se a prioridade de segurança
-# domina a seleção por magnitude: mesmo a anomalia (0.95) sendo mais saliente que
-# o perigo (0.40), o robô deve EVITAR o perigo e NÃO inspecionar a anomalia
-# co-localizada. As 3 anomalias default continuam (inspecionadas normalmente).
-# Anomalia acústica FORTE co-localizada com o perigo em (2,-13) (mesma geometria
-# estável do default -> 1 avoid limpo). Em |w*i|: anomalia = w_acoustic*0.95 =
-# 1.2*0.95 = 1.14; perigo = |w_hazard|*0.70 = 1.5*0.70 = 1.05. Ou seja, a
-# anomalia é MAIS saliente que o perigo -- se a arbitragem fosse por magnitude, a
-# atração venceria. O perigo (0.70) ainda cruza o limiar de Avoid na passagem
-# (~4 m). Demonstra a precedência de segurança: o robô EVITA e não inspeciona a
-# anomalia co-localizada, apesar de ela ser mais forte.
-CONFLICT_ANOMALIES = DEFAULT_ANOMALIES + [
-    {'id': 5, 'x': 2.0, 'y': -13.0, 'type': 'acoustic', 'intensity': 0.95},
-]
-CONFLICT_HAZARDS = [
-    {'id': 100, 'x': 2.0, 'y': -13.0, 'intensity': 0.70},   # co-localizado, mais fraco em |w*i|
-]
-
-# ENSAIO DIRIGIDO -- perigo que SURGE DURANTE a investigação (R4.2/§6 do parecer):
-# uma anomalia térmica na aproximação da 1ª perna e um perigo CO-LOCALIZADO que só
-# ATIVA (passa a ser publicado) quando o robô chega a <= activate_radius (3 m), i.e.,
-# já comprometido com a investigação e aproximando-se. Isola o VALOR DO RECUO reativo:
-# com recuo (avoid on, DHa) o robô foge de imediato via preempção; sem recuo (keepout
-# só, DHb) depende do replanejamento do Nav2, mais lento -> aproxima-se mais do perigo.
-DYNHAZ_ANOMALIES = [
-    {'id': 0, 'x': 2.0, 'y': -13.0, 'type': 'thermal', 'intensity': 0.90},
-]
-DYNHAZ_HAZARDS = [
-    {'id': 100, 'x': 2.0, 'y': -13.0, 'intensity': 0.90, 'activate_radius': 3.0},
-]
-
-SCENARIOS = {
-    'default': (DEFAULT_ANOMALIES, DEFAULT_HAZARDS),
-    'adverse': (ADVERSE_ANOMALIES, ADVERSE_HAZARDS),
-    'route_hazard': (ROUTE_HAZARD_ANOMALIES, ROUTE_HAZARD_HAZARDS),
-    'conflict': (CONFLICT_ANOMALIES, CONFLICT_HAZARDS),
-    'dyn_hazard': (DYNHAZ_ANOMALIES, DYNHAZ_HAZARDS),
-}
-
-# §8: o keepout deliberativo NÃO é mais gated por nome de cenário. É um canal
-# deliberativo geral, controlado pelo parâmetro `publish_keepout`, que projeta um
-# perigo DETECTADO (dentro do raio sensorial, na posição PERCEBIDA) no costmap
-# global para o Nav2 contornar. Assim a resposta em dois tempos (recuo reflexo +
-# keepout) usa só informação detectada — sem verdade de terreno nem projeção
-# antecipada — e a ativação vira uma regra operacional, não conhecimento do
-# cenário. Os experimentos escolhem publish_keepout/enable_reactive_avoid via
-# launch para a ablação causal (recuo-só / keepout-só / ambos).
-
-
-def scenario_events(name):
-    """Retorna (anomalias, perigos) do cenário. Fallback p/ 'default'."""
-    return SCENARIOS.get(name, SCENARIOS['default'])
+# Resubmissão (Access-2026-46291): as definições de cenário foram movidas para
+# `tese_nav/utils/scenarios.py` para que os scripts de ANÁLISE as importem sem
+# `rclpy`. Re-exportadas aqui, então `from tese_nav.anomaly_simulator import
+# scenario_events` (metrics_node, apf_node, qdriven_node) segue válido.
+from tese_nav.utils.scenarios import (                                # noqa: E402
+    DEFAULT_ANOMALIES, DEFAULT_HAZARDS,
+    ADVERSE_ANOMALIES, ADVERSE_HAZARDS,
+    ROUTE_HAZARD_ANOMALIES, ROUTE_HAZARD_HAZARDS,
+    CONFLICT_ANOMALIES, CONFLICT_HAZARDS,
+    DYNHAZ_ANOMALIES, DYNHAZ_HAZARDS,
+    SCENARIOS, scenario_events)
 
 
 class AnomalySimulator(Node):
@@ -175,7 +88,23 @@ class AnomalySimulator(Node):
         # §6: distância (robô->alvo verdadeiro) para o avaliador independente
         # CONFIRMAR a inspeção. 0.0 => auto (standoff + margem + folga de 0.5 m).
         self.declare_parameter('inspect_confirm_dist', 0.0)
+        # --- R2#3 (resubmissão): critério de SELEÇÃO do alvo de atração. ---
+        # 'saliency' = max |w_tipo * intensidade| (método proposto; o MESMO evento
+        #              que domina Phi -> seleção e campo coerentes).
+        # 'nearest'  = min distância percebida (heurística genérica: contraste de
+        #              UM FATOR contra o método, usado por HEU/HEU-sel).
+        # IMPORTANTE: trocar o argmax NÃO muda a magnitude de Phi no disparo — o
+        # campo guarda o MÁXIMO sobre todas as intensidades publicadas, e todas
+        # continuam sendo publicadas. Mas muda qual anomalia entra em 'committed',
+        # e committed deixa de alimentar o campo -> há efeito A JUSANTE na
+        # trajetória temporal de Phi. Declarar isso ao reportar o contraste.
+        self.declare_parameter('selection_mode', 'saliency')
         self.publish_keepout = self.get_parameter('publish_keepout').value
+        self.selection_mode = self.get_parameter('selection_mode').value
+        if self.selection_mode not in ('saliency', 'nearest'):
+            raise ValueError(
+                f"selection_mode invalido: {self.selection_mode!r} "
+                "(use 'saliency' ou 'nearest')")
         _kpr = self.get_parameter('keepout_project_radius').value  # resolvido abaixo
         self.keepout_radius = self.get_parameter('keepout_radius').value
         self.map_frame = self.get_parameter('map_frame').value
@@ -487,12 +416,18 @@ class AnomalySimulator(Node):
             # campo aplica a precedência (perigo > atração) ao compor Phi.
 
         # ---- ATRAÇÃO (anomalias não committed) ----
-        # §10: o ALVO é o evento mais SALIENTE no raio (max |w·intensidade|), o
-        # MESMO que domina Phi — não o mais próximo. Antes a pose/crédito iam para
-        # a anomalia mais próxima, que podia divergir do evento que erguia Phi em
-        # cenários densos (E5) ou com ruído (N1/N2). Publica o id do alvo p/ a
-        # camada reativa ecoar e o crédito ser por identidade.
-        best_a = None   # (saliency, px, py, a) na posição PERCEBIDA
+        # §10: no método proposto (selection_mode='saliency') o ALVO é o evento mais
+        # SALIENTE no raio (max |w·intensidade|), o MESMO que domina Phi — não o mais
+        # próximo. Antes a pose/crédito iam para a anomalia mais próxima, que podia
+        # divergir do evento que erguia Phi em cenários densos (E5) ou com ruído
+        # (N1/N2). Publica o id do alvo p/ a camada reativa ecoar e o crédito ser por
+        # identidade. R2#3: selection_mode='nearest' restaura a seleção por
+        # proximidade DE PROPÓSITO, como contraste de um fator (HEU/HEU-sel).
+        # R2#3: `score` é o critério de SELEÇÃO (maior vence). Em 'saliency' é
+        # |w_tipo*intensidade|; em 'nearest' é -distância (mais perto = maior).
+        # A PUBLICAÇÃO das intensidades é idêntica nos dois modos, logo Phi (que
+        # guarda o máximo) é idêntico no instante do disparo.
+        best_a = None   # (score, px, py, a) na posição PERCEBIDA
         for a in self.anomalies:
             if a['id'] in self.committed:   # já em investigação/inspecionada
                 continue
@@ -505,9 +440,12 @@ class AnomalySimulator(Node):
                     self.thermal_pub.publish(msg)
                 else:
                     self.acoustic_pub.publish(msg)
-                saliency = self.attr_weights.get(a['type'], 1.0) * intensity
-                if best_a is None or saliency > best_a[0]:
-                    best_a = (saliency, px, py, a)
+                if self.selection_mode == 'nearest':
+                    score = -dist
+                else:
+                    score = self.attr_weights.get(a['type'], 1.0) * intensity
+                if best_a is None or score > best_a[0]:
+                    best_a = (score, px, py, a)
         if best_a is not None:
             self.target_id = best_a[3]['id']
             self.target_id_pub.publish(Int32(data=int(self.target_id)))

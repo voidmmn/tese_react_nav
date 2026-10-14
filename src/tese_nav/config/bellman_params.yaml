@@ -12,6 +12,12 @@ bellman_node:
 
 stay_alert_node:
   ros__parameters:
+    # ATENÇÃO (resubmissão/R2#6): enter_threshold e exit_threshold agora também
+    # são argumentos de `stay_alert.launch.py`, com defaults IDÊNTICOS aos de
+    # baixo (0.45/0.25). Os args do launch SOBREPÕEM este arquivo. Ao alterar
+    # aqui, alterar também o default do launch — ou a varredura herdará o valor
+    # do launch sem aviso. O valor efetivo de cada run fica no log do
+    # stay_alert_node ("trigger=... enter=... exit=...").
     enter_threshold: 0.45       # entra em INVESTIGATE (dispara dentro do alcance)
     exit_threshold: 0.25        # retorna a PATROL (histerese)
     max_investigation_s: 40.0   # tempo máx. investigando (inclui ir até a anomalia)
