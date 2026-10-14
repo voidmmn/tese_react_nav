@@ -13,13 +13,13 @@ concluir cada item.
 ```
 F0 checagens bloqueantes  ████████████ 100%  CONCLUÍDA
 F1 decisões               ██████░░░░░░  50%  D1+D4 aprovadas; D2/D3 são de texto
-F2 implementação          ██████████░░  83%  gate F2.6 APROVADO
+F2 implementação          ████████████ 100%  gate F2.6 APROVADO; HEU/HEU-sel validados
 F3 plano de análise       ██████████░░  85%  falta commit (F3.3)
-F4 bateria noite 1        █░░░░░░░░░░░   1%  ← RODANDO (lançada 21:41)
-F5 bateria noite 2        ░░░░░░░░░░░░   0%  falta F2.5 + F2.9
+F4 bateria noite 1        ████████████ 100%  7/7 blocos, 68 runs, 2 timeouts
+F5 bateria noite 2        ████████████ 100%  6/6 blocos, 59 runs, 1 timeout
 F6 análises retrospectivas██████░░░░░░  50%  F6.1/F6.2 feitos, F6.3 dispensado
-F7 reanálise + figuras    ░░░░░░░░░░░░   0%
-F8 reescrita              ░░░░░░░░░░░░   0%
+F7 reanálise + figuras    ████░░░░░░░░  35%  estatística feita
+F8 reescrita              ░░░░░░░░░░░░   0%  ← AQUI
 F9 empacotamento          ░░░░░░░░░░░░   0%
 ```
 
@@ -38,8 +38,44 @@ que a noite 2 exige, e avançar F8 (texto), que não depende de dado novo.
 > v3 §4 manda impedir.
 >
 > **Regra:** com bateria em curso, só mexer em (a) scripts de análise em
-> `scripts/` que não são importados pelos nós, (b) `docs/`. F2.5 e F2.9 só
-> depois da noite 1 terminar.
+> `scripts/` que não são importados pelos nós, (b) `docs/`.
+>
+> ### ⚠ COMO PARAR UMA BATERIA (lição de 2026-10-13)
+>
+> `pkill -f "...rodar_experimentos..."` **casa com o próprio shell** que o
+> executa e sai com código 144 **antes** de matar o runner. Resultado real: o
+> runner do bloco KOF sobreviveu 14 min como zumbi, competiu com um smoke test
+> (cada `cleanup()` matando a simulação do outro) e criou um CSV vazio em
+> `results/`. **Pare sempre por PID:**
+>
+> ```
+> ps -eo pid,etime,args | grep -E "rodar_(experimentos|bateria)" | grep -vF grep
+> for p in $(ps -eo pid,ppid | awk '$2==<RUNNER_PID> {print $1}'); do kill -9 $p; done
+> kill -9 <RUNNER_PID>
+> ps -eo pid,comm | awk '$2 ~ /^(ign|ruby|stay_alert|anomaly|metrics|mission|bellman)/ {print $1}' | xargs -r kill -9
+> rm -f /dev/shm/*fastrtps*
+> ```
+> Depois **conferir `ls results/ | grep <LABEL>`** e remover artefatos parciais.
+
+> ## 🌙 NOITE DE 2026-10-13 — o que rodou sem supervisão
+>
+> **Como ver o estado em um comando:**
+> ```
+> grep -cE "COMPLETE em" ~/tese_ws/results/bateria_resub_noite1.log   # runs OK
+> grep -E "BLOCO|FIM BLOCO" ~/tese_ws/results/bateria_resub_noite1.log | tail
+> ```
+> Esperado ao fim: **7 blocos, 70 runs** (KOF, HEUd/c/a, HEUseld/c/a).
+>
+> **Se o Windows reiniciar de novo:** a bateria agora é RETOMÁVEL. Basta
+> `bash rodar_bateria_resub.sh noite1` outra vez — blocos já completos são
+> pulados, e um bloco parcial é arquivado em `results/_parciais/` e refeito
+> inteiro (nunca se mistura run de antes e depois do reboot no mesmo bloco).
+>
+> **Validações feitas antes de deixar rodar** (nenhum bloco entrou sem smoke):
+> KOF, HEU (nearest+range), HEU-sel (nearest+phi) e conflict_marginal.
+>
+> **Se algo der errado:** pare SEMPRE por PID (ver a seção de como parar logo
+> acima) — `pkill -f` casa com o próprio shell e deixa runner zumbi.
 
 **Legenda de status:** `[ ]` pendente · `[~]` em andamento · `[x]` concluído ·
 `[!]` bloqueado · `[-]` descartado
@@ -130,11 +166,11 @@ prioritário **antes do APF** — térmico 240.8 s vs 269.7 s; acústico 283.9 s
 | F2.2 | `trigger_mode: {phi, range}` | `stay_alert_node.py` | `[x]` |
 | F2.3 | Plumbing dos limiares de modalidade (eram hardcoded na dataclass) | `bellman_node.py`, launches | `[x]` |
 | F2.4 | Plumbing do par `enter/exit_threshold` + `inspect_confirm_dist` | launches, runner | `[x]` |
-| F2.5 | Cenário `conflict_marginal` (perigo marginal + **perda de observação**) | `anomaly_simulator.py` | `[ ]` |
+| F2.5 | Cenário `conflict_marginal` (perigo marginal + **perda de observação**) | `utils/scenarios.py` | `[x]` aritmética verificada |
 | F2.6 | **Regressão de no-op:** 2 runs de `E3reg` c/ código novo vs E3 antigo | `rodar_bateria_resub.sh regressao` | `[x]` **APROVADO** |
 | F2.7 | Script de re-scoring da confirmação (retrospectivo) | `scripts/rescore_confirmacao.py` | `[x]` |
 | F2.8 | Blocos da resubmissão | `rodar_bateria_resub.sh` (novo) | `[x]` |
-| F2.9 | Cenário do ensaio dirigido d = R (cruzamentos nos dois sentidos) | `anomaly_simulator.py` | `[ ]` |
+| F2.9 | Efeito da fronteira d = R | `scripts/analise_fronteira_dR.py` | `[x]` **virou análise retrospectiva** |
 | F2.10 | Métrica de prioridade (D1) | `scripts/metrica_prioridade.py` | `[x]` |
 | F2.11 | Avaliador do gate de reúso | `scripts/gate_reuso.py` | `[x]` |
 | F2.12 | Cenários extraídos para módulo sem ROS | `utils/scenarios.py` | `[x]` |
@@ -234,9 +270,61 @@ deixar implícito.
 
 | id | bloco | n | parede | status |
 |---|---|---|---|---|
-| F4.1 | `KOF` (ronda fixa + keepout, sem reativo) | 10 | ~75 min | `[ ]` |
-| F4.2 | `HEU` × {default, conflict, adverse} | 30 | ~225 min | `[ ]` |
-| F4.3 | `HEU-sel` × {default, conflict, adverse} | 30 | ~225 min | `[ ]` |
+### Smoke tests de validação antes da noite 1 (2026-10-13)
+
+Motivo: o gate F2.6 validou só o caminho **default**. HEU/HEU-sel (60 runs, ~7,5 h)
+rodariam em código `nearest`/`range` **nunca executado**. Validar custou 14 min.
+
+| smoke | desfecho | observação |
+|---|---|---|
+| `KOFsmoke` | COMPLETE 340 s | folga 1.73 m ≈ RHM 1.71; 0 anomalias; 0 recuos |
+| `HEUsmk` (nearest+range) | COMPLETE 360 s | dispara com `Phi=+0.000` no cache → **confirma que não consulta o campo**; 2 recuos vs 1 do método; 41 s de investigação vs 35.1 |
+| `HEUselsmk` (nearest+phi) | COMPLETE 370 s | **empata com o método em tudo** (3/3, 1 recuo, 364 s, 34.6 s) |
+| `CMsmk` (conflict_marginal) | — | validando |
+
+**O empate de HEU-sel no `default` era previsto e confirma o desenho:** com as 3
+anomalias distantes, só uma entra no alcance por vez, então "mais próxima" = "mais
+saliente". O poder discriminante está em `adverse` (clusters) e `conflict` — que é
+exatamente por que os três cenários foram declarados antes. A métrica de prioridade
+(D1) é o instrumento que vai medir isso.
+
+### RESULTADO DA NOITE 1 (2026-10-14) — o achado central
+
+6 de 7 blocos fechados (HEUsela em curso). 2 timeouts em 62 (3,2%, em linha com
+o histórico de 6/160). KOF 10/10.
+
+**Cenário `conflict` — onde perigo e anomalia muito saliente competem:**
+
+| | método | HEU (genérico) | HEU-sel (só seleção) |
+|---|---|---|---|
+| anomalias inspecionadas | 3 | **4** | 3 |
+| recuos | 1 | **4** | 1 |
+| **folga mínima ao perigo** | **4.8 m** | **2.2 m** | 4.8 m |
+| duração | 364 s | 470 s | 364 s |
+| tempo até alvo prioritário (térmico) | 239.9 s | **345.0 s** | 240.4 s |
+| tempo até alvo prioritário (acústico) | 283.1 s | **387.6 s** | 283.4 s |
+
+**`default` e `adverse`: os três empatam** em tudo que importa.
+
+### A atribuição que isso permite (reposiciona a contribuição)
+
+1. **Seleção por saliência vs proximidade: efeito NENHUM.** HEU-sel é idêntico ao
+   método nos três cenários. Resultado negativo, e deve ser relatado como tal.
+2. **Precedência categórica de segurança (o sinal de Φ): efeito GRANDE no caso
+   ambíguo.** A heurística genérica inspeciona a anomalia co-localizada com o perigo
+   e paga com folga 4.8 → 2.2 m, 4 recuos de oscilação e +105 s nas inspeções
+   prioritárias.
+
+→ **A contribuição não é "a ponderação por saliência ajuda", é "a arbitragem por
+precedência categórica é o que importa — e é exatamente o que uma heurística genérica
+descarta".** Responde R2#3 num critério independente (folga medida, tempo até
+prioritário), sem reproduzir a própria regra de saliência. E responde R2#6 pelo lado
+oposto: a precedência não é só correta-por-construção, ela compra segurança mensurável
+— enquanto o `conflict_marginal` (noite 2) mede o custo dela.
+
+| F4.1 | `KOF` (ronda fixa + keepout, sem reativo) | 10 | ~75 min | `[x]` 10/10 |
+| F4.2 | `HEU` × {default, conflict, adverse} | 30 | ~225 min | `[x]` 9/9/10 |
+| F4.3 | `HEU-sel` × {default, conflict, adverse} | 30 | ~225 min | `[~]` 10/10/em curso |
 
 Método nos três cenários: **reúso** de E3 / CONF / E5 (não roda), condicionado a F2.6.
 
@@ -246,13 +334,61 @@ Método nos três cenários: **reúso** de E3 / CONF / E5 (não roda), condicion
 
 | id | bloco | n | parede | status |
 |---|---|---|---|---|
-| F5.1 | Limiar de modalidade do perigo {0.20, 0.30, 0.40} | 30 | ~225 min | `[ ]` |
-| F5.2 | `conflict_marginal` (c/ perda de observação) | 10 | ~75 min | `[ ]` |
-| F5.3 | Histerese (0.45,0.35) e (0.55,0.35) | 20 | ~150 min | `[ ]` |
-| F5.4 | Ensaio dirigido d = R — **cruzamentos efetivos nos dois sentidos**, não tangente | 5 | ~40 min | `[ ]` |
+| F5.1 | Limiar de modalidade do perigo {0.20, 0.30, 0.40} | 30 | ~225 min | `[x]` 10/10/10 |
+| F5.2 | `conflict_marginal` (c/ perda de observação) | 10 | ~75 min | `[x]` 10/10 |
+| F5.3 | Histerese (0.45,0.35) e (0.55,0.35) | 20 | ~150 min | `[x]` 10/9 |
+| F5.4 | Fronteira d = R | — | 0 | `[x]` retrospectivo (F2.9) |
 
 **Total obrigatório F4+F5: 1.015 min = 16 h 55 min.** Bloco condicional de F6.3
 (+150 min) levaria a 19 h 25 min / 3 noites.
+
+---
+
+## RESULTADO DA NOITE 2 (2026-10-14)
+
+### CM — custo da precedência (conflict_marginal, n=10) — DETERMINÍSTICO
+
+| | mediana [min–max] |
+|---|---|
+| janela de supressão sem retirada | **69.5 s** [67.3–72.4] |
+| anomalias perdidas de 4 | **1.0 [1.0–1.0]** |
+| anomalia saliente (0.95) inspecionada | **0/10 runs** |
+| alvo prioritário acústico (id5) até H=400 s | **0/10** (censurado) |
+
+→ Um perigo marginalmente elegível custa **exatamente uma inspeção, em 10/10 runs**, e
+a perdida é sempre a de maior intensidade. Com o `conflict` da noite 1, a precedência
+fica medida nos **dois** lados: compra +2.6 m de folga, custa 1/4 de completude.
+
+### Varredura do limiar de modalidade (= precedência), `conflict`
+
+| limiar | folga mínima | p vs ref | duração |
+|---|---|---|---|
+| 0.20 | 4.85 m | 0.39 (nada) | 362.97 s |
+| **0.30 (ref)** | **4.83 m** | — | 364.67 s |
+| 0.40 | **3.78 m** | **<0.0001**, δ=+1.00, IC [+0.99,+1.10] | 373.78 s |
+
+→ Subir o limiar **degrada a segurança em ~1 m** (detecta mais tarde, logo mais perto);
+baixar não ganha nada. O 0.30 está num ponto defensável — é **conclusão**, não varredura.
+
+### Histerese: largura não importa, posição importa (`default`)
+
+| condição | desvios | p vs ref | t. investigação |
+|---|---|---|---|
+| ref 0.45/0.25 (larg. 0.20) | 4 | — | 35.1 s |
+| 0.45/0.35 (larg. **0.10**) | 4 | 1.0000 (nada) | 35.3 s |
+| **0.55**/0.35 (larg. 0.20) | **8** | **0.0003**, δ=−1.00 | 26.6 s |
+
+→ Cortar a largura pela metade não muda nada; deslocar a entrada **dobra os desvios**
+com as mesmas 3/3 inspeções. Responde R3#3, e implica que `route_deviations` é
+sensível à **posição** do limiar — o que afeta como a métrica deve ser lida.
+
+### Armadilha de interpretação registrada
+
+Comparar `CM` e `CONF` em `anomalies_unique` (3 vs 3) é **enganoso**: no `CONF` as 3
+são o comportamento **correto** (a 4ª é co-localizada com o perigo e deve ser
+recusada); no `CM` as 3 são uma **falha** (a 4ª é legítima, a 4.3 m do perigo). A
+métrica de prioridade trata isso pela exclusão por co-localização. Não apresentar as
+duas como equivalentes no texto.
 
 ---
 

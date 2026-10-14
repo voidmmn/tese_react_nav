@@ -61,6 +61,7 @@ CONFIG_SCENARIO = {
     'HEUd': 'default', 'HEUc': 'conflict', 'HEUa': 'adverse',
     'HEUseld': 'default', 'HEUselc': 'conflict', 'HEUsela': 'adverse',
     'HAZ20': 'conflict', 'HAZ30': 'conflict', 'HAZ40': 'conflict',
+    'CM': 'conflict_marginal',
     'HYSnar': 'default', 'HYSoff': 'default',
 }
 
