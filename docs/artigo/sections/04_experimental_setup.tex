@@ -141,12 +141,28 @@ physical inspection, not the full standoff-and-orientation condition);
 safety-oriented \emph{proxies} computed from the true hazard position:
 \emph{contact-region entries} (``collisions''; centre-to-centre distance below
 $0.5$~m, a simulated proxy rather than a physical contact sensor), \emph{time below
-a clearance threshold}, \emph{minimum radial time-to-collision}
+a clearance threshold} ($2$~m, centre-to-centre), \emph{minimum radial
+time-to-collision}
 ($d/\dot d$ to the nearest hazard, an approaching-rate proxy, not a
 trajectory-intersection time), and \emph{retreat success}; \emph{mission duration};
 \emph{distance travelled}; and the complete value-update residual
 $|\alpha\delta+\eta\Phi|$ as a stability proxy. Because several outcomes are
 bounded counts with (near-)zero variance, group comparisons use distribution-free
+%% Nomenclatura dos instrumentos geometricos: ambos sao ENTRADAS EM REGIAO
+%% definida operacionalmente por distancia, nao contato fisico nem distancia
+%% regulamentar. Sem a calibracao pelo raio do robo o leitor nao consegue julgar o
+%% que 0.5 m significa.
+Both geometric safety instruments are entries into regions defined operationally by
+centre-to-centre distance, counted on the rising edge, and computed against the
+\emph{true} hazard position with the robot pose taken from the \texttt{map} frame.
+Neither is a physical contact measurement, and neither is a regulatory electrical
+clearance. To let the reader calibrate them: the robot radius configured in the
+planner is $0.25$~m, so the $0.5$~m contact region corresponds to the robot body
+reaching the hazard centre, and the $2$~m band to $1.75$~m of clearance from the
+robot's edge. The $2$~m value is a diagnostic threshold adopted for measuring
+exposure in this evaluation; the study declares no minimum-clearance requirement, so
+transiting below it is not a requirement violation but an exposure that we report.
+
 tests (Mann--Whitney $U$, exact for untied samples with $n_1+n_2\le20$ and by
 permutation for degenerate arms; see Section~\ref{sec:results}) with the Cliff's
 $\delta$ effect size, $95\%$ bootstrap confidence intervals, numeric $p$-values,

@@ -55,6 +55,49 @@ avoidance it triggers also connect to \emph{safe} reinforcement learning, whose
 central concern is maintaining safety during learning-driven
 control~\cite{brunke2022safe}.
 
+\subsection{Risk-Aware Navigation, Safety Filters, and Restricted Zones}
+%% R3-Q4: "The related work on risk-aware and safety-filtered navigation, and on
+%% keep-out or restricted-zone handling in standard navigation stacks, is thin given
+%% that the keepout is the component that carries the safety result." Como a §V
+%% atribui a folga ao keep-out, a lacuna fica mais exposta, nao menos.
+Our evaluation attributes the clearance gain on an on-route hazard to a keep-out
+projected into the global costmap, so it is this component---not the reactive
+weighting---that the literature on runtime safety should be set against. Three lines
+are relevant, and our mechanism sits in the weakest of them.
+
+The strongest guarantees come from \emph{safety filters}, which wrap an arbitrary
+nominal controller and modify its output only when necessary to keep the state inside
+a certified set: control barrier functions render a safe set forward-invariant under
+stated model assumptions~\cite{ames2019cbf}, and predictive safety filters obtain a
+comparable property from a receding-horizon feasibility
+argument~\cite{wabersich2021filter}; the broader programme of maintaining safety
+under learning-driven control is surveyed in~\cite{brunke2022safe}. These approaches
+buy their guarantee with a model of the dynamics and of the constraint set. We make
+no such claim: our precedence rule is a \emph{behavioral} arbitration, it certifies
+no invariant, and---as Section~\ref{sec:precedence-cost} shows---it can be
+over-conservative in a way a filter formulation would make explicit as a trade-off
+rather than leave implicit in a threshold.
+
+A second line treats risk as a quantity to be represented and optimized, propagating
+uncertainty into the cost so that the planner prefers routes with lower exposure.
+Our architecture does \emph{not} do this: perception is idealized to events without
+uncertainty, and the field has no probabilistic interpretation. We therefore avoid
+describing the method as risk-aware, and we do not list that term among our keywords,
+because detecting a hazard and projecting a forbidden region is not the same as
+modelling risk.
+
+Third, and closest to what we actually use, standard navigation stacks already
+support restricted regions as a first-class map layer: ROS~2 and Nav2 expose costmap
+filters and keep-out zones that forbid or penalize traversal of designated
+areas~\cite{macenski2020nav2,macenski2022ros2,macenski2023survey}. The usual
+deployment is \emph{static}, authored into the map before the mission. Our use is the
+same mechanism driven at runtime by detection---the zone is created from a perceived
+hazard position, latched, and left for the global planner to route around. That is a
+small step from the standard capability, and we present it as such; the contribution
+of this article is not the keep-out but the measurement of how much of the safety
+outcome is due to it rather than to the reactive layer, together with the arbitration
+rule that governs when the reactive layer defers.
+
 \subsection{Deliberative Stacks: Nav2 and MPPI}
 We build the deliberative layer on a mature, reproducible
 stack~\cite{macenski2020nav2}, using a Model Predictive Path Integral
@@ -84,33 +127,63 @@ attraction/repulsion term---formulated in the Bellman update---with an
 active-sensing patrol for substation inspection.
 
 \begin{table*}[!t]
-\caption{Positioning of the proposed method against representative approaches.
-``Active sensing'' denotes moving the platform to acquire observations beyond a
-fixed route.}
+%% R2-Q3: "Table 1 functions as a feature matrix rather than a critical comparison
+%% of assumptions". As colunas passam a ser PREMISSAS -- o que cada metodo assume
+%% sobre percepcao, como arbitra comportamentos em conflito, se formaliza seguranca
+%% e como trata incerteza -- em vez de uma lista de recursos presentes/ausentes.
+\caption{Critical comparison of \emph{assumptions}, not of features. The columns ask
+what each approach presupposes about perception, how it resolves a conflict between
+two simultaneously active behaviors, what status its safety mechanism has, and how it
+represents uncertainty. The last column states the strongest claim the reported
+evidence supports.}
 \label{tab:comparison}
 \centering
 \footnotesize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{2.3cm}p{2.4cm}p{2.7cm}p{1.4cm}p{2.5cm}p{1.7cm}p{2.2cm}}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{2.0cm}p{2.9cm}p{3.0cm}p{2.8cm}p{2.4cm}p{2.6cm}}
 \hline
-\textbf{Method} & \textbf{Learning strategy} & \textbf{Reactive mechanism} &
-\textbf{Active sensing} & \textbf{Safety handling} & \textbf{Validation} &
-\textbf{Reported metrics} \\
+\textbf{Approach} & \textbf{Perception assumed} & \textbf{Conflict arbitration} &
+\textbf{Status of safety mechanism} & \textbf{Uncertainty} &
+\textbf{Strongest supported claim} \\
 \hline
-Classical APF / DWA~\cite{khatib1986,fox1997} & None & Force summation / velocity
-search & No & Repulsive force & Sim / analytical & Reach, path length \\
-RL-tuned APF~\cite{zhang2023apf} & RL tunes APF gains & Potential field & No &
-Repulsive force & Simulation & Success, collisions \\
-Substation DRL+ACO~\cite{zhang2025substation} & Deep RL + ant colony & None
-(global planner) & No & Planned clearance & Sim + field & Path length, completion
-\\
-Informative path planning~\cite{ipp2024nonconvex} & Planning (partly learned) &
-None & Yes (viewpoints) & Task-dependent & Sim + real & Info.\ gain, coverage \\
-\textbf{This work (\textsc{Stay Alert})} & Value augmentation,
-threshold-triggered (not learned) & Affective FSM (attract / repel) & Partial:
-fixed-patrol sensor exposure + event-triggered repositioning (no informative view
-planning) & Reactive retreat + deliberative keepout & Simulation (Gazebo) &
-Inspection, safety, mission time (effect sizes, CIs) \\
+Classical APF / DWA~\cite{khatib1986,fox1997} &
+Obstacle geometry available and current &
+Vector sum: a strong attraction can overcome a repulsion; no precedence &
+Soft---a force term among others; no invariant, local minima possible &
+Not represented &
+Reaches the goal in the tested geometries \\
+
+RL-tuned APF~\cite{zhang2023apf} &
+As above, plus a reward signal during training &
+Learned gains reweight the same vector sum; precedence still implicit &
+Soft, and now also dependent on what training visited &
+Only through training distribution &
+Better success than hand-tuned gains in the training regime \\
+
+Substation DRL\,+\,ACO~\cite{zhang2025substation} &
+Map and traversability known to the global planner &
+No reactive channel to arbitrate; conflicts resolved at planning time &
+Planned clearance---a constraint on the route, not a runtime response &
+Not represented at runtime &
+Shorter routes with completion in the surveyed site \\
+
+Informative path planning~\cite{ipp2024nonconvex} &
+A model relating viewpoints to information gain &
+Maximizes expected gain; safety enters as a feasibility constraint &
+Constraint on admissible viewpoints &
+Explicit, over the quantity being mapped &
+Higher information gain per unit path \\
+
+\textbf{This work} &
+\textbf{Events with modality, intensity and position---idealized: no false
+positives or negatives, and localization held fixed} &
+\textbf{Categorical precedence: the hazard channel governs whenever eligible,
+regardless of a stronger concurrent attraction} &
+\textbf{Two-timescale response---reflexive retreat plus a persistent keep-out in
+the global costmap. A behavioral rule, with no invariant claimed} &
+\textbf{Not represented; probed only by injected perception noise} &
+\textbf{Inspection without losing the keep-out's clearance, under the stated
+idealization} \\
 \hline
 \end{tabular}
 \end{table*}
