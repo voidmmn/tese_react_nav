@@ -1,0 +1,116 @@
+\section{Related Work}
+\label{sec:related}
+
+\subsection{Robotic Inspection of Electrical Substations}
+Autonomous ground robots are increasingly deployed to inspect electrical
+substations, reducing human exposure to high-voltage hazards while improving
+the regularity of meter reading, switch-status recognition and infrared
+thermography~\cite{li2024state}. Navigation in this domain must cope
+with dense equipment layouts and safety-critical clearances; recent work
+improves path planning, e.g., by combining deep reinforcement learning with
+ant-colony optimization for substation routing~\cite{zhang2025substation},
+reporting gains over deep-RL and classical baselines such as PPO, DDQN, and
+A$^{\!*}$; broader surveys catalogue perception and path-planning techniques for
+substation mobile robots~\cite{substationpp2024review}. Contemporary substation
+systems increasingly couple deep learning with the navigation stack---for example
+attention-enhanced semantic segmentation to guide the inspection
+robot~\cite{substation2025segnav}, and deep-learning inspection pipelines for
+ultra-high-voltage sites~\cite{substation2024uhvdl}. These systems, however,
+treat the round as a fixed coverage problem: the robot follows planned routes and
+the perception pipeline classifies what is seen.
+\emph{In contrast}, we add a reactive affective response \emph{during} the
+round, letting saliency steer the robot toward anomalies and away from hazards.
+
+\subsection{Reactive Navigation: Potential Fields and DWA}
+Classical reactive methods react to local sensing without a learned value
+function. Artificial potential fields (APF) sum attractive and repulsive
+forces~\cite{khatib1986} but are well known to stall in local
+minima~\cite{koren1991}; the Dynamic Window Approach selects feasible
+velocity commands by short-horizon prediction~\cite{fox1997}. Our affective
+field $\Phi$ is reminiscent of attraction/repulsion, but the reactive response is
+issued by a threshold-triggered controller that preempts the patrol with a goal,
+and the deliberative layer prevents the global stalls that afflict pure
+potential-field control. We make this comparison concrete by evaluating a
+conventional artificial-potential-field controller as a baseline on the same
+events (Section~\ref{sec:results}).
+
+\subsection{Reinforcement Learning for Navigation and Reward Shaping}
+Reinforcement learning underpins many navigation policies~\cite{suttonbarto2018};
+deep reinforcement learning in particular now drives a broad line of map-less and
+dynamic-environment navigation, surveyed with its persistent sim-to-real and
+safety challenges~\cite{drlrobotics2024survey}. Within this line, \emph{reward
+shaping} accelerates learning; potential-based shaping is the canonical form that
+preserves the optimal policy~\cite{ng1999}, and shaped rewards have been used for
+obstacle avoidance and goal reaching~\cite{zhang2020reward}. A related hybrid line lets RL \emph{tune the
+parameters} of an artificial potential field online~\cite{zhang2023apf}. As we
+derive in Appendix~\ref{app:update}, writing our field as an additive term in a
+value update is, for a fixed learning rate, \emph{equivalent} to augmenting the
+reward with a saliency signal; we therefore do not claim it as a new learning
+operator, and the architecture evaluated here contains no learning component. What
+distinguishes this work is not the term in isolation but the \emph{architecture}:
+a saliency-driven attract/repel impulse produced by a reactive layer on top of an
+active-sensing patrol, with the value-update formulation offered as a substrate
+for future learned policies. The repulsive component and the deliberative
+avoidance it triggers also connect to \emph{safe} reinforcement learning, whose
+central concern is maintaining safety during learning-driven
+control~\cite{brunke2022safe}.
+
+\subsection{Deliberative Stacks: Nav2 and MPPI}
+We build the deliberative layer on a mature, reproducible
+stack~\cite{macenski2020nav2}, using a Model Predictive Path Integral
+controller for path following~\cite{williams2017mppi}. Rather than proposing a
+new planner or controller, we keep this layer standard and add the reactive
+affective layer on top, so the contribution is orthogonal to (and benefits
+from) ongoing improvements in industrial navigation stacks.
+
+\subsection{Active Perception and Affective Robotics}
+Active perception holds that perception is purposive: an agent should act to
+acquire informative observations~\cite{bajcsy1988}; its modern instantiation is
+\emph{informative path planning}, where the robot plans viewpoints to maximize
+information gain during mapping and inspection~\cite{ipp2024nonconvex}. Emotion-
+and affect-inspired robotics, in turn, models internal drives that bias
+behavior~\cite{breazeal2003}. Architecturally, our two layers follow the
+classical hybrid deliberative--reactive paradigm, in which a reactive behavior is
+arbitrated on top of a deliberative planner~\cite{hybrid2015delibreact}; here the
+arbitration is a simple priority (safety before inspection) together with a
+saliency threshold. We
+connect these threads operationally: the patrol is an \emph{active-sensing} layer
+that brings the sensors to where events may occur, and \textsc{Stay Alert} is the
+\emph{affective} layer that, once an event is within range, produces an approach
+or retreat impulse. Table~\ref{tab:comparison} positions our method against
+representative reactive, learning-based, and substation-specific approaches.
+Within this scope, we are not aware of a prior method that couples an affective
+attraction/repulsion term---formulated in the Bellman update---with an
+active-sensing patrol for substation inspection.
+
+\begin{table*}[!t]
+\caption{Positioning of the proposed method against representative approaches.
+``Active sensing'' denotes moving the platform to acquire observations beyond a
+fixed route.}
+\label{tab:comparison}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{2.3cm}p{2.4cm}p{2.7cm}p{1.4cm}p{2.5cm}p{1.7cm}p{2.2cm}}
+\hline
+\textbf{Method} & \textbf{Learning strategy} & \textbf{Reactive mechanism} &
+\textbf{Active sensing} & \textbf{Safety handling} & \textbf{Validation} &
+\textbf{Reported metrics} \\
+\hline
+Classical APF / DWA~\cite{khatib1986,fox1997} & None & Force summation / velocity
+search & No & Repulsive force & Sim / analytical & Reach, path length \\
+RL-tuned APF~\cite{zhang2023apf} & RL tunes APF gains & Potential field & No &
+Repulsive force & Simulation & Success, collisions \\
+Substation DRL+ACO~\cite{zhang2025substation} & Deep RL + ant colony & None
+(global planner) & No & Planned clearance & Sim + field & Path length, completion
+\\
+Informative path planning~\cite{ipp2024nonconvex} & Planning (partly learned) &
+None & Yes (viewpoints) & Task-dependent & Sim + real & Info.\ gain, coverage \\
+\textbf{This work (\textsc{Stay Alert})} & Value augmentation,
+threshold-triggered (not learned) & Affective FSM (attract / repel) & Partial:
+fixed-patrol sensor exposure + event-triggered repositioning (no informative view
+planning) & Reactive retreat + deliberative keepout & Simulation (Gazebo) &
+Inspection, safety, mission time (effect sizes, CIs) \\
+\hline
+\end{tabular}
+\end{table*}

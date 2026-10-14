@@ -1,0 +1,164 @@
+%% =====================================================================
+%% Artigo IEEE Access — Bellman Atratora / Stay Alert (MESTRE)
+%% Baseado no template oficial "IEEE Access LaTeX template".
+%% Cada seção fica em sections/*.tex (via \input). Bibliografia via BibTeX
+%% (IEEEtran + references.bib).
+%%
+%% OVERLEAF: crie o projeto a partir do template "IEEE Access LaTeX template"
+%% (traz ieeeaccess.cls + IEEEtran.bst), e então faça upload de:
+%%   access.tex  +  sections/  +  references.bib
+%% Compilador: pdfLaTeX. NÃO compila localmente sem ieeeaccess.cls.
+%% =====================================================================
+\documentclass{ieeeaccess}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{algorithm}   % float p/ Algorithm (o template traz só algorithmic)
+\usepackage{graphicx}
+\graphicspath{{figs/}{./}}   % acha as figuras em figs/ ou na raiz do projeto
+\usepackage{textcomp}
+
+\usepackage{bm}
+\makeatletter
+\AtBeginDocument{\DeclareMathVersion{bold}
+\SetSymbolFont{operators}{bold}{T1}{times}{b}{n}
+\SetSymbolFont{NewLetters}{bold}{T1}{times}{b}{it}
+\SetMathAlphabet{\mathrm}{bold}{T1}{times}{b}{n}
+\SetMathAlphabet{\mathit}{bold}{T1}{times}{b}{it}
+\SetMathAlphabet{\mathbf}{bold}{T1}{times}{b}{n}
+\SetMathAlphabet{\mathtt}{bold}{OT1}{pcr}{b}{n}
+\SetSymbolFont{symbols}{bold}{OMS}{cmsy}{b}{n}
+\renewcommand\boldmath{\@nomath\boldmath\mathversion{bold}}}
+\makeatother
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+% \history e \doi são preenchidos pela PRODUÇÃO do IEEE Access na publicação;
+% aqui ficam os campos padrão do template (não são texto de rascunho). O
+% "VOLUME/ano" do cabeçalho vem do ieeeaccess.cls e também é definido na produção.
+\history{Date of publication 00 Month, 0000; date of current version 00 Month, 0000.}
+\doi{10.1109/ACCESS.0000.0000000}
+
+\title{A Two-Layer Deliberative--Reactive Architecture with a
+Threshold-Triggered Attraction--Repulsion Layer for Substation Inspection}
+% Histórico de títulos:
+%  1a submissão (rejeitada): "Affective Attraction--Repulsion Value Modulation for
+%    Reactive Inspection Navigation in Electrical Substations".
+%  2a submissão (rejeitada, Access-2026-46291): "...with an Affective
+%    Attraction--Repulsion Layer for Autonomous Substation Inspection".
+%  3a (esta): R3#1 pede que título/abstract/keywords não prometam um componente de
+%    aprendizado que o sistema avaliado não tem -> "Threshold-Triggered". R3-m1 pede
+%    que "autonomous inspection" não seja lido como sistema validado -> sai
+%    "Autonomous". A atualização de valor vai para o Apêndice (nota de projeto).
+
+\author{\uppercase{Milton Miranda Neto}\authorrefmark{1},
+\uppercase{and Alexandre Cardoso}\authorrefmark{1}}
+\address[1]{Faculty of Electrical Engineering, Universidade Federal de
+Uberl\^andia (UFU), Uberl\^andia, MG 38400-902, Brazil
+(e-mail: voidmmn@ufu.br; alexandre@ufu.br)}
+\tfootnote{This work received no specific grant from any funding agency in the
+public, commercial, or not-for-profit sectors.}
+
+\markboth
+{Miranda Neto and Cardoso: A Two-Layer Deliberative--Reactive Architecture for Substation Inspection}
+{Miranda Neto and Cardoso: A Two-Layer Deliberative--Reactive Architecture for Substation Inspection}
+\corresp{Corresponding author: Milton Miranda Neto (e-mail: voidmmn@ufu.br;
+ORCID: 0000-0002-1568-4201).}
+
+\begin{abstract}
+Substation-inspection robots typically follow a fixed patrol without adapting to what
+they sense, while a purely reactive controller responds only to stimuli already within
+sensor range. We bridge these regimes with a two-layer architecture: a deliberative
+\emph{active-sensing} patrol (ROS~2, Nav2, MPPI) carries the sensors to where events
+may occur, and a reactive layer turns sensory saliency into an attraction/repulsion
+field driving a threshold-triggered finite-state controller that approaches anomalies
+and retreats from hazards, under a categorical rule that makes the hazard channel
+govern whenever a hazard is eligible. We evaluate it in a simulated substation
+(Gazebo Fortress) against a fixed patrol, a potential-field baseline and---new
+here---a generic detect--select--deviate--return heuristic on the \emph{same}
+Nav2/MPPI controller, which isolates the field from the act of deviating. Three
+findings follow. (i)~Attribution: a fixed patrol with the same detection-triggered
+keep-out reproduces the full method's minimum clearance ($1.73$ vs.\ $1.71$~m,
+indistinguishable), so \emph{the safety benefit is attributable to the deliberative
+keep-out, not to the reactive weighting}; the reactive layer contributes the
+inspections ($3$ vs.\ $0$ of $3$) for $31$~s. (ii)~The selection rule is inert---
+saliency versus proximity changes no outcome---whereas discarding the categorical
+precedence halves the clearance when a hazard is co-located with a more salient
+anomaly ($4.84$ vs.\ $2.23$~m) and delays the priority inspection by
+${\approx}105$~s. (iii)~That precedence has a cost: a marginally eligible hazard
+suppresses attraction for ${\approx}70$~s and forfeits one of four inspections in
+$10/10$ runs. Scope is explicit: perception is abstracted to oracle events and the
+localization transform is fixed, so the results speak to the decision logic, not to a
+deployable system. Full-inspection rate is $10/10$ runs with clean perception, $4/9$
+under high noise and $9/10$ under dense clustering; no entry into a $0.5$~m contact
+region was observed, but with $8$--$10$ valid runs per configuration the exact
+one-sided $95\%$ bound on that per-run probability remains $25.9$--$31.2\%$, and the
+method does transit within the $2$~m advisory band it reports. The field is also
+recorded as an additive term in a tabular value update---a design note, not an
+evaluated mechanism, since the value table does not select the executed actions.
+Code, world, data and scripts are released.
+\end{abstract}
+
+% R3#1: "Bellman equation" e "reinforcement learning" sugeriam um componente de
+% aprendizado que o sistema avaliado não possui -> removidos. "risk-aware
+% navigation" NÃO foi incluída: detectar perigos e projetar zonas proibidas não é
+% modelar risco, e a palavra-chave convidaria uma objeção nova.
+\begin{keywords}
+Active sensing, behavior arbitration, electrical substation, inspection robots,
+keep-out zones, Nav2, potential fields, reactive navigation, ROS~2.
+\end{keywords}
+
+\titlepgskip=-21pt
+\maketitle
+
+\input{sections/01_introduction}
+\input{sections/02_related_work}
+\input{sections/03_method}
+\input{sections/04_experimental_setup}
+\input{sections/05_results}
+\input{sections/06_conclusion}
+
+\appendices
+\input{sections/07_appendix}
+
+\section*{Acknowledgment}
+The conceptual diagrams in Figs.~\ref{fig:concept}--\ref{fig:fsm} and the
+graphical abstract were rendered with the assistance of the AI-based
+illustration tool Illustrae.CO from specifications authored by the authors. The authors also used a large language
+model (Anthropic Claude) to assist in drafting and editing portions of the
+manuscript text and the evaluation and analysis scripts. All AI-assisted content
+was reviewed, verified, and edited by the authors, who take full responsibility
+for the contents of this article. The quantitative figures
+(Figs.~\ref{fig:world}, \ref{fig:box}, \ref{fig:traj}, and \ref{fig:qconv}) and
+all experimental data were produced by the authors' own software without the use
+of generative AI.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\begin{IEEEbiographynophoto}{Milton Miranda Neto}
+received the B.S. degree in computer science from the Centro Universit\'ario do
+Tri\^angulo (Unitri), Uberl\^andia, Brazil, in 1998, and the M.S. degree in
+electrical engineering from the Universidade Federal de Uberl\^andia (UFU),
+Uberl\^andia, in 2016, where he is currently pursuing the Ph.D. degree in
+electrical engineering. He is a higher-education course coordinator and a
+professor with the Universidade do Estado de Minas Gerais (UEMG) and the Centro
+Universit\'ario do Tri\^angulo, and a researcher with CGWorks. His research
+interests include computer graphics, virtual and augmented reality, the Internet
+of Things, autonomous navigation, robotics, and artificial intelligence applied
+to engineering.
+\end{IEEEbiographynophoto}
+
+\begin{IEEEbiographynophoto}{Alexandre Cardoso}
+received the Ph.D. degree in electrical engineering from the University of
+S\~ao Paulo (USP), S\~ao Paulo, Brazil, in 2002. He is currently a Full
+Professor with the Faculty of Electrical Engineering, Universidade Federal de
+Uberl\^andia (UFU), Uberl\^andia, Brazil. His research interests include virtual and augmented
+reality, computer graphics, and their application to engineering, education, and
+industrial systems.
+\end{IEEEbiographynophoto}
+
+\EOD
+\end{document}

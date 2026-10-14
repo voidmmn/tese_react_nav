@@ -35,8 +35,32 @@ deep_clean() {
   sleep 12
 }
 
+# RETOMADA: conta runs COMPLETOS do bloco (CSV existente + "COMPLETA" no log).
+# Motivo: em 2026-10-13 o Windows reiniciou sozinho para atualizacoes no meio do
+# trabalho. Sem isto, um reboot a 6 h de bateria obrigaria recomecar do zero.
+# Use RESUME=0 para forcar re-execucao de tudo.
+runs_completos() {
+  local label=$1 n=0 lg
+  for lg in "$WS"/results/launch_"${label}"_r*.log; do
+    [ -f "$lg" ] || continue
+    grep -q "COMPLETA" "$lg" 2>/dev/null && n=$((n+1))
+  done
+  echo "$n"
+}
+
 run_block() {
   local label=$1; shift
+  local feitos; feitos=$(runs_completos "$label")
+  if [ "${RESUME:-1}" = "1" ] && [ "$feitos" -ge "$REPS" ]; then
+    echo "===== BLOCO $label JA COMPLETO ($feitos/$REPS) - PULANDO ====="
+    return
+  fi
+  if [ "$feitos" -gt 0 ]; then
+    echo "===== BLOCO $label PARCIAL ($feitos/$REPS) - refazendo o bloco ====="
+    mkdir -p "$WS/results/_parciais"
+    mv "$WS"/results/metrics_"${label}"_*.csv "$WS"/results/launch_"${label}"_r*.log \
+       "$WS/results/_parciais/" 2>/dev/null
+  fi
   echo "===== BLOCO $label ($(date '+%F %T')) ====="
   deep_clean
   EXPERIMENTS="$label $*" bash "$WS/src/tese_nav/scripts/rodar_experimentos.sh" "$REPS" "$MAXS"
@@ -85,6 +109,9 @@ case "$FASE" in
   #           | deslocada (0.55,0.35) l=0.20
   # --------------------------------------------------------------------
   noite2)
+    # CM primeiro: e o bloco de maior valor (mede o CUSTO da precedencia, que e o
+    # contrapeso ao beneficio medido na noite 1) e foi validado em smoke.
+    run_block CM    0.5 true conflict_marginal stay_alert false true 0.0 0.0
     run_block HAZ20 0.5 true conflict stay_alert false true 0.0 0.0 saliency phi 0.20
     run_block HAZ30 0.5 true conflict stay_alert false true 0.0 0.0 saliency phi 0.30
     run_block HAZ40 0.5 true conflict stay_alert false true 0.0 0.0 saliency phi 0.40

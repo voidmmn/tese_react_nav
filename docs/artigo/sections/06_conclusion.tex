@@ -1,0 +1,71 @@
+\section{Conclusion}
+\label{sec:conclusion}
+%% R3#1/R2#1: a conclusão espelha o abstract reposicionado -- nada de Bellman/RL
+%% como contribuição. R3-m1: a qualificação de escopo (percepção oráculo,
+%% localização fixa) aparece aqui, não só na §limitações. R2#4: o bound binomial
+%% está na MESMA frase da ausência de contatos.
+We presented a two-layer navigation architecture for substation inspection: a
+deliberative active-sensing patrol carries the sensors to where events may occur,
+and a reactive layer produces a threshold-triggered approach impulse toward
+anomalies and a retreat impulse from hazards, from an attraction/repulsion field
+$\Phi$ derived from sensory saliency and arbitrated by a categorical safety
+precedence. The architecture runs on a mature, reproducible stack (ROS~2 +
+Nav2/MPPI + Gazebo Fortress).
+
+The evaluation narrows what may be credited to the reactive layer, and we state the
+three attributions plainly. First, on a hazard placed on the patrol route, a
+\emph{hazard-blind patrol carrying the same detection-triggered keep-out} reaches a
+minimum clearance indistinguishable from the full method ($1.73$ vs.\ $1.71$~m;
+$p_{\mathrm{Holm}}=0.42$), so the safety benefit is attributable to the deliberative
+keep-out rather than to the reactive weighting; the reactive layer's contribution
+there is the inspections themselves ($3$ vs.\ $0$ of $3$) at a cost of $31$~s.
+Second, the \emph{selection} rule is inert: a variant differing only in selecting the
+nearest instead of the most salient target reproduced the method in every scenario
+and every metric. What is not inert is the categorical precedence---a generic
+detect--select--deviate--return heuristic on the same Nav2/MPPI controller, driven by
+raw detection, inspects the anomaly co-located with a hazard and halves the minimum
+clearance ($4.84$ vs.\ $2.23$~m, Cliff's $\delta=+1.00$) while delaying the priority
+inspection by ${\approx}105$~s. Third, that precedence carries a measured cost: a
+marginally eligible hazard suppresses attraction for ${\approx}70$~s and forfeits one
+of four inspections in $10/10$ runs. Taken together, the arbitration rule---not the
+saliency weighting---is what distinguishes this layer from a generic deviate-and-return
+heuristic, and it trades completeness for clearance in a way that is now quantified in
+both directions.
+
+Inspection completeness is reported as the rate of runs inspecting \emph{all}
+anomalies: $10/10$ with clean perception, $4/9$ under high perception noise and
+$9/10$ under dense clustering. A retrospective re-scoring shows this rate is strongly
+sensitive to the confirmation criterion (at a $4.0$~m threshold the high-noise rate
+recovers to $9/9$), while the physical closing distance does degrade
+($2.23 \rightarrow 2.87$~m median), so both effects are present. No entry into the
+$0.5$~m contact region was observed in any configuration, but with $8$--$10$ valid
+runs per group the exact one-sided $95\%$ bound on the per-run probability of such an
+entry remains $25.9$--$31.2\%$; and on the on-route hazard the method transits
+\emph{within} the $2$~m advisory clearance band it reports, for ${\approx}9$~s per
+run. These are the limits of the safety evidence, not a safety guarantee.
+
+\paragraph*{Scope} The evaluation is in simulation. Perception is abstracted to
+oracle events rather than raw sensor streams, and the localization transform is held
+fixed, so the results characterize the \emph{decision logic} of the architecture and
+should not be read as validating a deployable autonomous inspection system. The
+$0.5$~m contact region and $2$~m clearance band are operationally defined
+centre-to-centre distances used as measurement proxies---with a $0.25$~m robot
+radius---not physical contact sensing and not regulatory electrical clearances.
+
+\paragraph*{Limitations} Localization error, event persistence, false positives and
+negatives, and map geometry are left unmodelled. The adverse scenario is a single
+dense configuration and the noise sweep covers two levels, so neither supports a
+general scaling claim. The value table is tabular and, as Appendix~\ref{app:update}
+records, does not select the executed actions; we therefore make no convergence or
+policy-invariance claim for the augmented update.
+
+\paragraph*{Future work} The inert selection rule and the quantified cost of the
+precedence both point the same way: the arbitration, not the weighting, is where
+further work belongs. A policy that \emph{learns} when to defer to the hazard channel
+instead of always deferring would address the over-conservatism we measured, and the
+value formulation in Appendix~\ref{app:update} is the natural substrate for it---but
+it requires an exploration policy, an action-to-velocity mapping and a comparison
+against ordinary tabular Q-learning, which is beyond this study. We also plan
+hardware-in-the-loop validation on the quadruped GO2~PRO platform and a field trial
+at the Axia substation (Araraquara, Brazil), with real thermal, acoustic and visual
+perception driving the event layer.

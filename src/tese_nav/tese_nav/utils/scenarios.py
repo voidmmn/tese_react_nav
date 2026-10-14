@@ -87,12 +87,46 @@ DYNHAZ_HAZARDS = [
     {'id': 100, 'x': 2.0, 'y': -13.0, 'intensity': 0.90, 'activate_radius': 3.0},
 ]
 
+# CENARIO PERIGO MARGINAL (R2#6 / resubmissao): testa se a PRECEDENCIA CATEGORICA
+# da Eq.(7) e escolha de projeto sensata, nao so correta-por-construcao.
+#
+# Aritmetica verificada (R=5 m, w_haz=-1.5, limiar de modalidade 0.30,
+# enter_threshold 0.45, decaimento 0.85/s) sobre a 1a perna (-10,-10)->(13,-8):
+#   perigo (0,-12) base 0.52 -> aproximacao MEDIDA 3.71 m (smoke 2026-10-13)
+#     -> intensidade percebida 0.327 (ELEGIVEL: >= 0.30)
+#     -> _haz pico 0.491 (dispara retirada uma vez: >= 0.45)
+#     -> t=+1s _haz=0.417 < 0.45: DOMINA o campo mas NAO dispara mais retirada
+#     -> janela de supressao-sem-retirada: +1s ate ~+39s (_haz < eps=1e-3)
+#   anomalia id=5 (4,-10.5) acustica 0.95 -> JA no alcance (4.2 m) quando o
+#     perigo pica, com _att >= 0.627: a supressao e diretamente observavel.
+#
+# CALIBRACAO (licao do 1o smoke): a 1a versao usava base 0.44 calculada sobre a
+# RETA (-10,-10)->(13,-8) supondo aproximacao de 2.86 m. O Nav2/MPPI nao segue a
+# reta: a aproximacao real foi 3.71 m, a intensidade caiu a 0.277 < 0.30 e a
+# leitura foi IGNORADA -> o perigo nunca dominou o campo (0 amostras de Phi<0).
+# A base atual usa a geometria MEDIDA e e robusta para d em [3.5, 4.0] m.
+#
+# O robo passa pelo perigo, recua uma vez, e durante ~37 s a precedencia
+# categorica suprime uma anomalia MUITO mais saliente sem que nenhuma retirada
+# nova seja disparada -- o modo de OVER-CONSERVADORISMO que o R2#6 questiona.
+# Observar: nao e imobilidade (a patrulha segue), e supressao da investigacao.
+# A perda de observacao do perigo e intrinseca ao roteiro: o robo se afasta e o
+# simulador deixa de publicar, entao o decaimento age sem precisar de mecanismo novo.
+CONFLICT_MARGINAL_ANOMALIES = DEFAULT_ANOMALIES + [
+    {'id': 5, 'x': 4.0, 'y': -10.5, 'type': 'acoustic', 'intensity': 0.95},
+]
+CONFLICT_MARGINAL_HAZARDS = [
+    {'id': 100, 'x': 0.0, 'y': -12.0, 'intensity': 0.52},   # marginalmente elegivel
+]
+
 SCENARIOS = {
     'default': (DEFAULT_ANOMALIES, DEFAULT_HAZARDS),
     'adverse': (ADVERSE_ANOMALIES, ADVERSE_HAZARDS),
     'route_hazard': (ROUTE_HAZARD_ANOMALIES, ROUTE_HAZARD_HAZARDS),
     'conflict': (CONFLICT_ANOMALIES, CONFLICT_HAZARDS),
     'dyn_hazard': (DYNHAZ_ANOMALIES, DYNHAZ_HAZARDS),
+    'conflict_marginal': (CONFLICT_MARGINAL_ANOMALIES,
+                          CONFLICT_MARGINAL_HAZARDS),
 }
 
 # §8: o keepout deliberativo NÃO é mais gated por nome de cenário. É um canal
