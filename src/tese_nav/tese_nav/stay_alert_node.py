@@ -52,6 +52,18 @@ class StayAlertNode(Node):
         # §8 ablação: desliga o RECUO reativo (mantém investigação). Permite o
         # experimento (a) keepout-só vs (b) recuo-só vs (c) ambos.
         self.declare_parameter('enable_reactive_avoid', True)
+        # --- R2#3 (resubmissão): critério de DISPARO da FSM. ---
+        # 'phi'   = limiares sobre o campo afetivo Phi (método proposto): a
+        #           ponderação por saliência e a precedência categórica de
+        #           segurança (sinal de Phi) entram na decisão.
+        # 'range' = disparo por DETECÇÃO BRUTA, sem ponderação: o simulador só
+        #           publica inspection_pose/retreat_pose para eventos DENTRO do
+        #           alcance, então "pose fresca" == "evento no alcance". A
+        #           arbitragem vira a heurística genérica "perigo no alcance ->
+        #           desvia". Usado por HEU.
+        self.declare_parameter('trigger_mode', 'phi')
+        # janela de frescor da pose em modo 'range' (simulador publica a 2 Hz)
+        self.declare_parameter('target_fresh_s', 1.0)
 
         self.enter_threshold = self.get_parameter('enter_threshold').value
         self.exit_threshold = self.get_parameter('exit_threshold').value
@@ -59,7 +71,14 @@ class StayAlertNode(Node):
         self.dwell_s = self.get_parameter('dwell_s').value
         self.avoid_refractory_s = self.get_parameter('avoid_refractory_s').value
         self.enable_reactive_avoid = self.get_parameter('enable_reactive_avoid').value
+        self.trigger_mode = self.get_parameter('trigger_mode').value
+        if self.trigger_mode not in ('phi', 'range'):
+            raise ValueError(
+                f"trigger_mode invalido: {self.trigger_mode!r} (use 'phi' ou 'range')")
+        self.target_fresh_s = self.get_parameter('target_fresh_s').value
         self._avoid_until = 0.0   # instante até o qual AVOID fica bloqueado
+        self._target_pose_t = None    # instante da última inspection_pose recebida
+        self._retreat_pose_t = None   # instante da última retreat_pose recebida
 
         self.mode = self.PATROL
         self.phi = 0.0
@@ -89,7 +108,8 @@ class StayAlertNode(Node):
         self.create_timer(0.2, self._update)
         self._publish_mode()
         self.get_logger().info(
-            f'stay_alert_node iniciado | enter={self.enter_threshold} '
+            f'stay_alert_node iniciado | trigger={self.trigger_mode} '
+            f'enter={self.enter_threshold} '
             f'exit={self.exit_threshold} max_invest={self.max_investigation_s}s')
 
     # ------------------------------------------------------------------ #
@@ -98,12 +118,36 @@ class StayAlertNode(Node):
 
     def _on_inspection_pose(self, msg: PoseStamped):
         self.target_pose = msg
+        self._target_pose_t = self.now_s()    # frescor p/ trigger_mode='range'
 
     def _on_target_id(self, msg: Int32):
         self._target_id = msg.data   # §10: id do evento-alvo mais saliente
 
     def _on_retreat_pose(self, msg: PoseStamped):
         self.retreat_pose = msg
+        self._retreat_pose_t = self.now_s()   # frescor p/ trigger_mode='range'
+
+    # ------------------------------------------------------------------ #
+    # R2#3: predicados de disparo. Em 'phi' decidem os limiares sobre o campo
+    # afetivo; em 'range' decide a detecção bruta (pose fresca == evento no
+    # alcance), sem ponderação por saliência e sem usar a magnitude de Phi.
+    def _attract_fires(self, now):
+        if self.trigger_mode == 'range':
+            return (self._target_pose_t is not None
+                    and now - self._target_pose_t <= self.target_fresh_s)
+        return self.phi >= self.enter_threshold
+
+    def _hazard_fires(self, now):
+        if self.trigger_mode == 'range':
+            return (self._retreat_pose_t is not None
+                    and now - self._retreat_pose_t <= self.target_fresh_s)
+        return self.phi <= -self.enter_threshold
+
+    def _hazard_cleared(self, now):
+        """Fim do episódio de AVOID por cessação do estímulo."""
+        if self.trigger_mode == 'range':
+            return not self._hazard_fires(now)
+        return self.phi > -self.exit_threshold
 
     def _update(self):
         now = self.now_s()
@@ -115,7 +159,7 @@ class StayAlertNode(Node):
         # hand-off reflexo->keepout deliberativo (documentado no Algoritmo 1).
         if (self.enable_reactive_avoid
                 and self.mode != self.AVOID
-                and self.phi <= -self.enter_threshold
+                and self._hazard_fires(now)
                 and self.retreat_pose is not None
                 and now >= self._avoid_until):
             if self.mode == self.INVESTIGATE:   # §10: investigação preemptada por perigo
@@ -125,7 +169,7 @@ class StayAlertNode(Node):
 
         if self.mode == self.PATROL:
             # sem perigo preemptivo: só a atração pode tirar da patrulha
-            if self.phi >= self.enter_threshold and self.target_pose is not None:
+            if self._attract_fires(now) and self.target_pose is not None:
                 self._enter(self.INVESTIGATE, self.target_pose, now)
             return
 
@@ -147,7 +191,7 @@ class StayAlertNode(Node):
                 self._exit('timeout', elapsed)
 
         elif self.mode == self.AVOID:
-            if self.phi > -self.exit_threshold:      # repulsão cessou
+            if self._hazard_cleared(now):            # repulsão cessou
                 self._exit('safe', elapsed)
             elif reached:                            # chegou ao ponto seguro
                 self._exit('retreated', elapsed)

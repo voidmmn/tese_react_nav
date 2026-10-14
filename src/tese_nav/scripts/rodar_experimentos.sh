@@ -75,7 +75,11 @@ mission_complete() {
 run_one() {
   local label=$1 eta=$2 sa=$3 scen=$4 rep=$5 react=${6:-stay_alert}
   local keepout=${7:-false} avoid=${8:-true} npos=${9:-0.0} nint=${10:-0.0}
-  echo ">>> $(date +%H:%M:%S) $label rep $rep/$REPS (eta=$eta sa=$sa scen=$scen react=$react keepout=$keepout avoid=$avoid noise=$npos/$nint seed=$rep)"
+  # --- resubmissão (Access-2026-46291): colunas 11-16. Defaults = método atual,
+  #     para que a matriz antiga rode byte-a-byte igual (gate de reúso F2.6). ---
+  local sel=${11:-saliency} trig=${12:-phi}
+  local hthr=${13:--1.0} ent=${14:-0.45} ext=${15:-0.25} cfd=${16:-0.0}
+  echo ">>> $(date +%H:%M:%S) $label rep $rep/$REPS (eta=$eta sa=$sa scen=$scen react=$react keepout=$keepout avoid=$avoid noise=$npos/$nint seed=$rep sel=$sel trig=$trig hthr=$hthr ent/ext=$ent/$ext cfd=$cfd)"
   cleanup
   # §8: publish_keepout/enable_reactive_avoid explícitos; §13: run_seed=rep
   # (semente por repetição -> realizações de ruído independentes + registro).
@@ -83,6 +87,9 @@ run_one() {
     run_label:="$label" eta:="$eta" enable_stay_alert:="$sa" scenario:="$scen" \
     reactive:="$react" publish_keepout:="$keepout" enable_reactive_avoid:="$avoid" \
     noise_pos:="$npos" noise_int:="$nint" run_seed:="$rep" \
+    selection_mode:="$sel" trigger_mode:="$trig" \
+    hazard_threshold:="$hthr" enter_threshold:="$ent" exit_threshold:="$ext" \
+    inspect_confirm_dist:="$cfd" \
     headless:=true \
     > "$RESULTS/launch_${label}_r${rep}.log" 2>&1 &
   local t=0
@@ -95,12 +102,16 @@ run_one() {
 }
 
 echo "=== BATERIA: REPS=$REPS MAX_RUN_S=$MAX_RUN_S ==="
-while read -r label eta sa scen react keepout avoid npos nint; do
+while read -r label eta sa scen react keepout avoid npos nint sel trig hthr ent ext cfd; do
   [ -z "$label" ] && continue
   scen=${scen:-default}; react=${react:-stay_alert}
   keepout=${keepout:-false}; avoid=${avoid:-true}; npos=${npos:-0.0}; nint=${nint:-0.0}
+  # resubmissão: defaults preservam o método proposto
+  sel=${sel:-saliency}; trig=${trig:-phi}
+  hthr=${hthr:--1.0}; ent=${ent:-0.45}; ext=${ext:-0.25}; cfd=${cfd:-0.0}
   for r in $(seq 1 "$REPS"); do
-    run_one "$label" "$eta" "$sa" "$scen" "$r" "$react" "$keepout" "$avoid" "$npos" "$nint"
+    run_one "$label" "$eta" "$sa" "$scen" "$r" "$react" "$keepout" "$avoid" \
+            "$npos" "$nint" "$sel" "$trig" "$hthr" "$ent" "$ext" "$cfd"
   done
 done <<< "$MATRIX"
 echo "=== BATERIA COMPLETA — CSVs em $RESULTS ==="

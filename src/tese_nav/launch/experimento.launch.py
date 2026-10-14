@@ -53,6 +53,15 @@ def generate_launch_description():
             'publish_keepout': LaunchConfiguration('publish_keepout'),
             'enable_reactive_avoid': LaunchConfiguration('enable_reactive_avoid'),
             'run_seed': LaunchConfiguration('run_seed'),
+            # resubmissão: contrastes de um fator (R2#3) e varreduras (R2#5/R2#6)
+            'selection_mode': LaunchConfiguration('selection_mode'),
+            'trigger_mode': LaunchConfiguration('trigger_mode'),
+            'thermal_threshold': LaunchConfiguration('thermal_threshold'),
+            'acoustic_threshold': LaunchConfiguration('acoustic_threshold'),
+            'hazard_threshold': LaunchConfiguration('hazard_threshold'),
+            'enter_threshold': LaunchConfiguration('enter_threshold'),
+            'exit_threshold': LaunchConfiguration('exit_threshold'),
+            'inspect_confirm_dist': LaunchConfiguration('inspect_confirm_dist'),
         }.items())
 
     return LaunchDescription([
@@ -78,6 +87,21 @@ def generate_launch_description():
                               description='§8: recuo reativo (false = ablação keepout-só)'),
         DeclareLaunchArgument('run_seed', default_value='0',
                               description='§13: semente por run (ruído independente + registro)'),
+        # --- resubmissão (Access-2026-46291) ---
+        DeclareLaunchArgument('selection_mode', default_value='saliency',
+                              description="R2#3: 'saliency' (método) | 'nearest' (HEU)"),
+        DeclareLaunchArgument('trigger_mode', default_value='phi',
+                              description="R2#3: 'phi' (método) | 'range' (HEU)"),
+        DeclareLaunchArgument('thermal_threshold', default_value='-1.0'),
+        DeclareLaunchArgument('acoustic_threshold', default_value='-1.0'),
+        DeclareLaunchArgument('hazard_threshold', default_value='-1.0',
+                              description='R2#6: elegibilidade do perigo = PRECEDÊNCIA'),
+        DeclareLaunchArgument('enter_threshold', default_value='0.45',
+                              description='R2#6: limiar de AÇÃO da FSM'),
+        DeclareLaunchArgument('exit_threshold', default_value='0.25',
+                              description='R2#6: saída (largura de histerese)'),
+        DeclareLaunchArgument('inspect_confirm_dist', default_value='0.0',
+                              description='R2#5: confirmação (0 = auto = 3.3 m)'),
         simulation,
         TimerAction(period=sa_delay, actions=[stay_alert]),
     ])
