@@ -20,7 +20,7 @@ F5 bateria noite 2        ████████████ 100%  6/6 blocos,
 F6 análises retrospectivas██████░░░░░░  50%  F6.1/F6.2 feitos, F6.3 dispensado
 F7 reanálise + figuras    █████████░░░  75%  Fig. resíduo + tabelas novas
 F8 reescrita              ███████████░  92%  ← AQUI (falta F9)
-F9 empacotamento          ░░░░░░░░░░░░   0%
+F9 empacotamento          ███░░░░░░░░░  20%  carta escrita
 ```
 
 **Próxima ação:** rodar a **noite 1** (`bash rodar_bateria_resub.sh noite1`, ~8,8 h,
@@ -528,7 +528,7 @@ nenhuma para $\eta=0$). O texto agora diz isso e aponta o artefato.
 | id | tarefa | status |
 |---|---|---|
 | F9.1 | **Confirmar no portal** o pacote de revisão anterior (qual slot juntou a carta) | `[ ]` |
-| F9.2 | Carta-resposta no formato a/b/c por comentário | `[ ]` |
+| F9.2 | Carta-resposta (`response_to_reviewers_46291.md`, 4.079 palavras) | `[x]` |
 | F9.3 | Highlighted PDF (mudanças em amarelo) | `[ ]` |
 | F9.4 | Clean PDF + fonte LaTeX | `[ ]` |
 | F9.5 | Resposta **só** em *Author's Response Files* | `[ ]` |
