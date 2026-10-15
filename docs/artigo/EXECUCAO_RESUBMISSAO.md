@@ -512,14 +512,23 @@ missão**, onde $\Phi=0$ para qualquer $\eta$. Ao longo da missão ele separa
 limpo (difere de $\alpha|\delta|$ em ~64% das amostras para todo $\eta>0$ e em
 nenhuma para $\eta=0$). O texto agora diz isso e aponta o artefato.
 
+> ### ✓ REFERÊNCIAS CONFERIDAS PELO AUTOR (2026-10-14)
+> As 4 entradas da resubmissão foram verificadas contra Crossref e fontes
+> editoriais, e `references.bib` foi substituído pela versão conferida. Diff
+> auditado: 25 entradas em ambos, **nenhuma entrada pré-existente alterada**,
+> DOIs acrescentados nas quatro.
+>
+> **Uma correção material:** a autoria de `macenski2023survey` que eu havia
+> escrito estava **errada** — eu tinha posto os coautores de *The Marathon 2*
+> (Martín, White, Clavero) em vez dos do survey (Moore, Lu, Merzlyakov,
+> Ferguson). Exatamente o risco que a geração de metadados sem base
+> bibliográfica cria. Corrigido.
+>
 > ### ⚠ PENDÊNCIA QUE SÓ O AUTOR PODE RESOLVER
-> As 4 referências novas (`ames2019cbf`, `wabersich2021filter`, `macenski2022ros2`,
-> `macenski2023survey`) foram escritas **de memória**: este ambiente não tem acesso
-> a base bibliográfica. **Conferir autores, volume, páginas, ano e DOI de cada uma
-> antes de submeter.** O aviso está também no topo do bloco em `references.bib`.
-> Igualmente: **não foi possível compilar** (`ieeeaccess.cls` ausente). As tabelas
-> foram escritas sem `\multirow` de propósito, para não depender de pacote não
-> verificável, mas a compilação precisa ser feita no Overleaf antes do submit.
+> **Não foi possível compilar** (`ieeeaccess.cls` ausente neste ambiente). As
+> tabelas foram escritas sem `\multirow` de propósito, para não depender de
+> pacote não verificável, mas a compilação no Overleaf é obrigatória antes do
+> submit. Os DOIs devem ser clicados uma última vez no PDF compilado.
 
 ---
 
