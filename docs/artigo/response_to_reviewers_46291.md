@@ -8,9 +8,7 @@ Threshold-Triggered Attraction–Repulsion Layer for Substation Inspection"**
 
 We thank the Associate Editor for the opportunity to resubmit, and the three
 reviewers for a review that was both demanding and precise. We are grateful that the
-decision allowed a further round: the comments identified a mismatch between what the
-article claimed and what its evidence supported, and following them has produced a
-narrower but considerably better-founded paper. Two reviewers converged on the same
+decision allowed a further round: the comments identified a mismatch between the article's framing and the scope of its evidence, and addressing them has produced a more precisely delimited contribution. Two reviewers converged on the same
 central point — that the value-update formulation is foregrounded in the title,
 abstract and contributions while the authors' own ablation shows it does not
 influence any executed action — and both offered the same fork: instantiate the term
@@ -134,8 +132,7 @@ about why we did **not** take the first, since we considered it. A boundedness o
 decay property of the perturbation is available for generic reward augmentation as
 well, so it would not distinguish Φ; and any such statement must carry the factor
 1/α, because ηΦ sits outside the α-multiplication, which is precisely the equivalence
-to reward augmentation we already derive. Adding a lemma would have dressed the
-section without answering the question.
+to reward augmentation we already derive. A lemma on those terms would not have answered the question the comment raises.
 
 **Action (implemented).** The update is demoted to a Design Note. No new formal claim
 is made. We also corrected a statement from the previous version: we had written that
@@ -156,22 +153,53 @@ character: the residual contains ηΦ by construction.
 it entirely. We built exactly that baseline (G2), plus a one-factor variant, and
 declared the scenarios before running.
 
-**Action.** New §V-C. Results, with the confirmatory/exploratory boundary marked:
+**Action.** New §V-C. Results, with the confirmatory/exploratory boundary marked and
+with care about what the comparison does and does not establish:
 
-- **Confirmatory, `default`:** HEU-sel is indistinguishable from the proposed layer on
-  every metric (p_Holm = 1.0000 throughout, |δ| ≤ 0.19, all intervals contain zero).
-  HEU differs in retreats, investigation time and duration. The clearance difference
-  does not survive correction (p_Holm = 0.0511) and is 6 cm; we report it as
-  operationally irrelevant rather than as an advantage.
-- **Exploratory, `conflict`:** HEU inspects the anomaly co-located with the hazard and
-  the minimum clearance falls from 4.84 to 2.23 m (Cliff's δ = +1.00, complete
-  separation; CI [+2.60, +2.63] m; p < 0.0001), with 4 retreats instead of 1, +106 s
-  of mission, and the priority inspection delayed ≈105 s.
-- **Exploratory, `adverse`:** all three inspect all five anomalies.
+- **Confirmatory, `default`:** across all ten runs of each configuration, the proposed
+  layer and HEU-sel produced *the same constant value* on every discrete behavioural
+  outcome — 3 anomalies inspected, 1 retreat, 4 route deviations, 0 timeouts, 0
+  contact-region entries, 0 clearance-band entries. This is a statement about the
+  observed outcomes, not a test result. On the continuous metrics the ranges overlap
+  and no difference is detected (p_Holm = 1.0000; |δ| ≤ 0.19). HEU differs in
+  retreats, investigation time and duration. The clearance difference does not survive
+  correction (p_Holm = 0.0511) and is 6 cm; we report it as operationally irrelevant
+  rather than as an advantage.
+- **Exploratory, `conflict`:** HEU eventually inspects the anomaly co-located with the
+  hazard, and the minimum clearance falls from 4.84 to 2.23 m (Cliff's δ = +1.00,
+  complete separation; CI [+2.60, +2.63] m; p < 0.0001), with 4 retreats instead of 1,
+  +106 s of mission, and the priority inspection delayed ≈105 s. Here too the discrete
+  outcomes of HEU-sel and the proposed layer are constant and identical across ten
+  runs each.
+- **Exploratory, `adverse`:** all three configurations inspect four or five anomalies,
+  and here the discrete outcomes are *not* constant: anomalies inspected take values
+  {4, 5} and route deviations {8…11} for the proposed layer and {8…12} for HEU-sel.
+  The distributions overlap and no difference is detected.
 
-**The resulting claim is narrower than the one we previously made, and we say so in
-the text.** The saliency weighting is inert; the arbitration rule is what
-distinguishes the layer from a generic deviate-and-return heuristic.
+**On what we do and do not claim.** We state that no difference was detected between
+the proposed layer and the one-factor selection variant, and in the `default` and
+`conflict` scenarios that the observed discrete outcomes were identical. We do **not**
+claim statistical equivalence: with ten runs per group, failure to detect a difference
+does not establish its absence, and we have not specified equivalence margins for
+these metrics as we did for mission time elsewhere in the article. The defensible
+reading is that the selection criterion had no detectable effect on these scenarios at
+this sample size.
+
+**On attribution.** HEU-sel differs from the proposed layer only in the selection
+criterion; HEU differs from HEU-sel only in the trigger mode. The conflict-scenario
+effect therefore attaches to the **trigger mode**, and we are careful about what that
+switch bundles: it replaces a threshold on the decaying field by instantaneous raw
+detection, so it changes the trigger *and* removes the field's temporal persistence
+from the decision. It does **not** remove the safety precedence — inspection of the
+logs shows HEU preempting the investigation three times per run
+(`deferred_hazard`), after which the deferral releases the target and the attraction
+re-fires, producing the oscillation and, eventually, the inspection. We therefore
+attribute the effect to the loss of temporal persistence in the hazard channel rather
+than to the absence of a precedence rule, and we present this as the reading most
+consistent with the logs rather than as an isolated factor: separating "trigger
+source" from "temporal persistence" would require a further variant that we did not
+run. The marginal-hazard configuration (R2.6) provides independent evidence that the
+persistence is what produces prolonged suppression.
 
 ### R2.4 — Confirmatory/exploratory boundary; the ≈26% bound
 
@@ -251,20 +279,34 @@ headline numbers.
 
 ### R2.8 — Does the discontinuity at d = R affect the FSM?
 
-**Response (implemented, retrospective).** A global transition count would not isolate
-the boundary's effect, and a tangential trajectory could touch the boundary without
-crossing it. Since the real patrol crosses d = R in both directions several times per
-run, we measured on the existing logs, treating a gap in the field trace as time
-outside every sensing radius.
+**Response (implemented, retrospective).** We measured on the existing logs, and we
+state the limits of what those logs can establish, because an earlier version of this
+analysis over-read them.
 
-**Action.** Across the default scenario: 30 inward and 30 outward crossings in ten
-runs; median jump at entry 0.436 (max 0.686), consistent with the |w·Iₑ/2| the
-profile predicts — the discontinuity is real and of the expected size. Only 10 of 30
-inward crossings are followed by a transition within 2 s, so the step does not
-reliably drive the machine. Shortest interval between transitions: 9.8 s (default),
-7.0–9.6 s (noise, conflict). In the dense scenario it is 0.2 s; inspecting those cases
-shows they are back-to-back servicing of a cluster or an episode ended by a transient
-Nav2 goal abort — neither arising from the boundary.
+**Action.** What is directly measured is the *magnitude of the step in the reported
+field at event onset*: median 0.436, maximum 0.686 across the default scenario, which
+matches the |w·Iₑ/2| the profile predicts. The discontinuity is therefore real and of
+the expected size. Of the onsets observed, fewer than half are followed by a state
+transition within 2 s, so the step does not by itself drive the machine. The interval
+between consecutive state transitions is measured directly and shows no boundary
+chattering: shortest 9.8 s in the default scenario and 7.0–9.6 s under noise and
+conflict. In the dense scenario the shortest interval is 0.2 s; inspecting those cases
+shows back-to-back servicing of a cluster or an episode ended by a transient Nav2 goal
+abort, neither arising from the boundary.
+
+What these logs **cannot** establish is the timing of outward crossings. The field is
+recorded only while it exceeds the residual ε, and the hazard and attraction channels
+decay rather than switching off, so the record falls silent roughly 38 s after the
+last observation of an event rather than when the robot leaves the sensing radius. We
+verified this: in every silence observed, the last recorded magnitude is exactly the
+decay floor (10⁻³), with no abrupt drops. Silences therefore date decay completion,
+not geometry, and the count of recorded onsets is a lower bound, since an event
+entering while the field is still decaying leaves no gap. We have accordingly removed
+the outward-crossing count from the article and report only the step magnitude, the
+onset-to-transition association and the transition intervals. A direct test of the
+boundary would require logging the field continuously and instrumenting the geometric
+crossing, which we identify as the appropriate instrument rather than claim to have
+used.
 
 ### R2.9 — The band in the residual figure
 
@@ -352,11 +394,9 @@ regulatory electrical clearance.
 **Response (implemented).** Agreed on all three.
 
 **Action.** A single consolidated table now reports mission time, distance, clearance,
-inspections and time-to-priority-target with bootstrap intervals. On tuning we are
-explicit and unflattering to ourselves: the APF gains were set by manual sweep until
+inspections and time-to-priority-target with bootstrap intervals. On tuning we state the procedure and its asymmetry: the APF gains were set by manual sweep until
 the baseline completed the default scenario without local-minimum stalls, its approach
-parameters differ (1.8 m standoff and 30 s budget against 2 m and 40 s), and **we did
-not invest comparable effort** in tuning it. The time advantage should be read with
+parameters differ (1.8 m standoff and 30 s budget against 2 m and 40 s), and we did not invest comparable effort in tuning it. The time advantage should be read with
 that asymmetry in mind, and the comparison that *does* isolate the supervisor on a
 shared controller is the new heuristic baseline. We also removed a sentence from the
 previous version that left a same-controller heuristic as future work; it is now part
@@ -397,10 +437,9 @@ configuration; we state the direction of each adjustment and report both views.
 
 ### R3 minor 3 — Response letter and placeholders in the manuscript; length
 
-**Response (implemented).** We apologise for this. On investigation the appended
-letter did not originate in the manuscript source — the clean and highlighted PDFs
+**Response (implemented).** We regret the inconvenience this caused. On investigation, the appended letter did not originate in the manuscript source — the clean and highlighted PDFs
 contain no reviewer text — but in how the files were supplied for the review package.
-The cause is ours regardless, and the remedy is at our end: the response is uploaded
+The remedy is at our end: the response is uploaded
 only under *Author's Response Files*, and we verify the merged review proof page by
 page before submitting. The template `\history` and `\doi` fields have been
 neutralised.
@@ -437,12 +476,4 @@ is due to it, and the arbitration rule governing when the reactive layer defers.
 
 ## Closing
 
-The three reviewers' comments converged on a single discipline: say only what the
-evidence attributes. Following it cost us the paper's headline claim — affective value
-modulation — and also the claim that replaced it, saliency weighting, which the new
-baseline shows to be inert. What remains is smaller and, we believe, more useful to
-someone building inspection behaviours on Nav2: a two-layer architecture whose
-arbitration rule has a measured benefit and a measured cost, with the safety result
-correctly attributed to the keep-out that produces it. We thank the reviewers for
-insisting on the comparison that made this possible, and the Editor for the
-opportunity to resubmit.
+The reviewers' comments converged on a single requirement: that each claim be attributed to the evidence that supports it. Meeting it changed what the article claims. The value-update framing is now a design note; the saliency weighting, which replaced it as the candidate mechanism, showed no detectable effect in the new same-controller comparison; and the safety result is attributed to the keep-out that produces it. What the article now offers is a two-layer architecture characterised on both sides — the temporal persistence of its hazard channel has a measured benefit under conflict and a measured cost under a marginal hazard — together with an evaluation that separates what each component contributes. We thank the reviewers for requiring the comparison that made the attribution possible, and the Editor for the opportunity to resubmit.

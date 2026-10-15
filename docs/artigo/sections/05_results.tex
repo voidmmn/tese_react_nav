@@ -174,7 +174,10 @@ confirmation criterion and return-to-patrol logic:
 triggered by \emph{raw detection} (an event inside the sensing radius) rather than by
 a threshold on $\Phi$, selects the \emph{nearest} target rather than the most
 salient, and arbitrates by the plain rule ``hazard in range $\Rightarrow$ deviate''.
-It therefore discards both the saliency weighting and the categorical precedence.
+It therefore replaces both the saliency weighting and the field-based arbitration by
+raw-detection equivalents. Note that it still resolves hazards first---the preemption
+check precedes the attraction check---so what it lacks is not a precedence rule but
+the temporal persistence the decaying field provides.
 \item \textbf{HEU-sel}, a one-factor variant: identical to the proposed layer
 \emph{except} that it selects the nearest rather than the most salient target.
 \end{itemize}
@@ -212,15 +215,35 @@ matches the proposed layer on every metric.
 five anomalies; HEU performs one additional retreat and the clearance differences are
 of the order of centimetres.
 
-Two conclusions follow, and they point in opposite directions for the two components
-of the field. The \emph{selection} rule is inert: replacing saliency by proximity
-changed no measured outcome in any of the three scenarios. What is not inert is the
-\emph{categorical precedence} carried by the sign of $\Phi$: discarding it, as the
-generic supervisor does, trades safety and timeliness for one extra inspection
-precisely when a hazard and a salient anomaly coincide. We therefore attribute the
-reactive layer's advantage over a generic deviate-and-return heuristic to the
-arbitration rule rather than to the saliency weighting, and we note that this is a
-narrower claim than the one made in the previous version of this article.
+%% Atribuicao: HEU-sel difere do metodo SO na selecao; HEU difere de HEU-sel SO no
+%% modo de disparo. Logo o efeito do conflito se prende ao modo de disparo -- e esse
+%% switch agrupa duas coisas (fonte do disparo e persistencia temporal do campo), que
+%% nao separamos. NAO dizer que HEU "descarta a precedencia": os logs mostram o
+%% contrario (tres preempcoes deferred_hazard por run).
+Two readings follow, and we are careful to bound each. First, the \emph{selection}
+criterion had no detectable effect: in the \texttt{default} and \texttt{conflict}
+scenarios the proposed layer and HEU-sel produced the same constant value on every
+discrete outcome across all ten runs of each, and in \texttt{adverse} the outcomes
+vary within both groups and overlap. We do not claim equivalence---with ten runs per
+group, failure to detect a difference does not establish its absence, and we have not
+specified equivalence margins for these metrics---only that the criterion made no
+difference we could detect here.
+
+Second, the conflict-scenario effect attaches to the \emph{trigger mode}, since that
+is the only factor separating HEU from HEU-sel. We are explicit about what that
+switch bundles: it replaces a threshold on the decaying field by instantaneous raw
+detection, changing the trigger \emph{and} removing the field's temporal persistence
+from the decision. It does \emph{not} remove the safety precedence. The logs show HEU
+preempting the investigation three times per run (\texttt{deferred\_hazard}); each
+deferral releases the target, the attraction re-fires once the hazard is momentarily
+out of range, and the inspection eventually completes---which is the oscillation
+visible as four retreats. We therefore read the effect as the loss of \emph{temporal
+persistence} in the hazard channel rather than the absence of a precedence rule, and
+we present this as the reading most consistent with the logs rather than as an
+isolated factor: separating the trigger source from the persistence would require a
+further variant we did not run. Section~\ref{sec:precedence-cost} supplies independent
+evidence that the persistence is what produces prolonged suppression. This attribution
+is narrower than the one made in the previous version of this article.
 
 \begin{table*}[t]
 \centering
@@ -696,16 +719,30 @@ episode close, not the minimum over the approach, which is not instrumented per 
 %% trajetoria tangente poderia so tocá-la. A ronda real cruza d=R nos dois sentidos
 %% varias vezes por run, entao medimos sobre os logs existentes.
 The intensity profile is $I_e/2$ at $d=R$ and zero immediately beyond, a step in the
-reported signal. The patrol crosses this boundary in both directions several times
-per run, so we measure its effect on the existing logs rather than constructing a
-dedicated trajectory---a tangential path risks touching the boundary without crossing
-it. Taking a gap in the field trace as time spent outside every sensing radius, the
-first sample after a gap is an inward crossing and the last before it an outward one.
-Across the default scenario we observe $30$ inward and $30$ outward crossings in ten
-runs, with a median jump at entry of $0.436$ (maximum $0.686$), consistent with the
-$|w\,I_e/2|$ predicted by the profile: the discontinuity is real and of the expected
-size. Only $10$ of those $30$ inward crossings are followed by a state transition
-within $2$~s, so the step does not reliably drive the machine. The shortest interval
+reported signal. %% A versao anterior desta analise inferia cruzamentos a partir de lacunas no log de
+%% Phi. Isso nao se sustenta: os canais DECAEM em vez de desligar, e o registro so
+%% existe acima do residual eps, entao a lacuna comeca ~38 s APOS a ultima observacao
+%% -- ela data o fim do decaimento, nao a geometria. Verificado: em toda lacuna
+%% observada o ultimo valor registrado e exatamente o piso de 1e-3, sem quedas
+%% abruptas. Reportamos apenas o que o log mede de fato.
+We measure what the recorded field can support, and state what it cannot. What is
+directly measured is the \emph{magnitude of the step at event onset}: a median of
+$0.436$ and a maximum of $0.686$ across the default scenario, matching the
+$|w\,I_e/2|$ the profile predicts. The discontinuity is therefore real and of the
+expected size. Fewer than half of the observed onsets are followed by a state
+transition within $2$~s, so the step does not by itself drive the machine.
+
+These logs cannot, however, time the \emph{outward} crossings. The field is recorded
+only while it exceeds the residual $\varepsilon$, and both channels decay rather than
+switching off, so the record falls silent roughly $38$~s after an event was last
+observed rather than when the robot leaves the sensing radius. We verified this: in
+every silence observed, the last recorded magnitude is exactly the decay floor
+($10^{-3}$), with no abrupt drops. Silences therefore date decay completion rather
+than geometry, and the count of recorded onsets is a lower bound, since an event
+entering while the field is still decaying produces no silence to mark it. A direct
+test of the boundary would require logging the field continuously and instrumenting
+the geometric crossing; we identify that as the appropriate instrument rather than
+claim to have used it. The shortest interval
 between consecutive transitions is $9.8$~s in the default scenario and $7.0$--$9.6$~s
 in the noise and conflict scenarios, with no sign of boundary chattering. In the
 dense scenario the shortest interval is $0.2$~s, and inspection of those cases shows
@@ -778,7 +815,7 @@ confirmation criterion is quantified by re-scoring the same trajectories at othe
 thresholds; and the claim that the reactive layer outperforms a generic
 deviate-and-return behavior is now tested directly against such a behavior on the
 same controller (Section~\ref{sec:heu}), with the result that the saliency weighting
-is inert and only the arbitration survives. The gaps that remain stated rather than
+shows no detectable effect and the trigger mode carries the difference. The gaps that remain stated rather than
 probed are those requiring a different perception model: false positives and
 negatives, event persistence, and localization drift.
 

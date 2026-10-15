@@ -19,16 +19,21 @@ minimum clearance indistinguishable from the full method ($1.73$ vs.\ $1.71$~m;
 $p_{\mathrm{Holm}}=0.42$), so the safety benefit is attributable to the deliberative
 keep-out rather than to the reactive weighting; the reactive layer's contribution
 there is the inspections themselves ($3$ vs.\ $0$ of $3$) at a cost of $31$~s.
-Second, the \emph{selection} rule is inert: a variant differing only in selecting the
-nearest instead of the most salient target reproduced the method in every scenario
-and every metric. What is not inert is the categorical precedence---a generic
+Second, the \emph{selection} criterion had no detectable effect: a variant differing
+only in selecting the nearest instead of the most salient target produced the same
+constant discrete outcomes as the proposed layer across all ten runs in the
+\texttt{default} and \texttt{conflict} scenarios, and overlapping distributions in
+\texttt{adverse}. We do not claim equivalence, only that no difference was detected at
+this sample size. What did change the outcome is the \emph{trigger mode}: a generic
 detect--select--deviate--return heuristic on the same Nav2/MPPI controller, driven by
-raw detection, inspects the anomaly co-located with a hazard and halves the minimum
-clearance ($4.84$ vs.\ $2.23$~m, Cliff's $\delta=+1.00$) while delaying the priority
-inspection by ${\approx}105$~s. Third, that precedence carries a measured cost: a
+raw detection, eventually inspects the anomaly co-located with a hazard and halves the
+minimum clearance ($4.84$ vs.\ $2.23$~m, Cliff's $\delta=+1.00$) while delaying the
+priority inspection by ${\approx}105$~s. That switch removes the hazard channel's
+temporal persistence rather than its precedence---the heuristic still preempts, three
+times per run---so we attribute the difference to the persistence. Third, that precedence carries a measured cost: a
 marginally eligible hazard suppresses attraction for ${\approx}70$~s and forfeits one
-of four inspections in $10/10$ runs. Taken together, the arbitration rule---not the
-saliency weighting---is what distinguishes this layer from a generic deviate-and-return
+of four inspections in $10/10$ runs. Taken together, it is the temporal persistence of the hazard channel---not the
+saliency weighting---that distinguishes this layer from a generic deviate-and-return
 heuristic, and it trades completeness for clearance in a way that is now quantified in
 both directions.
 
@@ -59,9 +64,9 @@ general scaling claim. The value table is tabular and, as Appendix~\ref{app:upda
 records, does not select the executed actions; we therefore make no convergence or
 policy-invariance claim for the augmented update.
 
-\paragraph*{Future work} The inert selection rule and the quantified cost of the
-precedence both point the same way: the arbitration, not the weighting, is where
-further work belongs. A policy that \emph{learns} when to defer to the hazard channel
+\paragraph*{Future work} The absence of a detectable effect from the selection rule
+and the quantified cost of the persistence point the same way: the arbitration and its
+temporal extent, not the weighting, are where further work belongs. A policy that \emph{learns} when to defer to the hazard channel
 instead of always deferring would address the over-conservatism we measured, and the
 value formulation in Appendix~\ref{app:update} is the natural substrate for it---but
 it requires an exploration policy, an action-to-velocity mapping and a comparison
