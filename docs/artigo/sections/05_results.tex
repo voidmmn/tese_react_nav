@@ -112,14 +112,17 @@ Update residual          & $0.000$ & $0.021\pm0.009$ & $0.021\pm0.007$ & $0.020\
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{box_panel}
-\caption{Per-run distributions of the key metrics ($\triangle$ = mean) for the
-fixed baseline (E1), the $\eta=0$ ablation (E0), the method (E3), the adverse
-scenario (E5), and the potential-field baseline (APF). The fixed baseline never
-inspects nor retreats; in the default scenario the affective configurations do so
-consistently (tight boxes) with E0 matching E3, and APF matches inspection at a
-longer mission duration. The dense adverse scenario (E5) shows a spread in
-anomalies inspected---not every run completes all five---consistent with the
-density limit reported in Section~\ref{sec:adverse}.}
+\caption{Per-run distributions of the key metrics ($\triangle$ = mean), all in the
+\texttt{default} scenario: the fixed patrol, the potential-field baseline (APF), the
+generic heuristic supervisor (HEU), the one-factor selection variant (HEU-sel) and
+the proposed layer. The fixed patrol never inspects nor retreats; the four reactive
+configurations all inspect the three anomalies, and HEU-sel is indistinguishable from
+the proposed layer throughout. HEU performs a second retreat and APF needs a longer
+mission for the same inspections. Every configuration shown ran in the same scenario
+and, except for APF, on the same Nav2/MPPI controller; the adverse and conflict
+scenarios are reported separately (Sections~\ref{sec:adverse} and~\ref{sec:heu})
+rather than placed alongside these, since comparing across scenarios in one panel
+would not be a direct comparison.}
 \label{fig:box}
 \end{figure}
 
@@ -143,9 +146,14 @@ whereas E1 traces the round directly.
 \centering
 \includegraphics[width=\columnwidth]{traj_overlay}
 \caption{Representative trajectories on the default scenario: the baseline
-patrol (E1, gray) follows the round directly, whereas the proposed layer
-(E3, Stay Alert, blue) deviates to approach the anomalies (thermal $\triangle$,
-acoustic $\square$) and skirts the hazard ($\times$) zone. World frame, metres.}
+patrol (gray) follows the round directly, whereas the proposed layer (blue) deviates
+to approach the anomalies (thermal $\triangle$, acoustic $\square$) and skirts the
+hazard ($\times$) zone. World frame, metres. \emph{Provenance:} these two traces come
+from a separate pose-logging session, not from the reported battery---continuous pose
+is not recorded during the evaluation runs---so the figure illustrates the
+\emph{qualitative} deviate-and-return mechanism and carries no quantitative claim;
+all numbers in this article come from the battery described in
+Section~\ref{sec:setup}.}
 \label{fig:traj}
 \end{figure}
 

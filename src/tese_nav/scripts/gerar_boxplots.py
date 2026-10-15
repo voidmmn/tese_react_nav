@@ -1,8 +1,19 @@
 #!/usr/bin/env python3
-"""Painel 2x2 de boxplots das métricas-chave p/ o paper (bateria uniforme).
-Lê ~/tese_ws/results/metrics_*.csv, EXCLUI spawn-fails (distância~0).
-Configs: E1 (baseline), E0 (ablação η=0), E3 (método), E5 (adverso),
-APF (baseline reativo). Saída: box_panel.pdf/.png."""
+"""Painel 2x2 de boxplots das métricas-chave p/ o paper.
+
+RESUBMISSÃO -- duas correções na seleção de configs:
+ 1) Sai o E0 (ablação η=0). O termo de valor foi rebaixado a nota de apêndice,
+    então dar-lhe um slot no painel principal contradiz o reposicionamento
+    (R3#1/R2#1 pedem consistência entre título, abstract, corpo e figuras).
+ 2) Sai o E5. Ele é cenário `adverse`, enquanto os demais são `default`: tê-los
+    lado a lado no mesmo painel é comparar cenários diferentes como se fossem
+    uma comparação direta -- o mesmo defeito que corrigimos nas tabelas.
+Entram HEUd e HEUseld, que são a comparação central da resubmissão e rodam no
+MESMO cenário e MESMO controlador.
+
+Configs (todas `default`): E1 (ronda fixa), APF (campo potencial), HEUd
+(heurística genérica), HEUseld (variante de um fator), E3 (proposta).
+Saída: box_panel.pdf/.png."""
 import csv, glob, os, re
 import matplotlib
 matplotlib.use('Agg')
@@ -11,7 +22,9 @@ import numpy as np
 
 RES = os.path.expanduser('~/tese_ws/results')
 LABEL_RE = re.compile(r'metrics_([A-Za-z0-9]+)_\d{8}_\d{6}\.csv$')
-EXPS = ['E1', 'E0', 'E3', 'E5', 'APF']
+EXPS = ['E1', 'APF', 'HEUd', 'HEUseld', 'E3']
+NOMES = {'E1': 'Fixed', 'APF': 'APF', 'HEUd': 'HEU',
+         'HEUseld': 'HEU-sel', 'E3': 'Proposed'}
 PANELS = [
     ('anomalies_unique', 'Anomalies inspected'),
     ('min_hazard_distance_m', 'Min. hazard distance [m]'),
@@ -54,12 +67,13 @@ def vals(exp, metric):
 fig, axes = plt.subplots(2, 2, figsize=(6.8, 5.2))
 for ax, (metric, label) in zip(axes.ravel(), PANELS):
     data = [vals(e, metric) or [np.nan] for e in EXPS]
-    ax.boxplot(data, labels=EXPS, showmeans=True)
+    ax.boxplot(data, labels=[NOMES.get(e, e) for e in EXPS], showmeans=True)
     ax.set_ylabel(label, fontsize=8)
     ax.tick_params(labelsize=8)
     ax.grid(True, axis='y', ls=':', alpha=0.4)
 fig.tight_layout()
-fig.savefig('box_panel.pdf')
-fig.savefig('box_panel.png', dpi=150)
+OUT = os.path.expanduser('~/tese_ws/docs/artigo/figs/box_panel')
+fig.savefig(OUT + '.pdf')
+fig.savefig(OUT + '.png', dpi=150)
 n = {e: len(vals(e, 'anomalies_unique')) for e in EXPS}
 print('salvo box_panel.pdf/.png | n válidos por config:', n)
