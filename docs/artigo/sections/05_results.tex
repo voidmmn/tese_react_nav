@@ -499,15 +499,21 @@ intensity beside the first patrol leg, which the robot observes and then leaves
 behind, together with a legitimate acoustic anomaly of intensity $0.95$---the most
 salient event in the scenario---placed $4.3$~m from the hazard, well outside it.
 
-The result is deterministic across all ten runs. The suppression window lasts
-$69.5$~s (range $67.3$--$72.4$), exactly one retreat fires, and the salient anomaly
-is \emph{never} inspected: $0/10$ runs, so the robot ends every mission having
-inspected $3$ of the $4$ anomalies, and the one it forfeits is the strongest. The
+The result is the same in all ten runs: exactly one retreat fires and the salient
+anomaly is \emph{never} inspected ($0/10$), so the robot ends every mission having
+inspected $3$ of the $4$ anomalies, forfeiting the strongest. We define the
+suppression window as the interval between the first and the last logged sample in
+which the hazard channel governs the field ($\Phi<0$) while its magnitude is below the
+retreat threshold. So measured it lasts $69.5$~s (range $67.3$--$72.4$). It is not
+pure decay: the hazard is re-observed within the window and the field magnitude rises
+again in a median of two samples per run, which is why it exceeds what decay alone
+from the initial magnitude would give. The
 priority-target metric records the same outcome from the other side: the acoustic
-priority target is censored at the $400$~s horizon in $10/10$ runs. The categorical
-precedence therefore does not merely risk over-conservatism---in this configuration
-it costs one inspection in every run, and the cost is incurred while the robot is in
-no danger, since the hazard is by then too weak to warrant retreating from.
+priority target is censored at the $400$~s horizon in $10/10$ runs. The categorical precedence therefore does not merely risk over-conservatism: in this
+configuration it costs one inspection in every run. The cost is incurred under
+conditions in which the layer itself would not act on the hazard---throughout the
+window the robot's minimum distance to it is $3.92$~m (range $3.86$--$4.06$) and its
+magnitude is below the retreat threshold.
 
 We emphasise one reading that the numbers do not support. CM and the full conflict
 scenario both end with three anomalies inspected, but the two threes are not
@@ -525,10 +531,10 @@ $4.83$~m, $p=0.39$; identical inspections and retreats). Raising it to $0.40$
 \emph{degrades} safety: the minimum clearance falls to $3.78$~m (Cliff's
 $\delta=+1.00$, bootstrap CI of the difference $[+0.99,+1.10]$~m, $p<0.0001$) and the
 mission lengthens by $9.1$~s, because a higher eligibility threshold means the hazard
-is recognised later and therefore closer. The sweep thus yields a conclusion rather
-than a range: the operating point is at a plateau on one side and a cliff on the
-other, and the clearance reported elsewhere in this article is not an artifact of a
-conveniently chosen threshold.
+is recognised later and therefore closer. We report these two contrasts and do not infer a general response curve from three
+values; what they establish is that the clearance reported elsewhere in this article
+is not produced by a threshold chosen below the value at which the degradation
+appears.
 
 \paragraph*{Hysteresis: width is immaterial, position is not}
 %% R3#3 pede os valores de histerese e limiar como sensibilidade. Os tres pares
@@ -544,8 +550,9 @@ the counted route deviations ($4\rightarrow8$, $\delta=-1.00$, $p=0.0003$) and
 shortens the mean investigation episode ($35.1\rightarrow26.6$~s, $p=0.0003$), while
 leaving the inspections unchanged at $3$ of $3$: with a higher entry threshold the
 robot lingers longer in the aroused-but-uncommitted band and commits closer to the
-target. The behavior of interest is therefore robust to the hysteresis width, and the
-\texttt{route deviations} metric should be read as sensitive to the \emph{position}
+target. Between the two widths evaluated in this scenario no difference was detected on any
+reported outcome, and we limit the statement to those two widths and that scenario.
+The \texttt{route deviations} metric should be read as sensitive to the \emph{position}
 of the entry threshold rather than as a scenario-intrinsic count.
 
 \subsection{Cost of the Inspection Behavior}
@@ -566,13 +573,18 @@ The proposed layer completes the same three inspections faster ($364$ vs.\
 $404\pm5$\,s). We are explicit about what this does \emph{not} isolate: the APF
 baseline replaces the reactive supervisor \emph{and} the controller---it commands
 velocities directly instead of issuing Nav2/MPPI goals---so the difference confounds
-the supervisor with the controller. On tuning effort we are equally explicit: the APF
-gains were set by manual sweep until the baseline completed the default scenario
-without local-minimum stalls, and its approach parameters differ from ours (standoff
-$1.8$~m and a $30$~s investigation budget, against $2$~m and $40$~s;
-Table~\ref{tab:hyper}). We did not invest comparable effort in tuning the baseline's
-thresholds to those of the proposed layer, and the time advantage should be read with
-that asymmetry in mind. The comparison that \emph{does} isolate the supervisor, on a
+the supervisor with the controller. On tuning we give the procedure and the values. The APF gains were calibrated so that
+the baseline triggers within the same sensing radius as the proposed layer---attraction
+crossing its threshold at roughly $4$--$5$~m for waypoints and repulsion at the
+${\approx}4.7$~m passage of the beside-route hazard---which was the comparability
+criterion applied. The resulting values are $k_{\text{att}}=1.5$, $k_{\text{rep}}=4.0$,
+$k_{\text{obs}}=0.6$, trigger and exit thresholds of $0.15$ and $0.08$ on the force
+magnitude, and a $12$~s post-retreat refractory added against the oscillation the
+potential-field formulation exhibits when a patrol leg passes inside the trigger
+region. Its approach parameters differ from ours (standoff $1.8$~m and a $30$~s
+investigation budget, against $2$~m and $40$~s; Table~\ref{tab:hyper}). Beyond the
+trigger-range calibration we did not search further over these values, and the time
+advantage should be read with that in mind. The comparison that \emph{does} isolate the supervisor, on a
 shared controller and shared parameters, is the heuristic of Section~\ref{sec:heu};
 the earlier version of this article left that baseline as future work and it is now
 part of the study.
@@ -695,8 +707,9 @@ and a non-confirmation does not release it---so the same recorded trajectories c
 re-scored under other thresholds without executing anything new. We do so
 retrospectively, and label it as such.
 
-Re-scoring reproduces the published figure exactly at $3.3$~m ($4/9$ full inspections
-under high noise), which validates the procedure. It also shows the reported
+Re-scoring reproduces the published figure exactly at the original $3.3$~m threshold
+($4/9$ full inspections under high noise), an internal consistency check of the
+re-scoring at that threshold. It also shows the reported
 completeness to be strongly criterion-dependent: at $2.8$~m the high-noise rate falls
 to $2/9$, and at $4.0$~m it recovers to $9/9$. The robot did approach the anomalies;
 under high noise it stopped $2.9$--$3.6$~m away because the perturbed position

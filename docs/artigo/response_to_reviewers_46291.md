@@ -11,35 +11,39 @@ reviewers for a review that was both demanding and precise. We are grateful that
 decision allowed a further round: the comments identified a mismatch between the article's framing and the scope of its evidence, and addressing them has produced a more precisely delimited contribution. Two reviewers converged on the same
 central point — that the value-update formulation is foregrounded in the title,
 abstract and contributions while the authors' own ablation shows it does not
-influence any executed action — and both offered the same fork: instantiate the term
-in action selection, or demote it. **We have demoted it, and carried that decision
+influence any executed action — and both identified two alternatives: instantiate the
+term in action selection, or demote it. **We have demoted it, and carried that decision
 through the title, keywords, abstract, contributions, method, figures and
 conclusion.** We also built the comparison that was missing (R2.3) and, in doing so,
 arrived at an attribution that is more specific than the one we previously claimed.
 
 As in the previous round we distinguish three kinds of answer: **(i) implemented** —
 a code or experiment change was made; **(ii) repositioned** — the claim was re-scoped
-to what the evidence supports; **(iii) limitation assumed** — the requested capability
-lies outside the declared contribution and is stated as a limitation rather than
-claimed. We do not represent any request as executed when it was not. Notation:
+to what the evidence supports; **(iii) acknowledged limitation** — the requested
+capability lies outside the declared contribution and is stated as a limitation
+rather than claimed. Notation:
 **G#** = global change; **R{n}.{k}** = Reviewer n, comment k.
 
 ---
 
 ## What changed, in one paragraph
 
-The article no longer claims that affective *weighting* improves inspection. The new
-same-controller comparison shows that the saliency **selection** rule is inert — a
-variant differing only in selecting the nearest rather than the most salient target
-reproduces the method in every scenario and metric. What survives is the
-**categorical safety precedence** carried by the sign of the field: a generic
-detect–select–deviate–return supervisor that discards it inspects an anomaly
-co-located with a hazard and halves the minimum clearance (4.84 → 2.23 m). And we now
-also measure what that rule *costs*: a marginally eligible hazard suppresses
-attraction for ≈70 s and forfeits one of four inspections in 10/10 runs. Separately,
-a fixed patrol carrying the same detection-triggered keep-out reproduces the full
-method's clearance, so **the safety benefit is attributed to the keep-out, not to the
-reactive layer** — stated in the abstract and the conclusion, not left to the reader.
+The revised manuscript focuses on the evaluated deliberative–reactive architecture.
+Across the tested scenarios, replacing saliency-based target selection with
+nearest-target selection produced **no statistically detectable difference** in the
+reported outcomes, with identical discrete counts in the `default` and `conflict`
+scenarios and overlapping distributions in `adverse`; we therefore no longer claim a
+demonstrated benefit from that selection criterion. The raw-detection supervisor
+behaved differently in the conflict scenario, halving the minimum clearance
+(4.84 → 2.23 m). Inspection of the logs indicates that it **retains hazard
+precedence** — it preempts the investigation three times per run — while its
+triggering logic does not use the field's temporal persistence. Because the
+trigger-mode switch changes both the decision signal and its persistence, **the
+comparison does not isolate persistence alone**, and we report that limitation
+alongside the prolonged suppression observed in the marginal-hazard scenario (one of
+four inspections forfeited in 10/10 runs). Separately, the static on-route hazard
+experiments support attributing the clearance improvement to detection-triggered
+keep-out handling.
 
 ---
 
@@ -77,10 +81,12 @@ denominator (25.9 / 28.3 / 31.2%) rather than as a single ≈26%.
 
 **New evaluation.** 13 new configurations, 130 attempted runs; 127 met the movement
 criterion and 3 remained immobile (same start-up failure mode as the earlier battery,
-verified: travelled distance ≈1.7×10⁻¹⁶). The previously reported battery is reused
-unchanged for the proposed method, licensed by a regression check confirming that the
-new parameters are no-ops on the default path (seven discrete behavioural counts
-identical; four continuous metrics within the published range).
+verified: travelled distance ≈1.7×10⁻¹⁶). The previously reported battery is reused unchanged for the proposed method. Before
+doing so we ran a regression check on the default path: two runs under the new code
+reproduced the seven discrete behavioural counts exactly and fell within the published
+range on four continuous metrics. This is a check of scope, not a proof that the new
+parameters have no effect anywhere; it covers the default configuration and the
+outcomes listed, which are the ones the reused data supply.
 
 ---
 
@@ -127,12 +133,8 @@ differences in Q cannot explain differences in behaviour.
 > such as a boundedness or decay property with a formal consequence, or explicitly
 > demote the update to a design note."*
 
-**Response (repositioned).** We take the second option, and we want to be explicit
-about why we did **not** take the first, since we considered it. A boundedness or
-decay property of the perturbation is available for generic reward augmentation as
-well, so it would not distinguish Φ; and any such statement must carry the factor
-1/α, because ηΦ sits outside the α-multiplication, which is precisely the equivalence
-to reward augmentation we already derive. A lemma on those terms would not have answered the question the comment raises.
+**Response (repositioned).** We take the second option and demote the update to a
+design note.
 
 **Action (implemented).** The update is demoted to a Design Note. No new formal claim
 is made. We also corrected a statement from the previous version: we had written that
@@ -209,9 +211,15 @@ persistence is what produces prolonged suppression.
 
 **Response (implemented).** Agreed on both counts.
 
-**Action.** §V now opens with an explicit declaration of the confirmatory family
-(three comparisons, fixed before the new runs, Holm-corrected), with everything else
-labelled exploratory *in the sentence that states it*, and two analyses additionally
+**Action.** §V now opens with an explicit declaration of the confirmatory family and
+its extent. The family comprises three contrasts, fixed before the new runs — the
+proposed layer against the generic heuristic and against the one-factor selection
+variant, both in the `default` scenario, and KOa against KOF on the on-route
+hazard — each evaluated on the same five outcomes (anomalies inspected, hazard
+retreats, minimum hazard distance, mission duration, investigation time). Holm was
+applied across the resulting set of fifteen tests, and the corrected values are the
+ones reported as p_Holm in the corresponding table. Everything else is labelled
+exploratory *in the sentence that states it*, and two analyses are additionally
 labelled retrospective. On the bound: it is now reported per denominator — 25.9% for
 n = 10, 28.3% for n = 9, 31.2% for the n = 8 group — and placed in the *same sentence*
 as the absence of contacts, in both the abstract and the conclusion. We additionally
@@ -231,15 +239,22 @@ suppression keys on the target being committed at episode *start* and a
 non-confirmation does not release it. The same recorded trajectories can therefore be
 re-scored under other thresholds without new runs, which is what we did.
 
-**Action.** Re-scoring reproduces the published 4/9 exactly at 3.3 m, which validates
-the procedure. It also shows the figure to be strongly criterion-dependent: 2/9 at
+**Action.** Re-scoring reproduces the published 4/9 exactly at the original 3.3 m
+threshold, which provides an internal consistency check of the re-scoring at that
+threshold. It also shows the figure to be strongly criterion-dependent: 2/9 at
 2.8 m and **9/9 at 4.0 m**. But that is only half the answer, and we report the other
 half: the physical closing distance genuinely degrades, from 2.23 m (median) with
 clean perception to 2.87 m under high noise, with a maximum of 3.56 m. Both effects
 are present. We state the defensible conclusion — the completeness figure is sensitive
 to the criterion *and* the approach quality degrades — rather than claiming the
-degradation is an artifact. We note the measured quantity is the distance at episode
-close, not the minimum over the approach, which is not instrumented per run.
+degradation is an artifact. We note the measured quantity is the distance at episode close, not the minimum over
+the approach, which is not instrumented per run. On generality we are explicit rather
+than implicit: the noise sweep covers two levels and the dense configuration is a
+single scenario, so neither supports a scaling claim. The abstract and the conclusion
+now state the completeness figures as rates with their denominators and attach the
+scenario they were measured in, and the remaining unmodelled factors — localization
+error, event persistence, false positives and negatives, map geometry — are listed in
+the Limitations paragraph of the conclusion rather than implied.
 
 ### R2.6 — Is the precedence operationally sensible?
 
@@ -251,19 +266,27 @@ close, not the minimum over the approach, which is not instrumented per run.
 **Action.** First, a correction of our own analysis: varying the supervisor's entry
 threshold does **not** test the precedence, because what governs suppression is the
 *modality eligibility* threshold applied before weighting. Sweeping that threshold
-over {0.20, 0.30, 0.40} in the conflict scenario: lowering it changes nothing
-measurable (p = 0.39); raising it **degrades** clearance to 3.78 m (δ = +1.00, CI
-[+0.99, +1.10] m, p < 0.0001) because the hazard is recognised later and therefore
-closer. The operating point sits on a plateau on one side and a cliff on the other.
+over the three values {0.20, 0.30, 0.40} in the conflict scenario: lowering it to
+0.20 produced no detectable difference from the operating value (p = 0.39, clearance
+4.85 vs 4.83 m); raising it to 0.40 produced a clearance of 3.78 m (δ = +1.00, CI of
+the difference [+0.99, +1.10] m, p < 0.0001), consistent with the hazard being
+recognised later and therefore closer. We report these two contrasts and do not
+characterise a general response curve from three values.
 
 Second, the marginal scenario (CM). Because the hazard channel decays, the weakest
 eligible hazard triggers one retreat at its peak and then keeps *governing* the field
-below the retreat threshold for tens of seconds. Measured across ten runs: the
-suppression window lasts 69.5 s (range 67.3–72.4), exactly one retreat fires, and the
-most salient anomaly in the scenario is **never** inspected (0/10), so the robot ends
-every mission with 3 of 4. The precedence does not merely risk over-conservatism — in
-this configuration it costs one inspection in every run, while the robot is in no
-danger. We report this as a cost of the design, alongside the clearance it buys.
+below the retreat threshold for tens of seconds. Measured across ten runs: exactly one retreat fires, and the most salient anomaly in
+the scenario is **never** inspected (0/10), so the robot ends every mission with 3 of
+4. We define the suppression window as the interval between the first and the last
+logged sample in which the hazard channel governs the field (Φ < 0) while its
+magnitude is below the retreat threshold; so measured, it lasts 69.5 s (range
+67.3–72.4). The window is not pure decay: the hazard is re-observed within it, and the
+field magnitude rises again in a median of two samples per run, which is why it
+exceeds the duration that decay alone from the initial magnitude would give.
+Throughout the window the robot's minimum distance to the hazard is 3.92 m (range
+3.86–4.06), and the hazard magnitude is below the threshold that would trigger a
+retreat — so the suppression persists under the geometric and detection conditions in
+which the layer itself would not act on the hazard. We report this as a cost of the design, alongside the clearance it buys.
 
 ### R2.7 — Units in the abstract
 
@@ -279,34 +302,37 @@ headline numbers.
 
 ### R2.8 — Does the discontinuity at d = R affect the FSM?
 
-**Response (implemented, retrospective).** We measured on the existing logs, and we
-state the limits of what those logs can establish, because an earlier version of this
-analysis over-read them.
+**Response (implemented, retrospective).** We separate the mathematical point from
+what the recorded data can establish.
 
-**Action.** What is directly measured is the *magnitude of the step in the reported
-field at event onset*: median 0.436, maximum 0.686 across the default scenario, which
-matches the |w·Iₑ/2| the profile predicts. The discontinuity is therefore real and of
-the expected size. Of the onsets observed, fewer than half are followed by a state
-transition within 2 s, so the step does not by itself drive the machine. The interval
-between consecutive state transitions is measured directly and shows no boundary
-chattering: shortest 9.8 s in the default scenario and 7.0–9.6 s under noise and
-conflict. In the dense scenario the shortest interval is 0.2 s; inspecting those cases
-shows back-to-back servicing of a cluster or an episode ended by a transient Nav2 goal
-abort, neither arising from the boundary.
+The discontinuity at d = R follows directly from Eq. (3): the profile yields Iₑ/2 at
+the boundary and zero beyond it. That is a property of the equation and is not in
+question.
 
-What these logs **cannot** establish is the timing of outward crossings. The field is
-recorded only while it exceeds the residual ε, and the hazard and attraction channels
-decay rather than switching off, so the record falls silent roughly 38 s after the
-last observation of an event rather than when the robot leaves the sensing radius. We
-verified this: in every silence observed, the last recorded magnitude is exactly the
-decay floor (10⁻³), with no abrupt drops. Silences therefore date decay completion,
-not geometry, and the count of recorded onsets is a lower bound, since an event
-entering while the field is still decaying leaves no gap. We have accordingly removed
-the outward-crossing count from the article and report only the step magnitude, the
-onset-to-transition association and the transition intervals. A direct test of the
-boundary would require logging the field continuously and instrumenting the geometric
-crossing, which we identify as the appropriate instrument rather than claim to have
-used.
+**Action.** In a retrospective analysis we measured two things in the existing logs:
+the size of the step in the logged field at recorded event onsets (median 0.436,
+maximum 0.686 in the default scenario, matching the |w·Iₑ/2| the profile predicts),
+and the intervals between consecutive FSM transitions (shortest 9.8 s in the default
+scenario, 7.0–9.6 s under noise and conflict, 0.2 s in the dense scenario). These
+observations characterise the logged response, but they **do not isolate the causal
+effect of crossing the sensing boundary**, because geometric crossings were not
+recorded synchronously with the field. We therefore do not claim that the step fails
+to drive the state machine, nor that the analysis rules out boundary-induced
+chattering in general. For the shortest intervals, in the dense scenario, the
+inspected logs associate them with consecutive servicing of a cluster or with a goal
+abort; we limit the statement to that association.
+
+We also removed from the article an earlier inference that treated silences in the
+field record as outward boundary crossings. The channels decay rather than switching
+off and the field is written only above the residual ε, so a silence begins after the
+field has decayed, not when the robot leaves the sensing radius. In every silence
+observed, the last written magnitude was the smallest value the record contains
+(10⁻³), with no abrupt drops — consistent with decay rather than with departure.
+Reported decay durations are computed for a stated initial magnitude and assume no
+renewal; a stronger initial reading, or re-observation of the event, changes them. A
+direct test of the boundary would require logging the field continuously together
+with the geometric range, which we identify as the appropriate instrument rather than
+claim to have used.
 
 ### R2.9 — The band in the residual figure
 
@@ -322,13 +348,18 @@ the mean.
 agree that alone is a thin answer, so we state what the state consequently *cannot*
 represent.
 
-**Action.** The Appendix now notes that because the bucket uses the **modulus**, an
+**Action.** The Appendix first states the order that resolves the circularity: at each
+step the observations and the channel memories determine Φₜ; Φₜ is then discretised
+into the state; and only then is the stored value updated from that state. No
+quantity derived from Q re-enters Φ, so the dependence is not a loop. It then notes
+that because the bucket uses the **modulus**, an
 attraction and a repulsion of equal magnitude map to the same state — the
 discretisation discards exactly the sign that carries the safety precedence. The
 bucket also saturates (all |Φ| ∈ [0.75, 2] fall in the top bucket), and the state
-carries neither the decay memory nor the event configuration. A state so defined
-cannot support an arbitration policy, which is a further reason the behaviour is
-governed by thresholds on Φ rather than by Q.
+carries neither the decay memory nor the event configuration. A state so defined cannot distinguish situations that the proposed arbitration rule
+treats differently — an attraction and a repulsion of the same magnitude are the same
+state — which is a further reason the behaviour is governed by thresholds on Φ rather
+than by Q.
 
 ### R2 — Additional question 3 (comprehensiveness, related work, limitations)
 
@@ -357,9 +388,10 @@ different perception model, and we say which.
 
 **Response (repositioned).** Agreed; see **G1** and R2.1. We additionally audited the
 **figures**, which the text changes alone would not have fixed: two conceptual figures
-displayed the value-update equation in a highlighted box. They are being
-re-rendered — the box is removed, "Reactive affective" becomes "Reactive", and
-"Affective field Φ" becomes "Attraction–repulsion field Φ". We mention this because a
+displayed the value-update equation in a highlighted box. They are being re-rendered: the box is removed,
+"Reactive affective" becomes "Reactive", and "Affective field Φ" becomes
+"Attraction–repulsion field Φ". The re-rendered figures will be in place in the
+resubmitted manuscript. We mention this because a
 reader reopening the PDF would have seen the equation before reading the corrected
 abstract.
 
@@ -371,14 +403,18 @@ abstract.
 **Response (implemented).** We agree, and we built that configuration rather than
 only stating the attribution in the discussion.
 
-**Action.** KOF reaches a median minimum clearance of **1.73 m** against **1.71 m**
-for the keep-out-only ablation — a 2 cm difference, not distinguishable
-(p_Holm = 0.42) — and spends 9.0 s below the 2 m band against 9.3 s. The abstract and
-the conclusion now state that **the safety benefit is attributable to the
-detection-triggered keep-out, not to the reactive weighting**. What the reactive layer
-adds over KOF is the inspection behaviour and only that: 0 of 3 against 3 of 3
-(p_Holm = 0.0027), at 31 s of extra mission time. We present the pair as a
-decomposition rather than a victory. We also now state the calibration of the
+**Action.** In the static on-route hazard scenario, KOF reaches a median minimum
+clearance of **1.73 m** against **1.71 m** for **KOa** (the keep-out-only ablation,
+which retains the reactive inspection layer) — a small observed difference of 2 cm
+with no statistically detectable difference (p_Holm = 0.42) — and spends 9.0 s below
+the 2 m band against 9.3 s. We do not present this as established equivalence. The
+abstract and the conclusion now state that, **in this scenario, the clearance
+improvement is attributable to the detection-triggered keep-out rather than to the
+reactive weighting**. What the reactive layer adds over KOF here is the inspection
+behaviour: 0 of 3 against 3 of 3 (p_Holm = 0.0027), at 31 s of extra mission time. We
+present the pair as a decomposition of the on-route result, and do not extend it to
+the conflict or marginal-hazard scenarios, which concern other aspects of the
+behaviour. We also now state the calibration of the
 geometric instruments — both are entries into regions defined by centre-to-centre
 distance, with a 0.25 m robot radius, and the 2 m value is a diagnostic threshold
 adopted for measuring exposure, not a requirement the study declares and not a
@@ -394,18 +430,28 @@ regulatory electrical clearance.
 **Response (implemented).** Agreed on all three.
 
 **Action.** A single consolidated table now reports mission time, distance, clearance,
-inspections and time-to-priority-target with bootstrap intervals. On tuning we state the procedure and its asymmetry: the APF gains were set by manual sweep until
-the baseline completed the default scenario without local-minimum stalls, its approach
-parameters differ (1.8 m standoff and 30 s budget against 2 m and 40 s), and we did not invest comparable effort in tuning it. The time advantage should be read with
-that asymmetry in mind, and the comparison that *does* isolate the supervisor on a
+inspections and time-to-priority-target with bootstrap intervals. On tuning we give the procedure and the parameters rather than a
+characterisation. The APF gains were calibrated so that the baseline triggers within
+the same sensing radius as the proposed layer — attraction crossing its threshold at
+roughly 4–5 m for waypoints and repulsion at the ~4.7 m passage of the beside-route
+hazard — which was the comparability criterion we applied. The resulting values are
+k_att = 1.5, k_rep = 4.0, k_obs = 0.6, with trigger and exit thresholds of 0.15 and
+0.08 on the force magnitude, and a 12 s post-retreat refractory added against the
+oscillation that the potential-field formulation is known to exhibit when a patrol leg
+passes inside the trigger region. Its approach parameters differ from ours (1.8 m
+standoff and a 30 s investigation budget against 2 m and 40 s). These are reported in
+the hyperparameter table together with the proposed layer's. Beyond the trigger-range
+calibration we did not run a further search over these values, and the time advantage
+should be read with that in mind, and the comparison that *does* isolate the supervisor on a
 shared controller is the new heuristic baseline. We also removed a sentence from the
 previous version that left a same-controller heuristic as future work; it is now part
 of the study. On sensitivity: the three hysteresis pairs separate position from width
-— reference (0.45, 0.25), narrower (0.45, 0.35), shifted (0.55, 0.35). Halving the
-width changes nothing (p ≥ 0.60); shifting the entry point doubles the counted route
-deviations (4 → 8, p = 0.0003) and shortens episodes, with inspections unchanged. The
-behaviour is robust to the width, and the route-deviation metric should be read as
-sensitive to the entry threshold's position.
+— reference (0.45, 0.25), narrower (0.45, 0.35), shifted (0.55, 0.35). Between the two widths evaluated in
+the `default` scenario, no difference was detected on any reported outcome (p ≥ 0.60);
+shifting the entry point raised the counted route deviations from 4 to 8
+(p = 0.0003) and shortened episodes, with inspections unchanged at 3 of 3. We limit
+the statement to those two widths and that scenario, and note that the route-deviation
+metric is sensitive to the entry threshold's position.
 
 ### R3 minor 1 — Perception is abstracted; the title should not imply a validated system
 
@@ -422,11 +468,16 @@ system. The conclusion has a dedicated Scope paragraph.
 **Response (implemented).** Agreed, and the second part deserves a direct answer
 rather than an assumption of independence.
 
-**Action.** Valid counts are given in the main text next to the headline numbers
-(n = 10 everywhere except APF, KOb, N2, RHM and the two new heuristic blocks in
-`default` and `conflict` at n = 9, and DHa at n = 8), and every rate is reported
-against its own denominator. On bias: all excluded runs inspected zero anomalies, so
-removing them **raises** every completeness figure — for the most affected pair it
+**Action.** Valid counts are given in the main text next to the headline numbers, and every rate
+is reported against its own denominator. In the earlier battery, n = 10 for every
+configuration except APF, KOb, N2 and RHM (n = 9) and DHa (n = 8). In the new battery
+of 13 configurations, n = 10 for every configuration except three, which are named
+individually so the three exclusions can be accounted for without inference: the
+generic heuristic in `default` (n = 9), the generic heuristic in `conflict` (n = 9),
+and the shifted-hysteresis configuration in `default` (n = 9). The proposed layer and
+the one-factor selection variant retain n = 10 in all three scenarios, which is why
+the identity of discrete outcomes reported in R2.3 is over ten runs per group. On bias: all excluded runs inspected zero anomalies, so removing them **raises the completeness
+estimates for the affected groups** — for the most affected pair it
 raises the proposed layer and APF by the same amount (2.7 → 3.0 each), leaving the
 difference unchanged but making both absolute figures conditional on successful
 initialization. For safety the adjustment runs the *other* way: a run in which the
@@ -444,12 +495,18 @@ only under *Author's Response Files*, and we verify the merged review proof page
 page before submitting. The template `\history` and `\doi` fields have been
 neutralised.
 
-**Action (length).** The main text was shortened where the repositioning made it
-natural rather than by cutting evidence: the η subsection moved to the Appendix with
-the rest of the value-update material, and the residual figure went with it. We
-acknowledge that the new baseline, the precedence-cost section and the two
-retrospective analyses add length; we judged that the comments requiring them took
-precedence over net shortening, and we kept each addition to the question it answers.
+**Action (length).** We report what moved and what did not, since the comment named
+three groups. The **equivalence** material — the η sweep and the η = 0 ablation, with
+the residual figure — moved to the Appendix, which also follows from the
+repositioning. The **dynamic-hazard** configurations stayed in the main text: Reviewer
+2 identified that finding (the keep-out resolves the static hazard while the retreat
+adds margin only for a hazard emerging mid-investigation) as a useful architectural
+observation, and moving it to an appendix would displace the result that distinguishes
+the two mechanisms. The **perception-noise** configurations also stayed, because the
+confirmation-distance analysis requested in R2.5 is built on them and would lose its
+referent. We acknowledge that the new baseline, the precedence-cost section and the
+two retrospective analyses add length; we judged the comments requiring them to take
+precedence over net shortening, and kept each addition to the question it answers.
 
 ### R3 — Additional question 4 (references on risk-aware navigation and keep-out)
 
@@ -461,11 +518,12 @@ since §V now attributes the clearance to the keep-out, the gap is more exposed,
 less.
 
 **Action.** A new §II subsection positions our mechanism against three lines and
-places it in the **weakest** of them. Safety filters — control barrier functions and
-predictive safety filters — obtain guarantees by assuming a model of the dynamics and
-the constraint set; our precedence rule is a behavioural arbitration that certifies
-no invariant and, as the new results show, can be over-conservative in a way a filter
-formulation would make explicit. Risk-aware planning represents and optimises risk;
+states what it does and does not provide. Safety filters — control barrier functions
+and predictive safety filters — obtain formal guarantees by assuming a model of the
+dynamics and of the constraint set. Our precedence rule is a behavioural arbitration
+and provides none of those guarantees: it certifies no invariant, and the
+marginal-hazard results show it can be over-conservative in a way a filter formulation
+would make explicit as a trade-off. Risk-aware planning represents and optimises risk;
 we do not, which is why we avoid the term. Closest to our mechanism, standard stacks
 already expose keep-out zones as a map layer, usually authored statically; our use is
 the same mechanism driven at runtime by detection. We state plainly that the
@@ -476,4 +534,13 @@ is due to it, and the arbitration rule governing when the reactive layer defers.
 
 ## Closing
 
-The reviewers' comments converged on a single requirement: that each claim be attributed to the evidence that supports it. Meeting it changed what the article claims. The value-update framing is now a design note; the saliency weighting, which replaced it as the candidate mechanism, showed no detectable effect in the new same-controller comparison; and the safety result is attributed to the keep-out that produces it. What the article now offers is a two-layer architecture characterised on both sides — the temporal persistence of its hazard channel has a measured benefit under conflict and a measured cost under a marginal hazard — together with an evaluation that separates what each component contributes. We thank the reviewers for requiring the comparison that made the attribution possible, and the Editor for the opportunity to resubmit.
+We thank the reviewers for helping us clarify the contribution and strengthen its
+experimental assessment. The revised manuscript focuses on the evaluated
+architecture, reports the absence of a detectable benefit from changing the
+target-selection criterion in the tested scenarios, and documents the differences
+associated with the field-based and raw-detection triggering modes. It also reports
+the inspection cost observed under a marginal hazard, and attributes the clearance
+improvement in the static on-route scenario to detection-triggered keep-out handling.
+The scope and limitations of each comparison are stated explicitly, both in the
+responses below and in the manuscript. We thank the Editor for the opportunity to
+resubmit.
