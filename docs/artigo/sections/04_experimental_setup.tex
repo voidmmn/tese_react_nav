@@ -127,6 +127,61 @@ DHb & keepout only         & 0.5  & dyn-hazard   & 1 / 1\\
 \end{tabular}
 \end{table}
 
+%% P7 do parecer de 2026-10-16: "a Tabela 2 ainda lista apenas as 16
+%% configuracoes antigas; nao ha correspondencia compacta entre cada
+%% configuracao nova, parametro alterado, cenario, referencia reutilizada e n
+%% valido". Esta tabela e essa correspondencia. Gerada das definicoes de
+%% rodar_bateria_resub.sh e dos n de results/; conferir as duas ao alterar.
+\begin{table*}[t]
+\centering
+\caption{Matrix of the \emph{new} battery (October 2026): $13$ configurations
+$\times10$ attempted runs $=130$ attempts, $127$ valid. One row per configuration,
+with the single factor it changes relative to the proposed layer. \emph{Trigger} is
+$\Phi$ (threshold on the decaying field) or \emph{range} (raw detection);
+\emph{Sel.} is the target-selection rule; \emph{Ret.} and \emph{KO} are the
+reactive retreat and the deliberative keep-out; $\theta_{\mathcal{H}}$ is the hazard
+eligibility threshold applied before weighting; $(\theta_{\text{in}},
+\theta_{\text{out}})$ is the supervisor's hysteresis pair. The first three rows are
+the proposed layer and are \emph{reused} from the configurations of
+Table~\ref{tab:matrix} rather than re-run; the reuse is licensed by the regression
+check of Section~\ref{sec:setup-repro}. All rows use $\eta=0.5$ and the
+hyperparameters of Table~\ref{tab:hyper} except where a column states otherwise.}
+\label{tab:matrix-new}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llllccccl}
+\hline
+\textbf{Config.} & \textbf{Scenario} & \textbf{Trigger} & \textbf{Sel.} &
+\textbf{Ret.} & \textbf{KO} & $\bm{\theta_{\mathcal{H}}}$ &
+$\bm{(\theta_{\text{in}},\theta_{\text{out}})}$ & \textbf{att./valid}\\
+\hline
+\multicolumn{9}{l}{\emph{Proposed layer --- reused, not re-run}}\\
+E3    & \texttt{default}  & $\Phi$ & saliency & \checkmark & --         & $0.30$ & $(0.45,0.25)$ & $10/10$\\
+CONF  & \texttt{conflict} & $\Phi$ & saliency & \checkmark & --         & $0.30$ & $(0.45,0.25)$ & $10/10$\\
+E5    & \texttt{adverse}  & $\Phi$ & saliency & \checkmark & --         & $0.30$ & $(0.45,0.25)$ & $10/10$\\
+\hline
+\multicolumn{9}{l}{\emph{Attribution of the safety outcome} (Section~\ref{sec:safety})}\\
+KOF   & \texttt{route-hazard} & ---    & ---      & --         & \checkmark & ---    & ---           & $10/10$\\
+\hline
+\multicolumn{9}{l}{\emph{Isolating the field from the act of deviating} (Section~\ref{sec:heu})}\\
+HEUd  & \texttt{default}  & range  & nearest  & \checkmark & --         & $0.30$ & $(0.45,0.25)$ & $10/9$\\
+HEUc  & \texttt{conflict} & range  & nearest  & \checkmark & --         & $0.30$ & $(0.45,0.25)$ & $10/9$\\
+HEUa  & \texttt{adverse}  & range  & nearest  & \checkmark & --         & $0.30$ & $(0.45,0.25)$ & $10/10$\\
+HEU-sel\,d & \texttt{default}  & $\Phi$ & nearest & \checkmark & --     & $0.30$ & $(0.45,0.25)$ & $10/10$\\
+HEU-sel\,c & \texttt{conflict} & $\Phi$ & nearest & \checkmark & --     & $0.30$ & $(0.45,0.25)$ & $10/10$\\
+HEU-sel\,a & \texttt{adverse}  & $\Phi$ & nearest & \checkmark & --     & $0.30$ & $(0.45,0.25)$ & $10/10$\\
+\hline
+\multicolumn{9}{l}{\emph{Cost of the precedence, and its sensitivity} (Section~\ref{sec:precedence-cost})}\\
+CM    & \texttt{conflict-marginal} & $\Phi$ & saliency & \checkmark & -- & $0.30$ & $(0.45,0.25)$ & $10/10$\\
+HAZ20 & \texttt{conflict} & $\Phi$ & saliency & \checkmark & --         & $0.20$ & $(0.45,0.25)$ & $10/10$\\
+HAZ30 & \texttt{conflict} & $\Phi$ & saliency & \checkmark & --         & $0.30$ & $(0.45,0.25)$ & $10/10$\\
+HAZ40 & \texttt{conflict} & $\Phi$ & saliency & \checkmark & --         & $0.40$ & $(0.45,0.25)$ & $10/10$\\
+HYSnar& \texttt{default}  & $\Phi$ & saliency & \checkmark & --         & $0.30$ & $(0.45,0.35)$ & $10/10$\\
+HYSoff& \texttt{default}  & $\Phi$ & saliency & \checkmark & --         & $0.30$ & $(0.55,0.35)$ & $10/9$\\
+\hline
+\end{tabular}
+\end{table*}
+
 Each run is logged by a metrics node and reduced to its final values. We report:
 \emph{anomalies inspected} (unique, credited only when the reactive navigation
 \emph{succeeds}, a commanded dwell of $t_{\text{dwell}}$ elapses, and the simulator
@@ -143,11 +198,19 @@ safety-oriented \emph{proxies} computed from the true hazard position:
 $0.5$~m, a simulated proxy rather than a physical contact sensor), \emph{time below
 a clearance threshold} ($2$~m, centre-to-centre), \emph{minimum radial
 time-to-collision}
-($d/\dot d$ to the nearest hazard, an approaching-rate proxy, not a
-trajectory-intersection time), and \emph{retreat success}; \emph{mission duration};
+($d/|\dot d|$ to the nearest hazard, recorded only while $\dot d<0$; an
+approaching-rate proxy, not a trajectory-intersection time), and \emph{retreat success}; \emph{mission duration};
 \emph{distance travelled}; and the complete value-update residual
 $|\alpha\delta+\eta\Phi|$ as a stability proxy. Because several outcomes are
 bounded counts with (near-)zero variance, group comparisons use distribution-free
+tests (Mann--Whitney $U$, exact for untied samples with $n_1+n_2\le20$ and by
+permutation for degenerate arms; see Section~\ref{sec:results}) with the Cliff's
+$\delta$ effect size, $95\%$ bootstrap confidence intervals, numeric $p$-values,
+and Holm correction across the confirmatory family; equivalence claims use a two
+one-sided test (TOST) against a pre-declared margin, and per-mission success rates
+use Wilson-score intervals. Runs in which the platform failed to initialize are
+excluded as a startup-reliability outcome.
+
 %% Nomenclatura dos instrumentos geometricos: ambos sao ENTRADAS EM REGIAO
 %% definida operacionalmente por distancia, nao contato fisico nem distancia
 %% regulamentar. Sem a calibracao pelo raio do robo o leitor nao consegue julgar o
@@ -167,13 +230,6 @@ physical surface. The $2$~m value is a diagnostic threshold adopted for measurin
 exposure in this evaluation; the study declares no minimum-clearance requirement, so
 transiting below it is not a requirement violation but an exposure that we report.
 
-tests (Mann--Whitney $U$, exact for untied samples with $n_1+n_2\le20$ and by
-permutation for degenerate arms; see Section~\ref{sec:results}) with the Cliff's
-$\delta$ effect size, $95\%$ bootstrap confidence intervals, numeric $p$-values,
-and Holm correction across the confirmatory family; equivalence claims use a two
-one-sided test (TOST) against a pre-declared margin, and per-mission success rates
-use Wilson-score intervals. Runs in which the platform failed to initialize are
-excluded as a startup-reliability outcome.
 
 \begin{table}[t]
 \centering
@@ -198,6 +254,9 @@ Field $\Phi$ & weights (therm./acou./haz.) & 1.0 / 1.2 / $-1.5$\\
 Evaluator & confirm.\ distance (metric) & 3.3~m\\
 Keepout   & project radius; disc radius & 5~m; 1.2~m\\
 APF base. & standoff; budget & 1.8~m; 30~s\\
+          & gains $k_{\text{att}}$/$k_{\text{rep}}$/$k_{\text{obs}}$ & 1.5 / 4.0 / 0.6\\
+          & trigger; exit (force magn.) & 0.15; 0.08\\
+          & post-retreat refractory & 12~s\\
 Events    & radius $R$; standoff $\rho$ & 5~m; 2~m\\
           & retreat margin $\Delta$ & 1.5~m\\
 \hline
@@ -248,10 +307,26 @@ corrected hazard-activation and failure-handling code; the other thirteen were
 reused. This reuse is a \emph{verifiable identity}, not an assumption: those
 thirteen record zero navigation aborts, cancellations, and rejections, so the
 corrected failure-handling path is never exercised in them and their metrics are
-unchanged under either version, as their published counters show. A provenance
+unchanged under either version, as their published counters show. %% P7 do parecer de 2026-10-16: "a proveniencia descreve o manifesto dos 160 CSVs
+%% antigos". A bateria nova (130 runs) e o reuso dos tres blocos entram aqui.
+A provenance
 manifest (\texttt{PROVENANCE.md}) records the reference snapshot for each batch, the
-per-run seeds, and SHA-256 checksums of all $160$ CSVs, and identifies the replaced
-files; the mobile tag alone does not fix this correspondence. As the contribution is the reactive
+per-run seeds, and SHA-256 checksums of the $160$ CSVs of that battery, and
+identifies the replaced files; the mobile tag alone does not fix this
+correspondence. The battery added for this version is recorded the same way and
+separately: $13$ configurations $\times10$ attempted runs (Table~\ref{tab:matrix-new}),
+$130$ CSVs, under the snapshot \texttt{v1.0-resubmission}. Its three immobile runs
+are identified by configuration in Section~\ref{sec:threats} rather than only
+counted. The proposed layer in the \texttt{default}, \texttt{conflict} and
+\texttt{adverse} scenarios is \emph{not} re-run in this battery: E3, CONF and E5
+are reused as the reference arm. That reuse was gated by a regression check---two
+runs of the \texttt{default} configuration under the new code and the new defaults,
+required to reproduce E3's discrete outcomes and to stay within range on the
+continuous ones before any new block was launched. The check is empirical for
+\texttt{default} only; for \texttt{conflict} and \texttt{adverse} the reuse rests on
+the scope of the code changes---which touch target selection, trigger mode and the
+threshold parameters, all pinned to their previous values in the reused
+configurations---and on the checksums identifying the artifacts. As the contribution is the reactive
 navigation policy operating on abstracted events, it does not depend on raw range
 data: obstacle geometry is provided by the static map, and the odometry is kept
 exact (the map$\rightarrow$odom transform is held fixed), so we do \emph{not}

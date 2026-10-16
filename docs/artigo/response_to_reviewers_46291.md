@@ -81,12 +81,22 @@ denominator (25.9 / 28.3 / 31.2%) rather than as a single ≈26%.
 
 **New evaluation.** 13 new configurations, 130 attempted runs; 127 met the movement
 criterion and 3 remained immobile (same start-up failure mode as the earlier battery,
-verified: travelled distance ≈1.7×10⁻¹⁶). The previously reported battery is reused unchanged for the proposed method. Before
-doing so we ran a regression check on the default path: two runs under the new code
-reproduced the seven discrete behavioural counts exactly and fell within the published
-range on four continuous metrics. This is a check of scope, not a proof that the new
-parameters have no effect anywhere; it covers the default configuration and the
-outcomes listed, which are the ones the reused data supply.
+verified: travelled distance ≈1.7×10⁻¹⁶). The three immobile runs are named
+individually in §V-J so the 130/127 arithmetic can be checked without inference, and
+the full matrix of the new battery — one row per configuration, with the single
+factor it changes, its scenario, and its attempted/valid counts — is now Table 3 of
+the manuscript.
+
+The proposed layer is **reused** rather than re-run in three scenarios (E3, CONF,
+E5). Before doing so we ran a regression check on the **default** path only: two runs
+under the new code reproduced the seven discrete behavioural counts exactly and fell
+within the published range on four continuous metrics. We state the limit plainly:
+that is empirical evidence for `default`, not for `conflict` or `adverse`, which are
+also reused. For those two the reuse rests on two non-empirical grounds — the code
+changes touch target selection, trigger mode and the threshold parameters, all of
+which are pinned to their previous values in the reused configurations, and the
+released checksums identify the artifacts — and we present it on that basis rather
+than as a verified identity.
 
 ---
 
@@ -218,8 +228,21 @@ proposed layer against the generic heuristic and against the one-factor selectio
 variant, both in the `default` scenario, and KOa against KOF on the on-route
 hazard — each evaluated on the same five outcomes (anomalies inspected, hazard
 retreats, minimum hazard distance, mission duration, investigation time). Holm was
-applied across the resulting set of fifteen tests, and the corrected values are the
-ones reported as p_Holm in the corresponding table. Everything else is labelled
+applied across the resulting set of fifteen tests.
+
+Correcting an inconsistency we are grateful to have caught before resubmitting:
+the consolidated table (Table 4) still listed the seven comparisons that formed the
+confirmatory family of the *previous* submission, so the article declared one family
+and tabulated another. Table 4 now contains **all fifteen tests and only those**,
+with the per-arm n and the procedure used for each, so the Holm denominator is
+visible rather than asserted; the seven earlier comparisons move to Appendix B as a
+historical table, reported uncorrected. The table is generated from a CSV that the
+released analysis script writes, rather than transcribed. Regenerating it from the
+data corrected four p_Holm values that had been transcribed incorrectly — the KOa
+vs KOF inspection contrast (0.0027 → 1.6×10⁻⁴, where 0.0027 was the mission-time
+value repeated), hazard retreats (0.0034 → 3.0×10⁻⁴), investigation time
+(0.0034 → 0.0030) and mission duration (0.0052 → 0.0050). None of them changes a
+conclusion, but we would rather state the correction than let the numbers stand. Everything else is labelled
 exploratory *in the sentence that states it*, and two analyses are additionally
 labelled retrospective. On the bound: it is now reported per denominator — 25.9% for
 n = 10, 28.3% for n = 9, 31.2% for the n = 8 group — and placed in the *same sentence*
@@ -235,10 +258,21 @@ The clearance gain is a gain of margin inside that band, not avoidance of it.
 > disentangle these."*
 
 **Response (implemented, retrospective).** The confirmation criterion is a pure
-scoring function: it does not feed back into the controller, because re-attraction
-suppression keys on the target being committed at episode *start* and a
-non-confirmation does not release it. The same recorded trajectories can therefore be
-re-scored under other thresholds without new runs, which is what we did.
+scoring function: it does not feed back into the controller. The controller ends an
+investigation on navigation success plus the commanded dwell and emits an event; a
+separate evaluator node receives that event and only then compares the pose with the
+true target position to credit or reject the inspection. No episode is prolonged or
+shortened by the threshold, and re-attraction suppression keys on the target being
+committed at episode *start*, which a non-confirmation does not release. The same
+recorded trajectories can therefore be re-scored under other thresholds without new
+runs, which is what we did.
+
+We should note that Algorithm 1 did not say this. In the previous version its
+`Investigate` exit condition included "final pose within the confirmation distance",
+which describes neither the implementation nor the premise this re-scoring rests on.
+The algorithm and §III-C now separate the controller's exit from the evaluator's
+credit explicitly, and the implementation was unchanged — it is the pseudocode that
+was wrong.
 
 **Action.** Re-scoring reproduces the published 4/9 exactly at the original 3.3 m
 threshold, which provides an internal consistency check of the re-scoring at that
@@ -333,7 +367,11 @@ Reported decay durations are computed for a stated initial magnitude and assume 
 renewal; a stronger initial reading, or re-observation of the event, changes them. A
 direct test of the boundary would require logging the field continuously together
 with the geometric range, which we identify as the appropriate instrument rather than
-claim to have used.
+claim to have used. §III-B and §V-I now carry the same caution the previous version
+stated only here: where they asserted that the step "does not induce chattering" and
+that an event at the boundary "cannot repeatedly re-trigger", they now describe
+hysteresis and commitment as the mechanisms intended to prevent retriggering, and
+report the logged onsets and inter-transition intervals as associations.
 
 ### R2.9 — The band in the residual figure
 
@@ -361,6 +399,14 @@ carries neither the decay memory nor the event configuration. A state so defined
 treats differently — an attraction and a repulsion of the same magnitude are the same
 state — which is a further reason the behaviour is governed by thresholds on Φ rather
 than by Q.
+
+We also corrected the notation the manuscript used around this point. §III and the
+Appendix described Φ as "a function of the state alone" and of "the current
+observations alone", which contradicts the decaying channel memories defined in the
+same subsection — and it is precisely their persistence that the marginal-hazard
+scenario measures. The field is now written Φₜ, a function of the observations *and*
+the channel memories; where the appendix writes Φ(s) it states the abuse of notation
+explicitly, since two steps with the same discretised state can carry different Φₜ.
 
 ### R2 — Additional question 3 (comprehensiveness, related work, limitations)
 

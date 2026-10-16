@@ -94,30 +94,25 @@ govern whenever a hazard is eligible. We evaluate it in a simulated substation
 (Gazebo Fortress) against a fixed patrol, a potential-field baseline and---new
 here---a generic detect--select--deviate--return heuristic on the \emph{same}
 Nav2/MPPI controller, which isolates the field from the act of deviating. Three
-findings follow. (i)~Attribution, on a \emph{static} hazard placed on the patrol
-route: a fixed patrol carrying the same detection-triggered keep-out and no
-reactive supervisor (KOF) and the keep-out-only ablation that retains the reactive
-inspection (KOa) reached similar minimum clearances ($1.73$ and $1.71$~m median),
-with no statistically detectable difference, so \emph{the safety benefit here is
-attributable to the deliberative keep-out, not to the reactive weighting}; what
-KOa adds over KOF is the inspections ($3$ vs.\ $0$ of $3$) at ${\approx}31$~s of
-extra mission time. (ii)~Replacing saliency by proximity---a one-factor change---produced no detectable
-difference in any scenario, with identical discrete outcomes in two of the three;
-replacing the thresholded field by raw detection, which also removes the hazard
-channel's temporal persistence, halves the clearance when a hazard is co-located with
-a more salient anomaly ($4.84$ vs.\ $2.23$~m) and delays the priority inspection by
-${\approx}105$~s. (iii)~That precedence has a cost: a marginally eligible hazard
-suppresses attraction for ${\approx}70$~s and forfeits one of four inspections in
-$10/10$ runs. Scope is explicit: perception is abstracted to oracle events and the
-localization transform is fixed, so the results speak to the decision logic, not to a
-deployable system. Full-inspection rate is $10/10$ runs with clean perception, $4/9$
-under high noise and $9/10$ under dense clustering; no entry into a $0.5$~m contact
-region was observed, but with $8$--$10$ valid runs per configuration the exact
-one-sided $95\%$ bound on that per-run probability remains $25.9$--$31.2\%$, and the
-method does transit within the $2$~m advisory band it reports. The field is also
-recorded as an additive term in a tabular value update---a design note, not an
-evaluated mechanism, since the value table does not select the executed actions.
-Code, world, data and scripts are released.
+findings follow. (i)~On a \emph{static} hazard on the patrol route, a fixed patrol
+carrying the same detection-triggered keep-out but no reactive supervisor reached a
+minimum clearance with no statistically detectable difference from the ablation that
+keeps the reactive inspection ($1.73$ vs.\ $1.71$~m median): \emph{the safety benefit
+here is attributable to the deliberative keep-out, not to the reactive weighting},
+and what the reactive layer adds is the inspections ($3$ vs.\ $0$ of $3$) at
+${\approx}31$~s. (ii)~Replacing saliency by proximity produced no detectable
+difference in any scenario, whereas replacing the thresholded field by raw
+detection---which also removes the hazard channel's temporal persistence---halves the
+clearance when a hazard is co-located with a more salient anomaly ($4.84$ vs.\
+$2.23$~m) and delays the priority inspection by ${\approx}105$~s. (iii)~That
+precedence has a cost: a marginally eligible hazard suppresses attraction for
+${\approx}70$~s and forfeits one of four inspections in $10/10$ runs. Full-inspection
+rate is $10/10$ with clean perception, $4/9$ under high noise and $9/10$ under dense
+clustering; no entry into a $0.5$~m contact region was observed, but with $8$--$10$
+valid runs per configuration the exact one-sided $95\%$ bound on that per-run
+probability remains $25.9$--$31.2\%$. Perception is abstracted to oracle events and
+the localization transform is fixed, so the results speak to the decision logic, not
+to a deployable system. Code, world, data and scripts are released.
 \end{abstract}
 
 % R3#1: "Bellman equation" e "reinforcement learning" sugeriam um componente de
