@@ -317,9 +317,12 @@ ran on a workstation (Intel Xeon W-1350, 12~cores, 16~GB RAM) under Ubuntu~22.04
 perception-noise generator is seeded \emph{per repetition} (the run index is passed
 as the seed and recorded in each CSV), while the remaining run-to-run variation is
 the inherent stochasticity of the physics simulator and of the timing in the
-navigation stack. The exact code version that produced the
-reported results is archived under the tagged release
-\texttt{v1.0-resubmission} in the repository. Three configurations---the dense
+%% A tag v1.0-resubmission e o snapshot da submissao ANTERIOR (8ed4868, 11/09) e
+%% o manifesto a declarava movel entre rodadas. Esta versao ganha uma tag FIXA.
+navigation stack. The code and data of this version are archived under the tagged
+release \texttt{v2.0-resubmission-46291} in the repository; it is created once over
+the submitted state and is not moved, unlike \texttt{v1.0-resubmission}, which
+archives the previous submission's package. Three configurations---the dense
 scenario E5 and the two dynamic-hazard trials DHa and DHb---were re-run under the
 corrected hazard-activation and failure-handling code; the other thirteen were
 reused. This reuse is a \emph{verifiable identity}, not an assumption: those
@@ -329,11 +332,16 @@ unchanged under either version, as their published counters show. %% P7 do parec
 %% antigos". A bateria nova (130 runs) e o reuso dos tres blocos entram aqui.
 A provenance
 manifest (\texttt{PROVENANCE.md}) records the reference snapshot for each batch, the
-per-run seeds, and SHA-256 checksums of the $160$ CSVs of that battery, and
-identifies the replaced files; the mobile tag alone does not fix this
-correspondence. The battery added for this version is recorded the same way and
-separately: $13$ configurations $\times10$ attempted runs (Table~\ref{tab:matrix-new}),
-$130$ CSVs, under the snapshot \texttt{v1.0-resubmission}. Its three immobile runs
+per-run seeds, and SHA-256 checksums of every CSV, and identifies the replaced
+files. The battery added for this version is recorded there in its own section,
+separately from the earlier one: $13$ configurations $\times10$ attempted runs
+(Table~\ref{tab:matrix-new}), $130$ CSVs, whose checksums join the earlier $160$ in
+a single $290$-line manifest. That battery ran against the previous snapshot
+\emph{plus} working-tree modifications---\texttt{colcon --symlink-install} executes
+the source tree---so the correspondence between code and data for it is fixed by the
+MD5 digests of the runtime recorded in the analysis plan at launch, which the
+manifest reproduces, rather than by a tag; the same modifications are contained in
+\texttt{v2.0-resubmission-46291}. Its three immobile runs
 are identified by configuration in Section~\ref{sec:threats} rather than only
 counted. The proposed layer in the \texttt{default}, \texttt{conflict} and
 \texttt{adverse} scenarios is \emph{not} re-run in this battery: E3, CONF and E5
