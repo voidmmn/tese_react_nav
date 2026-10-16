@@ -69,8 +69,14 @@ a partir de `author_response.pdf`/`cover_letter.pdf`, mas é hipótese.
       atribuir a causa. Só então ajustar os slots.
 - [ ] Subir a resposta em *Author's Response Files*; conferir o proof mesclado
       página por página **antes** do submit.
-- [ ] `\history{}`/`\doi{}`: campos legítimos do `ieeeaccess.cls`. Neutralizar —
-      custa nada e remove atrito com dois leitores que já tropeçaram.
+- [x] `\history{}`/`\doi{}` — **feito em 2026-10-16.** O `access.tex` não chamava
+      nenhum dos dois, então quem imprimia "Submitted…; revised…; accepted…" era o
+      default do `ieeeaccess.cls`. Agora ambos são chamados com argumento **vazio**:
+      o texto de demonstração some e não sobra placeholder nenhum (nem o DOI de
+      amostra `10.1109/ACCESS.0000.0000000`, que chegou a ficar no arquivo entre
+      `f7dd1ec` e `5325ea3`). O `VOLUME 11, 2023` fica — vem de dentro do `.cls`,
+      não é controlável pelo autor; a carta passou a dizer isso em vez de alegar
+      que os campos foram "neutralised".
 - [ ] Encurtar o corpo movendo configs secundárias (equivalência, dyn-hazard, ruído)
       para apêndice (R3-m3).
 
