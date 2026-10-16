@@ -95,7 +95,54 @@ Nenhuma de mérito. Uma de fato: **a ordem das Tabelas 2 e 3 não estava inverti
 elas ficam lado a lado no topo da p. 8, 2 à esquerda e 3 à direita. Esse erro foi
 meu, de uma rodada anterior, por ter lido a extração de texto em vez da página.
 
-## Não feito
+## Rodada 2 do parecer (2026-10-16, tarde)
 
-Nada do parecer ficou pendente. Não houve nova bateria: tudo foi reanálise sobre os
-dados existentes e correção documental, como o §9 do parecer previa.
+### P1 — anterioridade da família: o parecer está certo, e a resposta é mista
+
+Conferido no histórico, não por memória:
+
+| | declarado antes? | evidência |
+|---|---|---|
+| os **3 contrastes** | **sim** | `PLANO_ANALISE_RESUB.md` §5, commit `9e0b93a` de 13/10 **21:47**; o primeiro CSV da bateria é `20261013_225416` — **67 min depois** |
+| os **5 desfechos** | **não** | não constam de nenhum documento anterior; a busca de hoje foi a primeira vez que ficaram escritos |
+
+Logo a família **não é pré-registrada**. O artigo passa a dizer exatamente isso:
+contrastes pré-especificados, extensão retrospectiva, Holm aplicado como correção de
+multiplicidade sobre uma família assim delimitada. Era a leitura (b) do parecer, e é
+a correta.
+
+### A origem do 0,0027 — eu também estava errado
+
+`0,0027` não era "o valor da duração repetido". É o Holm exato de **proposta × HEU,
+tempo de investigação** (0,002679), copiado para duas linhas de KOa × KOF. A lista
+correta:
+
+| contraste / desfecho | publicado | correto |
+|---|---|---|
+| KOa × KOF, inspeções | 0,0027 | 1,6e-4 |
+| KOa × KOF, duração | 0,0027 | **0,0021** |
+| proposta × HEU, recuos | 0,0034 | 3,0e-4 |
+| proposta × HEU, investigação | 0,0034 | **0,0027** |
+
+E duas correções minhas da rodada anterior eram arredondamento ruim: `0,0052` e
+`0,0511` já estavam certos — eu havia trocado `0,0052` por `0,0050`. Revertido. O
+gerador passou a imprimir 4 casas para que tabela e texto citem o mesmo número.
+
+### T5 — a condição agora é conferível
+
+Tabelas 2 e 3 ganharam colunas **Ret.** e **KO**, dos mesmos campos do runner. Dá
+para ver que o keep-out está desligado em toda configuração fora de rota, incluindo
+os seis blocos HEU/HEU-sel e o cenário marginal — ou seja, os contrastes
+compartilham a condição com o método, não diferem nela.
+
+### Tempo de investigação do KOF
+
+A legenda da Tabela 5 passa a definir a métrica como **total por run**, não média por
+episódio: uma configuração que nunca investiga contribui um `0` bem definido, e a
+diferença de −35,68 s contra KOa é o total de KOa, não um encurtamento de episódios.
+
+## Estado
+
+Não houve nova bateria: tudo foi reanálise sobre os dados existentes e correção
+documental, como o §9 do parecer previa. **A revisão só se encerra com a conferência
+final do PDF recompilado** — os itens acima mudam texto, duas tabelas e a carta.

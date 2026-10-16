@@ -30,14 +30,26 @@ per-run values (with per-run seeds and outcomes) are released with the code.
 %% R2#4: "the boundary between confirmatory and exploratory claims is not always
 %% easy to trace through the narrative". Declaracao explicita da familia, e cada
 %% alegacao no texto passa a dizer de qual familia vem.
-\paragraph*{Confirmatory and exploratory claims} We fix the boundary here and mark it
-at every claim rather than only in the tables. The \emph{confirmatory} family,
-specified before the new runs were executed, contains three comparisons in the
-scenarios they were designed for: the proposed layer against the generic heuristic
-and against the one-factor selection variant in the \texttt{default} scenario, and
-the keep-out-only ablation against the fixed patrol carrying the same keep-out
-(KOa vs.\ KOF) on the on-route hazard. Those are Holm-corrected within the family and
-are reported with $p_{\mathrm{Holm}}$. Everything else---the \texttt{conflict} and
+%% P1 da 2a rodada do parecer: "reproduzir os p-valores nao demonstra que os cinco
+%% desfechos foram definidos antes dos experimentos". Conferido no historico: os
+%% CONTRASTES estao num commit anterior ao primeiro dado; os DESFECHOS nao estao
+%% declarados em lugar nenhum antes. A distincao passa a ser explicita.
+\paragraph*{Confirmatory and exploratory claims} We fix the boundary here, mark it at
+every claim rather than only in the tables, and are precise about which part of the
+family was fixed in advance. The three \emph{contrasts} were specified before the new
+runs produced any data---the proposed layer against the generic heuristic and against
+the one-factor selection variant in the \texttt{default} scenario, and the
+keep-out-only ablation against the fixed patrol carrying the same keep-out (KOa
+vs.\ KOF) on the on-route hazard---and the released analysis plan carries them in a
+commit timestamped before the first run of the battery was written to disk. The
+\emph{set of outcomes} on which each contrast is evaluated was \emph{not} declared in
+advance: the five reported here (anomalies inspected, minimum hazard distance,
+mission duration, hazard retreats, investigation time) were fixed after the runs.
+We therefore do not describe this family as pre-registered. Holm is applied across
+the resulting fifteen tests as a multiplicity correction over a family whose
+contrasts are pre-specified and whose extent is retrospective, and the complete set
+is tabulated with no test omitted so that the denominator can be checked rather than
+taken on trust. Everything else---the \texttt{conflict} and
 \texttt{adverse} scenarios, the threshold and hysteresis sweeps, the marginal-hazard
 configuration, and every re-analysis of previously recorded runs---is
 \emph{exploratory}, is reported with uncorrected $p$, and is labelled as exploratory
@@ -55,7 +67,10 @@ adverse-cost comparisons are reported in Appendix~\ref{app:stats}
 \centering
 \caption{The \emph{complete} confirmatory family: three contrasts
 $\times$ five outcomes $=15$ tests, with no test omitted, so that the Holm
-denominator is visible rather than asserted. $n$ is the number of valid runs per
+denominator is visible rather than asserted. The contrasts were fixed before the
+runs; the outcome set was fixed after them (Section~\ref{sec:results}), so this is a
+multiplicity correction over a retrospectively bounded family, not a pre-registered
+one. $n$ is the number of valid runs per
 arm. $\bm{\Delta}$ is the mean difference (second minus first configuration); $\delta$
 is Cliff's effect size; the CI is the $95\%$ bootstrap interval of $\bm{\Delta}$; $p$
 is the Mann--Whitney $U$, computed as the exact $U$ distribution for untied
@@ -66,7 +81,12 @@ constant arms is reported as $p=1$. $p_{\mathrm{H}}$ is Holm-corrected across
 these $15$ tests. Comparisons outside this family are exploratory and are
 reported with uncorrected $p$. The table is generated from
 \texttt{familia\_confirmatoria.csv}, which the released analysis script writes
-and which records the procedure selected for each test.}
+and which records the procedure selected for each test. \emph{Investigation time}
+is the per-run \emph{total} time spent in \textsc{Investigate}, not a per-episode
+mean, so a configuration that never investigates contributes a well-defined $0$
+rather than an undefined average: KOF is $0$ in all ten runs, and the
+$-35.68$\,s difference against KOa is therefore the whole of KOa's investigation
+time, not a shortening of episodes.}
 \label{tab:stats}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -77,20 +97,20 @@ and which records the procedure selected for each test.}
 \hline
 %% GERADO por tabela_confirmatoria_tex.py a partir de familia_confirmatoria.csv.
 %% NAO editar a mao: reexecutar analise_estatistica.py e regerar.
-E3 vs HEU     & Anomalies inspected       & 10/9 & $+0.00$ & $+0.00$ & $[+0.00,+0.00]$ & $1.000$ & $1.000$\\
-              & Min. hazard dist. [m]     & 10/9 & $+0.05$ & $+0.73$ & $[+0.03,+0.07]$ & $0.006$ & $0.051$\\
-              & Mission time [s]          & 10/9 & $-3.4$ & $-0.96$ & $[-4.38,-2.48]$ & $5.2{\times}10^{-4}$ & $0.005$\\
+E3 vs HEU     & Anomalies inspected       & 10/9 & $+0.00$ & $+0.00$ & $[+0.00,+0.00]$ & $1.0000$ & $1.0000$\\
+              & Min. hazard dist. [m]     & 10/9 & $+0.05$ & $+0.73$ & $[+0.03,+0.07]$ & $0.0057$ & $0.0511$\\
+              & Mission time [s]          & 10/9 & $-3.4$ & $-0.96$ & $[-4.38,-2.48]$ & $5.2{\times}10^{-4}$ & $0.0052$\\
               & Retreats                  & 10/9 & $+1.00$ & $+1.00$ & $[+1.00,+1.00]$ & $2.2{\times}10^{-5}$ & $3.0{\times}10^{-4}$\\
-              & Investigation time [s]    & 10/9 & $+6.00$ & $+1.00$ & $[+5.40,+6.58]$ & $2.4{\times}10^{-4}$ & $0.003$\\
-E3 vs HEU-sel & Anomalies inspected       & 10/10 & $+0.00$ & $+0.00$ & $[+0.00,+0.00]$ & $1.000$ & $1.000$\\
-              & Min. hazard dist. [m]     & 10/10 & $-0.00$ & $+0.06$ & $[-0.03,+0.03]$ & $0.853$ & $1.000$\\
-              & Mission time [s]          & 10/10 & $-0.2$ & $-0.17$ & $[-1.16,+0.75]$ & $0.544$ & $1.000$\\
-              & Retreats                  & 10/10 & $+0.00$ & $+0.00$ & $[+0.00,+0.00]$ & $1.000$ & $1.000$\\
-              & Investigation time [s]    & 10/10 & $+0.28$ & $+0.19$ & $[-0.42,+0.98]$ & $0.496$ & $1.000$\\
+              & Investigation time [s]    & 10/9 & $+6.00$ & $+1.00$ & $[+5.40,+6.58]$ & $2.4{\times}10^{-4}$ & $0.0027$\\
+E3 vs HEU-sel & Anomalies inspected       & 10/10 & $+0.00$ & $+0.00$ & $[+0.00,+0.00]$ & $1.0000$ & $1.0000$\\
+              & Min. hazard dist. [m]     & 10/10 & $-0.00$ & $+0.06$ & $[-0.03,+0.03]$ & $0.8534$ & $1.0000$\\
+              & Mission time [s]          & 10/10 & $-0.2$ & $-0.17$ & $[-1.16,+0.75]$ & $0.5438$ & $1.0000$\\
+              & Retreats                  & 10/10 & $+0.00$ & $+0.00$ & $[+0.00,+0.00]$ & $1.0000$ & $1.0000$\\
+              & Investigation time [s]    & 10/10 & $+0.28$ & $+0.19$ & $[-0.42,+0.98]$ & $0.4956$ & $1.0000$\\
 KOa vs KOF    & Anomalies inspected       & 10/10 & $-3.00$ & $-1.00$ & $[-3.00,-3.00]$ & $1.1{\times}10^{-5}$ & $1.6{\times}10^{-4}$\\
-              & Min. hazard dist. [m]     & 10/10 & $+0.01$ & $+0.52$ & $[+0.00,+0.01]$ & $0.052$ & $0.419$\\
-              & Mission time [s]          & 10/10 & $-31.3$ & $-1.00$ & $[-31.75,-30.81]$ & $1.7{\times}10^{-4}$ & $0.002$\\
-              & Retreats                  & 10/10 & $+0.00$ & $+0.00$ & $[+0.00,+0.00]$ & $1.000$ & $1.000$\\
+              & Min. hazard dist. [m]     & 10/10 & $+0.01$ & $+0.52$ & $[+0.00,+0.01]$ & $0.0524$ & $0.4194$\\
+              & Mission time [s]          & 10/10 & $-31.3$ & $-1.00$ & $[-31.75,-30.81]$ & $1.7{\times}10^{-4}$ & $0.0021$\\
+              & Retreats                  & 10/10 & $+0.00$ & $+0.00$ & $[+0.00,+0.00]$ & $1.0000$ & $1.0000$\\
               & Investigation time [s]    & 10/10 & $-35.68$ & $-1.00$ & $[-36.12,-35.26]$ & $6.3{\times}10^{-5}$ & $8.2{\times}10^{-4}$\\
 \hline
 \end{tabular}
@@ -207,14 +227,14 @@ contrast is thus one of selection at the decision point \emph{with} a downstream
 effect on the time course of $\Phi$, not merely a reordering of service.
 
 Table~\ref{tab:heu} reports the three scenarios. \textbf{Confirmatory (Holm-corrected
-within the family declared in advance), \texttt{default} scenario:} HEU-sel showed
+within the confirmatory family), \texttt{default} scenario:} HEU-sel showed
 no statistically detectable difference from the proposed layer on any of the five
 confirmatory outcomes ($p_{\mathrm{Holm}}=1.0000$ throughout; $|\delta|\le0.19$;
 all bootstrap intervals contain zero); three of the five are constant and
 identical in both arms. This is an absence of detected difference at $n=10$, not a
 demonstration of equivalence. By contrast, HEU differs in retreats ($1$ vs.\ $2$,
 $p_{\mathrm{Holm}}=3.0{\times}10^{-4}$), investigation time ($35.1$ vs.\ $41.2$~s,
-$p_{\mathrm{Holm}}=0.0030$) and mission duration ($p_{\mathrm{Holm}}=0.0050$). The
+$p_{\mathrm{Holm}}=0.0027$) and mission duration ($p_{\mathrm{Holm}}=0.0052$). The
 clearance difference in this scenario does not survive correction
 ($p_{\mathrm{Holm}}=0.0511$) and amounts to $6$~cm, which we read as operationally
 irrelevant and report as such rather than as an advantage.
@@ -287,7 +307,7 @@ uncorrected $p$.}
 \texttt{default} & Anomalies inspected        & $3$     & $3$     & $3$     & $+0.00$ & $1.0000^{\dagger}$\\
                  & Hazard retreats            & $1$     & $2$     & $1$     & $-1.00$ & $3.0{\times}10^{-4\dagger}$\\
                  & Min.\ hazard distance [m]  & $4.85$  & $4.91$  & $4.85$  & $-0.73$ & $0.0511^{\dagger}$\\
-                 & Investigation time [s]     & $35.1$  & $41.2$  & $35.3$  & $-1.00$ & $0.0030^{\dagger}$\\
+                 & Investigation time [s]     & $35.1$  & $41.2$  & $35.3$  & $-1.00$ & $0.0027^{\dagger}$\\
 \hline
 \texttt{conflict} & Anomalies inspected       & $3$     & $4$     & $3$     & $-0.67$ & $0.0160$\\
                  & Hazard retreats            & $1$     & $4$     & $1$     & $-1.00$ & $0.0003$\\
@@ -376,7 +396,7 @@ These two ablations still carry the reactive layer. The fairer reference is a
 layer at all}, which isolates the keep-out from the weighting; we therefore add
 configuration KOF (reactive layer disabled, keep-out enabled). KOF reaches a median minimum clearance of $1.73$~m
 against $1.71$~m for the keep-out-only ablation KOa---a difference of $2$~cm that is
-not distinguishable ($p_{\mathrm{Holm}}=0.42$)---and spends $9.0$~s below the $2$~m
+not distinguishable ($p_{\mathrm{Holm}}=0.4194$)---and spends $9.0$~s below the $2$~m
 band against $9.3$~s. \textbf{We therefore attribute the safety benefit on an on-route
 hazard to the detection-triggered keep-out, not to the reactive weighting}, and we
 state this in the abstract and the conclusion rather than leaving the comparison
@@ -388,7 +408,7 @@ What the reactive layer contributes over KOF is the inspection behavior itself, 
 only that: KOF inspects $0$ of the $3$ anomalies in every run---by construction, since
 with no reactive layer no investigation is ever triggered---against $3$ of $3$ for
 KOa ($p_{\mathrm{Holm}}=1.6{\times}10^{-4}$), and it completes the mission $31$~s
-faster ($320.9$ vs.\ $352.2$~s, $p_{\mathrm{Holm}}=0.002$) precisely because it
+faster ($320.9$ vs.\ $352.2$~s, $p_{\mathrm{Holm}}=0.0021$) precisely because it
 never detours. The pair KOF/KOa is therefore a decomposition rather than a
 victory: the keep-out buys the clearance, the reactive layer buys the inspections,
 and they are separable.

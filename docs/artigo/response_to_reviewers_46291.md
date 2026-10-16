@@ -222,13 +222,18 @@ persistence is what produces prolonged suppression.
 
 **Response (implemented).** Agreed on both counts.
 
-**Action.** §V now opens with an explicit declaration of the confirmatory family and
-its extent. The family comprises three contrasts, fixed before the new runs — the
-proposed layer against the generic heuristic and against the one-factor selection
-variant, both in the `default` scenario, and KOa against KOF on the on-route
-hazard — each evaluated on the same five outcomes (anomalies inspected, hazard
-retreats, minimum hazard distance, mission duration, investigation time). Holm was
-applied across the resulting set of fifteen tests.
+**Action.** §V now opens with an explicit declaration of the family *and of how much
+of it was fixed in advance*, because those are not the same thing. The three
+**contrasts** were specified before the battery produced any data — the proposed
+layer against the generic heuristic and against the one-factor selection variant,
+both in `default`, and KOa against KOF on the on-route hazard; the released analysis
+plan carries them in a commit timestamped ahead of the first run written to disk.
+The **set of outcomes** was not: the five reported (anomalies inspected, hazard
+retreats, minimum hazard distance, mission duration, investigation time) were fixed
+after the runs. We therefore do not call this family pre-registered. Holm is applied
+across the fifteen tests as a multiplicity correction over a family with
+pre-specified contrasts and a retrospectively bounded extent, and §V says so in
+those terms.
 
 Correcting an inconsistency we are grateful to have caught before resubmitting:
 the consolidated table (now Table 5) still listed the seven comparisons that formed the
@@ -238,11 +243,23 @@ with the per-arm n and the procedure used for each, so the Holm denominator is
 visible rather than asserted; the seven earlier comparisons move to Appendix B as a
 historical table, reported uncorrected. The table is generated from a CSV that the
 released analysis script writes, rather than transcribed. Regenerating it from the
-data corrected four p_Holm values that had been transcribed incorrectly — the KOa
-vs KOF inspection contrast (0.0027 → 1.6×10⁻⁴, where 0.0027 was the mission-time
-value repeated), hazard retreats (0.0034 → 3.0×10⁻⁴), investigation time
-(0.0034 → 0.0030) and mission duration (0.0052 → 0.0050). None of them changes a
-conclusion, but we would rather state the correction than let the numbers stand. Everything else is labelled
+data corrected **four** p_Holm values that had been transcribed incorrectly. The
+0.0027 that appeared twice on the KOa vs KOF rows belongs to neither of them: it is
+the Holm value of the *proposed layer vs HEU investigation-time* contrast
+(0.002679), copied onto the wrong rows. The corrections are therefore
+
+| contrast / outcome | published | correct |
+|---|---|---|
+| KOa vs KOF, anomalies inspected | 0.0027 | 1.6×10⁻⁴ |
+| KOa vs KOF, mission duration | 0.0027 | 0.0021 |
+| proposed vs HEU, hazard retreats | 0.0034 | 3.0×10⁻⁴ |
+| proposed vs HEU, investigation time | 0.0034 | 0.0027 |
+
+The two values we did *not* change — 0.0052 for mission duration against HEU and
+0.0511 for the clearance — were already correct. None of the four changes a
+conclusion, but we would rather state the correction than let the numbers stand.
+Table 5 and the text now quote the same four-decimal values, taken from the same
+generated file. Everything else is labelled
 exploratory *in the sentence that states it*, and two analyses are additionally
 labelled retrospective. On the bound: it is now reported per denominator — 25.9% for
 n = 10, 28.3% for n = 9, 31.2% for the n = 8 group — and placed in the *same sentence*
@@ -322,6 +339,19 @@ Throughout the window the robot's minimum distance to the hazard is 3.92 m (rang
 3.86–4.06), and the hazard magnitude is below the threshold that would trigger a
 retreat — so the suppression persists under the geometric and detection conditions in
 which the layer itself would not act on the hazard. We report this as a cost of the design, alongside the clearance it buys.
+
+We also make the condition under which that window is measured verifiable rather than
+asserted. The hand-off that stops a detected hazard being published to the reactive
+layer fires only on entry into `Avoid` **and** only where the deliberative keep-out is
+enabled. Both experimental matrices (Tables 2 and 3) now carry a retreat column and a
+keep-out column, so the reader can see that the keep-out is off in every off-route
+configuration — including all six HEU and HEU-sel blocks and the marginal-hazard
+scenario. In those configurations no hand-off occurs and re-observation can renew the
+hazard channel, which is why the measured suppression window (69.5 s) exceeds the
+≈39 s that decay from the initial magnitude alone would give, and why the HEU
+contrasts share that condition with the proposed layer rather than differing in it.
+
+
 
 ### R2.7 — Units in the abstract
 
