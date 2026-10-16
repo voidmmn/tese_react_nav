@@ -12,8 +12,8 @@ only to stimuli already within sensor range, so a mechanism is required
 \emph{beforehand} to carry the sensors to where events may occur. The patrol
 provides exactly that placement.
 
-A \emph{reactive affective} layer, named \textsc{Stay Alert}, runs on top of
-the patrol. It is governed by an affective field $\Phi$ that grows when a
+A \emph{reactive} layer, named \textsc{Stay Alert}, runs on top of
+the patrol. It is governed by an attraction--repulsion field $\Phi$ that grows when a
 salient sensory event enters range, driving the robot to \emph{approach}
 points of interest (positive $\Phi$, e.g., a thermal hotspot or a partial
 discharge) or to \emph{retreat} from danger (negative $\Phi$, e.g., an
@@ -22,7 +22,7 @@ is neutral the robot follows the patrol; when an event becomes salient,
 \textsc{Stay Alert} preempts the current waypoint, issues a focused navigation
 goal (an approach or a retreat pose), and returns control to the patrol once
 the event has been handled. This decoupling keeps the deliberative guarantees
-of a mature stack while adding a fast, interpretable affective response.
+of a mature stack while adding a fast, interpretable reactive response.
 The field $\Phi$ drives the reactive state machine
 (Section~\ref{sec:method-stayalert}); the same field can also be written into a
 tabular value update, which we record in Appendix~\ref{app:update} as a design note
@@ -197,12 +197,12 @@ inflate them.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{stay_alert_fsm}
-\caption{\textsc{Stay Alert} state machine and affective field. Top: along the
+\caption{\textsc{Stay Alert} state machine and attraction--repulsion field. Top: along the
 patrol the robot switches to \textsc{Investigate} (approach an anomaly) or
 \textsc{Avoid} (retreat from a hazard). Bottom-left: the three modes and their
 transitions ($\theta_{\text{in}},\theta_{\text{out}}$ thresholds; outcomes
 \emph{inspected}/\emph{timeout}/\emph{safe}/\emph{retreated}; repulsion has
-priority). Bottom-right: the affective field pulls toward attraction (green) and
+priority). Bottom-right: the field pulls toward attraction (green) and
 pushes away from repulsion (red).}
 \label{fig:fsm}
 \end{figure}
@@ -250,7 +250,7 @@ pushes away from repulsion (red).}
 \subsection{Active Sensing and Event Abstraction}
 \label{sec:method-sensing}
 The patrol realizes active sensing by carrying the sensors along the route; the
-robot pose used by the affective layer is taken in the \emph{map} frame (via the
+robot pose used by the reactive layer is taken in the \emph{map} frame (via the
 TF tree), so that events, poses and the static map are mutually consistent. The
 output of the sensing-and-perception chain is abstracted as \emph{events}
 $(\text{modality}, \text{intensity}, \text{position})$, i.e., we model the

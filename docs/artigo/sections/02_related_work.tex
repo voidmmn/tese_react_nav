@@ -18,7 +18,7 @@ robot~\cite{substation2025segnav}, and deep-learning inspection pipelines for
 ultra-high-voltage sites~\cite{substation2024uhvdl}. These systems, however,
 treat the round as a fixed coverage problem: the robot follows planned routes and
 the perception pipeline classifies what is seen.
-\emph{In contrast}, we add a reactive affective response \emph{during} the
+\emph{In contrast}, we add a reactive response \emph{during} the
 round, letting saliency steer the robot toward anomalies and away from hazards.
 
 \subsection{Reactive Navigation: Potential Fields and DWA}
@@ -26,8 +26,8 @@ Classical reactive methods react to local sensing without a learned value
 function. Artificial potential fields (APF) sum attractive and repulsive
 forces~\cite{khatib1986} but are well known to stall in local
 minima~\cite{koren1991}; the Dynamic Window Approach selects feasible
-velocity commands by short-horizon prediction~\cite{fox1997}. Our affective
-field $\Phi$ is reminiscent of attraction/repulsion, but the reactive response is
+velocity commands by short-horizon prediction~\cite{fox1997}. Our
+attraction--repulsion field $\Phi$ is reminiscent of these forces, but the reactive response is
 issued by a threshold-triggered controller that preempts the patrol with a goal,
 and the deliberative layer prevents the global stalls that afflict pure
 potential-field control. We make this comparison concrete by evaluating a
@@ -103,7 +103,7 @@ We build the deliberative layer on a mature, reproducible
 stack~\cite{macenski2020nav2}, using a Model Predictive Path Integral
 controller for path following~\cite{williams2017mppi}. Rather than proposing a
 new planner or controller, we keep this layer standard and add the reactive
-affective layer on top, so the contribution is orthogonal to (and benefits
+layer on top, so the contribution is orthogonal to (and benefits
 from) ongoing improvements in industrial navigation stacks.
 
 \subsection{Active Perception and Affective Robotics}
@@ -119,8 +119,8 @@ arbitration is a simple priority (safety before inspection) together with a
 saliency threshold. We
 connect these threads operationally: the patrol is an \emph{active-sensing} layer
 that brings the sensors to where events may occur, and \textsc{Stay Alert} is the
-\emph{affective} layer that, once an event is within range, produces an approach
-or retreat impulse. Table~\ref{tab:comparison} positions our method against
+\emph{reactive} layer that, drawing on this affect-inspired framing, produces an
+approach or retreat impulse once an event is within range. Table~\ref{tab:comparison} positions our method against
 representative reactive, learning-based, and substation-specific approaches.
 %% R3#1/R2#1: a alegacao de novidade dizia "an affective attraction/repulsion term
 %% ---formulated in the Bellman update---", que e exatamente o que o reposicionamento

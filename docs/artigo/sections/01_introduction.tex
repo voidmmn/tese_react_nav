@@ -13,7 +13,7 @@ planners~\cite{zhang2025substation}.
 \centering
 \includegraphics[width=\columnwidth]{concept_overview}
 \caption{Concept overview. A deliberative \emph{active-sensing} patrol (Nav2)
-carries the robot around the substation, while a reactive \emph{affective}
+carries the robot around the substation, while a \emph{reactive}
 layer makes it approach anomalies (attraction) and retreat from hazards
 (repulsion) via a threshold on the raw saliency field $\Phi$. The same field is
 also expressible as an additive term in a tabular value update, recorded as a
@@ -57,11 +57,11 @@ actions and, under a fixed learning rate, the term is equivalent to augmenting t
 reward~\cite{ng1999,zhang2023apf}.
 
 We implement the method (named \textsc{Stay Alert}) in ROS~2 with Gazebo and
-evaluate it in a simulated substation, comparing the affective layer against a
+evaluate it in a simulated substation, comparing the reactive layer against a
 fixed baseline patrol and an artificial potential-field baseline, over an
 adverse, event-dense scenario and a hazard placed on the patrol route, with
 $n=10$ attempted runs per configuration and distribution-free statistical testing. The
-affective layer turns the patrol into an inspection behavior: the baseline
+reactive layer turns the patrol into an inspection behavior: the baseline
 inspects no off-route anomalies, whereas \textsc{Stay Alert} inspects all of them
 in the default scenario and performs a consistent hazard-avoidance maneuver, at a
 modest increase in mission time ($\approx14\%$ over the fixed baseline) and more
