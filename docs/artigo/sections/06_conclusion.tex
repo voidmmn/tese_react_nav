@@ -13,12 +13,15 @@ precedence. The architecture runs on a mature, reproducible stack (ROS~2 +
 Nav2/MPPI + Gazebo Fortress).
 
 The evaluation narrows what may be credited to the reactive layer, and we state the
-three attributions plainly. First, on a hazard placed on the patrol route, a
-\emph{hazard-blind patrol carrying the same detection-triggered keep-out} reaches a
-minimum clearance indistinguishable from the full method ($1.73$ vs.\ $1.71$~m;
-$p_{\mathrm{Holm}}=0.42$), so the safety benefit is attributable to the deliberative
-keep-out rather than to the reactive weighting; the reactive layer's contribution
-there is the inspections themselves ($3$ vs.\ $0$ of $3$) at a cost of $31$~s.
+three attributions plainly. First, on a \emph{static} hazard placed on the patrol
+route, a fixed patrol carrying the same detection-triggered keep-out and no
+reactive supervisor (KOF) and the keep-out-only ablation that retains the reactive
+inspection (KOa) reached similar median minimum clearances ($1.73$ and $1.71$~m),
+with no statistically detectable difference ($p_{\mathrm{Holm}}=0.42$); the full
+method (RHM) lies at the same $1.71$~m. The safety benefit on this hazard is
+therefore attributable to the deliberative keep-out rather than to the reactive
+weighting, and what the reactive layer adds over KOF is the inspections themselves
+($3$ vs.\ $0$ of $3$), at ${\approx}31$~s of extra mission time for KOa.
 Second, the \emph{selection} criterion had no detectable effect: a variant differing
 only in selecting the nearest instead of the most salient target produced the same
 constant discrete outcomes as the proposed layer across all ten runs in the
@@ -28,14 +31,17 @@ this sample size. What did change the outcome is the \emph{trigger mode}: a gene
 detect--select--deviate--return heuristic on the same Nav2/MPPI controller, driven by
 raw detection, eventually inspects the anomaly co-located with a hazard and halves the
 minimum clearance ($4.84$ vs.\ $2.23$~m, Cliff's $\delta=+1.00$) while delaying the
-priority inspection by ${\approx}105$~s. That switch removes the hazard channel's
-temporal persistence rather than its precedence---the heuristic still preempts, three
-times per run---so we attribute the difference to the persistence. Third, that precedence carries a measured cost: a
-marginally eligible hazard suppresses attraction for ${\approx}70$~s and forfeits one
-of four inspections in $10/10$ runs. Taken together, it is the temporal persistence of the hazard channel---not the
-saliency weighting---that distinguishes this layer from a generic deviate-and-return
-heuristic, and it trades completeness for clearance in a way that is now quantified in
-both directions.
+priority inspection by ${\approx}105$~s. That switch does not remove the categorical
+precedence---the heuristic still preempts, three times per run---but it changes the
+decision signal and its temporal persistence together, so the two are not separable
+with the configurations run. The episode logs are consistent with a
+persistence-related explanation, which we therefore offer as the reading we find most
+plausible rather than as an isolated factor. Third, that precedence carries a measured
+cost: a marginally eligible hazard suppresses attraction for ${\approx}70$~s and
+forfeits one of four inspections in $10/10$ runs. Taken together, what distinguishes
+this layer from a generic deviate-and-return heuristic is the thresholded, decaying
+hazard channel rather than the saliency weighting, and it trades completeness for
+clearance in a way that is now quantified in both directions.
 
 Inspection completeness is reported as the rate of runs inspecting \emph{all}
 anomalies: $10/10$ with clean perception, $4/9$ under high perception noise and

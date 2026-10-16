@@ -306,7 +306,7 @@ headline numbers.
 **Response (implemented, retrospective).** We separate the mathematical point from
 what the recorded data can establish.
 
-The discontinuity at d = R follows directly from Eq. (3): the profile yields Iₑ/2 at
+The discontinuity at d = R follows directly from Eq. (2): the profile yields Iₑ/2 at
 the boundary and zero beyond it. That is a property of the equation and is not in
 question.
 
@@ -413,7 +413,7 @@ the 2 m band against 9.3 s. We do not present this as established equivalence. T
 abstract and the conclusion now state that, **in this scenario, the clearance
 improvement is attributable to the detection-triggered keep-out rather than to the
 reactive weighting**. What the reactive layer adds over KOF here is the inspection
-behaviour: 0 of 3 against 3 of 3 (p_Holm = 0.0027), at 31 s of extra mission time. We
+behaviour: 0 of 3 against 3 of 3 (p_Holm = 1.6e-4), at 31 s of extra mission time (p_Holm = 0.002). We
 present the pair as a decomposition of the on-route result, and do not extend it to
 the conflict or marginal-hazard scenarios, which concern other aspects of the
 behaviour. We also now state the calibration of the
@@ -478,11 +478,15 @@ individually so the three exclusions can be accounted for without inference: the
 generic heuristic in `default` (n = 9), the generic heuristic in `conflict` (n = 9),
 and the shifted-hysteresis configuration in `default` (n = 9). The proposed layer and
 the one-factor selection variant retain n = 10 in all three scenarios, which is why
-the identity of discrete outcomes reported in R2.3 is over ten runs per group. On bias: all excluded runs inspected zero anomalies, so removing them **raises the completeness
-estimates for the affected groups** — for the most affected pair it
-raises the proposed layer and APF by the same amount (2.7 → 3.0 each), leaving the
-difference unchanged but making both absolute figures conditional on successful
-initialization. For safety the adjustment runs the *other* way: a run in which the
+the identity of discrete outcomes reported in R2.3 is over ten runs per group. On bias: all excluded runs inspected zero anomalies, so removing them **raises the
+completeness estimate of any block that lost a run — and only those**. We correct
+here a statement that was wrong in our previous letter. In `default` the proposed
+layer has ten valid runs of ten and averages 3.0 inspections per *attempt*, so the
+exclusion does not move it, while APF goes from 2.7 per attempt to 3.0 per valid
+run; the exclusion therefore *closes* the per-attempt gap of 0.3 in that pair
+instead of leaving it unchanged. The group that does move from 2.7 to 3.0 on the
+proposed side is RHM, on the on-route hazard — a different scenario and a different
+comparator, which we had conflated. For safety the adjustment runs the *other* way: a run in which the
 robot never moved trivially records zero contact-region entries, so including such
 runs would inflate the evidence for contact-free navigation, and they are excluded
 from the safety statistics too. We do not claim start-up failure is independent of
@@ -496,13 +500,10 @@ The remedy is at our end: the response is uploaded
 only under *Author's Response Files*, and we verify the merged review proof page by
 page before submitting.
 
-On the template fields: `\history` and `\doi` are now called with empty arguments, so
-neither the publication-date line nor any specimen DOI string is typeset. The class
-prints the fixed label "Digital Object Identifier" unconditionally, so that label
-remains on the title page with no number after it — the field is visibly unassigned
-rather than filled with a placeholder. The "VOLUME 11, 2023" running head is set inside
-`ieeeaccess.cls` and is not under author control; like the publication dates and the
-DOI, it is assigned by IEEE production.
+On the template fields: the submitted PDF contains no specimen publication dates and
+no DOI string — `\history` and `\doi` are called with empty arguments — and the
+response letter is supplied as a separate file rather than appended. We verify the
+merged review proof before submitting.
 
 **Action (length).** We report what moved and what did not, since the comment named
 three groups. The **equivalence** material — the η sweep and the η = 0 ablation
@@ -552,5 +553,5 @@ associated with the field-based and raw-detection triggering modes. It also repo
 the inspection cost observed under a marginal hazard, and attributes the clearance
 improvement in the static on-route scenario to detection-triggered keep-out handling.
 The scope and limitations of each comparison are stated explicitly, both in the
-responses below and in the manuscript. We thank the Editor for the opportunity to
+responses above and in the manuscript. We thank the Editor for the opportunity to
 resubmit.

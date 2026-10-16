@@ -58,7 +58,10 @@ SUMMARY_METRICS = [
 # abortos/cancelamentos/rejeições -> 0 términos 'failed'. Tratar como 0 é fiel.
 ZERO_IF_ABSENT = {'investigation_failed'}
 CONFIGS = ['E1', 'E0', 'E2', 'E3', 'E4', 'E5', 'APF', 'RHM', 'RHB',
-           'N1', 'N2', 'CONF', 'KOa', 'KOb', 'DHa', 'DHb']
+           'N1', 'N2', 'CONF', 'KOa', 'KOb', 'DHa', 'DHb',
+           # bateria de out/2026 (resubmissao 46291): 13 configuracoes, 130 runs
+           'HEUd', 'HEUc', 'HEUa', 'HEUseld', 'HEUselc', 'HEUsela',
+           'KOF', 'CM', 'HAZ20', 'HAZ30', 'HAZ40', 'HYSnar', 'HYSoff']
 
 # Nº de anomalias elegíveis POR CENÁRIO (denominador da "inspeção completa"),
 # definido a priori pela configuração do cenário --- NÃO derivado do máximo
@@ -69,10 +72,40 @@ TARGET_ANOM = {
     'E5': 5,                         # cenário denso
     'RHM': 3, 'RHB': 3, 'KOa': 3, 'KOb': 3,   # perigo-na-rota: 3 anomalias
     'DHa': 1, 'DHb': 1,                        # ensaio dirigido: 1 anomalia
+    # bateria nova: HEU/HEU-sel herdam o cenario; KOF e route-hazard; CM tem 4
+    # elegiveis (a 4a e a que a precedencia suprime); HAZ*/HYS* sao default.
+    'HEUd': 3, 'HEUseld': 3, 'HEUc': 3, 'HEUselc': 3, 'HEUa': 5, 'HEUsela': 5,
+    'KOF': 3, 'CM': 4,
+    'HAZ20': 3, 'HAZ30': 3, 'HAZ40': 3, 'HYSnar': 3, 'HYSoff': 3,
 }
 
-# Família confirmatória (Holm dentro dela).
-CONFIRMATORY = [
+# ---------------------------------------------------------------------------
+# FAMILIA CONFIRMATORIA DA RESUBMISSAO 46291 (Holm dentro dela).
+#
+# Declarada antes de rodar a bateria nova e e ELA que a Tabela 4 do artigo
+# consolida. Tres contrastes x cinco desfechos = 15 testes. Nao misturar com
+# LEGACY_CONFIRMATORY abaixo: aquela era a familia da submissao anterior e
+# virou material exploratorio/historico. Manter as duas como familia unica foi
+# o defeito apontado no parecer de 2026-10-16 (P1).
+CONFIRMATORY_OUTCOMES = [
+    ('anomalies_unique',      'Anomalies inspected'),
+    ('min_hazard_distance_m', 'Min. hazard dist. [m]'),
+    ('mission_duration_s',    'Mission time [s]'),
+    ('hazard_avoidances',     'Retreats'),
+    ('investigation_time_s',  'Investigation time [s]'),
+]
+CONFIRMATORY_PAIRS = [
+    ('E3 vs HEU',     'E3',  'HEUd'),     # default: proposta x heuristica generica
+    ('E3 vs HEU-sel', 'E3',  'HEUseld'),  # default: variante de um fator
+    ('KOa vs KOF',    'KOa', 'KOF'),      # route-hazard: keepout com e sem reativa
+]
+CONFIRMATORY = [(lab, a, b, mk, pretty)
+                for lab, a, b in CONFIRMATORY_PAIRS
+                for mk, pretty in CONFIRMATORY_OUTCOMES]
+
+# Familia da submissao ANTERIOR -- mantida para auditoria, reportada sem
+# correcao e rotulada como exploratoria/historica no artigo.
+LEGACY_CONFIRMATORY = [
     ('E1 vs E3', 'E1', 'E3', 'anomalies_unique', 'Anomalies inspected'),
     ('E1 vs E3', 'E1', 'E3', 'min_hazard_distance_m', 'Min. hazard dist. [m]'),
     ('E1 vs E3', 'E1', 'E3', 'mission_duration_s', 'Mission time [s]'),
@@ -170,6 +203,48 @@ def mwu(a, b):
         return p
     except Exception:
         return float('nan')
+
+
+def procedure(a, b):
+    """Nome do procedimento que mwu() de fato usa para este par -- para a
+    tabela auditavel pedida no parecer (P1, item 2): o artigo precisa dizer
+    qual teste produziu cada p, nao so citar o teste no cabecalho."""
+    if a.std() == 0 and b.std() == 0:
+        return 'identical' if a.mean() == b.mean() else 'exact permutation'
+    ties = len(set(a).intersection(set(b))) > 0 or \
+        len(set(np.concatenate([a, b]))) < len(a) + len(b)
+    return 'asymptotic (tie-corrected)' if (ties or len(a) + len(b) > 20) \
+        else 'exact U'
+
+
+def write_confirmatory(runs, results_dir):
+    """Tabela auditavel dos 15 testes confirmatorios -> CSV.
+
+    E a fonte unica de onde as Tabelas 4 e 7 do artigo e os p-valores citados
+    no texto devem ser copiados. Antes do parecer de 2026-10-16 esses numeros
+    eram calculados avulsos e digitados no .tex; dois deles estavam errados.
+    """
+    rows = []
+    for lab, a, b, mk, pretty in CONFIRMATORY:
+        r = stat_row(runs, a, b, mk)
+        if r:
+            rows.append((lab, a, b, mk, pretty, r))
+    hp = holm([r['p'] for *_, r in rows])
+    out = os.path.join(results_dir, 'familia_confirmatoria.csv')
+    with open(out, 'w', newline='') as f:
+        w = csv.writer(f)
+        w.writerow(['contrast', 'config_A', 'config_B', 'metric', 'label',
+                    'n_A', 'n_B', 'mean_A', 'mean_B', 'delta', 'cliff',
+                    'ci_lo', 'ci_hi', 'procedure', 'p_raw', 'p_holm'])
+        for (lab, a, b, mk, pretty, r), h in zip(rows, hp):
+            xa, xb = vals(runs, a, mk), vals(runs, b, mk)
+            w.writerow([lab, a, b, mk, pretty, r['nA'], r['nB'],
+                        f'{xa.mean():.4f}', f'{xb.mean():.4f}',
+                        f'{r["delta"]:+.4f}', f'{r["cliff"]:+.4f}',
+                        f'{r["ci"][0]:+.4f}', f'{r["ci"][1]:+.4f}',
+                        procedure(xa, xb), f'{r["p"]:.6g}', f'{h:.6g}'])
+    print(f'Familia confirmatoria ({len(rows)} testes) -> {out}')
+    return rows, hp
 
 
 def holm(ps):
@@ -270,18 +345,29 @@ def main():
 
     write_summary(runs, rd)
 
-    # 1) família confirmatória com Holm
-    rows = [(lab, pretty, stat_row(runs, a, b, mk))
-            for lab, a, b, mk, pretty in CONFIRMATORY]
-    rows = [(lab, pr, r) for lab, pr, r in rows if r]
-    hp = holm([r['p'] for _, _, r in rows])
-    print('\n=== FAMÍLIA CONFIRMATÓRIA (Mann-Whitney; Holm dentro da família) ===')
-    print(f'{"pair":<12}{"metric":<26}{"n":>7}{"Δ":>9}{"δ":>7}{"95% CI":>20}{"p":>11}{"p_H":>11}')
-    for (lab, pr, r), h in zip(rows, hp):
+    # 1) familia confirmatoria da resubmissao: 3 contrastes x 5 desfechos = 15
+    rows, hp = write_confirmatory(runs, rd)
+    print('\n=== FAMILIA CONFIRMATORIA 46291 (Holm dentro da familia, m=%d) ===' % len(rows))
+    print(f'{"pair":<14}{"metric":<26}{"n":>7}{"Δ":>9}{"δ":>7}{"95% CI":>20}'
+          f'{"procedure":>28}{"p":>11}{"p_H":>11}')
+    for (lab, a, b, mk, pr, r), h in zip(rows, hp):
         ci = f'[{r["ci"][0]:+.2f},{r["ci"][1]:+.2f}]'
         n = f'{r["nA"]}/{r["nB"]}'
-        print(f'{lab:<12}{pr:<26}{n:>7}{r["delta"]:>+9.2f}{r["cliff"]:>+7.2f}'
-              f'{ci:>20}{fmt_p(r["p"]):>11}{fmt_p(h):>11}')
+        proc = procedure(vals(runs, a, mk), vals(runs, b, mk))
+        print(f'{lab:<14}{pr:<26}{n:>7}{r["delta"]:>+9.2f}{r["cliff"]:>+7.2f}'
+              f'{ci:>20}{proc:>28}{fmt_p(r["p"]):>11}{fmt_p(h):>11}')
+
+    # 1b) familia da submissao ANTERIOR -- historica, sem correcao, exploratoria
+    print('\n=== FAMILIA DA SUBMISSAO ANTERIOR (historica; p SEM correcao) ===')
+    print(f'{"pair":<14}{"metric":<26}{"n":>7}{"Δ":>9}{"δ":>7}{"95% CI":>20}{"p":>11}')
+    for lab, a, b, mk, pretty in LEGACY_CONFIRMATORY:
+        r = stat_row(runs, a, b, mk)
+        if not r:
+            continue
+        ci = f'[{r["ci"][0]:+.2f},{r["ci"][1]:+.2f}]'
+        n = f'{r["nA"]}/{r["nB"]}'
+        print(f'{lab:<14}{pretty:<26}{n:>7}{r["delta"]:>+9.2f}{r["cliff"]:>+7.2f}'
+              f'{ci:>20}{fmt_p(r["p"]):>11}')
 
     # 2) família secundária (equivalência / robustez / custo) — efeito + IC (+TOST)
     print('\n=== FAMÍLIA SECUNDÁRIA (equivalência/robustez/custo — efeito+IC) ===')

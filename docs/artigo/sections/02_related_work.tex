@@ -152,12 +152,24 @@ evidence supports.}
 \textbf{Status of safety mechanism} & \textbf{Uncertainty} &
 \textbf{Strongest supported claim} \\
 \hline
-Classical APF / DWA~\cite{khatib1986,fox1997} &
+%% T2 do parecer de 2026-10-16: a linha conjunta descrevia a DWA como soma
+%% vetorial, o que e a APF. A DWA busca no espaco de VELOCIDADES alcancaveis,
+%% restrito as admissiveis (o robo consegue parar), e so entao pontua. Separadas.
+Classical APF~\cite{khatib1986} &
 Obstacle geometry available and current &
 Vector sum: a strong attraction can overcome a repulsion; no precedence &
 Soft---a force term among others; no invariant, local minima possible &
 Not represented &
 Reaches the goal in the tested geometries \\
+
+Dynamic Window Approach~\cite{fox1997} &
+Obstacle geometry plus a model of the robot's own dynamics &
+Search over dynamically reachable velocities restricted to those from which the
+robot can still stop, then scored by an objective &
+Admissibility constraint---the stopping condition, under the assumed dynamics,
+rather than a force term &
+Not represented &
+Collision-free motion at speed under the assumed dynamic model \\
 
 RL-tuned APF~\cite{zhang2023apf} &
 As above, plus a reward signal during training &

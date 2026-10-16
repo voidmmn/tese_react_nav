@@ -156,10 +156,14 @@ Both geometric safety instruments are entries into regions defined operationally
 centre-to-centre distance, counted on the rising edge, and computed against the
 \emph{true} hazard position with the robot pose taken from the \texttt{map} frame.
 Neither is a physical contact measurement, and neither is a regulatory electrical
+%% T1 do parecer de 2026-10-16: a frase anterior dizia que 0,5 m corresponde ao
+%% corpo alcancar o centro do perigo. Nao decorre da geometria: 0,50-0,25=0,25 m.
 clearance. To let the reader calibrate them: the robot radius configured in the
-planner is $0.25$~m, so the $0.5$~m contact region corresponds to the robot body
-reaching the hazard centre, and the $2$~m band to $1.75$~m of clearance from the
-robot's edge. The $2$~m value is a diagnostic threshold adopted for measuring
+planner is $0.25$~m, so a centre-to-centre distance of $0.5$~m leaves $0.25$~m
+between the robot's edge and the hazard point, and the $2$~m band leaves
+$1.75$~m. Both are distances to a hazard represented as a \emph{point}; the
+equipment it stands for has finite extent, so neither figure is a clearance from a
+physical surface. The $2$~m value is a diagnostic threshold adopted for measuring
 exposure in this evaluation; the study declares no minimum-clearance requirement, so
 transiting below it is not a requirement violation but an exposure that we report.
 

@@ -75,11 +75,17 @@ i_e(d) = I_e\left(1 - \tfrac{1}{2}\,\frac{d}{R}\right), \qquad d \le R,
 \end{equation}
 $I_e$ being its base intensity. This profile models a \emph{soft detection
 boundary}: sensing degrades linearly with range and is not reported beyond $R$.
-The resulting step at $d=R$ (from $I_e/2$ to no event) does not induce chattering
-of the reactive response, because the controller uses hysteresis---distinct enter
-and exit thresholds (Section~\ref{sec:method-stayalert})---and, once it commits to
-an event, does not re-select it until the episode ends; an event that lapses at
-the boundary therefore cannot repeatedly re-trigger the same maneuver. We further
+%% P6 do parecer de 2026-10-16: a redacao anterior afirmava que o degrau "does
+%% not induce chattering" e que um evento "cannot repeatedly re-trigger". Os logs
+%% nao isolam isso. Descrevemos o mecanismo como destinado a reduzir retriggers.
+The resulting step at $d=R$ (from $I_e/2$ to no event) is a real discontinuity of
+the perceived intensity. Two mechanisms of the controller are intended to keep it
+from producing repeated triggers: hysteresis---distinct enter and exit thresholds
+(Section~\ref{sec:method-stayalert})---and commitment, since once an event is
+committed it is not re-selected until the episode ends. We characterise what the
+logs do and do not establish about this in Section~\ref{sec:results}; they record
+onsets and inter-transition intervals, and do not isolate the boundary's causal
+contribution. We further
 report the method's sensitivity to perception noise in
 Section~\ref{sec:results}. Each modality has a weight $w_m$ (with
 $w_{\text{hazard}}<0$ for repulsion) and a trigger threshold $\theta_m$. The
@@ -156,15 +162,25 @@ navigating to its inspection pose. On entering either mode the layer asserts a
 \emph{busy} flag that pauses the patrol (the current waypoint goal is cancelled)
 and emits an event marker carrying the target's identity.
 
-\textsc{Investigate} terminates \emph{successfully} (outcome \emph{inspected})
-only when the reactive navigation \emph{succeeds}, the controller holds for a
-commanded dwell $t_{\text{dwell}}$, and the simulator confirms the final pose lies
-within a \emph{confirmation distance} of the \emph{true} target (the standoff plus
-a tolerance; Section~\ref{sec:setup-matrix}); a navigation that is aborted or
-cancelled, or a budget $t_{\max}$ that elapses, ends the episode as \emph{failed}.
-This confirmation is a proxy---it does not independently verify the full standoff
-and orientation, nor persistence throughout the dwell---and we name the metric
-accordingly. It does
+%% P3 do parecer de 2026-10-16: o Algoritmo 1 trazia a distancia de confirmacao
+%% como condicao de SAIDA do controlador, o que contradiz o codigo e minaria o
+%% re-scoring retrospectivo. Controle e credito sao separados aqui explicitamente.
+Two distinct steps must be kept apart, because only the first one acts on the
+robot. The \emph{controller} ends an \textsc{Investigate} episode when the
+reactive navigation \emph{succeeds} and it has held for a commanded dwell
+$t_{\text{dwell}}$; a navigation that is aborted or cancelled, or a budget
+$t_{\max}$ that elapses, ends the episode as \emph{failed}. On either exit it
+emits an event carrying the target's identity and the reason. The
+\emph{evaluator}, a separate node, receives that event and only then compares the
+robot's pose with the \emph{true} target position: within a \emph{confirmation
+distance} (the standoff plus a tolerance; Section~\ref{sec:setup-matrix}) the
+anomaly is credited as \emph{inspected}, otherwise the episode is recorded as a
+confirmation rejection. The confirmation therefore never feeds back into
+behaviour---no episode is prolonged or shortened by it---which is what permits the
+retrospective re-scoring at other thresholds in Section~\ref{sec:robustness}
+without re-running the missions. It is also a proxy: it does not independently
+verify the full standoff and orientation, nor persistence throughout the dwell,
+and we name the metric accordingly. The episode does
 \emph{not} exit merely because $\Phi$ decayed, which prevents oscillation while
 crossing a low-saliency ``valley'' between events. \textsc{Avoid} terminates when
 the hazard leaves range, $\Phi > -\theta_{\text{out}}$ (\emph{safe}), or upon
@@ -229,11 +245,12 @@ pushes away from repulsion (red).}
             pause patrol; send approach goal
   \ENDIF
 \ELSIF{mode $=$ \textsc{Investigate}}
-  \IF{navigation \textbf{succeeded}, dwelled $\ge t_{\text{dwell}}$, \textbf{and}
-      final pose within the confirmation distance of $e^\star$}
-     \STATE exit (\emph{inspected}: credit $e^\star$); resume patrol
+  \IF{navigation \textbf{succeeded} \textbf{and} dwelled $\ge t_{\text{dwell}}$}
+     \STATE exit (\emph{inspected}); resume patrol;
+            \textbf{emit} \textsc{investigate\_end}($e^\star$, \emph{inspected})
   \ELSIF{elapsed $\ge t_{\max}$ \textbf{or} navigation aborted/cancelled}
-     \STATE exit (\emph{failed}); resume patrol
+     \STATE exit (\emph{failed}); resume patrol;
+            \textbf{emit} \textsc{investigate\_end}($e^\star$, \emph{failed})
   \ENDIF
 \ELSIF{mode $=$ \textsc{Avoid}}
   \IF{$\Phi > -\theta_{\text{out}}$ \textbf{or} retreat pose reached}

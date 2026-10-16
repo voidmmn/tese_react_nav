@@ -42,8 +42,8 @@ are reported with $p_{\mathrm{Holm}}$. Everything else---the \texttt{conflict} a
 configuration, and every re-analysis of previously recorded runs---is
 \emph{exploratory}, is reported with uncorrected $p$, and is labelled as exploratory
 in the sentence that states it. Two of the analyses below are additionally
-\emph{retrospective}: the confirmation-distance re-scoring and the boundary-crossing
-count operate on runs recorded for the earlier submission, and are planned now rather
+\emph{retrospective}: the confirmation-distance re-scoring and the logged-onset and
+FSM-transition analysis operate on runs recorded for the earlier submission, and are planned now rather
 than in advance.
 
 The principal (confirmatory) comparisons are consolidated in
@@ -53,27 +53,45 @@ adverse-cost comparisons are reported in Appendix~\ref{app:stats}
 
 \begin{table*}[t]
 \centering
-\caption{Consolidated statistics for the principal comparisons (valid runs).
-$\Delta$ is the mean difference (second minus first configuration); $\delta$ is
-Cliff's effect size; the CI is the $95\%$ bootstrap interval of $\Delta$; $p$ is
-the Mann--Whitney $U$ (exact $U$ distribution for untied samples with
-$n_1+n_2\le20$; exact permutation for fully separated constant arms; tie-corrected
-normal approximation when ties are present); $p_{\mathrm{H}}$ is Holm-corrected
-across the family.}
+\caption{The \emph{complete} confirmatory family: three contrasts
+$\times$ five outcomes $=15$ tests, with no test omitted, so that the Holm
+denominator is visible rather than asserted. $n$ is the number of valid runs per
+arm. $\Delta$ is the mean difference (second minus first configuration); $\delta$
+is Cliff's effect size; the CI is the $95\%$ bootstrap interval of $\Delta$; $p$
+is the Mann--Whitney $U$, computed as the exact $U$ distribution for untied
+samples with $n_1+n_2\le20$, as the exact two-sided permutation
+$2/\binom{n_1+n_2}{n_1}$ for fully separated constant arms, and as the
+tie-corrected normal approximation when ties are present; a pair of identical
+constant arms is reported as $p=1$. $p_{\mathrm{H}}$ is Holm-corrected across
+these $15$ tests. Comparisons outside this family are exploratory and are
+reported with uncorrected $p$. The table is generated from
+\texttt{familia\_confirmatoria.csv}, which the released analysis script writes
+and which records the procedure selected for each test.}
 \label{tab:stats}
 \footnotesize
-\setlength{\tabcolsep}{5pt}
-\begin{tabular}{llccccc}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llcccccc}
 \hline
-\textbf{Pair} & \textbf{Metric} & $\bm{\Delta}$ & $\bm{\delta}$ & \textbf{95\% CI} & $\bm{p}$ & $\bm{p_{\mathrm{H}}}$\\
+\textbf{Pair} & \textbf{Outcome} & $\bm{n}$ & $\bm{\Delta}$ & $\bm{\delta}$ &
+\textbf{95\% CI} & $\bm{p}$ & $\bm{p_{\mathrm{H}}}$\\
 \hline
-E1 vs E3   & Anomalies inspected   & $+3.00$ & $+1.00$ & $[+3.00,+3.00]$ & $1.1{\times}10^{-5}$ & $7.6{\times}10^{-5}$\\
-E1 vs E3   & Min.\ hazard dist.\ [m] & $+0.15$ & $+1.00$ & $[+0.13,+0.17]$ & $1.1{\times}10^{-5}$ & $7.6{\times}10^{-5}$\\
-E1 vs E3   & Mission time [s]      & $+44$   & $+1.00$ & $[+43,+45]$     & $1.8{\times}10^{-4}$ & $1.8{\times}10^{-4}$\\
-E3 vs APF  & Mission time [s]      & $+39$   & $+1.00$ & $[+36,+42]$     & $2.2{\times}10^{-5}$ & $1.1{\times}10^{-4}$\\
-RHB vs RHM & Anomalies inspected   & $+3.00$ & $+1.00$ & $[+3.00,+3.00]$ & $2.2{\times}10^{-5}$ & $1.1{\times}10^{-4}$\\
-RHB vs RHM & Min.\ hazard dist.\ [m] & $+1.00$ & $+1.00$ & $[+0.99,+1.01]$ & $2.2{\times}10^{-5}$ & $1.1{\times}10^{-4}$\\
-RHB vs RHM & Min.\ time-to-collision [s] & $+2.82$ & $+1.00$ & $[+2.18,+3.18]$ & $2.2{\times}10^{-5}$ & $1.1{\times}10^{-4}$\\
+%% GERADO por tabela_confirmatoria_tex.py a partir de familia_confirmatoria.csv.
+%% NAO editar a mao: reexecutar analise_estatistica.py e regerar.
+E3 vs HEU     & Anomalies inspected       & 10/9 & $+0.00$ & $+0.00$ & $[+0.00,+0.00]$ & $1.000$ & $1.000$\\
+              & Min. hazard dist. [m]     & 10/9 & $+0.05$ & $+0.73$ & $[+0.03,+0.07]$ & $0.006$ & $0.051$\\
+              & Mission time [s]          & 10/9 & $-3.4$ & $-0.96$ & $[-4.38,-2.48]$ & $5.2{\times}10^{-4}$ & $0.005$\\
+              & Retreats                  & 10/9 & $+1.00$ & $+1.00$ & $[+1.00,+1.00]$ & $2.2{\times}10^{-5}$ & $3.0{\times}10^{-4}$\\
+              & Investigation time [s]    & 10/9 & $+6.00$ & $+1.00$ & $[+5.40,+6.58]$ & $2.4{\times}10^{-4}$ & $0.003$\\
+E3 vs HEU-sel & Anomalies inspected       & 10/10 & $+0.00$ & $+0.00$ & $[+0.00,+0.00]$ & $1.000$ & $1.000$\\
+              & Min. hazard dist. [m]     & 10/10 & $-0.00$ & $+0.06$ & $[-0.03,+0.03]$ & $0.853$ & $1.000$\\
+              & Mission time [s]          & 10/10 & $-0.2$ & $-0.17$ & $[-1.16,+0.75]$ & $0.544$ & $1.000$\\
+              & Retreats                  & 10/10 & $+0.00$ & $+0.00$ & $[+0.00,+0.00]$ & $1.000$ & $1.000$\\
+              & Investigation time [s]    & 10/10 & $+0.28$ & $+0.19$ & $[-0.42,+0.98]$ & $0.496$ & $1.000$\\
+KOa vs KOF    & Anomalies inspected       & 10/10 & $-3.00$ & $-1.00$ & $[-3.00,-3.00]$ & $1.1{\times}10^{-5}$ & $1.6{\times}10^{-4}$\\
+              & Min. hazard dist. [m]     & 10/10 & $+0.01$ & $+0.52$ & $[+0.00,+0.01]$ & $0.052$ & $0.419$\\
+              & Mission time [s]          & 10/10 & $-31.3$ & $-1.00$ & $[-31.75,-30.81]$ & $1.7{\times}10^{-4}$ & $0.002$\\
+              & Retreats                  & 10/10 & $+0.00$ & $+0.00$ & $[+0.00,+0.00]$ & $1.000$ & $1.000$\\
+              & Investigation time [s]    & 10/10 & $-35.68$ & $-1.00$ & $[-36.12,-35.26]$ & $6.3{\times}10^{-5}$ & $8.2{\times}10^{-4}$\\
 \hline
 \end{tabular}
 \end{table*}
@@ -189,31 +207,36 @@ contrast is thus one of selection at the decision point \emph{with} a downstream
 effect on the time course of $\Phi$, not merely a reordering of service.
 
 Table~\ref{tab:heu} reports the three scenarios. \textbf{Confirmatory (Holm-corrected
-within the family declared in advance), \texttt{default} scenario:} HEU-sel is
-indistinguishable from the proposed layer on every metric
-($p_{\mathrm{Holm}}=1.0000$ throughout; $|\delta|\le0.19$; all bootstrap intervals
-contain zero), whereas HEU differs in retreats ($1$ vs.\ $2$,
-$p_{\mathrm{Holm}}=0.0034$), investigation time ($35.1$ vs.\ $41.2$~s,
-$p_{\mathrm{Holm}}=0.0034$) and mission duration ($p_{\mathrm{Holm}}=0.0052$). The
+within the family declared in advance), \texttt{default} scenario:} HEU-sel showed
+no statistically detectable difference from the proposed layer on any of the five
+confirmatory outcomes ($p_{\mathrm{Holm}}=1.0000$ throughout; $|\delta|\le0.19$;
+all bootstrap intervals contain zero); three of the five are constant and
+identical in both arms. This is an absence of detected difference at $n=10$, not a
+demonstration of equivalence. By contrast, HEU differs in retreats ($1$ vs.\ $2$,
+$p_{\mathrm{Holm}}=3.0{\times}10^{-4}$), investigation time ($35.1$ vs.\ $41.2$~s,
+$p_{\mathrm{Holm}}=0.0030$) and mission duration ($p_{\mathrm{Holm}}=0.0050$). The
 clearance difference in this scenario does not survive correction
 ($p_{\mathrm{Holm}}=0.0511$) and amounts to $6$~cm, which we read as operationally
 irrelevant and report as such rather than as an advantage.
 
 \textbf{Exploratory, \texttt{conflict} scenario}---where a hazard is co-located with a
 \emph{more salient} anomaly, so the two rules disagree by construction---the
-difference is large and in the direction the precedence was designed to prevent. HEU
+difference is large and in the direction the proposed layer's \emph{persistent}
+precedence is meant to avoid---HEU preempts too, but does not hold the hazard
+channel open. HEU
 inspects the co-located anomaly (median $4$ of $4$ versus $3$ for the proposed layer)
 and pays for it: minimum clearance falls from $4.84$ to $2.23$~m (Cliff's
 $\delta=+1.00$, complete separation; bootstrap CI of the difference
 $[+2.60,+2.63]$~m; $p<0.0001$), retreats rise from $1$ to $4$ as the supervisor
 oscillates, mission duration grows by ${\approx}106$~s, and the time to inspect the
 priority target is delayed by ${\approx}105$~s in both modalities
-($345.0$ vs.\ $239.9$~s thermal; $387.6$ vs.\ $283.1$~s acoustic). HEU-sel again
-matches the proposed layer on every metric.
+($345.0$ vs.\ $239.9$~s thermal; $387.6$ vs.\ $283.1$~s acoustic). For HEU-sel,
+again, no difference from the proposed layer was detected on any reported outcome.
 
-\textbf{Exploratory, \texttt{adverse} scenario}: all three configurations inspect all
-five anomalies; HEU performs one additional retreat and the clearance differences are
-of the order of centimetres.
+\textbf{Exploratory, \texttt{adverse} scenario}: all three configurations reached a
+median of five inspected anomalies, with per-run counts between four and five
+(proposed $9/10$ runs at five, HEU $10/10$, HEU-sel $8/10$); HEU performs one
+additional retreat and the clearance differences are of the order of centimetres.
 
 %% Atribuicao: HEU-sel difere do metodo SO na selecao; HEU difere de HEU-sel SO no
 %% modo de disparo. Logo o efeito do conflito se prende ao modo de disparo -- e esse
@@ -262,9 +285,9 @@ uncorrected $p$.}
 \textbf{HEU-sel} & \textbf{$\delta$ (vs.\ HEU)} & \textbf{$p$ (vs.\ HEU)}\\
 \hline
 \texttt{default} & Anomalies inspected        & $3$     & $3$     & $3$     & $+0.00$ & $1.0000^{\dagger}$\\
-                 & Hazard retreats            & $1$     & $2$     & $1$     & $-1.00$ & $0.0034^{\dagger}$\\
+                 & Hazard retreats            & $1$     & $2$     & $1$     & $-1.00$ & $3.0{\times}10^{-4\dagger}$\\
                  & Min.\ hazard distance [m]  & $4.85$  & $4.91$  & $4.85$  & $-0.73$ & $0.0511^{\dagger}$\\
-                 & Investigation time [s]     & $35.1$  & $41.2$  & $35.3$  & $-1.00$ & $0.0034^{\dagger}$\\
+                 & Investigation time [s]     & $35.1$  & $41.2$  & $35.3$  & $-1.00$ & $0.0030^{\dagger}$\\
 \hline
 \texttt{conflict} & Anomalies inspected       & $3$     & $4$     & $3$     & $-0.67$ & $0.0160$\\
                  & Hazard retreats            & $1$     & $4$     & $1$     & $-1.00$ & $0.0003$\\
@@ -281,7 +304,9 @@ uncorrected $p$.}
 \vspace{2pt}
 \footnotesize $n$: \texttt{default} $10/9/10$, \texttt{conflict} $10/9/10$,
 \texttt{adverse} $10/10/10$ (proposed/HEU/HEU-sel).
-$^{\dagger}$Holm-corrected within the confirmatory family. Every
+$^{\dagger}$Holm-corrected within the $15$-test confirmatory family of
+Table~\ref{tab:stats}, from which these values are taken; rows without the dagger
+are exploratory and uncorrected. Every
 proposed-versus-HEU-sel comparison yields $p_{\mathrm{Holm}}=1.0000$ or
 $p>0.22$ and is omitted from the last two columns for brevity.
 \end{table*}
@@ -354,16 +379,18 @@ not distinguishable ($p_{\mathrm{Holm}}=0.42$)---and spends $9.0$~s below the $2
 band against $9.3$~s. \textbf{We therefore attribute the safety benefit on an on-route
 hazard to the detection-triggered keep-out, not to the reactive weighting}, and we
 state this in the abstract and the conclusion rather than leaving the comparison
-against a hazard-blind baseline to carry the claim.
+against a patrol with no hazard response at all to carry the claim. KOF is not
+hazard-blind: it perceives the hazard and projects the keep-out, and what it lacks
+is the reactive supervisor.
 
 What the reactive layer contributes over KOF is the inspection behavior itself, and
 only that: KOF inspects $0$ of the $3$ anomalies in every run---by construction, since
 with no reactive layer no investigation is ever triggered---against $3$ of $3$ for
-KOa ($p_{\mathrm{Holm}}=0.0027$), and it completes the mission $31$~s faster
-($320.9$ vs.\ $352.1$~s, $p_{\mathrm{Holm}}=0.0027$) precisely because it never
-detours. The honest reading of the pair KOF/KOa is therefore a decomposition rather
-than a victory: the keep-out buys the clearance, the reactive layer buys the
-inspections, and they are separable.
+KOa ($p_{\mathrm{Holm}}=1.6{\times}10^{-4}$), and it completes the mission $31$~s
+faster ($320.9$ vs.\ $352.2$~s, $p_{\mathrm{Holm}}=0.002$) precisely because it
+never detours. The pair KOF/KOa is therefore a decomposition rather than a
+victory: the keep-out buys the clearance, the reactive layer buys the inspections,
+and they are separable.
 
 The deliberative keepout is therefore the mechanism that resolves
 an on-route hazard; the reactive retreat adds \emph{no} measurable benefit for this
@@ -521,8 +548,7 @@ comparable: in CONF the forfeited anomaly is co-located with the hazard and
 \emph{should} be refused, whereas in CM it is a legitimate target $4.3$~m away. The
 same count is correct behavior in one scenario and a failure in the other.
 
-\paragraph*{The threshold governing the precedence is well placed, and raising it
-costs clearance} Varying the supervisor's entry threshold does not test the
+\paragraph*{Local sensitivity to the hazard eligibility threshold} Varying the supervisor's entry threshold does not test the
 precedence, because what governs suppression is the \emph{modality eligibility}
 threshold $\theta_{\mathcal{H}}$ applied before weighting. We sweep that threshold
 over $\{0.20,0.30,0.40\}$ in the conflict scenario, with $0.30$ the value used
@@ -536,7 +562,8 @@ values; what they establish is that the clearance reported elsewhere in this art
 is not produced by a threshold chosen below the value at which the degradation
 appears.
 
-\paragraph*{Hysteresis: width is immaterial, position is not}
+\paragraph*{Hysteresis: no detectable effect of the width tested, but position
+matters}
 %% R3#3 pede os valores de histerese e limiar como sensibilidade. Os tres pares
 %% separam POSICAO de LARGURA -- um par que mude as duas coisas nao permitiria
 %% atribuir o efeito.
@@ -570,7 +597,9 @@ the fixed baseline inspects \emph{none}.
 Table~\ref{tab:apf} consolidates the comparison against the potential-field
 baseline, which the previous version of this article reported across several tables.
 The proposed layer completes the same three inspections faster ($364$ vs.\
-$404\pm5$\,s). We are explicit about what this does \emph{not} isolate: the APF
+$404\pm5$\,s) over essentially the same path length ($86.6$ vs.\ $86.4$\,m, a
+difference of $0.2$\,m that we do not read as an advantage either way). We are
+explicit about what this does \emph{not} isolate: the APF
 baseline replaces the reactive supervisor \emph{and} the controller---it commands
 velocities directly instead of issuing Nav2/MPPI goals---so the difference confounds
 the supervisor with the controller. On tuning we give the procedure and the values. The APF gains were calibrated so that
@@ -593,7 +622,9 @@ part of the study.
 \centering
 \caption{Consolidated comparison against the potential-field baseline (default
 scenario, valid runs; $n=10$ proposed, $n=9$ APF). Mean\,$\pm$\,std, with the $95\%$
-bootstrap interval of the difference. The two configurations differ in both
+bootstrap interval of the difference, in the sense \emph{proposed minus APF}
+(the opposite of the convention in Table~\ref{tab:stats}, where $\Delta$ is the
+second configuration minus the first). The two configurations differ in both
 supervisor and controller, so the difference is not attributable to the reactive
 layer alone.}
 \label{tab:apf}
@@ -603,10 +634,13 @@ layer alone.}
 \hline
 \textbf{Metric} & \textbf{Proposed (E3)} & \textbf{APF} & \textbf{$95\%$ CI of diff.}\\
 \hline
-Anomalies inspected        & $3.0\pm0.0$   & $3.0\pm0.0$   & $[+0.00,+0.00]$\\
-Mission duration [s]       & $364\pm1$     & $404\pm5$     & $[-43.1,-36.8]$\\
-Distance travelled [m]     & $86.6\pm0.2$  & $88.9\pm1.1$  & $[-3.1,-1.6]$\\
-Min.\ hazard distance [m]  & $4.86\pm0.03$ & $4.79\pm0.06$ & $[+0.03,+0.11]$\\
+%% GERADO de results/ apos o parecer P2: a versao anterior trazia APF com
+%% 88.9+-1.1 m e 4.79+-0.06 m, que nao correspondem aos CSVs (86.4+-0.1 e
+%% 4.81+-0.00) e invertiam o sinal do IC da distancia. Nao reeditar a mao.
+Anomalies inspected        & $3.00\pm0.00$ & $3.00\pm0.00$ & $[+0.00,+0.00]$\\
+Mission duration [s]       & $364\pm1$     & $404\pm5$     & $[-42.5,-36.4]$\\
+Distance travelled [m]     & $86.6\pm0.2$  & $86.4\pm0.1$  & $[+0.08,+0.30]$\\
+Min.\ hazard distance [m]  & $4.86\pm0.03$ & $4.81\pm0.00$ & $[+0.03,+0.07]$\\
 Time to priority target [s]& $240.8$       & $269.7$       & $[-34.2,-23.1]$\\
 \hline
 \end{tabular}
@@ -743,7 +777,9 @@ directly measured is the \emph{magnitude of the step at event onset}: a median o
 $0.436$ and a maximum of $0.686$ across the default scenario, matching the
 $|w\,I_e/2|$ the profile predicts. The discontinuity is therefore real and of the
 expected size. Fewer than half of the observed onsets are followed by a state
-transition within $2$~s, so the step does not by itself drive the machine.
+transition within $2$~s. That is an association, not an attribution: it bounds how
+often an onset is promptly followed by a transition, and says nothing about the
+boundary's contribution to the remaining transitions.
 
 These logs cannot, however, time the \emph{outward} crossings. The field is recorded
 only while it exceeds the residual $\varepsilon$, and both channels decay rather than
@@ -757,12 +793,15 @@ test of the boundary would require logging the field continuously and instrument
 the geometric crossing; we identify that as the appropriate instrument rather than
 claim to have used it. The shortest interval
 between consecutive transitions is $9.8$~s in the default scenario and $7.0$--$9.6$~s
-in the noise and conflict scenarios, with no sign of boundary chattering. In the
+in the noise and conflict scenarios, with no short-interval oscillation of the
+kind chattering would produce. In the
 dense scenario the shortest interval is $0.2$~s, and inspection of those cases shows
 they are not threshold oscillation: they are either back-to-back servicing of a
 cluster---one anomaly credited and the next, already well inside range at
 $\Phi\approx0.5$, committed immediately---or an episode ended at once by a transient
-Nav2 goal abort. Neither arises from the boundary.
+Nav2 goal abort. In both, the recorded field at the transition is well above the
+boundary value, so neither is \emph{associated} with a boundary crossing; with the
+outward crossings untimed we do not claim more than that.
 
 \subsection{Threats to Validity}
 The evaluation is in simulation; field behavior may differ. The
@@ -804,10 +843,19 @@ completeness reads $4/9$ and the dense-clustering completeness $9/10$.
 
 Whether the exclusion can favor a configuration deserves a direct answer rather than
 an assumption of independence, and the answer differs by metric. All excluded runs
-inspected zero anomalies, so removing them \emph{raises} every completeness figure;
-for the pair most affected it raises the proposed layer and the APF baseline by the
-same amount ($2.7\rightarrow3.0$ anomalies each), leaving their difference unchanged
-but making both absolute figures conditional on successful initialization. For
+%% P8 do parecer de 2026-10-16: a versao anterior dizia que a exclusao subia "a
+%% camada proposta e o APF" de 2.7 para 3.0 "igualmente". Falso: E3 tem 10/10
+%% validos em default e vale 3.0 por tentativa. Quem sobe e RHM, em outro cenario.
+inspected zero anomalies, so removing them \emph{raises} every completeness figure
+of a block that lost a run---and only those. In \texttt{default} the proposed
+layer has ten valid runs of ten and averages $3.0$ inspections per \emph{attempt},
+so the exclusion does not move it; the APF baseline lost one run and goes from
+$2.7$ per attempt to $3.0$ per valid run. The exclusion therefore closes the
+per-attempt gap of $0.3$ in that pair rather than leaving it unchanged, which is
+the opposite of what we previously wrote. On the on-route hazard the proposed
+configuration RHM also lost one run and moves from $2.7$ to $3.0$ the same way;
+that is the group whose figure the exclusion raises, in a different scenario and
+against a different comparator. For
 safety the adjustment runs the other way: a run in which the robot never moved
 trivially records zero contact-region entries, so including such runs would inflate
 the evidence for contact-free navigation, and they are therefore excluded from the
