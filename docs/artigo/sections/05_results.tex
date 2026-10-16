@@ -345,10 +345,10 @@ disabled) the robot cannot clear the on-route hazard: it oscillates
 ($29.6\pm3.9$ retreats), inspects almost nothing ($0.2\pm0.4$), and times out
 ($627\pm6$\,s). %% R3#2: "A fairer reference for the safety claim is the fixed patrol plus the same
 %% detection-triggered keepout, with no reactive layer at all." KOF e exatamente isso.
-These two ablations still carry the reactive layer. Reviewer comment R3.2 asks for the
-fairer reference: a \emph{fixed patrol carrying the same detection-triggered keep-out
-and no reactive layer at all}. We therefore add configuration KOF (reactive layer
-disabled, keep-out enabled). KOF reaches a median minimum clearance of $1.73$~m
+These two ablations still carry the reactive layer. The fairer reference is a
+\emph{fixed patrol carrying the same detection-triggered keep-out and no reactive
+layer at all}, which isolates the keep-out from the weighting; we therefore add
+configuration KOF (reactive layer disabled, keep-out enabled). KOF reaches a median minimum clearance of $1.73$~m
 against $1.71$~m for the keep-out-only ablation KOa---a difference of $2$~cm that is
 not distinguishable ($p_{\mathrm{Holm}}=0.42$)---and spends $9.0$~s below the $2$~m
 band against $9.3$~s. \textbf{We therefore attribute the safety benefit on an on-route
@@ -789,11 +789,18 @@ distinct from the Wilson-score intervals used for the descriptive success rates)
 A fraction of runs ($6$ of $160$ in the earlier battery, $3$ of $130$ in the new
 one) remained immobile (travelled distance $\approx0$); these are reported
 separately as a startup-reliability outcome and excluded from the behavioral
-statistics. The valid counts are $n=10$ for every configuration except APF, KOb, N2
-and RHM ($n=9$), DHa ($n=8$), and the two new heuristic blocks in the
-\texttt{default} and \texttt{conflict} scenarios ($n=9$); every rate in this article
-is reported against its own denominator, which is why the high-noise completeness
-reads $4/9$ and the dense-clustering completeness $9/10$.
+statistics. %% R3-m2: "state the per-configuration counts nominally". Os tres excluidos da
+%% bateria nova sao nomeados um a um para a conta 3/130 ser conferivel sem inferencia.
+The valid counts are $n=10$ for every configuration except, in the earlier battery,
+APF, KOb, N2 and RHM ($n=9$) and DHa ($n=8$); and, in the new one, the heuristic
+baseline in \texttt{default} and in \texttt{conflict} and the shifted-hysteresis
+configuration $(0.55,0.35)$, at $n=9$ each---these three are the immobile runs
+counted above. Every other new configuration keeps $n=10$, including both
+\textsc{heu-sel} blocks, the keep-out-only patrol \textsc{kof} and the
+marginal-hazard scenario, so the identical discrete outcomes reported in
+Section~\ref{sec:heu} are counted over the same ten runs on both sides. Every rate
+in this article is reported against its own denominator, which is why the high-noise
+completeness reads $4/9$ and the dense-clustering completeness $9/10$.
 
 Whether the exclusion can favor a configuration deserves a direct answer rather than
 an assumption of independence, and the answer differs by metric. All excluded runs
