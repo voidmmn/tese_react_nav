@@ -253,14 +253,21 @@ pushes away from repulsion (red).}
        range); thresholds $\theta_{\text{in}},\theta_{\text{out}}$;
        $t_{\text{dwell}}, t_{\max}$; refractory $t_{\text{ref}}$
 \STATE \textbf{Safety preemption} (a hazard interrupts \emph{any} state):
-\IF{mode $\ne$ \textsc{Avoid} \textbf{and} $\Phi \le -\theta_{\text{in}}$
+\IF{the reactive retreat is enabled \textbf{and} mode $\ne$ \textsc{Avoid}
+    \textbf{and} $\Phi \le -\theta_{\text{in}}$
     \textbf{and} retreat pose available \textbf{and} $t \ge t_{\text{avoid}}$}
   \IF{mode $=$ \textsc{Investigate}}
      \STATE exit (\emph{deferred by hazard}); release target $e^\star$
   \ENDIF
-  \STATE enter \textsc{Avoid}; pause patrol; send retreat goal; \emph{hand the
-         hazard to the deliberative keepout} (its reactive signal is thereafter
-         suppressed, to avoid oscillation while the planner contours it)
+%% R4 do parecer de verificacao: esta linha delegava ao keepout sem condicao,
+%% contradizendo as configuracoes sem KO e a explicacao do CM. A condicao e a
+%% memoria remanescente passam a ser explicitas.
+  \STATE enter \textsc{Avoid}; pause patrol; send retreat goal
+  \IF{the deliberative keepout is enabled}
+     \STATE \emph{hand the hazard to the keepout}: stop publishing it to the
+            reactive layer, so no new observation feeds the hazard channel; the
+            stored channel value is kept and left to decay
+  \ENDIF
 \ELSIF{mode $=$ \textsc{Patrol}}
   \IF{$\Phi \ge \theta_{\text{in}}$ \textbf{and} inspection pose available}
      \STATE commit target $e^\star$ (by identity); enter \textsc{Investigate};
