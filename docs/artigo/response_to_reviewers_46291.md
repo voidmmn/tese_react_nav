@@ -388,10 +388,10 @@ different perception model, and we say which.
 
 **Response (repositioned).** Agreed; see **G1** and R2.1. We additionally audited the
 **figures**, which the text changes alone would not have fixed: two conceptual figures
-displayed the value-update equation in a highlighted box. They are being re-rendered: the box is removed,
-"Reactive affective" becomes "Reactive", and "Affective field Φ" becomes
-"Attraction–repulsion field Φ". The re-rendered figures will be in place in the
-resubmitted manuscript. We mention this because a
+displayed the value-update equation in a highlighted box. Both have been re-rendered: the box is
+removed, "Reactive affective" now reads "Reactive", and "Affective field Φ" now reads
+"Attraction–repulsion field Φ". The graphical abstract was re-rendered on the same
+grounds. We mention this because a
 reader reopening the PDF would have seen the equation before reading the corrected
 abstract.
 

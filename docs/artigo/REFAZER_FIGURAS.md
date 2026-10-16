@@ -4,6 +4,11 @@ Auditoria de 2026-10-14, após a reescrita. **Três figuras contradizem o
 reposicionamento** e precisam ser re-renderizadas no Illustrae; as demais já foram
 corrigidas ou estão corretas.
 
+> **STATUS 2026-10-16 — CONCLUÍDO.** As três voltaram do Illustrae com todas as
+> alterações aplicadas (inclusive o rótulo opcional do canal de keepout), foram
+> conferidas uma a uma e convertidas para PDF (1200×1200 RGBA → 288×288 pt @ 300 dpi,
+> alfa achatada sobre branco). Pendência cosmética única: ver nota no fim do item 2.
+
 ## Por que isso importa
 
 O R3#1 pede que título, abstract e keywords não prometam um componente de
@@ -42,6 +47,12 @@ e o conceito (ronda ativa + atração/repulsão) fica mais legível.
 
 **Resto:** correto. Manter os blocos deliberativos, o canal `/cmd_vel`, o retorno de
 pose/eventos e a FSM.
+
+> **Nota após a entrega (cosmética, opcional).** A caixa do Bellman saiu, mas o painel
+> laranja manteve a altura: sobrou uma faixa vazia de ~14% da altura no rodapé. Como a
+> figura entra em `\columnwidth`, isso encolhe todo o texto em ~14% sem necessidade.
+> Se quiser pedir um ajuste: *"encurtar o painel laranja para eliminar o espaço vazio
+> abaixo da FSM, mantendo tudo o mais igual"*. Não bloqueia a submissão.
 
 ## 3. `GA.png` (graphical abstract) — REFAZER
 
