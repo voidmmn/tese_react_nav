@@ -62,3 +62,66 @@ cenário `dyn_hazard`; portanto o caminho de código alterado **nunca é exercit
 neles e suas métricas finais são idênticas sob qualquer das versões. É uma
 identidade verificável a partir dos próprios contadores, não uma suposição. Só
 E5, DHa e DHb — os cenários que exercitam esses caminhos — foram recoletados.
+
+---
+
+# Bateria da ressubmissão (Access-2026-46291)
+
+Lote acrescentado em outubro de 2026 para responder aos revisores desta decisão.
+Os **130 CSVs** desta bateria (13 configurações × 10 tentativas, 127 válidas)
+estão versionados junto com os 160 anteriores, e seus hashes SHA-256 entraram no
+mesmo [`CHECKSUMS.sha256`](CHECKSUMS.sha256), que passa a ter 290 linhas.
+
+## Tag
+
+| tag | commit | o que arquiva |
+|---|---|---|
+| `v1.0-resubmission` | `8ed4868` (2026-09-11) | pacote da submissão **anterior** (Access-2026-33687) |
+| `v2.0-resubmission-46291` | `9f097c879c022e1cf986a94c25c4ccbc28e8aff5` | pacote **desta** ressubmissão: runtime, scripts de análise e os 290 CSVs |
+
+Ao contrário da `v1.0-resubmission`, que este manifesto declarava móvel entre
+rodadas, a `v2.0-resubmission-46291` é **fixa**: foi criada uma única vez, sobre
+o estado submetido, e não deve ser movida. Quem auditar o pacote desta submissão
+deve usá-la; a anterior permanece onde está para não quebrar a rastreabilidade do
+pacote antigo.
+
+## Código que produziu este lote
+
+A bateria rodou contra `8ed4868` **mais modificações ainda não commitadas** no
+instante do lançamento — o `colcon --symlink-install` executa o fonte, não o
+instalado. Por isso o plano de análise
+([`docs/artigo/PLANO_ANALISE_RESUB.md`](../docs/artigo/PLANO_ANALISE_RESUB.md) §1)
+registrou os **MD5 do runtime no instante do lançamento**, e é esse registro, não a
+tag, que fixa a correspondência código↔dados para a noite 1. As mesmas modificações
+estão contidas na `v2.0-resubmission-46291`.
+
+Arquivos de runtime alterados em relação à `v1.0-resubmission`:
+`anomaly_simulator.py`, `stay_alert_node.py`, `bellman_node.py` e o novo
+`utils/scenarios.py`.
+
+## Configurações
+
+| bloco | cenário | n tentado / válido |
+|---|---|---|
+| KOF | route-hazard | 10 / 10 |
+| HEUd, HEUc, HEUa | default, conflict, adverse | 10/9, 10/9, 10/10 |
+| HEUseld, HEUselc, HEUsela | default, conflict, adverse | 10/10 cada |
+| CM | conflict-marginal | 10 / 10 |
+| HAZ20, HAZ30, HAZ40 | conflict | 10/10 cada |
+| HYSnar, HYSoff | default | 10/10, 10/9 |
+
+As três execuções imóveis são HEUd, HEUc e HYSoff, uma em cada; estão nos CSVs e
+são excluídas das estatísticas comportamentais como desfecho de confiabilidade de
+partida, não removidas do pacote.
+
+O método nos cenários `default`, `conflict` e `adverse` **não** foi reexecutado:
+E3, CONF e E5 são reaproveitados do lote anterior como braço de referência.
+
+## Análise
+
+A família de comparações primárias é gerada por
+`src/tese_nav/scripts/analise_estatistica.py`, que escreve
+[`familia_confirmatoria.csv`](familia_confirmatoria.csv) com n, efeitos,
+intervalos, **procedimento** e p bruto/Holm dos 15 testes;
+`tabela_confirmatoria_tex.py` gera o corpo da tabela do artigo desse CSV, para
+que tabela e texto não possam divergir.
