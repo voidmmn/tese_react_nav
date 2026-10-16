@@ -10,8 +10,8 @@
 # pacote a pacote. A conferencia no fim valida que nenhum caiu.
 set -euo pipefail
 cd "$(dirname "$0")"
-MD=response_to_reviewers_46291.md
-PDF=response_to_reviewers_46291.pdf
+MD=author_response_46291.md
+PDF=author_response_46291.pdf
 
 pandoc "$MD" -o "$PDF" \
   --pdf-engine=xelatex -H carta_preambulo.tex \
@@ -20,8 +20,9 @@ pandoc "$MD" -o "$PDF" \
 echo "paginas: $(pdfinfo "$PDF" | awk '/^Pages/{print $2}')"
 echo "conferindo caracteres especiais (md vs pdf):"
 TXT=$(mktemp); pdftotext "$PDF" "$TXT"
-for c in Φ η δ α ≈ ≤ → × ⁻ § ₑ; do
-  a=$(grep -o "$c" "$MD" | wc -l); b=$(grep -o "$c" "$TXT" | wc -l)
+for c in Φ η δ α ≈ ≤ → × ⁻ ₑ ₜ; do
+  # grep -o sem casamento devolve 1; com set -e isso abortaria o script
+  a=$(grep -o "$c" "$MD" | wc -l || true); b=$(grep -o "$c" "$TXT" | wc -l || true)
   [ "$a" = "$b" ] && s=ok || s="DIVERGE"
   printf '  %-3s %3s -> %3s  %s\n' "$c" "$a" "$b" "$s"
 done
