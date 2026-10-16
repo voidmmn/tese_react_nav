@@ -56,7 +56,7 @@ hazard and projecting a forbidden region is not modelling risk and the keyword w
 invite a claim we cannot support. The abstract, the contribution list (now three
 items organised by *type* of contribution rather than by component), §III-B, the
 conceptual figures and the conclusion were rewritten accordingly. The value update
-moved to Appendix (Design Note).
+moved to Appendix C (Design Note).
 
 **G2 — The isolating baseline (R2.3).** Two configurations were added on the *same*
 Nav2/MPPI controller, perception, keep-out, approach poses, confirmation criterion
@@ -123,7 +123,7 @@ rather than appended here.
 heading and body, both conceptual figures and the conclusion were rewritten. §III-B
 now defines only what the system uses — the field and its arbitration. The update,
 its relation to reward shaping, the convergence discussion and the residual figure
-moved to the Appendix as a Design Note. The explanation given there is structural
+(now Fig. 7) moved to Appendix C as a Design Note. The explanation given there is structural
 rather than empirical: *the value table does not select the executed actions*, so
 differences in Q cannot explain differences in behaviour.
 
@@ -155,7 +155,8 @@ character: the residual contains ηΦ by construction.
 it entirely. We built exactly that baseline (G2), plus a one-factor variant, and
 declared the scenarios before running.
 
-**Action.** New §V-C. Results, with the confirmatory/exploratory boundary marked and
+**Action.** New §V-B, *Isolating the Field from the Act of Deviating*, reporting
+Table 6, with the confirmatory/exploratory boundary marked and
 with care about what the comparison does and does not establish:
 
 - **Confirmatory, `default`:** across all ten runs of each configuration, the proposed
@@ -348,7 +349,7 @@ the mean.
 agree that alone is a thin answer, so we state what the state consequently *cannot*
 represent.
 
-**Action.** The Appendix first states the order that resolves the circularity: at each
+**Action.** Appendix C first states the order that resolves the circularity: at each
 step the observations and the channel memories determine Φₜ; Φₜ is then discretised
 into the state; and only then is the stored value updated from that state. No
 quantity derived from Q re-enters Φ, so the dependence is not a loop. It then notes
@@ -369,8 +370,9 @@ than by Q.
 approach presupposes about perception, how it arbitrates a conflict between
 simultaneously active behaviours, what status its safety mechanism has, how it
 represents uncertainty, and the strongest claim its evidence supports — rather than a
-feature matrix. A new §II subsection engages with risk-aware and safety-filtered
-navigation and with keep-out handling in standard stacks (see R3-Q4). And three gaps
+feature matrix. A new subsection §II-D, *Risk-Aware Navigation, Safety Filters, and
+Restricted Zones*, engages with risk-aware and safety-filtered navigation and with
+keep-out handling in standard stacks (see R3-Q4). And three gaps
 previously *stated* are now *probed*: the over-conservatism risk (R2.6), the
 confirmation-criterion sensitivity (R2.5), and the comparison against a generic
 same-controller heuristic (R2.3). The gaps that remain stated are those requiring a
@@ -503,9 +505,9 @@ rather than filled with a placeholder. The "VOLUME 11, 2023" running head is set
 DOI, it is assigned by IEEE production.
 
 **Action (length).** We report what moved and what did not, since the comment named
-three groups. The **equivalence** material — the η sweep and the η = 0 ablation, with
-the residual figure — moved to the Appendix, which also follows from the
-repositioning. The **dynamic-hazard** configurations stayed in the main text: Reviewer
+three groups. The **equivalence** material — the η sweep and the η = 0 ablation
+(Table 12, Appendix B) together with the residual figure (Fig. 7, Appendix C) —
+moved out of the main text, which also follows from the repositioning. The **dynamic-hazard** configurations stayed in the main text: Reviewer
 2 identified that finding (the keep-out resolves the static hazard while the retreat
 adds margin only for a hazard emerging mid-investigation) as a useful architectural
 observation, and moving it to an appendix would displace the result that distinguishes
@@ -524,8 +526,9 @@ precedence over net shortening, and kept each addition to the question it answer
 since §V now attributes the clearance to the keep-out, the gap is more exposed, not
 less.
 
-**Action.** A new §II subsection positions our mechanism against three lines and
-states what it does and does not provide. Safety filters — control barrier functions
+**Action.** A new subsection §II-D, *Risk-Aware Navigation, Safety Filters, and
+Restricted Zones*, positions our mechanism against three lines and states what it
+does and does not provide. Safety filters — control barrier functions
 and predictive safety filters — obtain formal guarantees by assuming a model of the
 dynamics and of the constraint set. Our precedence rule is a behavioural arbitration
 and provides none of those guarantees: it certifies no invariant, and the
