@@ -63,8 +63,8 @@ Nav2/MPPI controller, perception, keep-out, approach poses, confirmation criteri
 and return logic: **HEU**, a generic detect–select–deviate–return supervisor driven
 by raw detection with nearest-target selection and plain "hazard in range ⇒ deviate"
 arbitration; and **HEU-sel**, a one-factor variant differing from the proposed layer
-*only* in the selection criterion. Both were run in three scenarios declared before
-execution.
+*only* in the selection criterion. Both were run in the three scenarios specified in
+the analysis plan.
 
 **G3 — The fair safety reference (R3.2).** Configuration **KOF**: fixed patrol with
 the same detection-triggered keep-out and no reactive layer at all.
