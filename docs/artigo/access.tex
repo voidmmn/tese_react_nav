@@ -35,13 +35,17 @@
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 \begin{document}
-%% R3-m3 (e R2-m6 da rodada anterior): "an apparent placeholder DOI". Os campos
-%% sao deixados VAZIOS de proposito. Chamar \history/\doi suprime o texto de
-%% demonstracao do ieeeaccess.cls (era ele que imprimia "Submitted...; revised...;
-%% accepted..."), e o argumento vazio nao deixa nenhuma string de placeholder para
-%% o revisor apontar. A PRODUCAO do IEEE Access preenche ambos na publicacao.
-%% O "VOLUME 11, 2023" do cabecalho vem de dentro do ieeeaccess.cls e nao e
-%% controlavel pelo autor -- tambem e definido na producao.
+%% R3-m3 (e R2-m6 da rodada anterior): "an apparent placeholder DOI".
+%% Campos deixados VAZIOS de proposito -- NAO repreencher com os valores do
+%% template (10.1109/ACCESS.xxxx.DOI etc.): e exatamente o que foi reclamado.
+%% Conferido no proprio ieeeaccess.cls:
+%%   l.601  \def\history#1{...}\let\@history\@empty   -> \history{} nao imprime nada
+%%   l.603  \def\doi#1{...}                           -> SEM default; omitir da erro
+%%   l.700  "Digital Object Identifier\space\@doi"     -> rotulo e INCONDICIONAL
+%% Logo \doi{} deixa o rotulo "Digital Object Identifier" sozinho na capa, sem
+%% numero. E o comportamento desejado: campo visivelmente nao atribuido, em vez de
+%% um DOI falso. A producao do IEEE preenche ambos na publicacao.
+%% O "VOLUME 11, 2023" do cabecalho vem de dentro do .cls e nao e controlavel aqui.
 \history{}
 \doi{}
 

@@ -494,13 +494,13 @@ The remedy is at our end: the response is uploaded
 only under *Author's Response Files*, and we verify the merged review proof page by
 page before submitting.
 
-On the template fields: the demonstration strings the previous round reported
-("Submitted...; revised...; accepted...") came from the class file's own defaults,
-because the source did not call `\history` or `\doi` at all. Both are now called with
-empty arguments, so no placeholder string — including the specimen DOI — is typeset.
-The "VOLUME 11, 2023" running head is set inside `ieeeaccess.cls` and is not under
-author control; like the publication dates and the DOI, it is assigned by IEEE
-production at publication.
+On the template fields: `\history` and `\doi` are now called with empty arguments, so
+neither the publication-date line nor any specimen DOI string is typeset. The class
+prints the fixed label "Digital Object Identifier" unconditionally, so that label
+remains on the title page with no number after it — the field is visibly unassigned
+rather than filled with a placeholder. The "VOLUME 11, 2023" running head is set inside
+`ieeeaccess.cls` and is not under author control; like the publication dates and the
+DOI, it is assigned by IEEE production.
 
 **Action (length).** We report what moved and what did not, since the comment named
 three groups. The **equivalence** material — the η sweep and the η = 0 ablation, with

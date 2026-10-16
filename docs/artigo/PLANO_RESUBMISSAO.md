@@ -69,14 +69,24 @@ a partir de `author_response.pdf`/`cover_letter.pdf`, mas é hipótese.
       atribuir a causa. Só então ajustar os slots.
 - [ ] Subir a resposta em *Author's Response Files*; conferir o proof mesclado
       página por página **antes** do submit.
-- [x] `\history{}`/`\doi{}` — **feito em 2026-10-16.** O `access.tex` não chamava
-      nenhum dos dois, então quem imprimia "Submitted…; revised…; accepted…" era o
-      default do `ieeeaccess.cls`. Agora ambos são chamados com argumento **vazio**:
-      o texto de demonstração some e não sobra placeholder nenhum (nem o DOI de
-      amostra `10.1109/ACCESS.0000.0000000`, que chegou a ficar no arquivo entre
-      `f7dd1ec` e `5325ea3`). O `VOLUME 11, 2023` fica — vem de dentro do `.cls`,
-      não é controlável pelo autor; a carta passou a dizer isso em vez de alegar
-      que os campos foram "neutralised".
+- [x] `\history{}`/`\doi{}` — **feito em 2026-10-16.** Ambos passam a ser chamados
+      com argumento **vazio**, e não com os valores do template (o DOI de amostra
+      `10.1109/ACCESS.0000.0000000` chegou a ficar no arquivo entre `f7dd1ec` e
+      `5325ea3` — era justamente o que o revisor chamou de *apparent placeholder
+      DOI*). Verificado no `ieeeaccess.cls`, que o autor colocou no diretório em
+      2026-10-16: `\history` tem `\let\@history\@empty` (vazio não imprime nada),
+      `\doi` **não** tem default (omitir dá erro) e o rótulo `Digital Object
+      Identifier` é impresso **incondicionalmente** (l. 700). Ou seja, `\doi{}`
+      deixa o rótulo sozinho na capa, sem número — campo visivelmente não atribuído.
+      O `VOLUME 11, 2023` fica: vem de dentro do `.cls`.
+
+      **Correção de atribuição:** eu havia escrito, aqui e na carta, que a string
+      "Submitted…; revised…; accepted…" vinha do default da classe. Não vinha — o
+      `ieeeaccess.cls` não contém essas palavras, logo ela estava no `\history{...}`
+      do próprio fonte submetido. O `docs/artigo/access.tex` só entrou no git em
+      `f7dd1ec` (2026-10-14), então **não dá para recuperar** o que a versão
+      submetida continha. A carta deixou de afirmar a causa e passou a descrever
+      apenas o estado atual.
 - [ ] Encurtar o corpo movendo configs secundárias (equivalência, dyn-hazard, ruído)
       para apêndice (R3-m3).
 
