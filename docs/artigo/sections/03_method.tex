@@ -50,11 +50,16 @@ select the executed actions. The environment returns pose (TF) and events.}
 %% sistema não tem. A subseção passa a definir apenas o que o sistema USA -- o campo
 %% e sua arbitragem -- e a formulação da atualização de valor foi movida para o
 %% Apêndice~\ref{app:update} como nota de projeto.
-The reactive layer is driven by a scalar field $\Phi$ that aggregates the sensory
+%% T3 do parecer de 2026-10-16: dizer que Phi depende "so das observacoes atuais"
+%% contradiz os acumuladores com memoria definidos logo abaixo -- e e a
+%% persistencia deles que o cenario marginal mede.
+The reactive layer is driven by a scalar field $\Phi_t$ that aggregates the sensory
 events at the robot's location---modality, intensity and distance---and carries the
 sign of the response: positive for attraction, negative for repulsion. It is a
-function of the robot's current observations alone and does not depend on which
-action is taken. The field encodes \emph{sensory saliency} and carries the sign of
+function of the current observations \emph{and} of two decaying channel memories
+defined below, so it is a function of time rather than of the instantaneous
+observation alone; it does not depend on which action is taken. We write $\Phi$ for
+$\Phi_t$ where the time index is not needed. The field encodes \emph{sensory saliency} and carries the sign of
 the response:
 \begin{equation}
 \label{eq:phi}
@@ -202,13 +207,30 @@ within sensor range, its \emph{perceived} position is projected as a \emph{persi
 keepout region into the global costmap, which the planner then routes around for the
 remainder of the mission. This projection is a map channel driven by detection---not
 a consequence of completing a retreat---and it uses the same perceived information as
-the reactive layer. When a reactive retreat does fire, the hazard is additionally
-\emph{handed off} to this channel: its reactive signal $\Phi$ is suppressed, so the
-robot does not oscillate between retreating and re-approaching while the planner
-contours the mark. The safety outcomes we report (clearance, time-to-collision,
-contact-region entries) are measured throughout from the hazard's \emph{true}
-position, independently of $\Phi$, so suppressing the reactive signal does not
-inflate them.
+the reactive layer.
+
+%% T5 do parecer de 2026-10-16: "dizer exatamente o que o hand-off bloqueia, o que
+%% permanece armazenado e se novas observacoes ainda alimentam h". Conferido no
+%% codigo: a delegacao exige avoid_start E publish_keepout, e suprime a PUBLICACAO.
+The hand-off to this channel is narrower than ``suppressing $\Phi$'', and the
+distinction matters for Section~\ref{sec:precedence-cost}. It fires on the
+\emph{entry} into \textsc{Avoid}, and only where the keep-out channel is enabled.
+What it blocks is the \emph{publication} of that hazard as an event: the hazard is
+no longer reported to the reactive layer, so new observations stop feeding the
+hazard accumulator~$h$. The value already stored in~$h$ is not cleared---it decays
+by Eq.~\eqref{eq:phi-decay} until it falls below $\varepsilon$---and the keep-out
+region stays latched meanwhile, so the planner keeps routing around the mark while
+the reactive signal fades. The purpose is to stop the robot oscillating between
+retreating and re-approaching while the contour is being followed.
+
+Two consequences follow. Where the keep-out is \emph{disabled}---which is the case
+in every off-route scenario, including the marginal-hazard configuration---no
+hand-off occurs, the hazard continues to be published, and re-observation renews
+$h$; the suppression window measured in Section~\ref{sec:precedence-cost} is
+therefore longer than decay alone would produce, and we report it as such. And the
+safety outcomes (clearance, time-to-collision, contact-region entries) are measured
+throughout from the hazard's \emph{true} position, independently of $\Phi$, so
+suppressing the reactive signal does not inflate them.
 
 \begin{figure}[t]
 \centering

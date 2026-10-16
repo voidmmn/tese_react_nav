@@ -104,7 +104,7 @@ weight $\eta=0$; E2--E4 enable \textsc{Stay Alert} with $\eta\in\{0.3,0.5,0.8\}$
 E5 is the adverse scenario ($\eta=0.5$); APF is the artificial-potential-field
 baseline. The scenario total of anomalies is $3$ (E0--E4, APF) and $5$ (E5); in the
 dense E5 layout not every run completes all five (mean $4.9$), quantified in
-Section~\ref{sec:adverse}. ``Update residual'' is the complete
+Section~\ref{sec:adverse}. Valid $n$ is $10$ for E0--E5 and $9$ for APF. ``Update residual'' is the complete
 $|\alpha\delta+\eta\Phi|$; it is identically zero when the value update is inactive
 (E1, APF). APF, being a continuous force controller, has no discrete
 route-deviation count (shown as ---) and no value update. Valid $n$: $10$ for
@@ -152,7 +152,7 @@ robot inspects \emph{all three} anomalies in every valid run of the default
 scenario, at every setting of $\eta$ including the ablation $\eta=0$ (E0--E4 all
 $3.0\pm0.0$; Cliff's $\delta=1$, exact permutation $p=1.1{\times}10^{-5}$ vs.\ E1);
 this completeness degrades under high perception noise (Section~\ref{sec:robustness})
-and dense clustering (Section~\ref{sec:adverse}), which we quantify honestly. The
+and dense clustering (Section~\ref{sec:adverse}), both quantified there. The
 artificial-potential-field baseline (APF) also inspects all three ($3.0\pm0.0$),
 confirming that a comparably simple reactive scheme can produce the anomaly
 response; the difference between the methods lies in efficiency and safety,
@@ -272,7 +272,7 @@ is narrower than the one made in the previous version of this article.
 \centering
 \caption{Proposed layer versus a generic detect--select--deviate--return supervisor
 (HEU) and a one-factor selection variant (HEU-sel), all on the same Nav2/MPPI
-controller. Medians over valid runs; $n$ per cell in the header. The
+controller. Medians over valid runs; the valid $n$ per cell is given in the note below the table. The
 \texttt{default} row block is the confirmatory family (Holm-corrected); the
 \texttt{conflict} and \texttt{adverse} blocks are exploratory and are reported with
 uncorrected $p$.}
@@ -312,6 +312,7 @@ $p>0.22$ and is omitted from the last two columns for brevity.
 \end{table*}
 
 \subsection{Hazard Response and Safety}
+\label{sec:safety}
 The fixed baseline records zero hazard avoidances, while the reactive layer
 performs exactly one retreat per encounter ($1.0\pm0.0$). For the hazard placed
 \emph{beside} the route (E0--E5), the minimum clearance is small in absolute
@@ -533,10 +534,19 @@ suppression window as the interval between the first and the last logged sample 
 which the hazard channel governs the field ($\Phi<0$) while its magnitude is below the
 retreat threshold. So measured it lasts $69.5$~s (range $67.3$--$72.4$). It is not
 pure decay: the hazard is re-observed within the window and the field magnitude rises
-again in a median of two samples per run, which is why it exceeds what decay alone
-from the initial magnitude would give. The
+again in a median of two samples per run, which is why it exceeds the ${\approx}39$~s
+decay alone from the initial magnitude would give. The mechanism is the one described
+in Section~\ref{sec:method-stayalert}: the hand-off that would stop the hazard being
+published requires the keep-out channel, which is disabled in this off-route
+scenario, so observation keeps renewing $h$. The
 priority-target metric records the same outcome from the other side: the acoustic
-priority target is censored at the $400$~s horizon in $10/10$ runs. The categorical precedence therefore does not merely risk over-conservatism: in this
+priority target is censored at the $400$~s horizon in $10/10$ runs. That horizon is
+a property of the \emph{metric}, not of the run: it is the fixed censoring time at
+which an un-inspected priority target stops being waited for, chosen above the
+longest mission the proposed layer records (${\approx}372$~s on the on-route
+hazard) so that censoring reflects a behavioural failure to reach the target rather
+than the end of the episode. It is distinct from the $600$~s wall-clock budget that
+terminates a run (Section~\ref{sec:setup-matrix}). The categorical precedence therefore does not merely risk over-conservatism: in this
 configuration it costs one inspection in every run. The cost is incurred under
 conditions in which the layer itself would not act on the hazard---throughout the
 window the robot's minimum distance to it is $3.92$~m (range $3.86$--$4.06$) and its
@@ -663,9 +673,8 @@ target. The two additional investigations are reported as an observation of the
 episodes, not as a demonstrated retry policy: the \texttt{failed} branch marks the
 target as failed but does not remove it from the committed set, so a later start is
 possible but not guaranteed by an explicit recovery rule. This density limit---the
-reactive navigation occasionally failing on a tightly clustered target---is measured
-honestly here rather than assumed away, with no contact-region entries observed
-(zero collisions). We do not claim general scaling from a single adverse
+reactive navigation occasionally failing on a tightly clustered target---is
+measured rather than assumed away, with no contact-region entries observed. We do not claim general scaling from a single adverse
 configuration, and broader density and geometry sweeps remain future work.
 
 %% R3#1 (reposicionamento editorial): a subseção 'Value-Function Stability' e a
@@ -746,11 +755,12 @@ Re-scoring reproduces the published figure exactly at the original $3.3$~m thres
 re-scoring at that threshold. It also shows the reported
 completeness to be strongly criterion-dependent: at $2.8$~m the high-noise rate falls
 to $2/9$, and at $4.0$~m it recovers to $9/9$. The robot did approach the anomalies;
-under high noise it stopped $2.9$--$3.6$~m away because the perturbed position
-estimate displaced the inspection pose, and the $3.3$~m criterion then refused those
-approaches. That is only half the answer, however, because the physical approach also
-degrades: the distance to the true target at episode close rises from $2.23$~m
-(median, range $2.21$--$2.24$) with clean perception to $2.87$~m (range
+under high noise the episodes that the $3.3$~m criterion refused closed at
+$2.9$--$3.6$~m from the true target, because the perturbed position estimate
+displaced the inspection pose. Taken over all episodes, refused and credited, the
+closing distances span $1.83$--$3.56$~m. That is only half the answer, however, because the physical approach also
+degrades: the median distance to the true target at episode close rises from
+$2.23$~m (range $2.21$--$2.24$) with clean perception to $2.87$~m (range
 $1.83$--$3.56$) under high noise. Both effects are present and we report them
 together; the defensible statement is that \emph{the completeness figure is sensitive
 to the confirmation criterion and the approach quality genuinely degrades}, not that
@@ -804,6 +814,7 @@ boundary value, so neither is \emph{associated} with a boundary crossing; with t
 outward crossings untimed we do not claim more than that.
 
 \subsection{Threats to Validity}
+\label{sec:threats}
 The evaluation is in simulation; field behavior may differ. The
 sensing-and-perception chain is abstracted as events, so the inspection rate
 measures the \emph{navigation-and-decision} response, not perception accuracy;
@@ -815,7 +826,8 @@ any scenario. The safety metrics are
 proxies computed from the \emph{true} hazard position and should be read as such:
 ``collisions'' counts entries into a simulated contact region (centre-to-centre
 distance below $0.5$~m), not readings of a physical contact sensor, and
-``time-to-collision'' is a radial-closing proxy ($d/\dot d$ to the nearest hazard),
+``time-to-collision'' is a radial-closing proxy, defined as $d/|\dot d|$ to the
+nearest hazard and recorded only while $\dot d<0$ (the robot closing on it),
 not the trajectory-intersection time with a finite hazard region; zero collisions
 in a group bounds but does not eliminate risk (the \emph{exact} one-sided $95\%$
 binomial bound on the failure probability for zero observed failures,

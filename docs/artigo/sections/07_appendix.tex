@@ -1,13 +1,13 @@
 \section{Event Layout}
 \label{app:params}
-Table~\ref{tab:events} lists the simulated events for all five scenarios (positions
+Table~\ref{tab:events} lists the simulated events for all six scenarios (positions
 in world metres; $I_e$ is the base intensity). The patrol waypoints are
 $(13,-8)$, $(13,10)$, $(0,11)$, $(-8,5)$, $(-10,-10)$. The remaining method and
 simulation parameters are given in Table~\ref{tab:hyper}.
 
 \begin{table}[h]
 \centering
-\caption{Simulated events for all five scenarios (positions in world metres;
+\caption{Simulated events for all six scenarios (positions in world metres;
 $I_e$ is the base intensity). In \emph{dyn-hazard} the repulsive event is
 co-located with the anomaly and \emph{activates}---starts being published to
 both the reactive and keepout channels---only when the robot reaches
@@ -44,8 +44,22 @@ conflict& thermal (attr.)  & 10   & 10  & 0.85\\
 dyn-    & thermal (attr.)  & 2    & $-13$ & 0.90\\
 hazard  & hazard (rep.)$^\dagger$ & 2 & $-13$ & 0.90\\
 \hline
+%% P7: o cenario conflict-marginal (CM) nao constava, embora a Secao V-F o use.
+conflict- & thermal (attr.)  & 10   & 10  & 0.85\\
+marginal  & thermal (attr.)  & 0    & 15  & 0.91\\
+          & acoustic (attr.) & $-5$ & 5   & 0.72\\
+          & acoustic (attr.) & 4    & $-10.5$ & 0.95\\
+          & hazard (rep.)$^\ddagger$ & 0 & $-12$ & 0.52\\
+\hline
 \multicolumn{5}{l}{\footnotesize $^\dagger$ activates only within
   $r_{\mathrm{act}}=3$\,m of the true position.}\\
+\multicolumn{5}{p{0.9\columnwidth}}{\footnotesize $^\ddagger$ calibrated so that the
+hazard sits just above the eligibility threshold along the approach the planner
+actually takes: at the measured approach distance of ${\approx}3.7$\,m,
+Eq.~\eqref{eq:intensity} yields ${\approx}0.33$ against $\theta_{\mathcal{H}}=0.30$.
+The base value $0.52$ keeps the hazard eligible throughout $d\in[3.5,4.0]$\,m, so the
+scenario does not depend on an exact approach geometry. The anomaly at $(4,-10.5)$
+is \emph{not} co-located with the hazard: it is the fourth, suppressible target.}\\
 \end{tabular}
 \end{table}
 
@@ -177,11 +191,13 @@ Q(s,a) \leftarrow Q(s,a) + \alpha\!\left[r + \gamma \max_{a'} Q(s',a') - Q(s,a)\
 + \eta\,\Phi(s),
 \end{equation}
 where $\alpha$ is the learning rate, $\gamma$ the discount factor, and $\eta$
-weights the affective field. The field $\Phi(s)$ is a function of the state
-alone: it aggregates the sensory events at the robot's location (modality,
-intensity, and distance, defined below) and does \emph{not} depend on the
-action~$a$, so the term $\eta\,\Phi(s)$ biases every action available at $s$
-equally. The reward is mission progress only, $r = r_{\text{prog}}$, so that the
+weights the affective field. Strictly, the quantity added is the field at that
+step, $\Phi_t$ of Section~\ref{sec:method-field}, which carries the channel
+memories; writing it as $\Phi(s)$ is an abuse of notation, because the reduced
+state $s$ does not determine it---two steps with the same discretized state can
+carry different $\Phi_t$, as the next paragraph makes precise. What matters for
+the update is that $\Phi_t$ does \emph{not} depend on the action~$a$, so the term
+$\eta\,\Phi_t$ biases every action available at $s$ equally. The reward is mission progress only, $r = r_{\text{prog}}$, so that the
 affective signal enters the update a single time, through $\eta\,\Phi(s)$; this
 avoids double-counting attraction in both the reward and the external term and
 keeps attraction and repulsion symmetric. The field encodes \emph{sensory
@@ -202,8 +218,10 @@ sign that carries the safety precedence. The bucket also saturates, since $|\Phi
 clipped at $\Phi_{\max}=2$ while the bucketing clamps at unity, so all
 $|\Phi|\in[0.75,2]$ fall in the top bucket. And the state carries neither the decay
 memory of the channels nor the configuration of the events that produced the reading.
-A state so defined cannot support an arbitration policy, which is a further reason
-the executed behavior is governed by thresholds on $\Phi$ itself rather than by $Q$.
+A state so defined cannot distinguish situations that the proposed arbitration rule
+treats differently---most directly, it cannot tell an eligible hazard from an equally
+strong attraction---which is a further reason the executed behavior is governed by
+thresholds on $\Phi_t$ itself rather than by $Q$.
 
 \paragraph*{Relation to reward shaping} Factoring the external term through the
 learning rate makes the nature of \eqref{eq:bellman} explicit:
@@ -294,8 +312,10 @@ empirical basis for offering the value update as a substrate for a future
 We assess stability with the \emph{complete} update residual
 $|\alpha\delta+\eta\Phi|$, which---unlike a TD-error proxy that excludes the
 affective term---reflects the actual increment applied to the value table.
-Fig.~\ref{fig:qconv} aggregates this residual across all valid runs of E3: each
-run's series is linearly resampled onto a common normalized-time grid, and we plot
+Fig.~\ref{fig:qconv} shows one curve per $\eta$ setting; each curve aggregates the
+residual across all valid runs of its configuration, the E3 curve being the
+$\eta=0.5$ one. Each run's series is linearly resampled onto a common
+normalized-time grid, and we plot
 the across-run mean and the $2.5$--$97.5$ percentile band (inter-run spread, not a
 confidence interval of the mean). The trace is \emph{not} monotonic: it stays low
 between events ($\approx0.08$) and spikes during the anomaly investigations (mean
@@ -323,8 +343,9 @@ must not be read as one. The residual grows monotonically with $\eta$ while ever
 discrete behavioral metric is unchanged. For $\eta>0$ the residual is event-driven---flat between
 events and spiking during each of the four reactive episodes (one hazard retreat and
 three anomaly investigations) as $\eta\Phi$ rises and decays, with the band widening
-at the peaks---whereas for $\eta=0$ it is flat throughout at ${\approx}0.08$, since
-the only term left is $\alpha\delta$. Increments stay bounded (end-of-mission
+at the peaks---whereas for $\eta=0$ it stays near ${\approx}0.08$ between the
+start-up transient and the end-of-mission decline, since the only term left is
+$\alpha\delta$. Increments stay bounded (end-of-mission
 ${\approx}0.020$). The early region ($\lesssim0.2$ normalized time) mixes the
 start-up transient with the retreat episode and the across-run alignment there is
 loose; we draw no reading from it.}
