@@ -13,9 +13,11 @@ import sys
 
 
 def fmt_p(x):
+    # 4 casas: com 3 o Holm exato 0.005173 virava "0.005" e 0.002679 virava
+    # "0.003", divergindo do texto corrido. Tabela e texto citam o MESMO numero.
     v = float(x)
     if v >= 0.001:
-        return f'${v:.3f}$'
+        return f'${v:.4f}$'
     e = f'{v:.1e}'.split('e')
     return f'${e[0]}{{\\times}}10^{{{int(e[1])}}}$'
 

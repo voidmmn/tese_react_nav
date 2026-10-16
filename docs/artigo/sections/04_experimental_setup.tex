@@ -100,29 +100,39 @@ simulation hyperparameters are summarized in Table~\ref{tab:hyper}.
 
 \begin{table}[t]
 \centering
-\caption{Experimental matrix ($10$ attempted runs each).}
+\caption{Experimental matrix of the earlier battery ($10$ attempted runs each).
+\emph{Ret.} is the reflexive retreat and \emph{KO} the deliberative keep-out; both
+are launch parameters, listed here because the hand-off described in
+Section~\ref{sec:method-stayalert} only occurs where the keep-out is enabled, so
+the two columns say in which configurations a detected hazard can stop being
+published to the reactive layer. The keep-out is on only where a hazard lies on the
+patrol route or emerges during an investigation; in every off-route scenario it is
+off, and re-observation can keep renewing the hazard channel.}
 \label{tab:matrix}
-\begin{tabular}{llccc}
+%% T5 da 2a rodada do parecer: "o artigo precisa explicitar em quais configuracoes
+%% o keep-out esta ligado e desligado". Duas colunas novas, dos mesmos campos do
+%% runner (rodar_bateria_blocos.sh), para que a condicao fique conferivel.
+\begin{tabular}{llcccc}
 \hline
-\textbf{Exp.} & \textbf{Reactive layer} & $\bm{\eta}$ & \textbf{Scenario} &
-\textbf{\#anom./haz.}\\
+\textbf{Exp.} & \textbf{Reactive layer} & $\bm{\eta}$ & \textbf{Ret.} &
+\textbf{KO} & \textbf{Scenario (\#anom./haz.)}\\
 \hline
-E1  & none                 & --   & default      & 3 / 1\\
-E0  & Stay Alert (ablation)& 0    & default      & 3 / 1\\
-E2  & Stay Alert           & 0.3  & default      & 3 / 1\\
-E3  & Stay Alert           & 0.5  & default      & 3 / 1\\
-E4  & Stay Alert           & 0.8  & default      & 3 / 1\\
-E5  & Stay Alert           & 0.5  & adverse      & 5 / 1\\
-APF & potential field      & --   & default      & 3 / 1\\
-RHM & Stay Alert           & 0.5  & route-hazard & 3 / 1\\
-RHB & none                 & --   & route-hazard & 3 / 1\\
-N1  & Stay Alert (noise m.)& 0.5  & default      & 3 / 1\\
-N2  & Stay Alert (noise h.)& 0.5  & default      & 3 / 1\\
-CONF& Stay Alert           & 0.5  & conflict     & 4 / 1\\
-KOa & keepout only         & 0.5  & route-hazard & 3 / 1\\
-KOb & retreat only         & 0.5  & route-hazard & 3 / 1\\
-DHa & retreat $+$ keepout  & 0.5  & dyn-hazard   & 1 / 1\\
-DHb & keepout only         & 0.5  & dyn-hazard   & 1 / 1\\
+E1  & none                 & --   & --         & --         & default (3/1)\\
+E0  & Stay Alert (ablation)& 0    & \checkmark & --         & default (3/1)\\
+E2  & Stay Alert           & 0.3  & \checkmark & --         & default (3/1)\\
+E3  & Stay Alert           & 0.5  & \checkmark & --         & default (3/1)\\
+E4  & Stay Alert           & 0.8  & \checkmark & --         & default (3/1)\\
+E5  & Stay Alert           & 0.5  & \checkmark & --         & adverse (5/1)\\
+APF & potential field      & --   & \checkmark & --         & default (3/1)\\
+RHM & Stay Alert           & 0.5  & \checkmark & \checkmark & route-hazard (3/1)\\
+RHB & none                 & --   & --         & --         & route-hazard (3/1)\\
+N1  & Stay Alert (noise m.)& 0.5  & \checkmark & --         & default (3/1)\\
+N2  & Stay Alert (noise h.)& 0.5  & \checkmark & --         & default (3/1)\\
+CONF& Stay Alert           & 0.5  & \checkmark & --         & conflict (4/1)\\
+KOa & keepout only         & 0.5  & --         & \checkmark & route-hazard (3/1)\\
+KOb & retreat only         & 0.5  & \checkmark & --         & route-hazard (3/1)\\
+DHa & retreat $+$ keepout  & 0.5  & \checkmark & \checkmark & dyn-hazard (1/1)\\
+DHb & keepout only         & 0.5  & --         & \checkmark & dyn-hazard (1/1)\\
 \hline
 \end{tabular}
 \end{table}
@@ -141,7 +151,10 @@ $\bm{\Phi}$ (threshold on the decaying field) or \emph{range} (raw detection);
 \emph{Sel.} is the target-selection rule; \emph{Ret.} and \emph{KO} are the
 reactive retreat and the deliberative keep-out; $\theta_{\mathcal{H}}$ is the hazard
 eligibility threshold applied before weighting; $(\theta_{\text{in}},
-\theta_{\text{out}})$ is the supervisor's hysteresis pair. The first three rows are
+\theta_{\text{out}})$ is the supervisor's hysteresis pair. Note that the keep-out is off in every row but KOF,
+including all six HEU and HEU-sel blocks: those contrasts therefore share with the
+proposed layer the condition that no hand-off occurs and the hazard channel can be
+renewed by re-observation. The first three rows are
 the proposed layer and are \emph{reused} from the configurations of
 Table~\ref{tab:matrix} rather than re-run; the reuse is licensed by the regression
 check of Section~\ref{sec:setup-repro}. All rows use $\eta=0.5$ and the
