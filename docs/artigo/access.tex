@@ -42,9 +42,11 @@
 %%   l.601  \def\history#1{...}\let\@history\@empty   -> \history{} nao imprime nada
 %%   l.603  \def\doi#1{...}                           -> SEM default; omitir da erro
 %%   l.700  "Digital Object Identifier\space\@doi"     -> rotulo e INCONDICIONAL
-%% Logo \doi{} deixa o rotulo "Digital Object Identifier" sozinho na capa, sem
-%% numero. E o comportamento desejado: campo visivelmente nao atribuido, em vez de
-%% um DOI falso. A producao do IEEE preenche ambos na publicacao.
+%% CONFERIDO no PDF compilado pelo Overleaf (16/10/2026, 21 pag.): a capa sai sem
+%% as datas e SEM o rotulo "Digital Object Identifier" -- o .cls do Overleaf nao se
+%% comporta como a copia baixada avulsa, que imprimiria o rotulo incondicionalmente.
+%% Conferir de novo se o periodico atualizar a classe. A producao do IEEE preenche
+%% ambos os campos na publicacao.
 %% O "VOLUME 11, 2023" do cabecalho vem de dentro do .cls e nao e controlavel aqui.
 \history{}
 \doi{}
@@ -92,11 +94,14 @@ govern whenever a hazard is eligible. We evaluate it in a simulated substation
 (Gazebo Fortress) against a fixed patrol, a potential-field baseline and---new
 here---a generic detect--select--deviate--return heuristic on the \emph{same}
 Nav2/MPPI controller, which isolates the field from the act of deviating. Three
-findings follow. (i)~Attribution: a fixed patrol with the same detection-triggered
-keep-out reproduces the full method's minimum clearance ($1.73$ vs.\ $1.71$~m,
-indistinguishable), so \emph{the safety benefit is attributable to the deliberative
-keep-out, not to the reactive weighting}; the reactive layer contributes the
-inspections ($3$ vs.\ $0$ of $3$) for $31$~s. (ii)~Replacing saliency by proximity---a one-factor change---produced no detectable
+findings follow. (i)~Attribution, on a \emph{static} hazard placed on the patrol
+route: a fixed patrol carrying the same detection-triggered keep-out and no
+reactive supervisor (KOF) and the keep-out-only ablation that retains the reactive
+inspection (KOa) reached similar minimum clearances ($1.73$ and $1.71$~m median),
+with no statistically detectable difference, so \emph{the safety benefit here is
+attributable to the deliberative keep-out, not to the reactive weighting}; what
+KOa adds over KOF is the inspections ($3$ vs.\ $0$ of $3$) at ${\approx}31$~s of
+extra mission time. (ii)~Replacing saliency by proximity---a one-factor change---produced no detectable
 difference in any scenario, with identical discrete outcomes in two of the three;
 replacing the thresholded field by raw detection, which also removes the hazard
 channel's temporal persistence, halves the clearance when a hazard is co-located with

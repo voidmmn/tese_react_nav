@@ -52,8 +52,11 @@ hazard  & hazard (rep.)$^\dagger$ & 2 & $-13$ & 0.90\\
 \section{Secondary Statistical Comparisons}
 \label{app:stats}
 Table~\ref{tab:stats} in Section~\ref{sec:results} reports the confirmatory family
-of comparisons (the hypotheses the method is designed to satisfy), Holm-corrected
-within that family. Table~\ref{tab:allstats} below reports the remaining
+of this submission---three contrasts $\times$ five outcomes, Holm-corrected within
+those fifteen tests and shown in full. The comparisons that formed the
+confirmatory family of the \emph{previous} submission are kept separately in
+Table~\ref{tab:legacystats} and reported uncorrected, so that only one family
+carries a multiplicity correction. Table~\ref{tab:allstats} below reports the remaining
 comparisons of the study, which are of a different nature and are therefore kept
 separate: \emph{equivalence} checks (the $\eta$ ablation, where a \emph{non}-effect
 is the expected and desired outcome) and \emph{robustness/cost} checks
@@ -73,6 +76,37 @@ separated constant arms, the tie-corrected normal approximation when ties are
 present, and $p{=}1.00$ when the two arms are identical; the $95\%$ CI is the
 bootstrap interval of the mean difference $\Delta$ (second minus first
 configuration).
+
+%% P1 do parecer de 2026-10-16: a familia confirmatoria ANTERIOR (7 testes)
+%% saiu da Tabela 4, que agora traz so a familia desta submissao. Fica aqui,
+%% rotulada como historica e SEM correcao, para nao haver duas familias
+%% confirmatorias simultaneas no artigo.
+\begin{table}[t]
+\centering
+\caption{Comparisons that formed the confirmatory family of the \emph{previous}
+submission, retained for continuity. They are \emph{not} part of this
+submission's Holm family (Table~\ref{tab:stats}) and their $p$-values are
+therefore reported uncorrected. E1 is the fixed patrol, RHB the fixed patrol on
+the on-route hazard, and APF the potential-field baseline.}
+\label{tab:legacystats}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llccccc}
+\hline
+\textbf{Pair} & \textbf{Outcome} & $\bm{n}$ & $\bm{\Delta}$ & $\bm{\delta}$ &
+\textbf{95\% CI} & $\bm{p}$\\
+\hline
+%% GERADO por tabela_confirmatoria_tex.py --legacy. Nao editar a mao.
+E1 vs E3    & Anomalies inspected         & 10/10 & $+3.00$ & $+1.00$ & $[+3.00,+3.00]$ & $1.1{\times}10^{-5}$\\
+            & Min. hazard dist. [m]       & 10/10 & $+0.15$ & $+1.00$ & $[+0.13,+0.17]$ & $1.1{\times}10^{-5}$\\
+            & Mission time [s]            & 10/10 & $+44.2$ & $+1.00$ & $[+43.26,+45.03]$ & $1.8{\times}10^{-4}$\\
+E3 vs APF   & Mission time [s]            & 10/9 & $+39.4$ & $+1.00$ & $[+36.43,+42.47]$ & $2.2{\times}10^{-5}$\\
+RHB vs RHM  & Anomalies inspected         & 10/9 & $+3.00$ & $+1.00$ & $[+3.00,+3.00]$ & $2.2{\times}10^{-5}$\\
+            & Min. hazard dist. [m]       & 10/9 & $+1.00$ & $+1.00$ & $[+0.99,+1.01]$ & $2.2{\times}10^{-5}$\\
+            & Min. time-to-collision [s]  & 10/9 & $+2.82$ & $+1.00$ & $[+2.18,+3.18]$ & $2.2{\times}10^{-5}$\\
+\hline
+\end{tabular}
+\end{table}
 
 \begin{table*}[t]
 \centering
