@@ -18,7 +18,7 @@ conclusion.** We also built the comparison that was missing (R2.3) and, in doing
 arrived at an attribution that is more specific than the one we previously claimed.
 
 As in the previous round we distinguish three kinds of answer: **(i) implemented** —
-a code or experiment change was made; **(ii) repositioned** — the claim was re-scoped
+a manuscript, code, experiment or analysis change was made; **(ii) repositioned** — the claim was re-scoped
 to what the evidence supports; **(iii) acknowledged limitation** — the requested
 capability lies outside the declared contribution and is stated as a limitation
 rather than claimed. Notation:
@@ -84,9 +84,9 @@ denominator (25.9 / 28.3 / 31.2%) rather than as a single ≈26%.
 criterion and 3 remained immobile (same start-up failure mode as the earlier battery,
 verified: travelled distance ≈1.7×10⁻¹⁶). The three immobile runs are named
 individually in §V-J so the 130/127 arithmetic can be checked without inference, and
-the full matrix of the new battery — one row per configuration, with the single
-factor it changes, its scenario, and its attempted/valid counts — is now Table 3 of
-the manuscript.
+the full matrix of the new battery — one row per configuration, listing the settings
+that differ from the proposed layer, the scenario, and the attempted/valid run
+counts — is now Table 3 of the manuscript.
 
 The proposed layer is **reused** rather than re-run in three scenarios (E3, CONF,
 E5). Before doing so we ran a regression check on the **default** path only: two runs
@@ -163,8 +163,8 @@ character: the residual contains ηΦ by construction.
 > running on the same Nav2/MPPI controller."*
 
 **Response (implemented).** This was the most consequential comment and we agree with
-it entirely. We built exactly that baseline (G2), plus a one-factor variant, and
-declared the scenarios before running.
+it entirely. We built exactly that baseline (G2), plus a one-factor variant, with the
+three scenarios specified in the analysis plan.
 
 **Action.** New §V-B, *Isolating the Field from the Act of Deviating*, reporting
 Table 7, with the primary/exploratory boundary marked and
@@ -185,10 +185,12 @@ with care about what the comparison does and does not establish:
   +106 s of mission, and the priority inspection delayed ≈105 s. Here too the discrete
   outcomes of HEU-sel and the proposed layer are constant and identical across ten
   runs each.
-- **Exploratory, `adverse`:** all three configurations inspect four or five anomalies,
-  and here the discrete outcomes are *not* constant: anomalies inspected take values
-  {4, 5} and route deviations {8…11} for the proposed layer and {8…12} for HEU-sel.
-  The distributions overlap and no difference is detected.
+- **Exploratory, `adverse`:** all three configurations reached a median of five
+  credited inspections. The proposed layer completed all five in 9/10 runs, HEU in
+  10/10 and HEU-sel in 8/10, so inspection counts varied within the proposed and
+  HEU-sel groups while HEU inspected all five in every run. Route deviations take
+  {8…11} for the proposed layer and {8…12} for HEU-sel. The distributions overlap
+  and no difference is detected.
 
 **On what we do and do not claim.** We state that no difference was detected between
 the proposed layer and the one-factor selection variant, and in the `default` and
@@ -223,18 +225,17 @@ persistence is what produces prolonged suppression.
 
 **Response (implemented).** Agreed on both counts.
 
-**Action.** §V now opens with an explicit declaration of the family *and of how much
-of it was fixed in advance*, because those are not the same thing. The three
-**contrasts** were specified before the battery produced any data — the proposed
-layer against the generic heuristic and against the one-factor selection variant,
-both in `default`, and KOa against KOF on the on-route hazard; the released analysis
-plan carries them in a commit timestamped ahead of the first run written to disk.
-The **set of outcomes** was not: the five reported (anomalies inspected, hazard
-retreats, minimum hazard distance, mission duration, investigation time) were fixed
-after the runs. We therefore do not call this family pre-registered. Holm is applied
-across the fifteen tests as a multiplicity correction over a family with
-pre-specified contrasts and a retrospectively bounded extent, and §V says so in
-those terms.
+**Action.** §V distinguishes the documented timing of the contrasts from the
+retrospective selection of outcomes. The released analysis-plan commit containing the
+three contrasts — the proposed layer against the generic heuristic and against the
+one-factor selection variant, both in `default`, and KOa against KOF on the on-route
+hazard — precedes the first archived result file by about an hour. We limit the
+chronology claim to that documented ordering. The five outcomes (anomalies inspected,
+hazard retreats, minimum hazard distance, mission duration, investigation time) were
+selected after the runs; the fifteen tests are therefore reported as a **primary
+comparison family with retrospectively specified outcomes**, not as a confirmatory
+family. Holm adjustment addresses multiplicity within this reported family; it does
+not remove the limitations of retrospective outcome selection.
 
 Correcting an inconsistency we are grateful to have caught before resubmitting:
 the consolidated table (now Table 5) still listed the seven comparisons that formed the
@@ -244,12 +245,15 @@ with the per-arm n and the procedure used for each, so the Holm denominator is
 visible rather than asserted; the seven earlier comparisons move to Appendix B as a
 historical table, reported uncorrected. The table is generated from a CSV that the
 released analysis script writes, rather than transcribed. Regenerating it from the
-data corrected **four** p_Holm values that had been transcribed incorrectly. The
+data corrected **four** p_Holm values that had been transcribed incorrectly. These
+comparisons are new in this revision, so the incorrect values were never part of the
+version the reviewers received; the correction is internal to our own drafts, and we
+record it here because the generated table is the mechanism that caught it. The
 0.0027 that appeared twice on the KOa vs KOF rows belongs to neither of them: it is
 the Holm value of the *proposed layer vs HEU investigation-time* contrast
-(0.002679), copied onto the wrong rows. The corrections are therefore
+(0.002679), copied onto the wrong rows.
 
-| contrast / outcome | published | correct |
+| contrast / outcome | earlier draft | correct |
 |---|---|---|
 | KOa vs KOF, anomalies inspected | 0.0027 | 1.6×10⁻⁴ |
 | KOa vs KOF, mission duration | 0.0027 | 0.0021 |
@@ -258,7 +262,7 @@ the Holm value of the *proposed layer vs HEU investigation-time* contrast
 
 The two values we did *not* change — 0.0052 for mission duration against HEU and
 0.0511 for the clearance — were already correct. None of the four changes a
-conclusion, but we would rather state the correction than let the numbers stand.
+conclusion.
 Table 5 and the text now quote the same four-decimal values, taken from the same
 generated file. Everything else is labelled
 exploratory *in the sentence that states it*, and two analyses are additionally
@@ -487,12 +491,12 @@ only stating the attribution in the discussion.
 **Action.** In the static on-route hazard scenario, KOF reaches a median minimum
 clearance of **1.73 m** against **1.71 m** for **KOa** (the keep-out-only ablation,
 which retains the reactive inspection layer) — a small observed difference of 2 cm
-with no statistically detectable difference (p_Holm = 0.42) — and spends 9.0 s below
+with no statistically detectable difference (p_Holm = 0.4194) — and spends 9.0 s below
 the 2 m band against 9.3 s. We do not present this as established equivalence. The
 abstract and the conclusion now state that, **in this scenario, the clearance
 improvement is attributable to the detection-triggered keep-out rather than to the
 reactive weighting**. What the reactive layer adds over KOF here is the inspection
-behaviour: 0 of 3 against 3 of 3 (p_Holm = 1.6e-4), at 31 s of extra mission time (p_Holm = 0.002). We
+behaviour: 0 of 3 against 3 of 3 (p_Holm = 1.6e-4), at 31 s of extra mission time (p_Holm = 0.0021). We
 present the pair as a decomposition of the on-route result, and do not extend it to
 the conflict or marginal-hazard scenarios, which concern other aspects of the
 behaviour. We also now state the calibration of the
@@ -529,10 +533,12 @@ previous version that left a same-controller heuristic as future work; it is now
 of the study. On sensitivity: the three hysteresis pairs separate position from width
 — reference (0.45, 0.25), narrower (0.45, 0.35), shifted (0.55, 0.35). Between the two widths evaluated in
 the `default` scenario, no difference was detected on any reported outcome (p ≥ 0.60);
-shifting the entry point raised the counted route deviations from 4 to 8
-(p = 0.0003) and shortened episodes, with inspections unchanged at 3 of 3. We limit
-the statement to those two widths and that scenario, and note that the route-deviation
-metric is sensitive to the entry threshold's position.
+shifting the entry point increased the median number of route deviations from 4 to 8
+(p = 0.0003) and reduced the median per-run *total* time spent in Investigate from
+35.1 to 26.6 s (p = 0.0003), while credited inspections remained three of three.
+These aggregate measures do not establish that individual episodes became shorter.
+We limit the statement to those two widths and that scenario, and note that the
+route-deviation metric is sensitive to the entry threshold's position.
 
 ### R3 minor 1 — Perception is abstracted; the title should not imply a validated system
 
