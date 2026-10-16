@@ -492,8 +492,15 @@ configuration; we state the direction of each adjustment and report both views.
 contain no reviewer text — but in how the files were supplied for the review package.
 The remedy is at our end: the response is uploaded
 only under *Author's Response Files*, and we verify the merged review proof page by
-page before submitting. The template `\history` and `\doi` fields have been
-neutralised.
+page before submitting.
+
+On the template fields: the demonstration strings the previous round reported
+("Submitted...; revised...; accepted...") came from the class file's own defaults,
+because the source did not call `\history` or `\doi` at all. Both are now called with
+empty arguments, so no placeholder string — including the specimen DOI — is typeset.
+The "VOLUME 11, 2023" running head is set inside `ieeeaccess.cls` and is not under
+author control; like the publication dates and the DOI, it is assigned by IEEE
+production at publication.
 
 **Action (length).** We report what moved and what did not, since the comment named
 three groups. The **equivalence** material — the η sweep and the η = 0 ablation, with
