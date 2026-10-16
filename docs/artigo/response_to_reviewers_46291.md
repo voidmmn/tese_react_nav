@@ -166,7 +166,7 @@ it entirely. We built exactly that baseline (G2), plus a one-factor variant, and
 declared the scenarios before running.
 
 **Action.** New §V-B, *Isolating the Field from the Act of Deviating*, reporting
-Table 6, with the confirmatory/exploratory boundary marked and
+Table 7, with the confirmatory/exploratory boundary marked and
 with care about what the comparison does and does not establish:
 
 - **Confirmatory, `default`:** across all ten runs of each configuration, the proposed
@@ -231,9 +231,9 @@ retreats, minimum hazard distance, mission duration, investigation time). Holm w
 applied across the resulting set of fifteen tests.
 
 Correcting an inconsistency we are grateful to have caught before resubmitting:
-the consolidated table (Table 4) still listed the seven comparisons that formed the
+the consolidated table (now Table 5) still listed the seven comparisons that formed the
 confirmatory family of the *previous* submission, so the article declared one family
-and tabulated another. Table 4 now contains **all fifteen tests and only those**,
+and tabulated another. Table 5 now contains **all fifteen tests and only those**,
 with the per-arm n and the procedure used for each, so the Holm denominator is
 visible rather than asserted; the seven earlier comparisons move to Appendix B as a
 historical table, reported uncorrected. The table is generated from a CSV that the
@@ -553,7 +553,7 @@ merged review proof before submitting.
 
 **Action (length).** We report what moved and what did not, since the comment named
 three groups. The **equivalence** material — the η sweep and the η = 0 ablation
-(Table 12, Appendix B) together with the residual figure (Fig. 7, Appendix C) —
+(Table 14, Appendix B) together with the residual figure (Fig. 7, Appendix C) —
 moved out of the main text, which also follows from the repositioning. The **dynamic-hazard** configurations stayed in the main text: Reviewer
 2 identified that finding (the keep-out resolves the static hazard while the retreat
 adds margin only for a hazard emerging mid-investigation) as a useful architectural
