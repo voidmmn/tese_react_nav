@@ -67,12 +67,12 @@ Appendix~\ref{app:params}).
 
 \subsection{Experimental Matrix and Metrics}
 \label{sec:setup-matrix}
-We evaluate the affective layer against a fixed baseline and an
-artificial-potential-field baseline, across an $\eta$ sweep, an $\eta=0$ (affective-value) ablation,
+We evaluate the reactive layer against a fixed baseline and an
+artificial-potential-field baseline, across an $\eta$ sweep, an $\eta=0$ (value-term) ablation,
 an adverse scenario, a hazard placed on the route, and perception-noise
 perturbations (Table~\ref{tab:matrix}); each configuration is run $n=10$ times
 (headless, $600$~s timeout per run). \textbf{E1} is the deliberative patrol
-\emph{without} the reactive layer (no affective response). \textbf{E0} is an
+\emph{without} the reactive layer (no reactive response). \textbf{E0} is an
 ablation that enables \textsc{Stay Alert} but sets the value-update weight
 $\eta=0$. \textbf{E2--E4} enable the full method with
 $\eta\in\{0.3,0.5,0.8\}$, and \textbf{E5} uses $\eta=0.5$ on the adverse
@@ -135,7 +135,7 @@ confirms the robot's final pose lies within a \emph{confirmation distance} of th
 is enforced by the controller rather than independently verified, so this metric
 measures \emph{confirmed arrival within $3.3$~m plus a commanded dwell}, a proxy for
 physical inspection, not the full standoff-and-orientation condition);
-\emph{investigation time}; \emph{route deviations} (affective triggers);
+\emph{investigation time}; \emph{route deviations} (reactive triggers);
 \emph{hazard avoidances} (retreat events); \emph{minimum hazard distance}
 (closest approach to a hazard, higher is better); and, for the on-route hazard,
 safety-oriented \emph{proxies} computed from the true hazard position:
@@ -247,7 +247,7 @@ corrected failure-handling path is never exercised in them and their metrics are
 unchanged under either version, as their published counters show. A provenance
 manifest (\texttt{PROVENANCE.md}) records the reference snapshot for each batch, the
 per-run seeds, and SHA-256 checksums of all $160$ CSVs, and identifies the replaced
-files; the mobile tag alone does not fix this correspondence. As the contribution is the affective
+files; the mobile tag alone does not fix this correspondence. As the contribution is the reactive
 navigation policy operating on abstracted events, it does not depend on raw range
 data: obstacle geometry is provided by the static map, and the odometry is kept
 exact (the map$\rightarrow$odom transform is held fixed), so we do \emph{not}

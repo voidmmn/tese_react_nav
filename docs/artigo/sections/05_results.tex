@@ -127,7 +127,7 @@ would not be a direct comparison.}
 \end{figure}
 
 \subsection{Detection and Inspection Behavior}
-The central result is that the affective layer turns a coverage patrol into an
+The central result is that the reactive layer turns a coverage patrol into an
 inspection behavior. The fixed baseline (E1) inspects \emph{no} anomalies: it
 follows the round and never deviates ($0.0\pm0.0$). With \textsc{Stay Alert}, the
 robot inspects \emph{all three} anomalies in every valid run of the default
@@ -139,7 +139,7 @@ artificial-potential-field baseline (APF) also inspects all three ($3.0\pm0.0$),
 confirming that a comparably simple reactive scheme can produce the anomaly
 response; the difference between the methods lies in efficiency and safety,
 discussed below, not in raw inspection count. Fig.~\ref{fig:traj} shows the mechanism: the
-affective layer leaves the patrol to reach each anomaly's standoff and returns,
+reactive layer leaves the patrol to reach each anomaly's standoff and returns,
 whereas E1 traces the round directly.
 
 \begin{figure}[t]
@@ -287,10 +287,10 @@ $p>0.22$ and is omitted from the last two columns for brevity.
 \end{table*}
 
 \subsection{Hazard Response and Safety}
-The fixed baseline records zero hazard avoidances, while the affective layer
+The fixed baseline records zero hazard avoidances, while the reactive layer
 performs exactly one retreat per encounter ($1.0\pm0.0$). For the hazard placed
 \emph{beside} the route (E0--E5), the minimum clearance is small in absolute
-terms for both, but the affective layer keeps a slightly \emph{larger} and highly
+terms for both, but the reactive layer keeps a slightly \emph{larger} and highly
 consistent clearance (E3 $4.86\pm0.03$\,m) than the fixed baseline
 ($4.71\pm0.00$\,m): the repulsion regulates the approach to a tight band, and
 the baseline---now that spawn-failure runs are separated out---passes the
@@ -298,7 +298,7 @@ beside-route hazard at a fixed, marginally closer distance. The more informative
 test places the hazard \emph{on} a patrol leg (configurations RHM, the method,
 and RHB, the fixed baseline). There, the fixed baseline drives straight through,
 reaching a minimum clearance of only $0.71\pm0.00$\,m with no retreat and a
-minimum time-to-collision of $2.8\pm0.1$\,s, whereas the affective layer produces
+minimum time-to-collision of $2.8\pm0.1$\,s, whereas the reactive layer produces
 a two-timescale response: as soon as the hazard is detected it is projected as a
 persistent keepout into the global costmap (so the planner routes around it for the
 rest of the mission), and a fast reactive retreat ($1.0\pm0.0$ avoidance event)
@@ -306,11 +306,11 @@ handles the immediate proximity; the two together let the robot contour the haza
 at $1.71\pm0.01$\,m ($0$ collisions across valid runs) with a time-to-collision
 margin of $5.6\pm0.9$\,s, while still inspecting all three anomalies ($3.0\pm0.0$),
 at a time cost of $372\pm1$\,s. The
-affective layer thus more than doubles the clearance
+reactive layer thus more than doubles the clearance
 ($+1.00$\,m; Cliff's $\delta=1$, $p<10^{-4}$) and roughly doubles the
 time-to-collision margin ($+2.8$\,s; $p<10^{-4}$) of the fixed patrol on the case
 the repulsion is meant to
-handle---a hazard blocking the route---demonstrating the affective signal acting
+handle---a hazard blocking the route---demonstrating the reactive response acting
 on both the reactive and the deliberative layer (Table~\ref{tab:safety}).
 
 \begin{table}[t]
@@ -460,7 +460,7 @@ was \emph{never} inspected, so the robot inspected only the three off-conflict
 anomalies ($3.0\pm0.0$; the fourth event is the co-located pair). The robot kept a
 minimum hazard clearance of $4.84\pm0.02$\,m and a minimum time-to-collision of
 $17.3\pm1.6$\,s, with \emph{zero} collisions across all runs, at a mission duration
-($364\pm2$\,s) indistinguishable from the default scenario. The affective
+($364\pm2$\,s) indistinguishable from the default scenario. The reactive
 field therefore enforces a \emph{hazard-first selection priority} by construction,
 confirmed empirically in the one case designed to break a magnitude-only
 interpretation. This is a deliberate design choice---the priority is \emph{hard},
