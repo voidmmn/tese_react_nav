@@ -1,0 +1,30 @@
+% Carta-resposta IEEE Access -- cabecalho e tipografia.
+% XeLaTeX: o texto usa grego, sobrescritos e simbolos matematicos (Phi, eta,
+% delta, arrow, 10^-4) que o pdflatex nao compoe sem pacote por pacote.
+\usepackage{fontspec}
+\setmainfont{DejaVu Serif}[Scale=0.86]
+\setsansfont{DejaVu Sans}[Scale=0.86]
+\setmonofont{DejaVu Sans Mono}[Scale=0.80]
+\usepackage[margin=2.3cm,top=2.6cm,bottom=2.4cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\definecolor{accessblue}{RGB}{0,98,155}
+\pagestyle{fancy}\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\lhead{\footnotesize\textcolor{accessblue}{Response to Reviewers}}
+\rhead{\footnotesize\textcolor{accessblue}{Access-2026-46291}}
+\cfoot{\footnotesize\thepage}
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\color{accessblue}}
+% blockquote (citacao do revisor) com barra lateral, para separar a voz do
+% revisor da nossa resposta -- e a estrutura que o template da IEEE pede
+\usepackage{mdframed}
+\newmdenv[linewidth=2pt,linecolor=accessblue!40,leftline=true,
+          topline=false,bottomline=false,rightline=false,
+          innerleftmargin=9pt,innerrightmargin=0pt,
+          innertopmargin=2pt,innerbottommargin=2pt,
+          skipabove=6pt,skipbelow=6pt]{quotebar}
+\renewenvironment{quote}{\begin{quotebar}\itshape\small}{\end{quotebar}}
+\setlength{\parskip}{0.45em}
+\setlength{\emergencystretch}{3em}
+\usepackage{microtype}
