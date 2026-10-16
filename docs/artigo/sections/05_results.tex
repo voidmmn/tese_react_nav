@@ -9,7 +9,7 @@ distribution for untied samples with $n_1+n_2\le20$ (all pairs here), a
 two-sided exact permutation $p$ for fully separated constant arms, and the
 tie-corrected normal approximation only when ties are present), reported with the
 Cliff's $\delta$ effect size and $95\%$ bootstrap confidence intervals, with
-numeric $p$-values Holm-corrected across the confirmatory family; equivalence is
+numeric $p$-values Holm-corrected across the primary comparison family; equivalence is
 assessed by a two one-sided test (TOST) and per-mission success by Wilson-score
 intervals.
 Runs in which the platform did not move
@@ -34,22 +34,25 @@ per-run values (with per-run seeds and outcomes) are released with the code.
 %% desfechos foram definidos antes dos experimentos". Conferido no historico: os
 %% CONTRASTES estao num commit anterior ao primeiro dado; os DESFECHOS nao estao
 %% declarados em lugar nenhum antes. A distincao passa a ser explicita.
-\paragraph*{Confirmatory and exploratory claims} We fix the boundary here, mark it at
+\paragraph*{Primary and exploratory claims} We fix the boundary here, mark it at
 every claim rather than only in the tables, and are precise about which part of the
 family was fixed in advance. The three \emph{contrasts} were specified before the new
-runs produced any data---the proposed layer against the generic heuristic and against
-the one-factor selection variant in the \texttt{default} scenario, and the
-keep-out-only ablation against the fixed patrol carrying the same keep-out (KOa
-vs.\ KOF) on the on-route hazard---and the released analysis plan carries them in a
-commit timestamped before the first run of the battery was written to disk. The
+battery wrote its first result file---the proposed layer against the generic
+heuristic and against the one-factor selection variant in the \texttt{default}
+scenario, and the keep-out-only ablation against the fixed patrol carrying the same
+keep-out (KOa vs.\ KOF) on the on-route hazard. What the record establishes is
+exactly that: the released analysis plan carries the three contrasts in a commit
+that precedes the first archived run by about an hour. We claim no more than the
+ordering that commit demonstrates. The
 \emph{set of outcomes} on which each contrast is evaluated was \emph{not} declared in
 advance: the five reported here (anomalies inspected, minimum hazard distance,
 mission duration, hazard retreats, investigation time) were fixed after the runs.
-We therefore do not describe this family as pre-registered. Holm is applied across
-the resulting fifteen tests as a multiplicity correction over a family whose
-contrasts are pre-specified and whose extent is retrospective, and the complete set
-is tabulated with no test omitted so that the denominator can be checked rather than
-taken on trust. Everything else---the \texttt{conflict} and
+We therefore call these fifteen tests the \emph{primary comparison family with
+retrospectively specified outcomes}, and not a confirmatory family: Holm addresses
+multiplicity \emph{within the family as reported}, but it does not make the choice of
+outcomes prospective, and public registration is a separate matter we do not claim
+either. The complete set is tabulated with no test omitted, so the denominator can be
+checked rather than taken on trust. Everything else---the \texttt{conflict} and
 \texttt{adverse} scenarios, the threshold and hysteresis sweeps, the marginal-hazard
 configuration, and every re-analysis of previously recorded runs---is
 \emph{exploratory}, is reported with uncorrected $p$, and is labelled as exploratory
@@ -58,15 +61,15 @@ in the sentence that states it. Two of the analyses below are additionally
 FSM-transition analysis operate on runs recorded for the earlier submission, and are planned now rather
 than in advance.
 
-The principal (confirmatory) comparisons are consolidated in
+The primary comparisons are consolidated in
 Table~\ref{tab:stats}; the remaining equivalence, noise-robustness, and
 adverse-cost comparisons are reported in Appendix~\ref{app:stats}
 (Table~\ref{tab:allstats}).
 
 \begin{table*}[t]
 \centering
-\caption{The \emph{complete} confirmatory family: three contrasts
-$\times$ five outcomes $=15$ tests, with no test omitted, so that the Holm
+\caption{Complete primary comparison family: three contrasts $\times$ five
+\emph{retrospectively specified} outcomes $=15$ tests, with no test omitted, so that the Holm
 denominator is visible rather than asserted. The contrasts were fixed before the
 runs; the outcome set was fixed after them (Section~\ref{sec:results}), so this is a
 multiplicity correction over a retrospectively bounded family, not a pre-registered
@@ -124,11 +127,11 @@ weight $\eta=0$; E2--E4 enable \textsc{Stay Alert} with $\eta\in\{0.3,0.5,0.8\}$
 E5 is the adverse scenario ($\eta=0.5$); APF is the artificial-potential-field
 baseline. The scenario total of anomalies is $3$ (E0--E4, APF) and $5$ (E5); in the
 dense E5 layout not every run completes all five (mean $4.9$), quantified in
-Section~\ref{sec:adverse}. Valid $n$ is $10$ for E0--E5 and $9$ for APF. ``Update residual'' is the complete
+Section~\ref{sec:adverse}. ``Update residual'' is the complete
 $|\alpha\delta+\eta\bm{\Phi}|$; it is identically zero when the value update is inactive
 (E1, APF). APF, being a continuous force controller, has no discrete
-route-deviation count (shown as ---) and no value update. Valid $n$: $10$ for
-E1--E5, $9$ for APF.}
+route-deviation count (shown as ---) and no value update. Valid $n$ is $10$ for
+E0--E5 and $9$ for APF.}
 \label{tab:results}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -154,8 +157,9 @@ Update residual          & $0.000$ & $0.021\pm0.009$ & $0.021\pm0.007$ & $0.020\
 \texttt{default} scenario: the fixed patrol, the potential-field baseline (APF), the
 generic heuristic supervisor (HEU), the one-factor selection variant (HEU-sel) and
 the proposed layer. The fixed patrol never inspects nor retreats; the four reactive
-configurations all inspect the three anomalies, and HEU-sel is indistinguishable from
-the proposed layer throughout. HEU performs a second retreat and APF needs a longer
+configurations all inspect the three anomalies, and no statistically detectable
+difference was found between HEU-sel and the proposed layer on any of the metrics
+shown. HEU performs a second retreat and APF needs a longer
 mission for the same inspections. Every configuration shown ran in the same scenario
 and, except for APF, on the same Nav2/MPPI controller; the adverse and conflict
 scenarios are reported separately (Sections~\ref{sec:adverse} and~\ref{sec:heu})
@@ -226,12 +230,13 @@ which anomaly is committed, and a committed anomaly stops feeding the field; the
 contrast is thus one of selection at the decision point \emph{with} a downstream
 effect on the time course of $\Phi$, not merely a reordering of service.
 
-Table~\ref{tab:heu} reports the three scenarios. \textbf{Confirmatory (Holm-corrected
-within the confirmatory family), \texttt{default} scenario:} HEU-sel showed
+Table~\ref{tab:heu} reports the three scenarios. \textbf{Primary comparison
+(Holm-corrected within the family), \texttt{default} scenario:} HEU-sel showed
 no statistically detectable difference from the proposed layer on any of the five
-confirmatory outcomes ($p_{\mathrm{Holm}}=1.0000$ throughout; $|\delta|\le0.19$;
-all bootstrap intervals contain zero); three of the five are constant and
-identical in both arms. This is an absence of detected difference at $n=10$, not a
+reported outcomes ($p_{\mathrm{Holm}}=1.0000$ throughout; $|\delta|\le0.19$;
+all bootstrap intervals contain zero); two of the five---anomalies inspected and
+hazard retreats---are constant and identical in both arms, while the other three
+vary. This is an absence of detected difference at $n=10$, not a
 demonstration of equivalence. By contrast, HEU differs in retreats ($1$ vs.\ $2$,
 $p_{\mathrm{Holm}}=3.0{\times}10^{-4}$), investigation time ($35.1$ vs.\ $41.2$~s,
 $p_{\mathrm{Holm}}=0.0027$) and mission duration ($p_{\mathrm{Holm}}=0.0052$). The
@@ -293,7 +298,8 @@ is narrower than the one made in the previous version of this article.
 \caption{Proposed layer versus a generic detect--select--deviate--return supervisor
 (HEU) and a one-factor selection variant (HEU-sel), all on the same Nav2/MPPI
 controller. Medians over valid runs; the valid $n$ per cell is given in the note below the table. The
-\texttt{default} row block is the confirmatory family (Holm-corrected); the
+\texttt{default} row block belongs to the primary comparison family
+(Holm-corrected); the
 \texttt{conflict} and \texttt{adverse} blocks are exploratory and are reported with
 uncorrected $p$.}
 \label{tab:heu}
@@ -324,7 +330,7 @@ uncorrected $p$.}
 \vspace{2pt}
 \footnotesize $n$: \texttt{default} $10/9/10$, \texttt{conflict} $10/9/10$,
 \texttt{adverse} $10/10/10$ (proposed/HEU/HEU-sel).
-$^{\dagger}$Holm-corrected within the $15$-test confirmatory family of
+$^{\dagger}$Holm-corrected within the $15$-test primary comparison family of
 Table~\ref{tab:stats}, from which these values are taken; rows without the dagger
 are exploratory and uncorrected. Every
 proposed-versus-HEU-sel comparison yields $p_{\mathrm{Holm}}=1.0000$ or
@@ -560,13 +566,20 @@ in Section~\ref{sec:method-stayalert}: the hand-off that would stop the hazard b
 published requires the keep-out channel, which is disabled in this off-route
 scenario, so observation keeps renewing $h$. The
 priority-target metric records the same outcome from the other side: the acoustic
+%% R6 do parecer de verificacao: a justificativa dizia que 400 s ficava acima da
+%% maior missao do metodo (~372 s). Falso: E5 chega a 401.9 s, e APF (413.0),
+%% HEUc (471.7) e HEUsela (403.7) tambem passam de 400 s. O horizonte e uma
+%% escolha declarada no plano, nao um limite superior empirico.
 priority target is censored at the $400$~s horizon in $10/10$ runs. That horizon is
-a property of the \emph{metric}, not of the run: it is the fixed censoring time at
-which an un-inspected priority target stops being waited for, chosen above the
-longest mission the proposed layer records (${\approx}372$~s on the on-route
-hazard) so that censoring reflects a behavioural failure to reach the target rather
-than the end of the episode. It is distinct from the $600$~s wall-clock budget that
-terminates a run (Section~\ref{sec:setup-matrix}). The categorical precedence therefore does not merely risk over-conservatism: in this
+a property of the \emph{metric}, not of the run: it is a fixed censoring time,
+declared in the analysis plan before the battery, at which an un-inspected priority
+target stops being waited for. It is \emph{not} an upper bound on mission duration:
+several configurations run past it---the dense scenario reaches $401.9$~s and the
+heuristic in \texttt{conflict} $471.7$~s---so where a mission outlasts the horizon,
+censoring reflects the horizon rather than the end of the episode. Censored cases
+are therefore reported with their proportion rather than averaged in. The horizon is
+also distinct from the $600$~s wall-clock budget that terminates a run
+(Section~\ref{sec:setup-matrix}). The categorical precedence therefore does not merely risk over-conservatism: in this
 configuration it costs one inspection in every run. The cost is incurred under
 conditions in which the layer itself would not act on the hazard---throughout the
 window the robot's minimum distance to it is $3.92$~m (range $3.86$--$4.06$) and its
@@ -600,14 +613,22 @@ matters}
 We compare three entry/exit pairs chosen so that position and width vary
 independently: the reference $(0.45,0.25)$ of width $0.20$; a narrower band
 $(0.45,0.35)$ of width $0.10$ at the same entry point; and a shifted band
-$(0.55,0.35)$ of the same width $0.20$. Halving the width changes nothing: route
-deviations, inspections, mission duration and investigation time are all
-indistinguishable from the reference ($p\ge0.60$). Shifting the entry point doubles
-the counted route deviations ($4\rightarrow8$, $\delta=-1.00$, $p=0.0003$) and
-shortens the mean investigation episode ($35.1\rightarrow26.6$~s, $p=0.0003$), while
-leaving the inspections unchanged at $3$ of $3$: with a higher entry threshold the
-robot lingers longer in the aroused-but-uncommitted band and commits closer to the
-target. Between the two widths evaluated in this scenario no difference was detected on any
+$(0.55,0.35)$ of the same width $0.20$. Halving the width produced no statistically
+detectable difference on any reported outcome: route deviations, inspections,
+mission duration and investigation time all give $p\ge0.60$ against the reference,
+with bootstrap intervals containing zero.
+%% R2 do parecer de verificacao: 35.1 e 26.6 sao medianas do TOTAL por run
+%% (metrics_node.py acumula o tempo em INVESTIGATE), nao duracao media de
+%% episodio. A explicacao do mecanismo e interpretacao, nao medida.
+Shifting the entry point doubles
+the counted route deviations (median $4\rightarrow8$, $\delta=-1.00$, $p=0.0003$) and
+reduces the per-run \emph{total} time spent in \textsc{Investigate} (median
+$35.1\rightarrow26.6$~s, $p=0.0003$), while leaving the credited inspections
+unchanged at $3$ of $3$. More deviations and less total investigation time together
+are consistent with the robot committing closer to each target once the entry
+threshold is higher, but the two aggregates do not separate episode duration from
+episode count, and we did not instrument per-episode durations; we therefore offer
+that reading as an interpretation rather than a measurement. Between the two widths evaluated in this scenario no difference was detected on any
 reported outcome, and we limit the statement to those two widths and that scenario.
 The \texttt{route deviations} metric should be read as sensitive to the \emph{position}
 of the entry threshold rather than as a scenario-intrinsic count.
@@ -775,10 +796,17 @@ Re-scoring reproduces the published figure exactly at the original $3.3$~m thres
 re-scoring at that threshold. It also shows the reported
 completeness to be strongly criterion-dependent: at $2.8$~m the high-noise rate falls
 to $2/9$, and at $4.0$~m it recovers to $9/9$. The robot did approach the anomalies;
-under high noise the episodes that the $3.3$~m criterion refused closed at
-$2.9$--$3.6$~m from the true target, because the perturbed position estimate
-displaced the inspection pose. Taken over all episodes, refused and credited, the
-closing distances span $1.83$--$3.56$~m. That is only half the answer, however, because the physical approach also
+%% R3 do parecer de verificacao: a faixa 2.9-3.6 m incluia valores ABAIXO do
+%% limiar de 3.3 m, logo nao podia descrever so as rejeicoes. Conferido no
+%% audit_trail.csv (config N2): 27 episodios, 21 creditados a 1.83-3.30 m e 6
+%% rejeitados a 3.33-3.56 m. O criterio credita quando d <= 3.3 m.
+under high noise the six refused episodes closed at $3.33$--$3.56$~m from the true
+target---just outside the criterion, which credits an episode when the closing
+distance is at most $3.3$~m---because the perturbed position estimate displaced the
+inspection pose. The twenty-one credited episodes closed at $1.83$--$3.30$~m, so
+across all twenty-seven the closing distances span $1.83$--$3.56$~m. No refused
+episode ended in an abort or a timeout: the audit trail records each of the six as a
+completed navigation whose final pose fell outside the confirmation distance. That is only half the answer, however, because the physical approach also
 degrades: the median distance to the true target at episode close rises from
 $2.23$~m (range $2.21$--$2.24$) with clean perception to $2.87$~m (range
 $1.83$--$3.56$) under high noise. Both effects are present and we report them
@@ -828,10 +856,15 @@ kind chattering would produce. In the
 dense scenario the shortest interval is $0.2$~s, and inspection of those cases shows
 they are not threshold oscillation: they are either back-to-back servicing of a
 cluster---one anomaly credited and the next, already well inside range at
+%% R5 do parecer de verificacao: com memoria e decaimento a magnitude do campo
+%% nao localiza o robo em relacao a fronteira, entao ela nao exclui cruzamento.
+%% Trocar causalidade por "associacao" nao bastava.
 $\Phi\approx0.5$, committed immediately---or an episode ended at once by a transient
-Nav2 goal abort. In both, the recorded field at the transition is well above the
-boundary value, so neither is \emph{associated} with a boundary crossing; with the
-outward crossings untimed we do not claim more than that.
+Nav2 goal abort. The logs therefore associate these short intervals with successive
+service of clustered targets or with an immediate navigation abort. Because the
+geometric crossings are not timestamped and the field carries decay memory---so its
+magnitude does not by itself locate the robot relative to the detection radius---the
+record does not establish whether a boundary crossing coincided with either event.
 
 \subsection{Threats to Validity}
 \label{sec:threats}

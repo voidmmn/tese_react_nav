@@ -74,8 +74,9 @@ the same detection-triggered keep-out and no reactive layer at all.
 of the modality eligibility threshold that governs the precedence, plus a hysteresis
 sweep whose three pairs separate band *position* from band *width* (R3.3).
 
-**G5 — Statistical hygiene (R2.4, R3-m2).** The confirmatory family is declared in
-advance and Holm-corrected; everything else is labelled exploratory, and two analyses
+**G5 — Statistical hygiene (R2.4, R3-m2).** The primary comparison family is
+reported in full and Holm-corrected, with the retrospective selection of its outcomes
+stated rather than glossed; everything else is labelled exploratory, and two analyses
 are additionally labelled *retrospective*. Binomial bounds are reported per group
 denominator (25.9 / 28.3 / 31.2%) rather than as a single ≈26%.
 
@@ -166,10 +167,10 @@ it entirely. We built exactly that baseline (G2), plus a one-factor variant, and
 declared the scenarios before running.
 
 **Action.** New §V-B, *Isolating the Field from the Act of Deviating*, reporting
-Table 7, with the confirmatory/exploratory boundary marked and
+Table 7, with the primary/exploratory boundary marked and
 with care about what the comparison does and does not establish:
 
-- **Confirmatory, `default`:** across all ten runs of each configuration, the proposed
+- **Primary comparison, `default`:** across all ten runs of each configuration, the proposed
   layer and HEU-sel produced *the same constant value* on every discrete behavioural
   outcome — 3 anomalies inspected, 1 retreat, 4 route deviations, 0 timeouts, 0
   contact-region entries, 0 clearance-band entries. This is a statement about the
@@ -296,8 +297,10 @@ threshold, which provides an internal consistency check of the re-scoring at tha
 threshold. It also shows the figure to be strongly criterion-dependent: 2/9 at
 2.8 m and **9/9 at 4.0 m**. But that is only half the answer, and we report the other
 half: the physical closing distance genuinely degrades, from 2.23 m (median) with
-clean perception to 2.87 m under high noise, with a maximum of 3.56 m. Both effects
-are present. We state the defensible conclusion — the completeness figure is sensitive
+clean perception to 2.87 m under high noise, with a maximum of 3.56 m. The audit
+trail separates the two groups cleanly: of the 27 committed episodes under high
+noise, the 21 credited closed at 1.83–3.30 m and the 6 refused at 3.33–3.56 m, none
+of them an abort or a timeout. Both effects are present. We state the defensible conclusion — the completeness figure is sensitive
 to the criterion *and* the approach quality degrades — rather than claiming the
 degradation is an artifact. We note the measured quantity is the distance at episode close, not the minimum over
 the approach, which is not instrumented per run. On generality we are explicit rather
