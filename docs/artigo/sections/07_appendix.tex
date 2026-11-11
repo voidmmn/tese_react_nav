@@ -1,17 +1,17 @@
 \section{Event Layout}
 \label{app:params}
 Table~\ref{tab:events} lists the simulated events for all six scenarios (positions
-in world metres; $I_e$ is the base intensity). The patrol waypoints are
+in world meters; $I_e$ is the base intensity). The patrol waypoints are
 $(13,-8)$, $(13,10)$, $(0,11)$, $(-8,5)$, $(-10,-10)$. The remaining method and
 simulation parameters are given in Table~\ref{tab:hyper}.
 
 \begin{table}[h]
 \centering
-\caption{Simulated events for all six scenarios (positions in world metres;
+\caption{Simulated events for all six scenarios (positions in world meters;
 $I_e$ is the base intensity). In \emph{dyn-hazard} the repulsive event is
 co-located with the anomaly and \emph{activates}---starts being published to
-both the reactive and keepout channels---only when the robot reaches
-$\le3$\,m of its true position ($r_{\mathrm{act}}$), modelling a hazard that
+both the reactive and keep-out channels---only when the robot reaches
+$\le3$\,m of its true position ($r_{\mathrm{act}}$), modeling a hazard that
 emerges during an ongoing investigation.}
 \label{tab:events}
 \begin{tabular}{llccc}
@@ -203,8 +203,7 @@ the update is that $\Phi_t$ does \emph{not} depend on the action~$a$, so the ter
 $\eta\,\Phi_t$ biases every action available at $s$ equally. The reward is mission progress only, $r = r_{\text{prog}}$, so that the
 affective signal enters the update a single time, through $\eta\,\Phi(s)$; this
 avoids double-counting attraction in both the reward and the external term and
-keeps attraction and repulsion symmetric. The field encodes \emph{sensory
-saliency} and carries the sign of the response:
+keeps attraction and repulsion symmetric.
 
 \paragraph*{Where the state definition is circular, and why it does not matter here}
 %% R2#10: o revisor nota que |Phi| entra na definição do estado enquanto Phi é
@@ -347,10 +346,10 @@ discrete behavioral metric is unchanged. For $\eta>0$ the residual is event-driv
 events and spiking during each of the four reactive episodes (one hazard retreat and
 three anomaly investigations) as $\eta\bm{\Phi}$ rises and decays, with the band widening
 at the peaks---whereas for $\eta=0$ it stays near ${\approx}0.08$ between the
-start-up transient and the end-of-mission decline, since the only term left is
+startup transient and the end-of-mission decline, since the only term left is
 $\alpha\delta$. Increments stay bounded (end-of-mission
 ${\approx}0.020$). The early region ($\lesssim0.2$ normalized time) mixes the
-start-up transient with the retreat episode and the across-run alignment there is
+startup transient with the retreat episode and the across-run alignment there is
 loose; we draw no reading from it.}
 \label{fig:qconv}
 \end{figure}

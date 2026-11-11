@@ -13,7 +13,7 @@ numeric $p$-values Holm-corrected across the primary comparison family; equivale
 assessed by a two one-sided test (TOST) and per-mission success by Wilson-score
 intervals.
 Runs in which the platform did not move
-(travelled distance $\approx 0$) are a startup-reliability
+(traveled distance $\approx 0$) are a startup-reliability
 outcome rather than a navigation result: of the $160$ attempted runs, $154$ met the
 movement criterion for behavioral analysis and $6$ remained immobile. The
 observable, published criterion for these six is \emph{immobility} (the analyzer's
@@ -55,7 +55,7 @@ either. The complete set is tabulated with no test omitted, so the denominator c
 checked rather than taken on trust. Everything else---the \texttt{conflict} and
 \texttt{adverse} scenarios, the threshold and hysteresis sweeps, the marginal-hazard
 configuration, and every re-analysis of previously recorded runs---is
-\emph{exploratory}, is reported with uncorrected $p$, and is labelled as exploratory
+\emph{exploratory}, is reported with uncorrected $p$, and is labeled as exploratory
 in the sentence that states it. Two of the analyses below are additionally
 \emph{retrospective}: the confirmation-distance re-scoring and the logged-onset and
 FSM-transition analysis operate on runs recorded for the earlier submission, and are planned now rather
@@ -145,7 +145,7 @@ Route deviations         & $0.0\pm0.0$ & $4.0\pm0.0$ & $4.0\pm0.0$ & $4.0\pm0.0$
 Hazard avoidances        & $0.0\pm0.0$ & $1.0\pm0.0$ & $1.0\pm0.0$ & $1.0\pm0.0$ & $1.0\pm0.0$ & $1.0\pm0.0$ & $1.0\pm0.0$\\
 Min.\ hazard distance [m]& $4.71\pm0.00$ & $4.84\pm0.02$ & $4.87\pm0.02$ & $4.86\pm0.03$ & $4.87\pm0.03$ & $4.85\pm0.03$ & $4.81\pm0.00$\\
 Mission duration [s]     & $320\pm0$ & $364\pm1$ & $364\pm2$ & $364\pm1$ & $364\pm1$ & $397\pm4$ & $404\pm5$\\
-Distance travelled [m]   & $80.4\pm0.0$ & $86.6\pm0.1$ & $86.5\pm0.1$ & $86.6\pm0.2$ & $86.5\pm0.1$ & $92.2\pm0.4$ & $86.4\pm0.1$\\
+Distance traveled [m]   & $80.4\pm0.0$ & $86.6\pm0.1$ & $86.5\pm0.1$ & $86.6\pm0.2$ & $86.5\pm0.1$ & $92.2\pm0.4$ & $86.4\pm0.1$\\
 Update residual          & $0.000$ & $0.021\pm0.009$ & $0.021\pm0.007$ & $0.020\pm0.010$ & $0.022\pm0.011$ & $0.022\pm0.008$ & $0.000$\\
 \hline
 \end{tabular}
@@ -191,7 +191,7 @@ whereas E1 traces the round directly.
 \caption{Representative trajectories on the default scenario: the baseline
 patrol (gray) follows the round directly, whereas the proposed layer (blue) deviates
 to approach the anomalies (thermal $\triangle$, acoustic $\square$) and skirts the
-hazard ($\times$) zone. World frame, metres. \emph{Provenance:} these two traces come
+hazard ($\times$) zone. World frame, meters. \emph{Provenance:} these two traces come
 from a separate pose-logging session, not from the reported battery---continuous pose
 is not recorded during the evaluation runs---so the figure illustrates the
 \emph{qualitative} deviate-and-return mechanism and carries no quantitative claim;
@@ -209,7 +209,7 @@ Section~\ref{sec:setup}.}
 The comparisons above contrast the reactive layer with baselines that either cannot
 deviate (the fixed patrol) or change the controller as well as the supervisor (the
 potential-field baseline). Neither isolates the \emph{field} from the act of
-deviating at all. We therefore add two configurations that run on the \emph{same}
+deviating. We therefore add two configurations that run on the \emph{same}
 Nav2/MPPI controller, with the same perception, keep-out, approach poses,
 confirmation criterion and return-to-patrol logic:
 \begin{itemize}
@@ -248,7 +248,7 @@ irrelevant and report as such rather than as an advantage.
 \textbf{Exploratory, \texttt{conflict} scenario}---where a hazard is co-located with a
 \emph{more salient} anomaly, so the two rules disagree by construction---the
 difference is large and in the direction the proposed layer's \emph{persistent}
-precedence is meant to avoid---HEU preempts too, but does not hold the hazard
+precedence is meant to avoid. HEU preempts too, but does not hold the hazard
 channel open. HEU
 inspects the co-located anomaly (median $4$ of $4$ versus $3$ for the proposed layer)
 and pays for it: minimum clearance falls from $4.84$ to $2.23$~m (Cliff's
@@ -262,7 +262,7 @@ again, no difference from the proposed layer was detected on any reported outcom
 \textbf{Exploratory, \texttt{adverse} scenario}: all three configurations reached a
 median of five inspected anomalies, with per-run counts between four and five
 (proposed $9/10$ runs at five, HEU $10/10$, HEU-sel $8/10$); HEU performs one
-additional retreat and the clearance differences are of the order of centimetres.
+additional retreat and the clearance differences are of the order of centimeters.
 
 %% Atribuicao: HEU-sel difere do metodo SO na selecao; HEU difere de HEU-sel SO no
 %% modo de disparo. Logo o efeito do conflito se prende ao modo de disparo -- e esse
@@ -353,7 +353,7 @@ and RHB, the fixed baseline). There, the fixed baseline drives straight through,
 reaching a minimum clearance of only $0.71\pm0.00$\,m with no retreat and a
 minimum time-to-collision of $2.8\pm0.1$\,s, whereas the reactive layer produces
 a two-timescale response: as soon as the hazard is detected it is projected as a
-persistent keepout into the global costmap (so the planner routes around it for the
+persistent keep-out into the global costmap (so the planner routes around it for the
 rest of the mission), and a fast reactive retreat ($1.0\pm0.0$ avoidance event)
 handles the immediate proximity; the two together let the robot contour the hazard
 at $1.71\pm0.01$\,m ($0$ collisions across valid runs) with a time-to-collision
@@ -363,14 +363,14 @@ reactive layer thus more than doubles the clearance
 ($+1.00$\,m; Cliff's $\delta=1$, $p<10^{-4}$) and roughly doubles the
 time-to-collision margin ($+2.8$\,s; $p<10^{-4}$) of the fixed patrol on the case
 the repulsion is meant to
-handle---a hazard blocking the route---demonstrating the reactive response acting
-on both the reactive and the deliberative layer (Table~\ref{tab:safety}).
+handle---a hazard blocking the route---demonstrating a response that acts on both
+the reactive and the deliberative layer (Table~\ref{tab:safety}).
 
 \begin{table}[t]
 \centering
 \caption{On-route hazard: safety outcomes (mean\,$\pm$\,std over valid runs). RHB
 is the fixed baseline (drives straight through); RHM is the method---a reactive
-retreat combined with a detection-triggered persistent keepout that the planner
+retreat combined with a detection-triggered persistent keep-out that the planner
 routes around. Valid $n$: RHB $10$, RHM $9$.}
 \label{tab:safety}
 \footnotesize
@@ -390,14 +390,14 @@ Mission duration [s]       & $320\pm1$     & $372\pm1$\\
 \end{table}
 
 To attribute this safety gain to its two mechanisms, we ablate them
-(Table~\ref{tab:ablation}). With the \emph{keepout alone} (KOa, reactive retreat
+(Table~\ref{tab:ablation}). With the \emph{keep-out alone} (KOa, reactive retreat
 disabled) the planner still routes around the hazard and inspects all three
 anomalies at the same $1.71$\,m clearance, slightly faster than the full method
-($352$ vs.\ $372$\,s). With the \emph{reactive retreat alone} (KOb, keepout
+($352$ vs.\ $372$\,s). With the \emph{reactive retreat alone} (KOb, keep-out
 disabled) the robot cannot clear the on-route hazard: it oscillates
 ($29.6\pm3.9$ retreats), inspects almost nothing ($0.2\pm0.4$), and times out
 ($627\pm6$\,s). %% R3#2: "A fairer reference for the safety claim is the fixed patrol plus the same
-%% detection-triggered keepout, with no reactive layer at all." KOF e exatamente isso.
+%% detection-triggered keep-out, with no reactive layer at all." KOF e exatamente isso.
 These two ablations still carry the reactive layer. The fairer reference is a
 \emph{fixed patrol carrying the same detection-triggered keep-out and no reactive
 layer at all}, which isolates the keep-out from the weighting; we therefore add
@@ -420,7 +420,7 @@ never detours. The pair KOF/KOa is therefore a decomposition rather than a
 victory: the keep-out buys the clearance, the reactive layer buys the inspections,
 and they are separable.
 
-The deliberative keepout is therefore the mechanism that resolves
+The deliberative keep-out is therefore the mechanism that resolves
 an on-route hazard; the reactive retreat adds \emph{no} measurable benefit for this
 \emph{static} hazard (KOa matches RHM and is slightly faster). We do not claim the
 retreat helps here---its value instead appears when a hazard \emph{emerges} during
@@ -428,10 +428,10 @@ an investigation, which we quantify next (Section~\ref{sec:emerging}).
 
 \begin{table}[t]
 \centering
-\caption{Keepout/retreat ablation on the on-route hazard (mean\,$\pm$\,std over
+\caption{Keep-out/retreat ablation on the on-route hazard (mean\,$\pm$\,std over
 valid runs; $n=9$ for RHM, $10$ for KOa, $9$ for KOb). RHM is the full method
-(retreat $+$ keepout); KOa is keepout-only (retreat disabled); KOb is retreat-only
-(keepout disabled).}
+(retreat $+$ keep-out); KOa is keep-out-only (retreat disabled); KOb is retreat-only
+(keep-out disabled).}
 \label{tab:ablation}
 \footnotesize
 \setlength{\tabcolsep}{5pt}
@@ -453,13 +453,13 @@ Mission duration [s]       & $372\pm1$     & $352\pm1$     & $627\pm6$\\
 \subsection{The Retreat's Value under an Emerging Hazard}
 \label{sec:emerging}
 The ablation above shows that, for a \emph{static} on-route hazard, the
-deliberative keepout alone (KOa) matches the full method and the reactive retreat
+deliberative keep-out alone (KOa) matches the full method and the reactive retreat
 adds no measurable benefit. The retreat is designed, however, for a hazard that
 \emph{emerges} while the robot is already committed to an inspection---the case the
 preemption of Algorithm~\ref{alg:stayalert} was built for and that the static
 scenarios cannot exercise. We test this directly (configurations DHa, DHb): a
 hazard co-located with an anomaly stays inactive---published to neither the
-reactive channel nor the deliberative keepout---until the robot, already
+reactive channel nor the deliberative keep-out---until the robot, already
 investigating, closes to $3$~m, at which point the environment activates it (the
 activation instant and the first publication to each channel are logged per run).
 The clearance and radial time-to-collision values below are \emph{whole-mission}
@@ -475,7 +475,7 @@ activation)---so the TTC difference is reported strictly as a whole-mission marg
 reactive retreat enabled (DHa) the preemption fires in \emph{every valid run}
 ($8/8$ deferred investigations) and the robot backs off, keeping a minimum
 clearance of $2.55\pm0.15$\,m and a radial time-to-collision of $5.23\pm0.45$\,s.
-With the retreat disabled (DHb, keepout only) the robot instead proceeds to the
+With the retreat disabled (DHb, keep-out only) the robot instead proceeds to the
 inspection standoff, closing to $2.22\pm0.01$\,m ($4.72\pm0.21$\,s). The reactive
 retreat therefore buys $+0.33$\,m of clearance ($95\%$ CI $[+0.23,+0.42]$, Cliff's
 $\delta=1$, $p=4.6{\times}10^{-5}$) and $+0.51$\,s of time-to-collision margin
@@ -490,7 +490,7 @@ any time below the $2$~m clearance threshold, so the effect is a difference in
 firing from a cleanly completed retreat: in $3$ of the $8$ valid DHa runs the
 retreat's navigation goal is itself aborted, yet each episode still ends as a
 successful avoid---the field decays below threshold once the hazard is handed to
-the keepout (\emph{safe} exit)---and the clearance we report is the
+the keep-out (\emph{safe} exit)---and the clearance we report is the
 \emph{true-position} minimum from the metrics collector, not an assumed arrival at
 the retreat pose (those three runs in fact hold $2.70$~m). The retreat's
 contribution is thus a \emph{transient} safety margin when a hazard appears
@@ -563,7 +563,7 @@ retreat threshold. So measured it lasts $69.5$~s (range $67.3$--$72.4$). It is n
 pure decay: the hazard is re-observed within the window and the field magnitude rises
 again in a median of two samples per run, which is why it exceeds the ${\approx}39$~s
 decay alone from the initial magnitude would give. The mechanism is the one described
-in Section~\ref{sec:method-stayalert}: the hand-off that would stop the hazard being
+in Section~\ref{sec:method-stayalert}: the hand-off that would stop the hazard from being
 published requires the keep-out channel, which is disabled in this off-route
 scenario, so observation keeps renewing $h$. The
 priority-target metric records the same outcome from the other side: the acoustic
@@ -586,7 +586,7 @@ conditions in which the layer itself would not act on the hazard---throughout th
 window the robot's minimum distance to it is $3.92$~m (range $3.86$--$4.06$) and its
 magnitude is below the retreat threshold.
 
-We emphasise one reading that the numbers do not support. CM and the full conflict
+We caution against one reading that the numbers do not support. CM and the full conflict
 scenario both end with three anomalies inspected, but the two threes are not
 comparable: in CONF the forfeited anomaly is co-located with the hazard and
 \emph{should} be refused, whereas in CM it is a legitimate target $4.3$~m away. The
@@ -601,7 +601,7 @@ throughout. Lowering it to $0.20$ produced no statistically detectable differenc
 \emph{degrades} safety: the minimum clearance falls to $3.78$~m (Cliff's
 $\delta=+1.00$, bootstrap CI of the difference $[+0.99,+1.10]$~m, $p<0.0001$) and the
 mission lengthens by $9.1$~s, because a higher eligibility threshold means the hazard
-is recognised later and therefore closer. We report these two contrasts and do not infer a general response curve from three
+is recognized later and therefore closer. We report these two contrasts and do not infer a general response curve from three
 values; what they establish is that the clearance reported elsewhere in this article
 is not produced by a threshold chosen below the value at which the degradation
 appears.
@@ -626,7 +626,7 @@ the counted route deviations (median $4\rightarrow8$, $\delta=-1.00$, $p=0.0003$
 reduces the per-run \emph{total} time spent in \textsc{Investigate} (median
 $35.1\rightarrow26.6$~s, $p=0.0003$), while leaving the credited inspections
 unchanged at $3$ of $3$. More deviations and less total investigation time together
-are consistent with the robot committing closer to each target once the entry
+are consistent with the robot committing to each target from closer in once the entry
 threshold is higher, but the two aggregates do not separate episode duration from
 episode count, and we did not instrument per-episode durations; we therefore offer
 that reading as an interpretation rather than a measurement. Between the two widths evaluated in this scenario no difference was detected on any
@@ -636,11 +636,35 @@ of the entry threshold rather than as a scenario-intrinsic count.
 
 \subsection{Cost of the Inspection Behavior}
 The added behavior is inexpensive: the mission duration of E3 ($364\pm1$\,s) is a
-modest increase over the fixed baseline ($320\pm1$\,s) for the inspection
-detours ($+6.2$\,m travelled). Framed as a utility trade-off, each additional
+modest increase over the fixed baseline ($320\pm0$\,s) for the inspection
+detours ($+6.2$\,m traveled). Framed as a utility trade-off, each additional
 anomaly inspected costs about $2$\,m of extra travel ($+6.2$\,m for three) and
 $15$\,s of mission time ($+44$\,s for three)---a favorable exchange given that
 the fixed baseline inspects \emph{none}.
+
+%% ACEITE (09/11/2026), R2: "a short note on how inspection time and patrol
+%% completion time trade off in a realistic round would help readers judge its
+%% practical value". NAO subtrair E5 de E1: sao cenarios diferentes e nao existe
+%% patrulha fixa rodada no layout adverso -- a diferenca 397-320 nao e incremento
+%% controlado. O paragrafo abaixo diz isso explicitamente.
+\paragraph*{Reading the cost against the round}
+Expressed against the round it extends, the behavior costs $14\%$ of the patrol's
+duration: $320\pm0$\,s become $364\pm1$\,s for three inspections. Most of that
+increment is accounted for by the per-run total time in \textsc{Investigate}
+(median $35.1$\,s over the three episodes), and since the commanded dwell is only
+$t_{\text{dwell}}=3$\,s per episode (Table~\ref{tab:hyper}), the cost is dominated
+by the detour to the standoff rather than by the inspection pause itself. It is
+also incurred per \emph{event} rather than per meter patrolled, so a longer round
+carrying the same number of events would spread the same absolute seconds over a
+longer baseline and the relative penalty would fall. The dense scenario costs more
+in absolute terms ($397\pm4$\,s for $4.9\pm0.3$ inspections) because it presents
+more events; its layout differs from the default one, so we do not read the
+difference between the two rounds as a controlled increment. The practical reading
+for an operator is that each credited inspection costs ${\approx}15$\,s of round
+time and ${\approx}2$\,m of travel, and that a round planned with that much slack
+for the expected number of events absorbs the behavior without rescheduling the
+patrol---with the caveat, from Section~\ref{sec:robustness}, that the events must
+first be detected.
 
 %% R3#3 pede a comparacao com o APF consolidada numa tabela unica, com intervalos,
 %% e a declaracao do procedimento e do ESFORCO de ajuste. Tambem corrigimos aqui a
@@ -691,7 +715,7 @@ layer alone.}
 %% 4.81+-0.00) e invertiam o sinal do IC da distancia. Nao reeditar a mao.
 Anomalies inspected        & $3.00\pm0.00$ & $3.00\pm0.00$ & $[+0.00,+0.00]$\\
 Mission duration [s]       & $364\pm1$     & $404\pm5$     & $[-42.5,-36.4]$\\
-Distance travelled [m]     & $86.6\pm0.2$  & $86.4\pm0.1$  & $[+0.08,+0.30]$\\
+Distance traveled [m]     & $86.6\pm0.2$  & $86.4\pm0.1$  & $[+0.08,+0.30]$\\
 Min.\ hazard distance [m]  & $4.86\pm0.03$ & $4.81\pm0.00$ & $[+0.03,+0.07]$\\
 Time to priority target [s]& $240.8$       & $269.7$       & $[-34.2,-23.1]$\\
 \hline
@@ -875,15 +899,15 @@ measures the \emph{navigation-and-decision} response, not perception accuracy;
 we probe sensitivity to this abstraction with the perception-noise sweep
 (Section~\ref{sec:robustness}), which also exposes the method's limits: inspection
 completeness degrades under high perception noise ($4/9$) and dense clustering
-($9/10$) (measured, not assumed), while no contact-region entries were observed in
+($9/10$)---measured, not assumed---while no contact-region entries were observed in
 any scenario. The safety metrics are
 proxies computed from the \emph{true} hazard position and should be read as such:
-``collisions'' counts entries into a simulated contact region (centre-to-centre
+``collisions'' counts entries into a simulated contact region (center-to-center
 distance below $0.5$~m), not readings of a physical contact sensor, and
 ``time-to-collision'' is a radial-closing proxy, defined as $d/|\dot d|$ to the
 nearest hazard and recorded only while $\dot d<0$ (the robot closing on it),
-not the trajectory-intersection time with a finite hazard region; zero collisions
-in a group bounds but does not eliminate risk (the \emph{exact} one-sided $95\%$
+not the trajectory-intersection time with a finite hazard region; observing zero
+collisions in a group bounds but does not eliminate risk (the \emph{exact} one-sided $95\%$
 binomial bound on the failure probability for zero observed failures,
 $1-0.05^{1/n}$, is $25.9\%$ for a $10$-run group, $28.3\%$ for a
 $9$-run group, and $31.2\%$ for the $8$-run DHa group; this risk bound is
@@ -892,7 +916,7 @@ distinct from the Wilson-score intervals used for the descriptive success rates)
 %% headline numbers, since results such as 4/9 depend on them, and note whether the
 %% exclusion could favor any configuration." A segunda parte e a desconfortavel.
 A fraction of runs ($6$ of $160$ in the earlier battery, $3$ of $130$ in the new
-one) remained immobile (travelled distance $\approx0$); these are reported
+one) remained immobile (traveled distance $\approx0$); these are reported
 separately as a startup-reliability outcome and excluded from the behavioral
 statistics. %% R3-m2: "state the per-configuration counts nominally". Os tres excluidos da
 %% bateria nova sao nomeados um a um para a conta 3/130 ser conferivel sem inferencia.
@@ -925,7 +949,7 @@ against a different comparator. For
 safety the adjustment runs the other way: a run in which the robot never moved
 trivially records zero contact-region entries, so including such runs would inflate
 the evidence for contact-free navigation, and they are therefore excluded from the
-safety statistics as well. We do not claim that start-up failure is independent of
+safety statistics as well. We do not claim that startup failure is independent of
 configuration---the exclusions are not uniformly distributed across blocks---only
 that the direction of each adjustment is stated and that both views are reported. Event identity and inspection pose are published on
 separate topics within the same sensing tick rather than as one timestamped
@@ -941,7 +965,7 @@ choices are documented for reproducibility (Section~\ref{sec:setup-repro}).
 %% R2-Q3: "the limitations section is candid, but several acknowledged gaps are
 %% stated rather than probed". Tres delas passaram a ser medidas nesta versao.
 Three gaps that earlier versions of this article acknowledged without probing are now
-measured, and we point to the measurements rather than repeating the acknowledgement.
+measured, and we point to the measurements rather than repeating the acknowledgment.
 The risk of over-conservatism near the hazard threshold is quantified in
 Section~\ref{sec:precedence-cost}, where a marginally eligible hazard is shown to
 cost one inspection in every run; the sensitivity of the reported completeness to the

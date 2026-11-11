@@ -59,8 +59,7 @@ sign of the response: positive for attraction, negative for repulsion. It is a
 function of the current observations \emph{and} of two decaying channel memories
 defined below, so it is a function of time rather than of the instantaneous
 observation alone; it does not depend on which action is taken. We write $\Phi$ for
-$\Phi_t$ where the time index is not needed. The field encodes \emph{sensory saliency} and carries the sign of
-the response:
+$\Phi_t$ where the time index is not needed. The field encodes \emph{sensory saliency}:
 \begin{equation}
 \label{eq:phi}
 \Phi
@@ -87,7 +86,7 @@ The resulting step at $d=R$ (from $I_e/2$ to no event) is a real discontinuity o
 the perceived intensity. Two mechanisms of the controller are intended to keep it
 from producing repeated triggers: hysteresis---distinct enter and exit thresholds
 (Section~\ref{sec:method-stayalert})---and commitment, since once an event is
-committed it is not re-selected until the episode ends. We characterise what the
+committed it is not re-selected until the episode ends. We characterize what the
 logs do and do not establish about this in Section~\ref{sec:results}; they record
 onsets and inter-transition intervals, and do not isolate the boundary's causal
 contribution. We further
@@ -98,7 +97,7 @@ field enforces \emph{safety before inspection} as a \emph{precedence} rule, not 
 magnitude contest: whenever any repulsive event is above threshold within range,
 $\Phi$ takes its (negative) value; only in the absence of a hazard does the field
 select, among the concurrent attraction events, the strongest in magnitude. It
-then decays geometrically once the event is no longer observed:
+then decays geometrically once the event is no longer observed.
 Let $\mathcal{E}_{\mathcal{H}}=\{e:\,m(e)\in\mathcal{H},\ i_e\ge\theta_{m(e)}\}$ and
 $\mathcal{E}_{\mathcal{A}}=\{e:\,m(e)\in\mathcal{A},\ i_e\ge\theta_{m(e)}\}$ be the
 above-threshold hazard and attraction \emph{events} in range at the current step
@@ -160,11 +159,11 @@ inspection) \emph{from any state}: whenever $\Phi \le -\theta_{\text{in}}$ and a
 retreat pose is available, the robot enters \textsc{Avoid} and navigates to a
 retreat pose---\emph{preempting} an in-progress \textsc{Investigate} (outcome
 \emph{deferred})---subject to a short refractory $t_{\text{ref}}$ that prevents
-immediate re-triggering while the deliberative keepout (Section~\ref{sec:results})
+immediate re-triggering while the deliberative keep-out (Section~\ref{sec:results})
 takes over. Otherwise, from \textsc{Patrol}, if $\Phi \ge \theta_{\text{in}}$ the
 layer commits the most salient in-range event and enters \textsc{Investigate},
 navigating to its inspection pose. On entering either mode the layer asserts a
-\emph{busy} flag that pauses the patrol (the current waypoint goal is cancelled)
+\emph{busy} flag that pauses the patrol (the current waypoint goal is canceled)
 and emits an event marker carrying the target's identity.
 
 %% P3 do parecer de 2026-10-16: o Algoritmo 1 trazia a distancia de confirmacao
@@ -173,7 +172,7 @@ and emits an event marker carrying the target's identity.
 Two distinct steps must be kept apart, because only the first one acts on the
 robot. The \emph{controller} ends an \textsc{Investigate} episode when the
 reactive navigation \emph{succeeds} and it has held for a commanded dwell
-$t_{\text{dwell}}$; a navigation that is aborted or cancelled, or a budget
+$t_{\text{dwell}}$; a navigation that is aborted or canceled, or a budget
 $t_{\max}$ that elapses, ends the episode as \emph{failed}. On either exit it
 emits an event carrying the target's identity and the reason. The
 \emph{evaluator}, a separate node, receives that event and only then compares the
@@ -181,7 +180,7 @@ robot's pose with the \emph{true} target position: within a \emph{confirmation
 distance} (the standoff plus a tolerance; Section~\ref{sec:setup-matrix}) the
 anomaly is credited as \emph{inspected}, otherwise the episode is recorded as a
 confirmation rejection. The confirmation therefore never feeds back into
-behaviour---no episode is prolonged or shortened by it---which is what permits the
+behavior---no episode is prolonged or shortened by it---which is what permits the
 retrospective re-scoring at other thresholds in Section~\ref{sec:robustness}
 without re-running the missions. It is also a proxy: it does not independently
 verify the full standoff and orientation, nor persistence throughout the dwell,
@@ -200,11 +199,11 @@ confirmed successful arrival. Episodes that end in \emph{failed} (timeout/abort)
 as inspections; we report commits, inspections, failures, and deferrals separately
 (Section~\ref{sec:results}).
 
-\paragraph*{Deliberative keepout} A hazard on the patrol route cannot be resolved by
+\paragraph*{Deliberative keep-out} A hazard on the patrol route cannot be resolved by
 a reactive retreat alone, since the next waypoint lies beyond it. We therefore add a
 \emph{deliberative} expression of the repulsion: whenever a hazard is \emph{detected}
 within sensor range, its \emph{perceived} position is projected as a \emph{persistent}
-keepout region into the global costmap, which the planner then routes around for the
+keep-out region into the global costmap, which the planner then routes around for the
 remainder of the mission. This projection is a map channel driven by detection---not
 a consequence of completing a retreat---and it uses the same perceived information as
 the reactive layer.
@@ -259,12 +258,12 @@ pushes away from repulsion (red).}
   \IF{mode $=$ \textsc{Investigate}}
      \STATE exit (\emph{deferred by hazard}); release target $e^\star$
   \ENDIF
-%% R4 do parecer de verificacao: esta linha delegava ao keepout sem condicao,
+%% R4 do parecer de verificacao: esta linha delegava ao keep-out sem condicao,
 %% contradizendo as configuracoes sem KO e a explicacao do CM. A condicao e a
 %% memoria remanescente passam a ser explicitas.
   \STATE enter \textsc{Avoid}; pause patrol; send retreat goal
-  \IF{the deliberative keepout is enabled}
-     \STATE \emph{hand the hazard to the keepout}: stop publishing it to the
+  \IF{the deliberative keep-out is enabled}
+     \STATE \emph{hand the hazard to the keep-out}: stop publishing it to the
             reactive layer, so no new observation feeds the hazard channel; the
             stored channel value is kept and left to decay
   \ENDIF
@@ -277,7 +276,7 @@ pushes away from repulsion (red).}
   \IF{navigation \textbf{succeeded} \textbf{and} dwelled $\ge t_{\text{dwell}}$}
      \STATE exit (\emph{inspected}); resume patrol;
             \textbf{emit} \textsc{investigate\_end}($e^\star$, \emph{inspected})
-  \ELSIF{elapsed $\ge t_{\max}$ \textbf{or} navigation aborted/cancelled}
+  \ELSIF{elapsed $\ge t_{\max}$ \textbf{or} navigation aborted/canceled}
      \STATE exit (\emph{failed}); resume patrol;
             \textbf{emit} \textsc{investigate\_end}($e^\star$, \emph{failed})
   \ENDIF

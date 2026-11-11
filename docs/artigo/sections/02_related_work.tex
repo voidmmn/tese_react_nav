@@ -10,7 +10,7 @@ with dense equipment layouts and safety-critical clearances; recent work
 improves path planning, e.g., by combining deep reinforcement learning with
 ant-colony optimization for substation routing~\cite{zhang2025substation},
 reporting gains over deep-RL and classical baselines such as PPO, DDQN, and
-A$^{\!*}$; broader surveys catalogue perception and path-planning techniques for
+A$^{\!*}$; broader surveys catalog perception and path-planning techniques for
 substation mobile robots~\cite{substationpp2024review}. Contemporary substation
 systems increasingly couple deep learning with the navigation stack---for example
 attention-enhanced semantic segmentation to guide the inspection
@@ -58,7 +58,7 @@ control~\cite{brunke2022safe}.
 \subsection{Risk-Aware Navigation, Safety Filters, and Restricted Zones}
 %% R3-Q4: "The related work on risk-aware and safety-filtered navigation, and on
 %% keep-out or restricted-zone handling in standard navigation stacks, is thin given
-%% that the keepout is the component that carries the safety result." Como a §V
+%% that the keep-out is the component that carries the safety result." Como a §V
 %% atribui a folga ao keep-out, a lacuna fica mais exposta, nao menos.
 Our evaluation attributes the clearance gain on an on-route hazard to a keep-out
 projected into the global costmap, so it is this component---not the reactive
@@ -70,7 +70,7 @@ nominal controller and modify its output only when necessary to keep the state i
 a certified set: control barrier functions render a safe set forward-invariant under
 stated model assumptions~\cite{ames2019cbf}, and predictive safety filters obtain a
 comparable property from a receding-horizon feasibility
-argument~\cite{wabersich2021filter}; the broader programme of maintaining safety
+argument~\cite{wabersich2021filter}; the broader program of maintaining safety
 under learning-driven control is surveyed in~\cite{brunke2022safe}. These approaches
 buy their guarantee with a model of the dynamics and of the constraint set. We make
 no such claim: our precedence rule is a \emph{behavioral} arbitration, it certifies
@@ -84,7 +84,7 @@ Our architecture does \emph{not} do this: perception is idealized to events with
 uncertainty, and the field has no probabilistic interpretation. We therefore avoid
 describing the method as risk-aware, and we do not list that term among our keywords,
 because detecting a hazard and projecting a forbidden region is not the same as
-modelling risk.
+modeling risk.
 
 Third, and closest to what we actually use, standard navigation stacks already
 support restricted regions as a first-class map layer: ROS~2 and Nav2 expose costmap

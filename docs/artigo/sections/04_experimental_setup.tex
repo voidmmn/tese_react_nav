@@ -26,7 +26,7 @@ $(0,15)$) and a $50{\times}50$~m perimeter fence, on a ground plane. The static
 occupancy map ($1040{\times}1040$ cells at $0.05$~m/cell) is aligned with the
 world frame, so waypoints in world coordinates serve directly as navigation
 goals. The deliberative patrol visits five waypoints
-(in metres): $(13,-8)$, $(13,10)$, $(0,11)$, $(-8,5)$ and a return at
+(in meters): $(13,-8)$, $(13,10)$, $(0,11)$, $(-8,5)$ and a return at
 $(-10,-10)$.
 
 \begin{figure}[t]
@@ -35,16 +35,16 @@ $(-10,-10)$.
 \caption{Substation scenario (default): equipment (gray), the five patrol
 waypoints W0--W4 and the round (dashed), the attraction anomalies (thermal
 $\triangle$, acoustic $\square$) and the hazard ($\times$), each with its
-$R=5$~m detection radius (dotted). Coordinates in metres, world frame.}
+$R=5$~m detection radius (dotted). Coordinates in meters, world frame.}
 \label{fig:world}
 \end{figure}
 
 \subsection{Simulated Events}
 \label{sec:setup-events}
 Following Section~\ref{sec:method-sensing}, the perception output is abstracted
-as events. The \emph{default} scenario has three attraction anomalies --- a
+as events. The \emph{default} scenario has three attraction anomalies---a
 thermal event at the transformer $(10,10)$, a thermal event at the busbar
-$(0,15)$ and an acoustic event at the breaker $(-5,5)$ --- and one persistent
+$(0,15)$ and an acoustic event at the breaker $(-5,5)$---and one persistent
 hazard (repulsion) beside the first patrol leg at $(2,-13)$. The \emph{adverse}
 scenario (E5) densifies the anomalies into clusters (five anomalies: two near
 the transformer and two near the breaker, plus the busbar), so that multiple
@@ -54,7 +54,7 @@ arbitrate between them; the hazard is unchanged. The \emph{route-hazard} scenari
 first patrol leg at $(1.5,-9)$---directly blocking the path to the next
 waypoint---so that a purely reactive retreat cannot resolve it without deviating
 the route; here the detected hazard is also projected, at its \emph{perceived}
-position, as a \emph{persistent} keepout into the global costmap (a mark the
+position, as a \emph{persistent} keep-out into the global costmap (a mark the
 deliberative planner routes around for the rest of the mission). The \emph{conflict} scenario
 (CONF) keeps the three default anomalies and co-locates, at the default hazard's
 position $(2,-13)$, a \emph{strong} acoustic anomaly ($I_e=0.95$,
@@ -79,22 +79,22 @@ $\eta\in\{0.3,0.5,0.8\}$, and \textbf{E5} uses $\eta=0.5$ on the adverse
 scenario. \textbf{APF} replaces the reactive layer with a conventional
 artificial-potential-field controller acting on the same events. \textbf{RHM}
 and \textbf{RHB} place the hazard \emph{on} a patrol leg---for the method (with
-the detected hazard projected as a persistent deliberative keepout) and for
+the detected hazard projected as a persistent deliberative keep-out) and for
 the fixed baseline, respectively. \textbf{N1} and \textbf{N2} repeat the method
 under moderate and high zero-mean Gaussian perception noise on event position and
 intensity. \textbf{CONF} co-locates a strong attraction event with a weaker
 hazard (Section~\ref{sec:setup-events}) to test whether the safety precedence of
 Eq.~\eqref{eq:phi-update} holds when both event types are simultaneously within
 range. \textbf{KOa} and \textbf{KOb} ablate the on-route safety response into its
-two mechanisms---keepout only (reactive retreat disabled) and retreat only
-(deliberative keepout disabled)---so that RHM (both), KOa, and KOb isolate the
+two mechanisms---keep-out only (reactive retreat disabled) and retreat only
+(deliberative keep-out disabled)---so that RHM (both), KOa, and KOb isolate the
 contribution of each to passing an on-route hazard. \textbf{DHa} and \textbf{DHb}
 run a \emph{directed} test of the reactive retreat's transient value: in the
 \emph{dyn-hazard} scenario a hazard is co-located with an anomaly and stays
 \emph{inactive} until the robot---already committed to inspecting it---closes to
 $3$~m, at which point it activates (the environment decides when the hazard
-appears). DHa enables the reactive retreat (with keepout) and DHb disables it
-(keepout only), isolating what the retreat adds when a hazard \emph{emerges during}
+appears). DHa enables the reactive retreat (with keep-out) and DHb disables it
+(keep-out only), isolating what the retreat adds when a hazard \emph{emerges during}
 an investigation, a case the static scenarios cannot exercise. The method and
 simulation hyperparameters are summarized in Table~\ref{tab:hyper}.
 
@@ -129,10 +129,10 @@ RHB & none                 & --   & --         & --         & route-hazard (3/1)
 N1  & Stay Alert (noise m.)& 0.5  & \checkmark & --         & default (3/1)\\
 N2  & Stay Alert (noise h.)& 0.5  & \checkmark & --         & default (3/1)\\
 CONF& Stay Alert           & 0.5  & \checkmark & --         & conflict (4/1)\\
-KOa & keepout only         & 0.5  & --         & \checkmark & route-hazard (3/1)\\
+KOa & keep-out only         & 0.5  & --         & \checkmark & route-hazard (3/1)\\
 KOb & retreat only         & 0.5  & \checkmark & --         & route-hazard (3/1)\\
-DHa & retreat $+$ keepout  & 0.5  & \checkmark & \checkmark & dyn-hazard (1/1)\\
-DHb & keepout only         & 0.5  & --         & \checkmark & dyn-hazard (1/1)\\
+DHa & retreat $+$ keep-out  & 0.5  & \checkmark & \checkmark & dyn-hazard (1/1)\\
+DHb & keep-out only         & 0.5  & --         & \checkmark & dyn-hazard (1/1)\\
 \hline
 \end{tabular}
 \end{table}
@@ -171,7 +171,7 @@ hyperparameters of Table~\ref{tab:hyper} except where a column states otherwise.
 \textbf{Ret.} & \textbf{KO} & $\bm{\theta_{\mathcal{H}}}$ &
 $\bm{(\theta_{\text{in}},\theta_{\text{out}})}$ & \textbf{att./valid}\\
 \hline
-\multicolumn{9}{l}{\emph{Proposed layer --- reused, not re-run}}\\
+\multicolumn{9}{l}{\emph{Proposed layer---reused, not re-run}}\\
 E3    & \texttt{default}  & $\Phi$ & saliency & \checkmark & --         & $0.30$ & $(0.45,0.25)$ & $10/10$\\
 CONF  & \texttt{conflict} & $\Phi$ & saliency & \checkmark & --         & $0.30$ & $(0.45,0.25)$ & $10/10$\\
 E5    & \texttt{adverse}  & $\Phi$ & saliency & \checkmark & --         & $0.30$ & $(0.45,0.25)$ & $10/10$\\
@@ -210,13 +210,13 @@ physical inspection, not the full standoff-and-orientation condition);
 \emph{hazard avoidances} (retreat events); \emph{minimum hazard distance}
 (closest approach to a hazard, higher is better); and, for the on-route hazard,
 safety-oriented \emph{proxies} computed from the true hazard position:
-\emph{contact-region entries} (``collisions''; centre-to-centre distance below
+\emph{contact-region entries} (``collisions''; center-to-center distance below
 $0.5$~m, a simulated proxy rather than a physical contact sensor), \emph{time below
-a clearance threshold} ($2$~m, centre-to-centre), \emph{minimum radial
+a clearance threshold} ($2$~m, center-to-center), \emph{minimum radial
 time-to-collision}
 ($d/|\dot d|$ to the nearest hazard, recorded only while $\dot d<0$; an
 approaching-rate proxy, not a trajectory-intersection time), and \emph{retreat success}; \emph{mission duration};
-\emph{distance travelled}; and the complete value-update residual
+\emph{distance traveled}; and the complete value-update residual
 $|\alpha\delta+\eta\Phi|$ as a stability proxy. Because several outcomes are
 bounded counts with (near-)zero variance, group comparisons use distribution-free
 tests (Mann--Whitney $U$, exact for untied samples with $n_1+n_2\le20$ and by
@@ -234,13 +234,13 @@ excluded as a startup-reliability outcome.
 %% regulamentar. Sem a calibracao pelo raio do robo o leitor nao consegue julgar o
 %% que 0.5 m significa.
 Both geometric safety instruments are entries into regions defined operationally by
-centre-to-centre distance, counted on the rising edge, and computed against the
+center-to-center distance, counted on the rising edge, and computed against the
 \emph{true} hazard position with the robot pose taken from the \texttt{map} frame.
 Neither is a physical contact measurement, and neither is a regulatory electrical
 %% T1 do parecer de 2026-10-16: a frase anterior dizia que 0,5 m corresponde ao
 %% corpo alcancar o centro do perigo. Nao decorre da geometria: 0,50-0,25=0,25 m.
 clearance. To let the reader calibrate them: the robot radius configured in the
-planner is $0.25$~m, so a centre-to-centre distance of $0.5$~m leaves $0.25$~m
+planner is $0.25$~m, so a center-to-center distance of $0.5$~m leaves $0.25$~m
 between the robot's edge and the hazard point, and the $2$~m band leaves
 $1.75$~m. Both are distances to a hazard represented as a \emph{point}; the
 equipment it stands for has finite extent, so neither figure is a clearance from a
@@ -270,7 +270,7 @@ Field $\Phi$ & weights (therm./acou./haz.) & 1.0 / 1.2 / $-1.5$\\
           & dwell $t_{\text{dwell}}$; budget $t_{\max}$ & 3~s; 40~s\\
           & refractory $t_{\text{ref}}$ & 8~s\\
 Evaluator & confirm.\ distance (metric) & 3.3~m\\
-Keepout   & project radius; disc radius & 5~m; 1.2~m\\
+Keep-out   & project radius; disc radius & 5~m; 1.2~m\\
 APF base. & standoff; budget & 1.8~m; 30~s\\
           & gains $k_{\text{att}}$/$k_{\text{rep}}$/$k_{\text{obs}}$ & 1.5 / 4.0 / 0.6\\
           & trigger; exit (force magn.) & 0.15; 0.08\\
@@ -299,9 +299,9 @@ arrival distance (\emph{inspected}), a confirmation \emph{rejected} with its
 distance and threshold, an \emph{inspection\_failed} with its cause
 (timeout / navigation), or \emph{deferred}; for the reactive avoid, its entry, its
 exit reason (\emph{safe} / \emph{retreated} / \emph{timeout}), and the reactive
-navigation goal's \emph{nav\_result} (aborted / cancelled / rejected); and, for the
+navigation goal's \emph{nav\_result} (aborted / canceled / rejected); and, for the
 dynamic-hazard scenario, the hazard-activation instant (in simulation time) and the
-first keepout and reactive publications with the robot pose. The schema keeps the
+first keep-out and reactive publications with the robot pose. The schema keeps the
 target's true position and the robot's pose in \emph{separate} columns and records
 both the simulation time (where the message carries it) and the log timestamp.
 From this trail the confirmation rejections, the inspection failures, and the avoid
