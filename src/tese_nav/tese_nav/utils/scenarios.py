@@ -74,7 +74,7 @@ CONFLICT_HAZARDS = [
     {'id': 100, 'x': 2.0, 'y': -13.0, 'intensity': 0.70},   # co-localizado, mais fraco em |w*i|
 ]
 
-# ENSAIO DIRIGIDO -- perigo que SURGE DURANTE a investigação (R4.2/§6 do parecer):
+# ENSAIO DIRIGIDO -- perigo que SURGE DURANTE a investigação:
 # uma anomalia térmica na aproximação da 1ª perna e um perigo CO-LOCALIZADO que só
 # ATIVA (passa a ser publicado) quando o robô chega a <= activate_radius (3 m), i.e.,
 # já comprometido com a investigação e aproximando-se. Isola o VALOR DO RECUO reativo:

@@ -77,42 +77,42 @@ public, commercial, or not-for-profit sectors.}
 \corresp{Corresponding author: Milton Miranda Neto (e-mail: voidmmn@ufu.br;
 ORCID: 0000-0002-1568-4201).}
 
-%% R2#7: "4/9 full inspections" e "9/10" apareciam na mesma frase com unidades
-%% diferentes. Agora as tres figuras de completude sao declaradas como TAXA DE RUNS
-%% que inspecionam TODAS as anomalias, cada uma com seu denominador explicito.
-%% R2#4: o bound binomial esta na MESMA frase da ausencia de contatos, e a faixa de
-%% 2 m e declarada como transitada.
+%% ACEITE (09/11/2026), R2: "the abstract is now long and dense with numbers;
+%% it would read better if it kept the three findings and moved some of the run
+%% counts and bounds to the results section". Abstract enxugado de ~310 para 248
+%% palavras (o template da IEEE Access exige 150--250): ficaram os tres achados e
+%% UM par de numeros -- o 1.73 vs. 1.71 m, que e a evidencia da atribuicao ao
+%% keepout. Sairam as taxas de completude (10/10, 4/9, 9/10), o bound binomial, os
+%% atrasos em segundos e o 3 vs. 0 de 3; todos seguem na Secao V (05_results) e na
+%% conclusao, onde ja estavam.
+%% CUIDADO ao reescrever: as rodadas anteriores exigiram que, ONDE a ausencia de
+%% contatos for afirmada, o bound apareca na MESMA frase (R2#4 da 2a rodada) e que
+%% cada taxa de completude traga seu denominador explicito (R2#7). Por isso as
+%% frases sairam INTEIRAS do abstract em vez de perder so os numeros: os pares
+%% afirmacao+bound e taxa+denominador seguem intactos onde os numeros estao.
 \begin{abstract}
-Substation-inspection robots typically follow a fixed patrol without adapting to what
-they sense, while a purely reactive controller responds only to stimuli already within
-sensor range. We bridge these regimes with a two-layer architecture: a deliberative
-\emph{active-sensing} patrol (ROS~2, Nav2, MPPI) carries the sensors to where events
-may occur, and a reactive layer turns sensory saliency into an attraction/repulsion
-field driving a threshold-triggered finite-state controller that approaches anomalies
-and retreats from hazards, under a categorical rule that makes the hazard channel
-govern whenever a hazard is eligible. We evaluate it in a simulated substation
-(Gazebo Fortress) against a fixed patrol, a potential-field baseline and---new
-here---a generic detect--select--deviate--return heuristic on the \emph{same}
-Nav2/MPPI controller, which isolates the field from the act of deviating. Three
-findings follow. (i)~On a \emph{static} hazard on the patrol route, a fixed patrol
-carrying the same detection-triggered keep-out but no reactive supervisor reached a
-minimum clearance with no statistically detectable difference from the ablation that
-keeps the reactive inspection ($1.73$ vs.\ $1.71$~m median): \emph{the safety benefit
-here is attributable to the deliberative keep-out, not to the reactive weighting},
-and what the reactive layer adds is the inspections ($3$ vs.\ $0$ of $3$) at
-${\approx}31$~s. (ii)~Replacing saliency by proximity produced no detectable
-difference in any scenario, whereas replacing the thresholded field by raw
-detection---which also removes the hazard channel's temporal persistence---halves the
-clearance when a hazard is co-located with a more salient anomaly ($4.84$ vs.\
-$2.23$~m) and delays the priority inspection by ${\approx}105$~s. (iii)~That
-precedence has a cost: a marginally eligible hazard suppresses attraction for
-${\approx}70$~s and forfeits one of four inspections in $10/10$ runs. Full-inspection
-rate is $10/10$ with clean perception, $4/9$ under high noise and $9/10$ under dense
-clustering; no entry into a $0.5$~m contact region was observed, but with $8$--$10$
-valid runs per configuration the exact one-sided $95\%$ bound on that per-run
-probability remains $25.9$--$31.2\%$. Perception is abstracted to oracle events and
-the localization transform is fixed, so the results speak to the decision logic, not
-to a deployable system. Code, world, data and scripts are released.
+A fixed substation-inspection patrol does not adapt to what the robot senses; a purely
+reactive controller answers only stimuli already in range. We bridge both with a
+two-layer architecture: a deliberative \emph{active-sensing} patrol (ROS~2, Nav2,
+MPPI) carries the sensors to where events may occur, and a reactive layer maps sensory
+saliency to an attraction/repulsion field driving a threshold-triggered finite-state
+controller that approaches anomalies and retreats from hazards, hazards taking
+precedence when eligible. We evaluate it in a simulated substation (Gazebo Fortress)
+against a fixed patrol, a potential-field baseline and a
+detect--select--deviate--return heuristic on the \emph{same} Nav2/MPPI controller,
+isolating the field from deviating itself. (i)~On a \emph{static} hazard on the patrol
+route, a fixed patrol with the same detection-triggered keep-out matched the ablation
+that keeps the reactive inspection ($1.73$ vs.\ $1.71$~m median): \emph{the safety
+benefit here is attributable to the deliberative keep-out, not to the reactive
+weighting}, the reactive layer's contribution being the inspections.
+(ii)~Replacing saliency by proximity changed nothing detectably, whereas replacing the
+thresholded field by raw detection---which also removes the hazard channel's temporal
+persistence---halved the clearance to a hazard co-located with a stronger anomaly and
+delayed the priority inspection. (iii)~That precedence costs inspections: a marginally
+eligible hazard suppresses attraction and forfeits one of four. Inspection
+completeness degrades under high perception noise and dense clustering. Perception is
+abstracted to oracle events and localization is fixed: the results speak to the
+decision logic, not a deployable system. Code, world, data and scripts are released.
 \end{abstract}
 
 % R3#1: "Bellman equation" e "reinforcement learning" sugeriam um componente de

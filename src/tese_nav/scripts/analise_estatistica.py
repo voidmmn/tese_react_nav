@@ -86,7 +86,7 @@ TARGET_ANOM = {
 # consolida. Tres contrastes x cinco desfechos = 15 testes. Nao misturar com
 # LEGACY_CONFIRMATORY abaixo: aquela era a familia da submissao anterior e
 # virou material exploratorio/historico. Manter as duas como familia unica foi
-# o defeito apontado no parecer de 2026-10-16 (P1).
+# o defeito identificado em 2026-10-16.
 CONFIRMATORY_OUTCOMES = [
     ('anomalies_unique',      'Anomalies inspected'),
     ('min_hazard_distance_m', 'Min. hazard dist. [m]'),
@@ -207,7 +207,7 @@ def mwu(a, b):
 
 def procedure(a, b):
     """Nome do procedimento que mwu() de fato usa para este par -- para a
-    tabela auditavel pedida no parecer (P1, item 2): o artigo precisa dizer
+    tabela auditavel que o texto exige: o artigo precisa dizer
     qual teste produziu cada p, nao so citar o teste no cabecalho."""
     if a.std() == 0 and b.std() == 0:
         return 'identical' if a.mean() == b.mean() else 'exact permutation'
@@ -221,7 +221,7 @@ def write_confirmatory(runs, results_dir):
     """Tabela auditavel dos 15 testes confirmatorios -> CSV.
 
     E a fonte unica de onde as Tabelas 4 e 7 do artigo e os p-valores citados
-    no texto devem ser copiados. Antes do parecer de 2026-10-16 esses numeros
+    no texto devem ser copiados. Antes da correcao de 2026-10-16 esses numeros
     eram calculados avulsos e digitados no .tex; dois deles estavam errados.
     """
     rows = []

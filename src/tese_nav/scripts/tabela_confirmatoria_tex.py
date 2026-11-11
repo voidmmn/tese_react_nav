@@ -2,7 +2,7 @@
 """Gera o corpo LaTeX da Tabela 4 a partir de results/familia_confirmatoria.csv.
 
 Existe para que a tabela do artigo tenha UMA fonte: o CSV que
-analise_estatistica.py escreve. Antes do parecer de 2026-10-16 os p-valores
+analise_estatistica.py escreve. Antes da correcao de 2026-10-16 os p-valores
 eram digitados a mao no .tex e dois deles estavam errados (P1).
 
 Uso:  python3 tabela_confirmatoria_tex.py [results_dir] > corpo.tex
@@ -30,7 +30,7 @@ def legacy(rd):
     """Corpo LaTeX dos 7 testes da submissao ANTERIOR, sem correcao de Holm.
 
     Eles sairam da Tabela 4 porque nao pertencem a familia confirmatoria desta
-    submissao; ficam no apendice, rotulados como historicos (parecer P1, item 4).
+    submissao; ficam no apendice, rotulados como historicos.
     """
     import importlib.util
     here = os.path.dirname(os.path.abspath(__file__))

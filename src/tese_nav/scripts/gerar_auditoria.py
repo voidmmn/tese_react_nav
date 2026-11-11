@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Gerador da TRILHA DE AUDITORIA por episódio (parecer, P1-logs).
+Gerador da TRILHA DE AUDITORIA por episódio.
 ==============================================================
 
 Consolida, a partir do stdout capturado de cada execução
