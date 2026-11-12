@@ -1,0 +1,215 @@
+\section{Fusão Sensorial Heterogênea}
+\label{sec:fund-fusao}
+
+A fusão sensorial heterogênea representa um campo fundamental na robótica autônoma, particularmente em ambientes complexos como subestações elétricas. Esta seção apresenta os conceitos essenciais, técnicas e desafios relacionados à integração de dados provenientes de múltiplos sensores de naturezas distintas para obtenção de uma percepção ambiental mais robusta e confiável.
+
+\subsection{Conceitos Fundamentais de Fusão Sensorial}
+
+A fusão sensorial pode ser definida como o processo de integração de dados provenientes de múltiplos sensores, com o objetivo de produzir informações mais precisas, completas e confiáveis do que seria possível utilizando cada sensor individualmente \cite{Hall1997}. Em robótica móvel, a percepção ambiental precisa ser robusta mesmo em condições adversas, como as encontradas em subestações elétricas \cite{Oliveira2021EstudoAplicacao}.
+
+Em sistemas robóticos autônomos, a fusão sensorial busca superar as limitações inerentes a cada tipo de sensor, como limitações de alcance, sensibilidade a condições ambientais, ruído e incerteza nas medições, e interferência eletromagnética - particularmente relevante em subestações elétricas \cite{Liu2016EMC}.
+
+A heterogeneidade na fusão sensorial refere-se à integração de dados provenientes de sensores de naturezas fundamentalmente distintas, como sensores visuais (câmeras \ac{RGB}), térmicos (câmeras termográficas), acústicos (microfones), de distância (\ac{LiDAR}, ultrassom), inerciais (\ac{IMU}) e químicos (sensores de gás) \cite{Kim2023MultimodalFusion}. Esta abordagem multimodal permite uma percepção mais completa do ambiente, explorando as complementaridades entre diferentes modalidades sensoriais.
+
+\subsection{Níveis de Fusão Sensorial}
+A fusão sensorial pode ser realizada em diferentes níveis de abstração \cite{Costa2018ImplementacaoFusao, Santos2023FusaoSensorial}:
+
+\begin{itemize}
+    \item Z Fusão (Fusão de Baixo Nível – Nível de Dados): A fusão é realizada diretamente sobre os sinais recebidos (por exemplo: intensidade de luz, distância, temperatura). Exemplo: fusão direta de nuvens de pontos de múltiplos LiDARs ou imagens RGB + térmicas.
+    
+    \item F Fusão (Fusão de Médio Nível – Nível de Características): F representa as features ou características extraídas dos dados sensoriais (por exemplo: bordas, objetos detectados, velocidades). A fusão ocorre após algum pré-processamento que extrai informações relevantes dos dados brutos. Exemplo: fusão de vetores de características extraídas de imagens e sinais de radar.
+
+    \item D Fusão (Fusão de Alto Nível – Nível de Decisão): D representa as decisões ou classificações tomadas por cada sensor de forma independente. A fusão acontece após cada sensor já ter processado e interpretado seus dados. Exemplo: um sensor classifica "obstáculo", outro "livre", e a fusão decide com base na confiança de cada um.
+
+\end{itemize}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{figuras/fig_niveis_fusao.jpg}
+    \caption{Níveis de Fusão Sensorial.}
+    \legend{Fonte: O próprio autor.}
+    \label{fig:niveis_fusao}
+\end{figure}
+A \autoref{fig:niveis_fusao} ilustra os níveis de fusão sensorial.
+
+
+
+
+\subsubsection{Fusão de Baixo Nível (Nível de Dados)}
+
+A fusão de baixo nível envolve a combinação direta dos sinais provenientes dos sensores antes de qualquer extração de características ou interpretação semântica:
+
+\begin{equation}
+Z_{fusão} = f(Z_1, Z_2, ..., Z_n)
+\end{equation}
+
+Onde $Z_i$ representa os dados brutos do sensor $i$, e $f$ é a função de fusão aplicada.
+
+Exemplos incluem combinação de nuvens de pontos de múltiplos sensores \ac{LiDAR} e fusão de imagens de diferentes espectros (\ac{RGB} + infravermelho). A principal vantagem é a preservação de toda a informação original, mas requer maior capacidade computacional e pode ser sensível a problemas de sincronização temporal e calibração espacial entre sensores \cite{Schneider2018FusaoSensores}.
+
+\subsubsection{Fusão de Médio Nível (Nível de Características)}
+
+A fusão de médio nível opera sobre características extraídas dos dados sensoriais brutos:
+
+\begin{equation}
+F_{fusão} = g(F_1, F_2, ..., F_n)
+\end{equation}
+
+Onde $F_i$ representa o conjunto de características extraídas do sensor $i$, e $g$ é a função de fusão aplicada às características.
+
+Este nível oferece um bom equilíbrio entre redução de dimensionalidade (e consequentemente de carga computacional) e preservação de informação relevante \cite{Grassi2006ArquiteturaHibrida}.
+
+\subsubsection{Fusão de Alto Nível (Nível de Decisão)}
+
+A fusão de alto nível combina decisões ou classificações já realizadas por algoritmos específicos para cada sensor:
+
+\begin{equation}
+D_{fusão} = h(D_1, D_2, ..., D_n)
+\end{equation}
+
+Onde $D_i$ representa a decisão ou classificação baseada no sensor $i$, e $h$ é a função de fusão aplicada às decisões.
+
+Este nível requer menor largura de banda para comunicação entre subsistemas, mas pode perder informações importantes durante o processo de decisão individual de cada sensor \cite{Ramos2012AplicacaoTecnicas}.
+
+\subsection{Técnicas de Fusão Sensorial}
+
+\subsubsection{Filtro de Kalman e suas Variantes}
+
+O Filtro de Kalman é uma das técnicas mais utilizadas para fusão sensorial, especialmente para estimação de estados em sistemas dinâmicos lineares com ruído gaussiano \cite{Oliveira2021EstudoAplicacao}. 
+
+O fluxograma que representa o Filtro de Kalman para fusão de sensores na \autoref{fig:filtro_kalman} segue as principais etapas do algoritmo de forma cíclica. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figuras/fig_filtro_kalman.jpg}
+    \caption{Fluxograma do Filtro de Kalman.}
+    \legend {Fonte: O próprio autor.}
+    \label{fig:filtro_kalman}
+\end{figure}
+
+Para cada etapa temos:
+
+\begin{enumerate}
+    \item Medição do Sensor: Embora não esteja explicitamente rotulado, o processo começa com os dados vindos dos sensores (ex: IMU, GPS, LiDAR, etc.). Esses dados serão utilizados na etapa de correção.
+
+    \item Correção: Essa etapa compara a medição vinda do sensor com a estimativa anterior do estado. A partir dessa comparação, calcula-se o chamado Ganho de Kalman, que indica quanto o filtro deve confiar na medição atual em relação à previsão anterior.
+
+    \item Estado Estimado: O novo estado estimado é calculado combinando a previsão anterior com a medição atual, ponderada pelo ganho de Kalman. Este estado é a melhor estimativa atual do sistema (posição, velocidade, etc.).
+
+    \item Predição: Com base no modelo do sistema (ex: movimento do robô), o filtro projeta o próximo estado provável. Essa previsão considera ruídos e incertezas no processo.
+
+    \item Estado Previsto: É o resultado da predição: uma estimativa futura do estado, com base no estado atual e no modelo dinâmico. Essa estimativa alimenta a próxima etapa de correção, reiniciando o ciclo.
+
+    \item Ciclo Recursivo do Filtro de Kalman: O processo é iterativo e recursivo: o estado previsto passa pela próxima medição do sensor, sendo corrigido novamente, e assim por diante.
+\end{enumerate}
+
+O Filtro de Kalman é amplamente usado em fusão sensorial para, combinar medições ruidosas e incompletas de múltiplos sensores, obter uma estimativa mais confiável do estado do sistema e também para operar de forma online, ajustando-se em tempo real à medida que novas medições chegam.
+
+
+Na etapa de predição, o estado atual é estimado com base no estado anterior e no modelo do sistema:
+
+\begin{equation}
+\hat{x}_{k|k-1} = F_k\hat{x}_{k-1|k-1} + B_ku_k
+\end{equation}
+
+\begin{equation}
+P_{k|k-1} = F_kP_{k-1|k-1}F_k^T + Q_k
+\end{equation}
+
+Na etapa de atualização, a estimativa é corrigida com base nas medições dos sensores:
+
+\begin{equation}
+K_k = P_{k|k-1}H_k^T(H_kP_{k|k-1}H_k^T + R_k)^{-1}
+\end{equation}
+
+\begin{equation}
+\hat{x}_{k|k} = \hat{x}_{k|k-1} + K_k(z_k - H_k\hat{x}_{k|k-1})
+\end{equation}
+
+Para sistemas não-lineares, variantes como o Filtro de Kalman Estendido (\ac{EKF}) e o Filtro de Kalman Unscented (\ac{UKF}) são utilizadas \cite{Costa2018ImplementacaoFusao}.
+
+\subsubsection{Redes Bayesianas}
+
+As redes Bayesianas oferecem um \textit{framework} probabilístico para modelar relações causais entre variáveis, sendo particularmente úteis para fusão sensorial de alto nível \cite{Ramos2012AplicacaoTecnicas}. A probabilidade conjunta de todas as variáveis na rede é dada por:
+
+\begin{equation}
+P(X_1, X_2, ..., X_n) = \prod_{i=1}^{n} P(X_i | Pa(X_i))
+\end{equation}
+
+Onde $Pa(X_i)$ representa o conjunto de pais do nó $X_i$ no grafo.
+
+Em fusão sensorial, as redes Bayesianas permitem integrar informações de diferentes sensores considerando suas incertezas e relações causais.
+
+\subsubsection{Redes Neurais e Aprendizado Profundo}
+
+Técnicas de aprendizado de máquina, especialmente redes neurais profundas, têm sido cada vez mais aplicadas para fusão sensorial \cite{Kim2023MultimodalFusion}. Estas abordagens permitem aprender automaticamente representações e relações complexas entre diferentes modalidades sensoriais.
+
+Arquiteturas comuns incluem Redes Neurais Convolucionais (\ac{CNN}) para processamento de dados espaciais, Redes Neurais Recorrentes (\ac{RNN}) para sequências temporais, e arquiteturas multimodais específicas para combinar diferentes tipos de dados sensoriais.
+
+Uma arquitetura típica de fusão sensorial baseada em aprendizado profundo pode ser representada como:
+
+\begin{equation}
+F_{fusão} = f_{fusão}(f_1(X_1), f_2(X_2), ..., f_n(X_n))
+\end{equation}
+
+Onde $X_i$ representa os dados do sensor $i$, $f_i$ é a rede neural específica para processar o sensor $i$, e $f_{fusão}$ é a rede de fusão que combina as representações intermediárias.
+
+\subsection{Desafios da Fusão em Ambientes com Interferência Eletromagnética}
+
+A fusão sensorial em subestações elétricas enfrenta desafios específicos devido à presença de campos eletromagnéticos intensos \cite{Liu2016EMC, Wang2024CombinedNav}:
+
+\begin{itemize}
+    \item \textbf{Interferência em Sensores Eletrônicos}: Campos eletromagnéticos podem induzir ruídos e distorções em sensores eletrônicos, afetando a qualidade dos dados. Sensores magnéticos, inerciais e de comunicação sem fio são particularmente suscetíveis.
+    
+    \item \textbf{Variabilidade Temporal da Interferência}: A intensidade e distribuição espacial da interferência eletromagnética pode variar significativamente ao longo do tempo, exigindo sistemas de fusão sensorial adaptativos.
+    
+    \item \textbf{Heterogeneidade da Interferência}: Diferentes sensores são afetados de maneiras distintas pela interferência eletromagnética, o que deve ser considerado na estratégia de fusão.
+\end{itemize}
+
+Técnicas de mitigação incluem blindagem eletromagnética, filtragem digital e algoritmos de detecção e compensação de interferência \cite{Wang2024CombinedNav}.
+
+\subsection{Modelos de Pesos e Bias para Relevância Sensorial}
+
+Um aspecto crucial da fusão sensorial heterogênea é a atribuição de pesos relativos a cada sensor, refletindo sua confiabilidade, relevância e qualidade momentânea dos dados \cite{Oliveira2021EstudoAplicacao, Schneider2018FusaoSensores}.
+
+\subsubsection{Ponderação Baseada em Covariância}
+
+Um método comum para atribuir pesos aos sensores é baseado na matriz de covariância do erro de medição. Sensores com menor incerteza (menor covariância) recebem maior peso. Para o caso de fusão de estimativas escalares de múltiplos sensores, a estimativa ótima é dada por:
+
+\begin{equation}
+\hat{x} = \sum_{i=1}^{n} w_i x_i
+\end{equation}
+
+Onde os pesos $w_i$ são calculados como:
+
+\begin{equation}
+w_i = \frac{\sigma_i^{-2}}{\sum_{j=1}^{n} \sigma_j^{-2}}
+\end{equation}
+
+Com $\sigma_i^2$ representando a variância do erro de medição do sensor $i$.
+
+\subsubsection{Ponderação Adaptativa Baseada em Contexto}
+
+Em ambientes dinâmicos como subestações elétricas, a confiabilidade dos sensores pode variar em função do contexto operacional. Modelos adaptativos de ponderação consideram fatores contextuais para ajustar os pesos dos sensores em tempo real \cite{Wang2024CombinedNav}:
+
+\begin{equation}
+w_i(t) = f_w(w_i^{base}, c_1(t), c_2(t), ..., c_m(t))
+\end{equation}
+
+Onde $w_i(t)$ é o peso do sensor $i$ no instante $t$, $w_i^{base}$ é o peso base do sensor $i$, $c_j(t)$ são fatores contextuais (nível de interferência eletromagnética, iluminação, etc.), e $f_w$ é a função de adaptação dos pesos.
+
+\subsection{Aplicações em Robótica Móvel para Inspeção}
+
+A fusão sensorial heterogênea é particularmente relevante para robôs de inspeção em subestações elétricas, onde diferentes tipos de sensores são necessários para detectar diversos tipos de anomalias \cite{Lactec2022, Iberdrola2022}:
+
+\begin{itemize}
+    \item \textbf{Detecção de Pontos Quentes}: Fusão de imagens térmicas com visuais para identificação precisa de componentes superaquecidos.
+    
+    \item \textbf{Detecção de Descargas Parciais}: Combinação de sensores acústicos, \ac{UV} e \ac{RF} para localização de descargas parciais.
+    
+    \item \textbf{Navegação Robusta}: Fusão de \ac{LiDAR}, câmeras e \ac{IMU} para navegação precisa mesmo em condições de interferência eletromagnética.
+    
+    \item \textbf{Inspeção Visual Avançada}: Combinação de diferentes modalidades de imagem (visual, térmica, \ac{UV}) para detecção de anomalias visuais como corrosão, danos físicos ou vazamentos.
+\end{itemize}
+
+A integração eficaz destes sensores heterogêneos através de técnicas de fusão adequadas é fundamental para o desenvolvimento de sistemas robóticos autônomos capazes de realizar inspeções confiáveis e eficientes em subestações elétricas, superando os desafios impostos por este ambiente complexo.

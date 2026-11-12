@@ -1,0 +1,399 @@
+%% main_ppgee_ufu.tex v1.0, Milton Miranda Neto
+% adaptado de modeloABNT2.tex, v1.0 LabCG 
+% ------------------------------------------------------------------------
+% eesc: Modelo de Trabalho Acadêmico (tese de doutorado, dissertação de
+% mestrado e trabalhos monográficos em geral) em conformidade com 
+% ABNT NBR 14724:2011. 
+% ------------------------------------------------------------------------
+% Atualizações.
+% 15/10/2018 - Adaptação para a FEELT-UFU.
+
+% ------------------------------------------------------------------------
+% Opções:
+%   tesedr:     Formata documento para tese de doutorado
+%   qualidr:    Formata documento para qualificação de doutorado
+%   dissertmst: Formata documento para dissertação de mestrado
+%   qualimst:   Formata documento para qualificação de mestrado
+% ------------------------------------------------------------------------
+\documentclass[tesedr]{ppgee}
+%Não altere o comando seguinte. O título de seu trabalho será especificado mais adiante.
+\title{Template de Monografia FEELT-UFU} % Este título é sobrescrito pelo comando \titulo{} abaixo
+
+% ---
+% PACOTES
+% ---
+
+% ---
+% Pacotes fundamentais 
+% ---
+\usepackage{cmap}                % Mapear caracteres especiais no PDF (bom para busca e cópia)
+\usepackage{lmodern}             % Usa a fonte Latin Modern (boa qualidade com T1)
+\usepackage{makeidx}             % Cria o indice remissivo (se for utilizá-lo)
+\usepackage{lastpage}            % Usado pela Ficha catalográfica para contar o total de páginas
+\usepackage{indentfirst}         % Indenta o primeiro parágrafo de cada seção.
+\usepackage{nomencl}             % Para lista de símbolos (se for utilizá-la)
+% \usepackage{graphicx}          % REMOVIDO - Já carregado por ppgee.cls (\RequirePackage{calc,graphicx})
+\usepackage{textcomp}            % Para símbolos adicionais de texto
+\usepackage{amsmath,amssymb}     % cases, align, \text{} e símbolos matemáticos
+\usepackage{bm}                  % negrito matemático (\bm)
+\usepackage{booktabs}            % regras de tabela (\toprule/\midrule/\bottomrule)
+\usepackage{multirow}            % células que ocupam várias linhas
+
+% \usepackage{subfigure}         % REMOVIDO - Pacote obsoleto. 
+                                 % A classe ppgee.cls usa \newsubfloat{figure}, que é um comando
+                                 % tipicamente do pacote 'subfig'. Se precisar de subfiguras, 
+                                 % considere usar \usepackage{subfig} ou \usepackage{subcaption} 
+                                 % e verifique a compatibilidade ou ajuste \newsubfloat se necessário.
+                                 % Para uma simples remoção de obsoleto, apenas removemos.
+
+% Pacotes essenciais para algoritmos
+% \usepackage{algorithm}         % REMOVIDO/COMENTADO - Já carregado por ppgee.cls
+% \usepackage{algpseudocode}     % REMOVIDO/COMENTADO - Conflitante com o 'algorithmic' de ppgee.cls
+% \usepackage{algorithmic}       % REMOVIDO/COMENTADO - Já carregado por ppgee.cls
+% \usepackage{algorithmicx}      % REMOVIDO/COMENTADO - Conflitante e/ou redundante
+
+% ---
+% Pacotes adicionais, usados apenas no âmbito do Modelo eesc (ou do seu trabalho)
+% ---
+\usepackage{lipsum}              % Para geração de texto de preenchimento (remover na versão final)
+\usepackage[printonlyused]{acronym} % Para lista de acrônimos (se for utilizá-la)
+\usepackage[table]{xcolor}       % Para cores, especialmente em tabelas. ppgee.cls carrega 'color',
+                                 % mas 'xcolor' é mais poderoso e geralmente compatível.
+
+% ---
+% Pacotes que idealmente são carregados por último
+% ---
+\usepackage{hyperref}            % Controla links e informações do PDF. Movido para o final.
+                                 % A classe ppgee.cls já faz um \hypersetup.
+
+% ---
+% Informações de dados para CAPA e FOLHA DE ROSTO (mantido como no seu original)
+% ---
+% ============================================================================
+% PENDENTE: TÍTULO. O título abaixo é o da QUALIFICAÇÃO e promete "Fusão
+% Sensorial Heterogênea" e "Aprendizado por Reforço" -- dois componentes que o
+% sistema avaliado nos Cap. 4-6 NÃO entrega (a percepção é abstraída em eventos
+% e a atualização de valor não seleciona as ações executadas; ver Seção
+% \ref{sec:prop-atualizacao} e o ajuste de escopo na Seção
+% \ref{sec:conc-limitacoes}). Os revisores da IEEE Access exigiram a retirada
+% dessas alegações do artigo.
+% Título alinhado ao entregue, para decisão com o orientador:
+%   Arquitetura Deliberativo-Reativa de Duas Camadas com Camada de
+%   Atração--Repulsão Acionada por Limiar para Inspeção de Subestações Elétricas
+% Se trocar: atualizar também capa, ficha catalográfica, folha de aprovação e os
+% formulários SEI em docs/documentos-banca/.
+% ============================================================================
+%% Titulo definido em 12/11/2026. Mantem a espinha do titulo do artigo aceito
+%% (IEEE Access, Access-2026-33687) para que a relacao seja imediata, e acrescenta
+%% no subtitulo o que so a tese entrega: o estudo de atribuicao de efeitos a
+%% mecanismos, que e o que o objetivo geral promete. O titulo anterior prometia
+%% fusao sensorial heterogenea e aprendizado por reforco, que os resultados mostraram
+%% nao governarem o comportamento executado -- ver a subsecao "Delimitacao de
+%% Escopo" na introducao. DEVE BATER, letra por letra, com o campo 1.10 da
+%% solicitacao de banca (SEI 7735815) e o 1.8 da ficha de indicadores (SEI 7481935).
+\titulo{Arquitetura Deliberativo-Reativa de Duas Camadas para Inspeção de Subestações Elétricas: Campo de Atração--Repulsão Acionado por Limiar e Atribuição Experimental de Efeitos a Mecanismos}{A Two-Layer Deliberative--Reactive Architecture for Substation Inspection: Threshold-Triggered Attraction--Repulsion Field and Experimental Attribution of Effects to Mechanisms}
+\autor{Milton Miranda Neto}{Miranda Neto, Milton}
+\local{Uberlândia}
+\data{2026}
+\areaconcentracao{Engenharia Elétrica}
+\orientador{Alexandre Cardoso}
+\coorientador{Edgard Afonso Lamounier Junior}
+% ---
+
+% ---
+% compila o indice (mantido como no seu original)
+% ---
+\makeindex
+% ---
+
+% ---
+% Compila a lista de abreviaturas e siglas (mantido como no seu original)
+% ---
+\makenomenclature % Garanta que este comando esteja presente se usar \printnomenclature
+% ---
+
+% ---
+% Inserir ficha catalográfica
+%
+% Caso o comando \inserirfichacatalografica seja definido, a %ficha catalográfica
+% será inserida atrás da folha de rosto. Caso contrário a página será deixada em
+% branco.
+%
+% CUIDADO: Esta opção deve ser preenchida antes do comando \maketitle
+% ---
+%entre em contato com a biblioteca para obter a sua ficha catalográfica em arquivo pdf. Essa %folha só será inserida no documento após a sua defesa.
+
+%\inserirfichacatalografica{fichaCatalografica.pdf}
+% ---
+
+% ---
+% Inserir folha de aprovação
+%
+% Caso o comando \inserirfolhaaprovacao seja definido, a a folha de aprovação
+% será inserida. Além disso, conforme Resolução CoPGr 5890, as informações 
+% de rodapé são inseridas apropriadamente na folha de rosto.
+%
+% CUIDADO: Esta opção deve ser preenchida antes do comando \maketitle
+% ---
+% baseie-se no modelo desse documento e gere a sua folha de %rosto em arquivo pdf.
+
+%\inserirfolhaaprovacao{folhaAprovacao.pdf}
+% ---
+
+% ----
+% Início do documento
+% ----
+
+\begin{document}
+
+% ----------------------------------------------------------
+% ELEMENTOS PRÉ-TEXTUAIS
+% ----------------------------------------------------------
+\pretextual
+
+% ---
+% Insere Capa, Folha de rosto, Ficha catalográfica (se inserida)
+% e folha de aprovação (se inserida).
+% ---
+\maketitle
+
+% ---
+% Dedicatória
+% ---
+\imprimirdedicatoria{Dedico este trabalho à minha família, fonte constante de apoio e inspiração.}
+% ---
+
+% ---
+% Agradecimentos
+% ---
+\imprimiragradecimentos{
+
+Agradeço primeiramente a minha família, pelo apoio constante, compreensão e incentivo em todos os momentos.
+
+Ao meu orientador, Alexandre Cardoso, pelo suporte, confiança e inestimada orientação ao longo deste trabalho.
+
+Aos colegas e amigos que contribuíram direta ou indiretamente com palavras de ânimo e sugestões valiosas.
+
+Por fim, agradeço ao Programa de Pós-Graduação em Engenharia Elétrica da Universidade Federal de Uberlândia, em especial aos professores e a querida Andressa, secretária do programa de Pós-Graduação, por toda a sua dedicação e paciência.
+
+Muito Obrigado a Todos!                       
+
+“UP THE IRONS!” 
+
+}
+% ---
+
+% ---
+% Epígrafe
+% ---
+\imprimirepigrafe{
+		``Don't waste your time always searching for those wasted years. Face up, make your stand And realize you're living in the golden years.''\\
+		(Iron Maiden)
+}
+% ---
+
+% ---
+% RESUMO e ABSTRACT
+% ---
+
+% Resumo em português - as palavras entre chaves são as palavras-chave do trbalho
+\begin{resumo}{Navegação autônoma; Arquitetura deliberativo-reativa; Campo de atração--repulsão; Inspeção de subestações; ROS~2; Nav2.}
+
+Robôs de inspeção de subestações tipicamente seguem uma patrulha fixa, sem adaptar o
+percurso ao que percebem, enquanto um controlador puramente reativo responde apenas a
+estímulos já dentro do alcance sensorial. Esta tese faz a ponte entre esses dois
+regimes com uma arquitetura de duas camadas: uma patrulha deliberativa de
+\emph{sensoriamento ativo} (ROS~2, Nav2, MPPI) conduz os sensores até onde eventos
+possam ocorrer, e uma camada reativa converte a saliência sensorial em um campo de
+atração/repulsão que aciona, por limiar, um controlador de estados finitos
+responsável por aproximar o robô de anomalias e afastá-lo de riscos, sob uma regra
+categórica que faz o canal de risco governar sempre que um risco seja elegível. A
+arquitetura é avaliada em subestação simulada (Gazebo Fortress) contra uma patrulha
+fixa, uma linha de base de campo potencial artificial e uma heurística genérica de
+detectar--selecionar--desviar--retornar executada sobre o \emph{mesmo} controlador
+Nav2/MPPI, o que isola o campo do mero ato de desviar. Três achados decorrem. Primeiro,
+sobre um risco \emph{estático} na rota de patrulha, uma patrulha fixa portando a mesma
+zona de exclusão disparada por detecção, mas sem supervisor reativo, alcançou
+afastamento mínimo sem diferença estatisticamente detectável da ablação que retém a
+inspeção reativa ($1{,}73$ contra $1{,}71$~m de mediana): o benefício de segurança
+nesse caso é atribuível à zona de exclusão deliberativa, e não à ponderação reativa, e
+o que a camada reativa acrescenta são as inspeções ($3$ contra $0$ de $3$). Segundo,
+substituir a saliência pela proximidade não produziu diferença detectável em cenário
+algum, ao passo que substituir o campo com limiar por detecção bruta --- o que também
+remove a persistência temporal do canal de risco --- reduz o afastamento à metade
+quando um risco é colocalizado com uma anomalia mais saliente ($4{,}84$ contra
+$2{,}23$~m) e atrasa a inspeção prioritária em cerca de $105$~s. Terceiro, essa
+precedência tem custo: um risco marginalmente elegível suprime a atração por cerca de
+$70$~s e abre mão de uma de quatro inspeções. A completude de inspeção degrada-se sob
+ruído alto de percepção e sob aglomeração densa, e o número de execuções por
+configuração limita, mas não elimina, o risco de entrada em região de contato. A
+percepção é abstraída em eventos-oráculo e a transformada de localização é fixa, de
+modo que os resultados falam da lógica de decisão, e não de um sistema pronto para
+implantação. Código, mundo simulado, dados e \textit{scripts} são publicados.
+
+\end{resumo}
+
+
+% Resumo em inglês
+\begin{abstract}{Autonomous navigation; Deliberative--reactive architecture; Attraction--repulsion field; Substation inspection; ROS~2; Nav2.}
+
+Substation-inspection robots typically follow a fixed patrol without adapting to what
+they sense, while a purely reactive controller responds only to stimuli already within
+sensor range. This thesis bridges these regimes with a two-layer architecture: a
+deliberative \emph{active-sensing} patrol (ROS~2, Nav2, MPPI) carries the sensors to
+where events may occur, and a reactive layer turns sensory saliency into an
+attraction/repulsion field driving a threshold-triggered finite-state controller that
+approaches anomalies and retreats from hazards, under a categorical rule that makes the
+hazard channel govern whenever a hazard is eligible. The architecture is evaluated in a
+simulated substation (Gazebo Fortress) against a fixed patrol, a potential-field
+baseline and a generic detect--select--deviate--return heuristic on the \emph{same}
+Nav2/MPPI controller, which isolates the field from the act of deviating. Three findings
+follow. First, on a \emph{static} hazard on the patrol route, a fixed patrol carrying
+the same detection-triggered keep-out but no reactive supervisor reached a minimum
+clearance with no statistically detectable difference from the ablation that keeps the
+reactive inspection ($1.73$ vs.\ $1.71$~m median): the safety benefit here is
+attributable to the deliberative keep-out, not to the reactive weighting, and what the
+reactive layer adds is the inspections ($3$ vs.\ $0$ of $3$). Second, replacing saliency
+by proximity produced no detectable difference in any scenario, whereas replacing the
+thresholded field by raw detection---which also removes the hazard channel's temporal
+persistence---halves the clearance when a hazard is co-located with a more salient
+anomaly ($4.84$ vs.\ $2.23$~m) and delays the priority inspection by ${\approx}105$~s.
+Third, that precedence has a cost: a marginally eligible hazard suppresses attraction
+for ${\approx}70$~s and forfeits one of four inspections. Inspection completeness
+degrades under high perception noise and under dense clustering, and the number of runs
+per configuration bounds rather than excludes the risk of entering a contact region.
+Perception is abstracted to oracle events and the localization transform is fixed, so
+the results speak to the decision logic, not to a deployable system. Code, world, data
+and scripts are released.
+
+\end{abstract}
+% ---
+
+% ---
+% inserir lista de ilustrações
+% ---
+\listailustracoes
+% ---
+
+% ---
+% inserir lista de tabelas
+% ---
+\listatabelas
+% ---
+
+% ---
+% inserir lista de abreviaturas e siglas
+% ---
+\listasiglas{abrev/Abreviaturas}
+% ---
+
+% ---
+% inserir o sumario
+% ---
+\sumario
+% ---
+
+% ----------------------------------------------------------
+% ELEMENTOS TEXTUAIS
+% ----------------------------------------------------------
+\mainmatter
+
+% ----------------------------------------------------------
+% Introdução
+% ----------------------------------------------------------
+\include{cap_introducao/introducao}
+
+% ----------------------------------------------------------
+% Fundamentação Teórica
+% ----------------------------------------------------------
+\include{cap_fundamentacao/fundamentacao}
+
+% ----------------------------------------------------------
+% Revisão Sistemática da Bibliografia
+% ----------------------------------------------------------
+\include{cap_revisao_bib/revisao}
+
+% ----------------------------------------------------------
+% Arquitetura Proposta
+% ----------------------------------------------------------
+\include{cap_proposta/proposta}
+
+% ----------------------------------------------------------
+% Avaliação Experimental
+% ----------------------------------------------------------
+\include{cap_avaliacao/avaliacao}
+
+% ----------------------------------------------------------
+% Resultados e Discussão
+% ----------------------------------------------------------
+\include{cap_resultados/resultados}
+
+% ---
+% Finaliza a parte no bookmark do PDF, para que se inicie o bookmark na raiz
+% ---
+\bookmarksetup{startatroot}% 
+% ---
+
+% ---
+% Conclusão
+% ---
+\include{cap_conclusao/conclusao}
+
+
+ 
+
+% ----------------------------------------------------------
+% ELEMENTOS PÓS-TEXTUAIS
+% ----------------------------------------------------------
+\postextual
+
+% ----------------------------------------------------------
+% Referências bibliográficas
+% ----------------------------------------------------------
+\bibliography{bib/abntex2-modelo-references}
+
+% ----------------------------------------------------------
+% Glossário
+% ----------------------------------------------------------
+%
+%\glossary
+
+% ----------------------------------------------------------
+% Apêndices
+% ----------------------------------------------------------
+% ---
+% Inicia os apêndices
+% ---
+\begin{apendicesenv}
+% Imprime uma página indicando o início dos apêndices
+%\partapendices
+% ----------------------------------------------------------
+% Incluir Apêndice
+% ----------------------------------------------------------
+% ----------------------------------------------------------
+% Capitulo com exemplos de comandos inseridos de arquivo externo 
+% ----------------------------------------------------------
+%\include{ape_comandos/abntex2-modelo-include-comandos}
+
+\end{apendicesenv}
+% ---
+
+% ----------------------------------------------------------
+% Anexos
+% ----------------------------------------------------------
+% ---
+% Inicia os anexos
+% ---
+\begin{anexosenv}
+% Imprime uma página indicando o início dos anexos
+%\partanexos
+% ---
+% Incluir Anexo
+% ---
+%\chapter{Morbi ultrices rutrum lorem.}
+
+%o comando lipsum[] comando serve apenas para incluir texto no documento para efeito de visualização do formato.
+
+\end{anexosenv}
+
+\end{document}

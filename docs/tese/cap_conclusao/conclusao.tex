@@ -1,0 +1,180 @@
+\chapter{Conclusão}
+\label{cap:conclusao}
+
+Esta tese apresentou uma arquitetura de navegação em duas camadas para inspeção de
+subestações elétricas: uma patrulha deliberativa de sensoriamento ativo conduz os
+sensores até onde eventos possam ocorrer, e uma camada reativa produz um impulso de
+aproximação acionado por limiar em direção a anomalias e um impulso de recuo diante
+de riscos, a partir de um campo de atração/repulsão $\Phi$ derivado da saliência
+sensorial e arbitrado por uma precedência categórica de segurança. A arquitetura
+roda sobre uma pilha madura e reprodutível (ROS~2 $+$ Nav2/MPPI $+$ Gazebo Fortress).
+
+\section{Síntese das Atribuições}
+\label{sec:conc-atribuicoes}
+
+A avaliação do Capítulo~\ref{cap:resultados} \emph{estreita} aquilo que pode ser
+creditado à camada reativa. As três atribuições são enunciadas aqui sem rodeios,
+porque a precisão quanto ao que cada mecanismo entrega é parte da contribuição.
+
+\subsection{O Ganho de Segurança no Risco Estático Vem da Zona de Exclusão}
+
+Sobre um risco \emph{estático} colocado na rota de patrulha, uma patrulha fixa
+portando a mesma zona de exclusão disparada por detecção e nenhum supervisor reativo
+(KOF) e a ablação somente-zona que retém a inspeção reativa (KOa) alcançaram
+afastamentos mínimos medianos semelhantes ($1{,}73$ e $1{,}71$~m), sem diferença
+estatisticamente detectável ($p_{\mathrm{Holm}}=0{,}4194$); o método completo (RHM)
+situa-se nos mesmos $1{,}71$~m.
+
+O benefício de segurança sobre esse risco é, portanto, atribuível à zona de exclusão
+deliberativa, e não à ponderação reativa. O que a camada reativa acrescenta sobre o
+KOF são as inspeções em si ($3$ contra $0$ de $3$), ao custo de cerca de $31$~s de
+tempo de missão adicional para o KOa.
+
+\subsection{O Critério de Seleção Não Teve Efeito Detectável; o Modo de Disparo Teve}
+
+Uma variante que difere apenas por selecionar o alvo mais próximo em vez do mais
+saliente produziu os mesmos desfechos discretos constantes que a camada proposta ao
+longo das dez execuções nos cenários \texttt{default} e \texttt{conflict}, e
+distribuições sobrepostas em \texttt{adverse}. Não se alega equivalência --- apenas
+que nenhuma diferença foi detectada neste tamanho amostral.
+
+O que \emph{mudou} o desfecho foi o \emph{modo de disparo}: uma heurística genérica
+de detectar--selecionar--desviar--retornar, sobre o mesmo controlador Nav2/MPPI e
+acionada por detecção bruta, acaba por inspecionar a anomalia colocalizada com um
+risco e reduz o afastamento mínimo à metade ($4{,}84$ contra $2{,}23$~m, $\delta$ de
+Cliff $+1{,}00$), ao mesmo tempo em que atrasa a inspeção prioritária em cerca de
+$105$~s.
+
+Essa troca \emph{não} remove a precedência categórica --- a heurística ainda
+preempta, três vezes por execução ---, mas altera conjuntamente o sinal de decisão e
+sua persistência temporal, de modo que os dois não são separáveis com as
+configurações executadas. Os \textit{logs} de episódio são consistentes com uma
+explicação ligada à persistência, oferecida aqui como a leitura mais plausível, e não
+como fator isolado.
+
+\subsection{A Precedência Tem Custo Medido}
+
+Essa precedência carrega um custo que foi medido: um risco marginalmente elegível
+suprime a atração por cerca de $70$~s e abre mão de uma de quatro inspeções em
+$10/10$ execuções.
+
+Em conjunto, o que distingue esta camada de uma heurística genérica de desviar e
+retornar é o canal de risco com limiar e decaimento, e não a ponderação por
+saliência; e ela troca completude por afastamento de um modo que está agora
+quantificado nas duas direções.
+
+\section{Limites da Evidência}
+\label{sec:conc-limites}
+
+A completude de inspeção é relatada como a taxa de execuções que inspecionam
+\emph{todas} as anomalias: $10/10$ com percepção limpa, $4/9$ sob ruído alto de
+percepção e $9/10$ sob aglomeração densa. Uma reavaliação retrospectiva mostra que
+essa taxa é fortemente sensível ao critério de confirmação --- com limiar de
+$4{,}0$~m a taxa sob ruído alto se recupera para $9/9$ ---, embora a distância física
+de aproximação de fato se degrade (mediana de $2{,}23$ para $2{,}87$~m), de sorte que
+ambos os efeitos estão presentes.
+
+Nenhuma entrada na região de contato de $0{,}5$~m foi observada em qualquer
+configuração, mas com $8$ a $10$ execuções válidas por grupo o limite superior
+unilateral exato de $95\%$ sobre a probabilidade por execução de tal entrada
+permanece entre $25{,}9\%$ e $31{,}2\%$; e, sobre o risco na rota, o método transita
+\emph{dentro} da faixa consultiva de afastamento de $2$~m que ele próprio relata, por
+cerca de $9$~s por execução. Esses são os limites da evidência de segurança, e não
+uma garantia de segurança.
+
+\section{Escopo}
+\label{sec:conc-escopo}
+
+A avaliação é em simulação. A percepção é abstraída em eventos-oráculo, e não em
+fluxos brutos de sensores, e a transformada de localização é mantida fixa. Os
+resultados caracterizam, portanto, a \emph{lógica de decisão} da arquitetura e não
+devem ser lidos como validação de um sistema de inspeção autônoma pronto para
+implantação.
+
+A região de contato de $0{,}5$~m e a faixa de afastamento de $2$~m são distâncias
+centro a centro, definidas operacionalmente como aproximações de medida --- com raio
+do robô de $0{,}25$~m ---, e não sensoriamento físico de contato nem distâncias de
+isolamento elétrico normativas.
+
+%% Movido para ca em 12/11/2026. O paragrafo estava dentro de \section{Limitações},
+%% o que enquadrava uma decisao de projeto como limitacao. A justificativa completa,
+%% com os achados que a motivaram e a tabela objetivo-por-objetivo, esta na
+%% Secao~\ref{sec:intro-escopo}.
+Esses limites decorrem das decisões de delimitação tomadas durante o
+desenvolvimento e justificadas na Seção~\ref{sec:intro-escopo}: a abstração da
+percepção em eventos e a fixação da transformada de localização foram adotadas como
+controles de confundimento, para que o efeito de cada mecanismo da arquitetura
+pudesse ser atribuído. A proposta de qualificação previa, em seu lugar, um
+\textit{framework} de cinco módulos integrando fusão sensorial heterogênea,
+aprendizado por reforço e visão computacional; os resultados reunidos ao longo desta
+tese --- a atribuição do afastamento à zona de exclusão e não à ponderação reativa, e
+a constatação de que a tabela de valor não seleciona as ações executadas ---
+redirecionaram o trabalho para a arquitetura focada de duas camadas aqui descrita. A
+fundamentação dos Capítulos~\ref{cap:fundamentacao} e~\ref{cap:revisao} preserva o
+contexto mais amplo que motivou a investigação; os
+Capítulos~\ref{cap:proposta} a~\ref{cap:resultados} descrevem o que foi entregue, e
+a Seção~\ref{sec:conc-futuro} nomeia o que não foi.
+
+\section{Limitações}
+\label{sec:conc-limitacoes}
+
+Erro de localização, persistência de eventos, falsos positivos e negativos e
+geometria de mapa permanecem não modelados. O cenário adverso é uma única
+configuração densa e a varredura de ruído cobre dois níveis, de sorte que nenhum dos
+dois sustenta alegação geral de escalabilidade.
+
+A tabela de valor é tabular e, conforme a Seção~\ref{sec:prop-atualizacao}, não
+seleciona as ações executadas; não se faz, portanto, qualquer alegação de
+convergência ou de invariância de política para a atualização aumentada. O que a
+Tabela~\ref{tab:res-principal} atesta, pelo resíduo completo
+$|\alpha\delta+\eta\Phi|$, é que os incrementos permanecem limitados nas simulações
+avaliadas --- estabilidade dos incrementos, e não convergência.
+
+\section{Trabalhos Futuros}
+\label{sec:conc-futuro}
+
+A ausência de efeito detectável da regra de seleção e o custo quantificado da
+persistência apontam na mesma direção: a arbitragem e sua extensão temporal --- e não
+a ponderação --- são onde o trabalho adicional pertence.
+
+\begin{itemize}
+    \item \textbf{Política aprendida de deferência.} Uma política que
+    \emph{aprenda} quando deferir ao canal de risco, em vez de sempre deferir,
+    endereçaria o excesso de conservadorismo que foi medido. A formulação de valor da
+    Seção~\ref{sec:prop-atualizacao} é o substrato natural para isso, mas exige uma
+    política de exploração, um mapeamento de ações para velocidades e uma comparação
+    contra \textit{Q-learning} tabular comum --- o que está além deste estudo.
+
+    \item \textbf{Percepção real.} Substituir os eventos-oráculo por percepção
+    térmica, acústica e visual real alimentando a camada de eventos, com tratamento
+    explícito de falsos positivos e negativos.
+
+    \item \textbf{Localização realista.} Liberar a transformada
+    \texttt{map}$\rightarrow$\texttt{odom} e medir o efeito da deriva de localização
+    sobre a confirmação de inspeção e sobre as métricas de afastamento.
+
+    \item \textbf{Validação em \textit{hardware}.} Validação em \textit{hardware
+    in the loop} sobre a plataforma quadrúpede GO2~PRO e ensaio de campo em
+    subestação real.
+
+    \item \textbf{Varreduras mais amplas.} Densidade de eventos, geometria de mapa e
+    níveis de ruído adicionais, para sustentar alegações de escalabilidade que uma
+    única configuração adversa não sustenta.
+\end{itemize}
+
+\section{Considerações Finais}
+\label{sec:conc-finais}
+
+A contribuição desta tese não é a demonstração de que um robô pode inspecionar uma
+subestação --- isso já se sabia --- nem a de que um campo de atração e repulsão pode
+conduzir um desvio, o que uma heurística simples também faz. A contribuição é a
+\emph{decomposição}: mostrar, com ablações sobre um controlador compartilhado e com
+análise estatística que declara suas próprias fronteiras, qual mecanismo entrega qual
+efeito. A zona de exclusão deliberativa compra o afastamento; a camada reativa compra
+as inspeções; o canal de risco com limiar e decaimento compra a persistência da
+precedência de segurança --- e cobra por ela, em inspeções perdidas, um preço que
+este trabalho mediu em vez de supor inexistente.
+
+Em um domínio no qual alegações de autonomia costumam exceder a evidência que as
+sustenta, delimitar o que de fato foi demonstrado parece contribuição tão legítima
+quanto o próprio mecanismo.

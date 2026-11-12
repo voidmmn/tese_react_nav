@@ -26,7 +26,7 @@
 ( ) CNPq
 ( ) Outro: ____________________
 
-**1.8 TÍTULO DO TRABALHO DE CONCLUSÃO:** Arquitetura Deliberativo-Reativa de Duas Camadas com Camada de Atração–Repulsão Acionada por Limiar para Inspeção de Subestações Elétricas
+**1.8 TÍTULO DO TRABALHO DE CONCLUSÃO:** Arquitetura Deliberativo-Reativa de Duas Camadas para Inspeção de Subestações Elétricas: Campo de Atração–Repulsão Acionado por Limiar e Atribuição Experimental de Efeitos a Mecanismos
 
 **1.9 DATA DA DEFESA:** 11/12/2026
 

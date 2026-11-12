@@ -1,0 +1,199 @@
+\section{Sistemas Robóticos e ROS/ROS2}
+
+Os sistemas robóticos modernos representam uma integração complexa de hardware, software e algoritmos, exigindo arquiteturas especializadas para gerenciar essa complexidade. Esta seção apresenta os fundamentos dos sistemas robóticos, com ênfase no Robot Operating System (ROS) e sua evolução para o ROS2, plataformas de middleware que se tornaram padrão de facto no desenvolvimento de aplicações robóticas avançadas.
+
+\subsection{Arquitetura de Sistemas Robóticos}
+
+Um sistema robótico pode ser definido como um conjunto integrado de componentes de hardware e software que permitem a um robô perceber o ambiente, processar informações e executar ações \cite{Siegwart2011}. A arquitetura de software desses sistemas evoluiu significativamente nas últimas décadas, passando de abordagens monolíticas para arquiteturas modulares e distribuídas \cite{Kortenkamp2016}.
+
+\subsubsection{Componentes Fundamentais}
+
+Os sistemas robóticos típicos são compostos por vários subsistemas interconectados \cite{Siegwart2011, Kortenkamp2016}:
+
+\begin{itemize}
+    \item \textbf{Sistema de Percepção}: Responsável pela aquisição e processamento de dados sensoriais.
+    \item \textbf{Sistema de Controle}: Responsável pelo planejamento e execução de ações.
+    \item \textbf{Sistema de Atuação}: Responsável pela interação física com o ambiente.
+    \item \textbf{Sistema de Comunicação}: Responsável pela troca de informações entre os diversos componentes.
+    \item \textbf{Sistema de Energia}: Responsável pelo fornecimento e gerenciamento de energia.
+\end{itemize}
+
+\subsubsection{Paradigmas Arquiteturais}
+
+Diferentes paradigmas arquiteturais foram propostos para organizar e integrar os componentes de software \cite{Kortenkamp2016, Brugali2007}:
+
+\begin{itemize}
+    \item \textbf{Arquitetura Deliberativa}: Baseada no paradigma Sense-Plan-Act (SPA), adequada para ambientes estruturados e tarefas bem definidas.
+    
+    \item \textbf{Arquitetura Reativa}: Baseada em comportamentos simples que mapeiam diretamente percepções em ações, permitindo respostas rápidas a mudanças no ambiente \cite{Brooks1986}.
+    
+    \item \textbf{Arquitetura Híbrida}: Combina elementos das arquiteturas deliberativa e reativa, tipicamente organizados em camadas.
+    
+    \item \textbf{Arquitetura Baseada em Componentes}: Organiza o sistema em componentes modulares e reutilizáveis com interfaces bem definidas, fundamentando o ROS \cite{Brugali2007}.
+\end{itemize}
+
+Os principais desafios arquiteturais incluem heterogeneidade de componentes, distribuição, concorrência, requisitos de tempo real, robustez, escalabilidade e reutilização de código \cite{Kortenkamp2016, Brugali2007}.
+
+\subsection{Introdução ao ROS e ROS2}
+
+O Robot Operating System (ROS) surgiu como uma resposta aos desafios arquiteturais dos sistemas robóticos, oferecendo um framework flexível e ferramentas para o desenvolvimento de software robótico \cite{Quigley2009}.
+
+\subsubsection{Visão Geral do ROS}
+
+Contrariamente ao que o nome sugere, o ROS não é um sistema operacional no sentido tradicional, mas sim um middleware que fornece serviços de comunicação, abstração de hardware, gerenciamento de pacotes e ferramentas para desenvolvimento de aplicações robóticas \cite{Quigley2009, Joseph2018}.
+
+Os principais objetivos do ROS incluem abstração de hardware, computação distribuída, reutilização de código, ferramentas para testes e depuração, e criação de um ecossistema de software para a comunidade robótica \cite{Quigley2009}.
+
+\subsubsection{Evolução para ROS2}
+
+Apesar do sucesso do ROS, limitações em seu design original levaram ao desenvolvimento do ROS2, uma reimplementação completa que visa abordar essas limitações e adaptar-se às novas tendências em robótica \cite{Macenski2022}.
+
+As principais motivações para o desenvolvimento do ROS2 incluem \cite{Macenski2022, ROS2Design2024}:
+
+\begin{itemize}
+    \item Suporte a sistemas de tempo real
+    \item Mecanismos de segurança (autenticação, autorização, criptografia)
+    \item Otimização para sistemas embarcados com recursos limitados
+    \item Robustez em redes não ideais
+    \item Confiabilidade para aplicações industriais
+    \item Suporte nativo para coordenação de múltiplos robôs
+\end{itemize}
+
+\subsection{Arquitetura e Componentes do ROS/ROS2}
+
+Tanto o ROS quanto o ROS2 seguem uma arquitetura baseada em componentes, com alguns conceitos fundamentais compartilhados, embora com implementações diferentes \cite{Quigley2009, Macenski2022}.
+
+\subsubsection{Conceitos Fundamentais}
+
+\paragraph{Nós}
+
+Os nós são os processos computacionais básicos no ROS/ROS2, responsáveis por realizar computações específicas \cite{Quigley2009, Joseph2018}. Em ROS, os nós são processos independentes que se comunicam através do ROS Master. Em ROS2, os nós podem ser processos independentes ou componentes dentro de um mesmo processo, com comunicação gerenciada pelo middleware DDS \cite{Macenski2022}.
+
+\paragraph{Tópicos}
+
+Os tópicos são canais de comunicação unidirecional que seguem o padrão publicador/assinante \cite{Quigley2009, Joseph2018}. Um nó publica mensagens em um tópico, e qualquer nó interessado pode se inscrever para receber essas mensagens. A comunicação via tópicos é assíncrona e desacoplada, adequada para transmissão contínua de dados como leituras de sensores ou estados do robô \cite{Macenski2022}.
+
+\paragraph{Serviços e Ações}
+
+Os serviços seguem o padrão cliente/servidor, onde um nó faz uma solicitação a outro e espera por uma resposta \cite{Quigley2009, Joseph2018}. São síncronos e adequados para operações discretas que requerem uma resposta.
+
+As ações são uma extensão dos serviços para operações de longa duração, consistindo em uma meta, feedback durante a execução e um resultado final \cite{Joseph2018, Macenski2022}. São adequadas para tarefas como navegação ou manipulação de objetos.
+
+\paragraph{Parâmetros e Bags}
+
+Os parâmetros são valores de configuração que podem ser acessados e modificados pelos nós \cite{Quigley2009, Joseph2018}. Em ROS, são gerenciados pelo Parameter Server; em ROS2, pelos próprios nós.
+
+Os bags são um formato de arquivo para armazenar e reproduzir mensagens ROS/ROS2, úteis para gravar dados durante a execução e reproduzi-los posteriormente para análise ou teste \cite{Quigley2009, Joseph2018}.
+
+\subsubsection{Middleware e Comunicação}
+
+Uma das principais diferenças entre ROS e ROS2 está na camada de middleware que gerencia a comunicação entre os componentes do sistema \cite{Macenski2022, ROS2Design2024}.
+
+\paragraph{ROS Master vs. DDS}
+
+No ROS original, a comunicação entre nós é gerenciada pelo ROS Master, um serviço centralizado que mantém um registro de todos os nós, tópicos e serviços ativos \cite{Quigley2009, Joseph2018}. Esta arquitetura centralizada simplifica a implementação, mas introduz um ponto único de falha.
+
+O ROS2 substitui o ROS Master por uma arquitetura baseada em DDS (Data Distribution Service), um padrão aberto para comunicação publicador/assinante em sistemas distribuídos \cite{Macenski2022, ROS2Design2024}. O DDS oferece recursos avançados como descoberta distribuída, qualidade de serviço (QoS), segurança, persistência e filtragem de conteúdo.
+
+\paragraph{Modelo de Computação}
+
+No ROS original, cada nó é tipicamente um processo independente \cite{Quigley2009, Joseph2018}. O ROS2 introduz o conceito de composição de nós, permitindo que múltiplos nós sejam executados dentro do mesmo processo \cite{Macenski2022, ROS2Design2024}, reduzindo a sobrecarga de comunicação e permitindo compartilhamento mais eficiente de recursos.
+
+Os executores em ROS2 gerenciam a execução de callbacks associados a tópicos, serviços, ações e timers, com diferentes tipos disponíveis (SingleThreadedExecutor, MultiThreadedExecutor, StaticSingleThreadedExecutor) para diferentes necessidades \cite{Macenski2022, ROS2Design2024}.
+
+\subsection{Integração de Sensores e Atuadores}
+
+O ROS/ROS2 oferece diversas ferramentas e bibliotecas para facilitar a integração de sensores e atuadores \cite{Joseph2018, Macenski2022}.
+
+\subsubsection{Interfaces de Hardware}
+
+O ecossistema ROS/ROS2 inclui drivers para uma ampla variedade de sensores (câmeras, LiDAR, IMUs, etc.) e atuadores (motores, manipuladores, plataformas móveis) \cite{Joseph2018, Macenski2022}. Estes drivers encapsulam os detalhes de comunicação com o hardware e fornecem interfaces padronizadas.
+
+O ROS2 introduz o Hardware Abstraction Layer (HAL) como parte do framework ros2_control, que fornece uma interface unificada para diferentes tipos de hardware \cite{Macenski2022}, separando a implementação do controle da interface específica do hardware.
+
+\subsubsection{Processamento e Fusão Sensorial}
+
+O ROS/ROS2 integra-se com bibliotecas como OpenCV para visão computacional e Point Cloud Library (PCL) para processamento de nuvens de pontos \cite{Joseph2018, Macenski2022}. Pacotes como robot_localization implementam filtros de Kalman para fusão de dados de múltiplos sensores \cite{Joseph2018, Macenski2022}.
+
+\subsubsection{Controle de Atuadores}
+
+Para controle de atuadores, o ROS/ROS2 oferece frameworks como ros_control/ros2_control para controle de baixo nível, MoveIt para manipuladores, e Navigation Stack/Nav2 para robôs móveis \cite{Joseph2018, Macenski2022}.
+
+\subsection{Simulação e Validação}
+
+A simulação é essencial no desenvolvimento de sistemas robóticos, permitindo testar algoritmos em ambientes virtuais antes da implementação em hardware real \cite{Siegwart2011}.
+
+\subsubsection{Simuladores Integrados}
+
+O ROS/ROS2 integra-se com diversos simuladores \cite{Joseph2018, Macenski2022}:
+
+\begin{itemize}
+    \item \textbf{Gazebo}: Simulador de física 3D desenvolvido especificamente para robótica, oferecendo simulação de física, sensores, ambientes personalizáveis e extensibilidade via plugins.
+    
+    \item \textbf{Outros simuladores}: Webots, CoppeliaSim (V-REP), CARLA (para veículos autônomos) e Isaac Sim (NVIDIA) também oferecem integração com ROS/ROS2.
+\end{itemize}
+
+\subsubsection{Ferramentas de Simulação e Teste}
+
+O ROS/ROS2 oferece ferramentas como URDF/XACRO para descrição de robôs, RViz para visualização 3D, e rqt para interfaces gráficas \cite{Joseph2018, Macenski2022}. Para validação, integra-se com frameworks de teste unitário (GTest, pytest) e oferece ferramentas para testes de integração e integração contínua \cite{Joseph2018, Macenski2022}.
+
+\subsection{Desenvolvimento de Aplicações}
+
+O desenvolvimento de aplicações robóticas com ROS/ROS2 segue práticas e padrões específicos \cite{Joseph2018, Macenski2022}.
+
+\subsubsection{Organização de Código}
+
+O código ROS/ROS2 é organizado em pacotes, que são unidades modulares contendo nós, bibliotecas, conjuntos de dados, arquivos de configuração e documentação \cite{Joseph2018}. Os pacotes são agrupados em metapacotes para distribuição e instalação conjunta.
+
+O ROS utiliza o sistema de build catkin, enquanto o ROS2 utiliza o ament_cmake (para C++) e setuptools (para Python) \cite{Macenski2022}.
+
+\subsubsection{Linguagens de Programação}
+
+O ROS/ROS2 suporta principalmente C++ e Python, com suporte limitado para outras linguagens \cite{Joseph2018, Macenski2022}. C++ é geralmente preferido para componentes críticos de desempenho, enquanto Python é utilizado para prototipagem rápida e integração com bibliotecas de aprendizado de máquina.
+
+\subsubsection{Ferramentas de Desenvolvimento}
+
+O ROS/ROS2 oferece diversas ferramentas para facilitar o desenvolvimento \cite{Joseph2018, Macenski2022}:
+
+\begin{itemize}
+    \item \textbf{roslaunch/launch}: Para iniciar e configurar sistemas complexos.
+    \item \textbf{rosbag/ros2 bag}: Para gravar e reproduzir dados.
+    \item \textbf{rostopic/ros2 topic}: Para inspecionar e manipular tópicos.
+    \item \textbf{rosservice/ros2 service}: Para interagir com serviços.
+    \item \textbf{rosparam/ros2 param}: Para gerenciar parâmetros.
+    \item \textbf{tf/tf2}: Para gerenciar transformações entre sistemas de coordenadas.
+\end{itemize}
+
+\subsection{Aplicações e Casos de Uso}
+
+O ROS/ROS2 é utilizado em uma ampla variedade de aplicações robóticas \cite{Joseph2018, Macenski2022}.
+
+\subsubsection{Robôs Móveis}
+
+Para robôs móveis, o ROS/ROS2 oferece ferramentas para navegação autônoma, mapeamento, localização e planejamento de trajetória \cite{Joseph2018, Macenski2022}. Exemplos incluem robôs de serviço, AGVs (Automated Guided Vehicles), robôs de inspeção e veículos autônomos.
+
+\subsubsection{Manipuladores}
+
+Para manipuladores, o ROS/ROS2 oferece ferramentas para cinemática, planejamento de movimento, controle de força e interação com objetos \cite{Joseph2018, Macenski2022}. Exemplos incluem braços robóticos industriais, manipuladores colaborativos e mãos robóticas.
+
+\subsubsection{Sistemas Industriais}
+
+O ROS-Industrial é uma extensão do ROS focada em aplicações industriais, oferecendo drivers para equipamentos industriais, interfaces com sistemas de automação e ferramentas para integração com processos de manufatura \cite{Joseph2018, Macenski2022}.
+
+\subsection{Tendências e Desenvolvimentos Futuros}
+
+O ecossistema ROS/ROS2 continua evoluindo para atender às necessidades emergentes da robótica \cite{Macenski2022, ROS2Design2024}.
+
+\subsubsection{Micro-ROS}
+
+Micro-ROS é uma adaptação do ROS2 para microcontroladores e sistemas embarcados com recursos limitados, permitindo a integração de dispositivos de baixo custo e baixo consumo energético em ecossistemas ROS2 \cite{Macenski2022}.
+
+\subsubsection{Sistemas Críticos}
+
+Esforços estão em andamento para certificar componentes do ROS2 para uso em sistemas críticos de segurança, como veículos autônomos e robôs médicos \cite{Macenski2022, ROS2Design2024}.
+
+\subsubsection{Integração com IA e Computação em Nuvem}
+
+A integração do ROS/ROS2 com frameworks de aprendizado de máquina e serviços de computação em nuvem está expandindo as capacidades dos sistemas robóticos, permitindo o desenvolvimento de robôs mais inteligentes e conectados \cite{Macenski2022, ROS2Design2024}.
+
+O ROS/ROS2 representa um ecossistema maduro e em constante evolução para o desenvolvimento de sistemas robóticos, oferecendo ferramentas e abstrações que facilitam a criação de aplicações robóticas complexas e modulares, fundamentais para o desenvolvimento de frameworks para inspeção autônoma em subestações elétricas.

@@ -30,7 +30,7 @@
 ( ) CNPq
 ( ) Outro: ____________________
 
-**1.10 Título da Tese de Doutorado:** Arquitetura Deliberativo-Reativa de Duas Camadas com Camada de Atração–Repulsão Acionada por Limiar para Inspeção de Subestações Elétricas
+**1.10 Título da Tese de Doutorado:** Arquitetura Deliberativo-Reativa de Duas Camadas para Inspeção de Subestações Elétricas: Campo de Atração–Repulsão Acionado por Limiar e Atribuição Experimental de Efeitos a Mecanismos
 
 **1.11 Data de realização da defesa:** 11 de dezembro de 2026
 
