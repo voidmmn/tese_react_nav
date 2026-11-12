@@ -22,7 +22,7 @@ set -o pipefail
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 WS="$HOME/tese_ws"
 cd "$WS" || exit 1
-FASE=${1:?uso: bash rodar_bateria_resub.sh regressao|noite1|noite2}
+FASE=${1:?uso: bash rodar_bateria_resub.sh regressao|noite1|noite2|qdriven}
 REPS=${2:-10}
 MAXS=${3:-600}
 
@@ -119,7 +119,36 @@ case "$FASE" in
     run_block HYSoff 0.5 true default stay_alert false true 0.0 0.0 saliency phi -1.0 0.55 0.35
     ;;
 
-  *) echo "fase desconhecida: $FASE (use regressao|noite1|noite2)"; exit 1 ;;
+  # --------------------------------------------------------------------
+  # F6 -- QDRIVEN. Baseline de APRENDIZADO POR REFORCO COMPORTAMENTAL: a
+  # Q-table pre-treinada (train_qdriven.py, recompensa aumentada por Phi)
+  # SELECIONA a acao executada em modo greedy, dirigindo o /cmd_vel durante o
+  # episodio reativo, com a mesma patrulha Nav2 por baixo e o mesmo protocolo
+  # do stay_alert_node. Contrasta com o metodo, onde a tabela de valor e
+  # passiva e o disparo e por limiar.
+  #
+  # O no existe desde a bateria de resubmissao mas NUNCA foi executado: nao ha
+  # execucoes em results/ nem mencao na tese ou no artigo. Rodado em 12/11/2026
+  # para a tese.
+  #
+  # ATENCAO AO ESCOPO ESTATISTICO: a familia confirmatoria esta fechada e
+  # corrigida por Holm. Estes blocos entram como EXPLORATORIOS e assim devem
+  # ser rotulados no capitulo de resultados.
+  #
+  # Pre-requisito: o cleanup de rodar_experimentos.sh passou a matar tambem
+  # qdriven_node e apf_node (corrigido em 12/11/2026); sem isso um no orfao
+  # contaminaria a execucao seguinte.
+  #
+  # Os tres cenarios sao os mesmos em que o metodo foi medido, para que a
+  # comparacao seja pareada.
+  # --------------------------------------------------------------------
+  qdriven)
+    run_block QDRVd 0.5 true default  qdriven false true 0.0 0.0
+    run_block QDRVc 0.5 true conflict qdriven false true 0.0 0.0
+    run_block QDRVa 0.5 true adverse  qdriven false true 0.0 0.0
+    ;;
+
+  *) echo "fase desconhecida: $FASE (use regressao|noite1|noite2|qdriven)"; exit 1 ;;
 esac
 
 deep_clean

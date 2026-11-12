@@ -56,13 +56,16 @@ KOa 0.5 true route_hazard stay_alert true false 0.0 0.0
 KOb 0.5 true route_hazard stay_alert false true 0.0 0.0"
 MATRIX="${EXPERIMENTS:-$DEFAULT_MATRIX}"
 
-NODES='ign gazebo|ign-gazebo|parameter_bridge|robot_state_publisher|ros_gz_sim|static_transform_publisher|fake_scan_publisher|amcl|map_server|controller_server|planner_server|bt_navigator|behavior_server|smoother_server|velocity_smoother|waypoint_follower|lifecycle_manager|component_container|bellman_node|stay_alert_node|mission_node|metrics_node|anomaly_simulator|ros2 launch tese'
+# As camadas reativas alternativas (apf_node, qdriven_node) faltavam nesta lista e
+# na varredura por PID abaixo: um no orfao sobreviveria ao cleanup e contaminaria
+# a execucao seguinte, como ja ocorreu com o fake_scan. Corrigido em 12/11/2026.
+NODES='ign gazebo|ign-gazebo|parameter_bridge|robot_state_publisher|ros_gz_sim|static_transform_publisher|fake_scan_publisher|amcl|map_server|controller_server|planner_server|bt_navigator|behavior_server|smoother_server|velocity_smoother|waypoint_follower|lifecycle_manager|component_container|bellman_node|stay_alert_node|apf_node|qdriven_node|mission_node|metrics_node|anomaly_simulator|ros2 launch tese'
 
 cleanup() {
   pkill -9 -f "$NODES" 2>/dev/null
   pkill -9 -x ruby 2>/dev/null
   # segunda passada: nós órfãos por PID (sobrevivem ao pkill -f)
-  ps -eo pid,comm | grep -iE 'ign|ruby|component|amcl|controller_se|planner_se|bt_navig|behavior|smoother|velocity|waypoint|lifecycle|bellman|stay_alert|mission_no|metrics|anomaly|robot_state|parameter_br|static_transf|fake_scan|map_server' \
+  ps -eo pid,comm | grep -iE 'ign|ruby|component|amcl|controller_se|planner_se|bt_navig|behavior|smoother|velocity|waypoint|lifecycle|bellman|stay_alert|apf_node|qdriven|mission_no|metrics|anomaly|robot_state|parameter_br|static_transf|fake_scan|map_server' \
     | grep -v grep | awk '{print $1}' | xargs -r kill -9 2>/dev/null
   rm -f /dev/shm/fastrtps_* /dev/shm/sem.fastrtps_* 2>/dev/null
   sleep 5

@@ -45,8 +45,15 @@ class QDrivenNode(Node):
 
         self.declare_parameter('scenario', 'default')
         self.declare_parameter('detection_radius', 5.0)
-        self.declare_parameter('standoff', 1.8)
-        self.declare_parameter('safe_dist', 6.0)
+        # 12/11/2026: equiparados aos do metodo proposto, para que a comparacao
+        # isole o MECANISMO (politica greedy comandando velocidade x disparo por
+        # limiar emitindo metas ao Nav2) e nao uma diferenca de parametro. O
+        # metodo usa rho=2,0 m (inspection_standoff em bellman_params.yaml) e
+        # recuo em R+Delta = 5,0+1,5 = 6,5 m. Antes eram 1,8 e 6,0: com 1,8 m o
+        # robo parava dentro da zona de inflacao do transformador e o Nav2 nao
+        # replanejava de la, travando a ronda ate o timeout.
+        self.declare_parameter('standoff', 2.0)
+        self.declare_parameter('safe_dist', 6.5)
         self.declare_parameter('dwell_s', 3.0)
         self.declare_parameter('max_investigation_s', 30.0)
         self.declare_parameter('avoid_refractory_s', 12.0)
@@ -220,7 +227,19 @@ class QDrivenNode(Node):
         self.active_pub.publish(Bool(data=True))
         self._publish_mode()
         tag = 'investigate_start' if mode == self.INVESTIGATE else 'avoid_start'
-        self.event_pub.publish(String(data=f'{tag} qdriven'))
+        # 12/11/2026 -- BUG DE MEDICAO. A mensagem nao ecoava `id=<n>`, como a
+        # do stay_alert_node faz (`{tag} id={eid} phi=...`). Sem o id, o
+        # anomaly_simulator caia no fallback e latchava o alvo que ELE havia
+        # selecionado (o mais saliente), enquanto o qdriven dirigia para o alvo
+        # que ELE selecionou (o mais proximo). Quando os dois diferiam, a
+        # confirmacao independente media a distancia ate a anomalia errada e
+        # recusava o credito: o no relatava `inspected` e o simulador registrava
+        # "NAO confirmada (robo a 9.29 m > 3.30 m)", zerando anomalies_unique.
+        # O baseline parecia nao inspecionar nada; era instrumentacao, nao
+        # comportamento.
+        eid = target.get('id') if isinstance(target, dict) else None
+        msg = f'{tag} id={eid} qdriven' if eid is not None else f'{tag} qdriven'
+        self.event_pub.publish(String(data=msg))
         self.get_logger().info(f'Qdriven -> {mode}')
 
     def _exit(self, reason, elapsed):
