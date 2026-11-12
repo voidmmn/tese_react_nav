@@ -275,12 +275,23 @@ EM CASO DE 2 OU MAIS ARTIGOS EM EVENTO, DUPLICAR ESTE QUADRO (ITEM 5) QUANTAS VE
 
 **6.6 Indexação internacional do periódico:**
 
-- Fator de Impacto na base *Web of Science* (*JCR*):
-- Percentil e respectiva categoria de indexação na base *Web of Science*:
-- Fator de Impacto na na base *Scopus (Citescore)*:
-- Percentil e respectiva categoria de indexação na base *Scopus*:
+- Fator de Impacto na base *Web of Science* (*JCR*): 4,2 (JIF); 4,3 (JIF de 5 anos); JCI 0,82; quartil Q2 — SCIE
+- Percentil e respectiva categoria de indexação na base *Web of Science*: Computer Science, Information Systems — posição 100/267, equivalente ao percentil ~62,7 (Q2)
+- Fator de Impacto na na base *Scopus (Citescore)*: 9,3 (CiteScore)
+- Percentil e respectiva categoria de indexação na base *Scopus*: General Computer Science — posição 37/241, equivalente ao percentil ~84,6 (Q1)
+
+<!-- PROVENIENCIA dos numeros de 6.6:
+     JIF 4,2 / JIF-5anos 4,3 / JCI 0,82 / Q2 / CiteScore 9,3 -> IEEE Title List
+     September 2026 (CAPES), que e a fonte oficial do acordo CAPES-IEEE.
+     As POSICOES (100/267 no JCR e 37/241 no Scopus) vem de agregadores terceiros e
+     os percentis foram CALCULADOS a partir delas; CONFERIR no JCR (Clarivate) e no
+     CiteScore tracker (Scopus) pelo acesso da biblioteca da UFU antes de assinar,
+     porque o formulario pede o percentil e os agregadores divergem entre si. -->
 
 **6.7 Data da publicação:**
+
+<!-- Aguardando o Early Access (2 a 3 dias uteis apos o envio dos arquivos finais,
+     feito em 11/11/2026). O DOI (6.4/6.5) sai junto. Aceite definitivo: 09/11/2026 -->
 
 **6.8 Editora:** IEEE - Institute of Electrical and Electronics Engineers
 
@@ -305,6 +316,35 @@ O artigo apresenta a arquitetura deliberativo-reativa de duas camadas que consti
 
 **6.12 DOCUMENTO COMPROBATÓRIO FOI ANEXADO AO PROCESSO SEI:**
 ( ) SIM (MANDATÓRIO)
+
+<!-- NAO INCLUIDOS no item 6, e por que (conferidos a partir da lista do Lattes):
+
+   1) MIRANDA NETO, M.; CARDOSO, A.; LIMA, G. F. M.; LAMOUNIER JUNIOR, E. A.;
+      MAROTTI, A. C. F.; MELO, B. G. R. V.; ROCHA, R. O. "Estrategias para
+      concepcao e digitalizacao de Usinas e Subestacoes de energia eletrica por
+      Captura da realidade: Fotogrametria associada ao escaneamento a laser versus
+      Modelagem parametrica manual". RISTI (Porto), 2024, N. Extraordinario 66,
+      p. 216-230.
+      - SEM DOI: o DOI que esta no Lattes, 10.17013/risti.n.pi-pf, e o PLACEHOLDER
+        do template da revista ("n" = numero, "pi-pf" = pagina inicial-final) e
+        retorna 404. Busca no prefixo 10.17013 do Crossref e sondagem dos padroes
+        risti.<n>.216-230 nao acharam registro; o Dialnet tambem nao exibe DOI.
+        Sem DOI o quadro nao pode ser preenchido. CORRIGIR O LATTES.
+      - Indexacao: RISTI foi DESCONTINUADA no Scopus (cobertura 2011-2024) e nao
+        tem JCR. O ultimo percentil conhecido e ~11 (Computer Science,
+        miscellaneous), Q4 -- abaixo de qualquer piso plausivel da Portaria 47.
+
+   2) LIMA, R. R.; MIRANDA NETO, M. "O Uso de Ferramentas para o Ensino de
+      Computacao: um foco no ensino de programacao". Comunicacoes em Informatica
+      (UFPB), v. 4, p. 11-14, 2020.
+      - DOI ERRADO NO LATTES: o registro traz
+        10.22478/ufpb.2595-0622.2020v4n1.49488, que resolve para OUTRO artigo
+        ("Projetando Abordagens Analiticas Imersivas para a Exploracao de Dados
+        Espaco-Temporais", de Wagner Filho e Nedel). O DOI correto deste artigo e
+        10.22478/ufpb.2595-0622.2020v4n1.51520. CORRIGIR O LATTES.
+      - Nao atende ao item 6 de qualquer forma: periodico sem indexacao no Scopus
+        e sem JCR, e sem o orientador na autoria.
+-->
 
 ---
 
