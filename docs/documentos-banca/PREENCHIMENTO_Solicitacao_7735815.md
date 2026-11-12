@@ -317,6 +317,62 @@ O artigo apresenta a arquitetura deliberativo-reativa de duas camadas que consti
 **6.12 DOCUMENTO COMPROBATÓRIO FOI ANEXADO AO PROCESSO SEI:**
 ( ) SIM (MANDATÓRIO)
 
+#### Artigo 2 — A DECIDIR PELO ORIENTADOR
+
+**6.1 Nome do periódico:** RISTI — Revista Ibérica de Sistemas e Tecnologias de Informação
+
+**6.2 ISSN do periódico:** 1646-9895 (impresso) / 2183-0126 (eletrônico)
+
+**6.3 Título do artigo:** Estratégias para concepção e digitalização de Usinas e Subestações de energia elétrica por Captura da realidade: Fotogrametria associada ao escaneamento a laser versus Modelagem paramétrica manual
+
+**6.4 DOI:** não há DOI atribuído pela revista
+
+**6.5 Link do DOI:** não há
+
+**6.6 Indexação internacional do periódico:**
+
+- Fator de Impacto na base *Web of Science* (*JCR*): não indexado — a revista não tem JCR
+- Percentil e respectiva categoria de indexação na base *Web of Science*: não aplicável
+- Fator de Impacto na na base *Scopus (Citescore)*: descontinuada no Scopus (cobertura 2011–2024)
+- Percentil e respectiva categoria de indexação na base *Scopus*: último percentil conhecido ~11, Computer Science (miscellaneous), Q4
+
+**6.7 Data da publicação:** 2024 (nº Extraordinário 66, p. 216–230; a revista não informa o mês)
+
+**6.8 Editora:** AISTI — Associação Ibérica de Sistemas e Tecnologias de Informação
+
+**6.9 A produção é vinculada à Tese do solicitante?**
+( ) Sim
+( ) Não
+
+**6.10 Breve descrição sobre a correlação com a Tese de Doutorado:**
+
+O artigo trata da digitalização de usinas e subestações de energia elétrica por captura da realidade, comparando fotogrametria associada a escaneamento a laser contra modelagem paramétrica manual. Compartilha com a Tese o domínio de aplicação — a subestação elétrica e a obtenção de sua representação digital — mas não a contribuição: a Tese propõe a arquitetura deliberativo-reativa de navegação e inspeção, enquanto este artigo trata da aquisição e modelagem do ambiente. A relação é de domínio e de infraestrutura de modelos, não de método.
+
+**6.11 Autores:**
+
+| | NOMES | INSTITUIÇÃO | CPF OU PASSAPORTE DO PARTICIPANTE EXTERNO |
+|:--|:--------------------|:---------------|:--------------------------|
+| 1 | Milton Miranda Neto | UFU | |
+| 2 | Alexandre Cardoso | UFU | |
+| 3 | Gerson Flávio Mendes de Lima | UFU | |
+| 4 | Edgard Afonso Lamounier Junior | UFU | |
+| 5 | Bruno Guilherme Resende Vaz de Melo | | |
+| 6 | Ana Cristina de Freitas Marotti | | |
+| 7 | Ricardo de Oliveira Rocha | | |
+
+**6.12 DOCUMENTO COMPROBATÓRIO FOI ANEXADO AO PROCESSO SEI:**
+( ) SIM (MANDATÓRIO)
+
+<!-- MANTIDO A PEDIDO, para o orientador decidir. Pontos contra, todos verificados:
+     (a) sem DOI -- o 10.17013/risti.n.pi-pf do Lattes e o placeholder do template da
+         revista e da 404; nao existe registro no Crossref nem DOI no Dialnet;
+     (b) revista descontinuada no Scopus (2011-2024) e sem JCR, ultimo percentil ~11
+         (Q4), o que dificilmente atende a Portaria PPGEELT 47/2025;
+     (c) o item 6 do formulario, ao contrario do item 5, nao traz instrucao de
+         duplicar o quadro -- confirmar com a coordenacao se cabe mais de um.
+     Autoria conforme o Dialnet (7 autores, nesta ordem); o Lattes registra 6 e omite
+     Ricardo de Oliveira Rocha -- CORRIGIR O LATTES. -->
+
 <!-- NAO INCLUIDOS no item 6, e por que (conferidos a partir da lista do Lattes):
 
    1) MIRANDA NETO, M.; CARDOSO, A.; LIMA, G. F. M.; LAMOUNIER JUNIOR, E. A.;
