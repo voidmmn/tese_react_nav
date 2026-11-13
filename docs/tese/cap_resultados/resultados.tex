@@ -781,8 +781,9 @@ inspeção, aproximando-se a $2{,}22\pm0{,}01$~m ($4{,}72\pm0{,}21$~s).
 %% ENTRADA em Avoid) e refratario. Em tres das oito execucoes a meta de recuo foi
 %% abortada e a margem apareceu de todo modo, o que mostra que o deslocamento nao e
 %% condicao necessaria do efeito.
-A intervenção comparada, portanto, compra $+0{,}33$~m de afastamento (IC $95\%$
-$[+0{,}23;+0{,}42]$, $\delta$ de Cliff igual a $1$, $p=4{,}6\times10^{-5}$) e
+A intervenção comparada, portanto, compra $+0{,}33$~m de afastamento
+(IC $95\%$ de $[+0{,}23;+0{,}42]$, $\delta$ de Cliff igual a $1$,
+$p=4{,}6\times10^{-5}$) e
 $+0{,}51$~s de margem de tempo até a colisão ($[+0{,}20;+0{,}84]$, $\delta=0{,}85$,
 $p=1{,}0\times10^{-3}$) contra um risco emergente.
 
@@ -1079,6 +1080,86 @@ Duração da missão [s]      & $364\pm1$        & $367\pm5$        & $374\pm8$\
 \end{tabular}
 \end{table}
 
+%% Secao criada em 13/11/2026. A reavaliacao do limiar de confirmacao
+%% aparecia APENAS na conclusao, o que a tornava resultado inedito em capitulo de
+%% sintese. Passa a ser apresentada aqui, com origem dos dados, carater
+%% retrospectivo e as distancias continuas -- e a conclusao apenas a sintetiza.
+\section{Sensibilidade do Critério de Confirmação}
+\label{sec:res-confirmacao}
+
+A degradação de completude sob ruído alto levanta uma pergunta que a métrica sozinha
+não responde: ela é propriedade do \emph{comportamento} ou do \emph{critério de
+confirmação}? As duas possibilidades têm consequências distintas --- a primeira é
+limitação do método, a segunda é sensibilidade do instrumento --- e podem coexistir.
+
+\paragraph*{Origem dos dados e caráter da análise.} Esta é uma análise
+\textbf{retrospectiva} sobre registros já existentes, e não parte do plano de análise
+prévio: \emph{nenhuma execução nova} foi realizada. Ela é possível porque a distância
+de confirmação é função de \emph{pontuação pura} --- a auditoria do código confirma que
+ela não realimenta o comportamento: a supressão de reatração depende apenas do conjunto
+comprometido, marcado no início da investigação, enquanto a confirmação ocorre no
+encerramento e escreve apenas nos conjuntos de concluídos e de falhos
+(Seção~\ref{sec:prop-especificacao}). Mudar o limiar não muda trajetória alguma, de modo
+que basta repontuar a trilha de auditoria. O repontuamento é executado por
+\texttt{rescore\_confirmacao.py} sobre a mesma trilha publicada.
+
+\paragraph*{A grandeza contínua subjacente.} Antes das taxas, as distâncias. A grandeza
+repontuada é a distância do robô ao alvo \emph{verdadeiro} no instante de encerramento
+da investigação --- não o mínimo da aproximação, que não está instrumentado por
+execução. Para a qualidade da inspeção é a mais pertinente das duas, já que a inspeção
+é a permanência no ponto de parada, mas a distinção fica declarada. Sobre as tentativas
+que chegaram ao estágio de encerramento bem-sucedido, essa distância tem mediana de
+$2{,}23$~m sem ruído (faixa $2{,}21$--$2{,}24$), $2{,}31$~m sob ruído moderado
+($1{,}92$--$3{,}07$) e $2{,}87$~m sob ruído alto ($1{,}83$--$3{,}56$). A aproximação
+física, portanto, \emph{degrada-se de fato}: a mediana sobe cerca de $0{,}64$~m e a
+dispersão cresce de $0{,}03$ para $1{,}73$~m de amplitude.
+
+\begin{table}[htb]
+\centering
+\caption{Repontuamento retrospectivo do limiar de confirmação $T$ sobre as mesmas
+execuções. ``Creditadas'' é o número de tentativas de confirmação que passariam com
+aquele $T$, sobre $30$, $30$ e $27$ tentativas; ``completos'' é o número de execuções
+em que todas as três anomalias seriam creditadas. O valor adotado em toda a tese é
+$T=3{,}3$~m, justificado por construção na Seção~\ref{sec:prop-confirmacao}.}
+\label{tab:res-confirmacao}
+\footnotesize
+\begin{tabular}{lcccccc}
+\hline
+ & \multicolumn{2}{c}{\textbf{E3 (sem ruído)}}
+ & \multicolumn{2}{c}{\textbf{N1 (moderado)}}
+ & \multicolumn{2}{c}{\textbf{N2 (alto)}}\\
+\textbf{$T$ [m]} & creditadas & completos & creditadas & completos & creditadas &
+completos\\
+\hline
+$2{,}8$ & $30/30$ & $10/10$ & $26/30$ & $6/10$ & $12/27$ & $2/9$\\
+$3{,}3$ & $30/30$ & $10/10$ & $30/30$ & $10/10$ & $21/27$ & $4/9$\\
+$4{,}0$ & $30/30$ & $10/10$ & $30/30$ & $10/10$ & $27/27$ & $9/9$\\
+\hline
+\end{tabular}
+\end{table}
+
+\paragraph*{Leitura.} A \autoref{tab:res-confirmacao} mostra que \emph{ambos} os
+efeitos estão presentes, e que nenhum dos dois explica o outro.
+
+O critério é sensível: com $T=4{,}0$~m a taxa de execuções completas sob ruído alto
+passa de $4/9$ para $9/9$, e sob ruído moderado o resultado já é completo em $3{,}3$~m
+mas cairia a $6/10$ em $2{,}8$~m. Parte da degradação relatada na
+Seção~\ref{sec:res-ruido} é, portanto, atribuível ao instrumento.
+
+O comportamento também se degrada: a distância de encerramento sobe de $2{,}23$ para
+$2{,}87$~m de mediana, com extremos de até $3{,}56$~m. Elevar o limiar \emph{não
+corrige} isso --- apenas deixa de contar como falha uma aproximação que de fato ficou
+mais distante do alvo. Por isso o aumento de $T$ não é apresentado como solução para a
+degradação, e o valor adotado permanece $3{,}3$~m, justificado pelos três termos que o
+compõem e não pela taxa que produz.
+
+A conclusão operacional é que, sob ruído de percepção alto, o método ainda \emph{chega
+ao alvo} em todas as tentativas --- nenhuma tentativa termina além de $3{,}6$~m, e o
+afastamento ao risco não se degrada (Tabela~\ref{tab:res-ruido}) ---, mas chega
+\emph{pior}, e um critério de crédito fixado em $3{,}3$~m converte essa piora em
+contagem de falha. As duas leituras devem constar juntas, e é assim que a
+Seção~\ref{sec:conc-limites} as resume.
+
 \section{Ameaças à Validade}
 \label{sec:res-ameacas}
 
@@ -1111,3 +1192,50 @@ desfechos.
 estabelecida em uma configuração projetada para exercitá-la. Um único cenário adverso
 não estabelece escalabilidade a \textit{layouts} mais densos, e um único cenário de
 conflito não estabelece a precedência sob toda geometria de conflito.
+
+%% Acrescentados em 13/11/2026: os dois limites mais consequentes
+%% faltavam nesta lista -- a nao separacao entre disparo e persistencia, que o texto
+%% ja ressalvava localmente, e o que de fato varia entre repeticoes.
+\paragraph*{Disparo e persistência não foram separados.} O contraste contra a
+heurística genérica troca, \emph{ao mesmo tempo}, a fonte do disparo (campo com limiar
+contra detecção bruta) e a existência de persistência temporal no canal de risco. Os
+dois fatores variam em conjunto em todas as configurações executadas, de sorte que
+nenhum resultado desta tese atribui efeito a um deles isoladamente. Os \textit{logs} de
+episódio são compatíveis com uma explicação ligada à persistência, e é assim que ela é
+oferecida --- leitura apoiada pelos rastros, e não fator demonstrado de forma
+independente. Separá-los exige o desenho fatorial nomeado na
+Seção~\ref{sec:conc-futuro}. Vale o mesmo para a comparação de risco emergente, em que
+habilitar o recuo reativo habilita o conjunto inteiro de ações de preempção e recuo.
+
+\paragraph*{O que varia entre repetições.} Esta é a delimitação mais importante para
+ler os $n$ desta tese, e ela é mais estreita do que ``dez repetições'' sugere. Cada
+configuração roda com as sementes $1$ a $10$, mas a semente alimenta \emph{apenas} o
+gerador de ruído de percepção. Em $30$ dos $32$ pares configuração--cenário o ruído
+está desligado, de modo que a semente não altera nada: \textbf{não há aleatorização
+planejada nessas repetições}. A variabilidade observada entre elas vem da
+não-determinação da simulação e do \textit{middleware} --- passo de integração física,
+instantes de chegada de mensagem, ordem de atendimento de \textit{callbacks}, tempo de
+planejamento do Nav2 ---, e não de um fator sorteado. É também a razão pela qual
+tantos desfechos discretos aparecem como constantes ao longo das dez execuções.
+Somente nas duas configurações de ruído a semente produz realizações distintas, e
+nessas ela é a semente da execução, de modo que as realizações são independentes entre
+execuções.
+
+Três consequências decorrem, e são adotadas. Primeira: o que dez repetições
+estabelecem é \emph{repetibilidade} daquele arranjo sob a não-determinação do
+simulador --- não equivale a avaliar dez instalações, nem a cobrir variação ambiental.
+Segunda: \textbf{não se presume pareamento entre braços}. Embora os índices de semente
+coincidam, eles não indexam realização comum alguma fora das configurações de ruído;
+todas as comparações são, por isso, não pareadas, o que é a escolha compatível com o
+desenho. Terceira: diferenças pequenas e consistentes podem produzir separação
+estatística completa --- $\delta=\pm1{,}00$ --- sem relevância operacional
+correspondente, exatamente porque a variância intra-braço é pequena quando nada é
+sorteado; onde isso ocorre, a magnitude é discutida junto com o $p$, e não no lugar
+dele.
+
+Distinga-se, ainda, as três fontes de variação em jogo: \emph{entre repetições} (a
+não-determinação acima), \emph{entre cenários} (arranjos distintos de eventos e
+riscos, deliberadamente escolhidos, não amostrados de população alguma) e \emph{entre
+eventos} dentro de um cenário (posições e intensidades fixas por construção). Apenas a
+primeira é aleatória; as outras duas são escolhas de desenho, e nenhuma inferência
+desta tese as trata como amostra de uma população de subestações.

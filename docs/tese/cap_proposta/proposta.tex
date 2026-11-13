@@ -55,6 +55,17 @@ responde a estímulos dentro do alcance, é necessário um mecanismo \emph{anter
 leve os sensores até onde os eventos possam ocorrer. A patrulha provê exatamente esse
 posicionamento.
 
+%% Delimitado em 13/11/2026: "sensoriamento ativo" aqui e o sentido fraco --
+%% mover o sensor para onde o evento pode estar. Nao ha otimizacao de ganho de
+%% informacao, e o texto nao deve sugerir que haja.
+O termo é usado no sentido fraco e deve ser lido assim: a rota é \emph{predefinida} e
+o que a camada faz é levar o sensor a onde o evento pode estar. Não há otimização de
+ganho de informação, nem seleção de pontos de vista por utilidade esperada, nem
+atualização de crença sobre onde um evento estaria --- nada do que a literatura de
+percepção ativa entende por planejamento de sensoriamento. Uma ronda predefinida com
+reação a eventos não demonstra, por si, estratégia nova de percepção ativa, e esta
+tese não a reivindica.
+
 Uma camada \emph{reativa}, denominada \textsc{Stay Alert}, roda sobre a patrulha. Ela
 é governada por um campo de atração--repulsão $\Phi$, que cresce quando um evento
 sensorial saliente entra no alcance, conduzindo o robô a \emph{aproximar-se} de
@@ -78,6 +89,32 @@ a resposta reativa é acrescentada sem substituir a camada que dirige o robô --
 e seu preço em afastamento e em completude está medido no
 Capítulo~\ref{cap:resultados}.
 
+%% Acrescentado em 13/11/2026: o caminho causal da execucao, enunciado uma
+%% vez e de forma inequivoca, com a atualizacao passiva de Q explicitamente FORA
+%% dele. A extensao da fundamentacao podia induzir o leitor a esperar contribuicao
+%% de aprendizado maior do que a entregue.
+Convém enunciar uma única vez, e sem ambiguidade, o caminho causal que produz
+movimento nesta arquitetura:
+
+\begin{quote}
+eventos percebidos $\;\rightarrow\;$ canais com limiar, memória e decaimento
+$\;\rightarrow\;$ leitura de $\Phi$ por precedência categórica $\;\rightarrow\;$
+guardas do supervisor $\;\rightarrow\;$ meta de aproximação ou de recuo
+$\;\rightarrow\;$ Nav2/MPPI $\;\rightarrow\;$ \texttt{/cmd\_vel}.
+\end{quote}
+
+A atualização de valor da Seção~\ref{sec:prop-atualizacao} \emph{não} pertence a esse
+caminho. Ela observa o mesmo campo e a mesma transição de estado, atualiza uma tabela e
+publica o resíduo para registro --- e nada do que ela calcula retorna ao supervisor, à
+seleção de metas ou ao controlador. Tudo o que se mede como comportamento nesta tese é
+produzido pela cadeia acima; tudo o que se mede sobre a tabela é produzido fora dela.
+Em consequência, a estabilidade do comportamento sob variações de $\eta$, relatada no
+Capítulo~\ref{cap:resultados}, é \emph{coerente com uma tabela passiva} e não é
+evidência de robustez de política aprendida nem de contribuição do aprendizado à
+navegação. O único braço em que uma tabela de valor governa a ação é o
+\textit{baseline} \textsc{Q-driven}, relatado separadamente
+(Seção~\ref{sec:res-qdriven}).
+
 \begin{figure}[htb]
 \centering
 \includegraphics[width=0.9\textwidth]{figuras/architecture}
@@ -95,7 +132,25 @@ patrulha. O ambiente devolve pose (TF) e eventos.}
 
 A camada reativa é conduzida por um campo escalar $\Phi_t$ que agrega os eventos
 sensoriais na localização do robô --- modalidade, intensidade e distância --- e
-carrega o sinal da resposta: positivo para atração, negativo para repulsão. Ele é
+carrega o sinal da resposta: positivo para atração, negativo para repulsão.
+
+%% Acrescentado em 13/11/2026: a analogia com campo potencial e util, mas as
+%% propriedades matematicas de um nao se transferem ao outro. A distincao precisa
+%% estar onde o campo e definido.
+Antes de prosseguir, uma distinção que a analogia com campos potenciais torna
+necessária. $\Phi_t$ é um escalar \emph{avaliado na posição corrente do robô}: ele não
+é um campo definido sobre o espaço de configuração, não se toma seu gradiente e dele
+não se extrai direção de movimento alguma. Seu papel é \emph{arbitrar prioridade e
+armar um disparo} --- qual canal governa e se um limiar foi cruzado ---, após o que a
+direção do movimento é determinada pela geometria da meta emitida
+(Seção~\ref{sec:prop-sensoriamento}) e executada pelo planejador. Um campo potencial
+espacial, no sentido de \citeonline{Barraquand1992} e dos métodos que
+\citeonline{Koren1991} analisam, é objeto diferente: define-se sobre o espaço, e o
+movimento é o gradiente descendente desse campo. As propriedades matemáticas de um não
+se transferem ao outro --- em particular, nem as armadilhas de mínimo local nem os
+resultados de completude dos métodos de campo potencial se aplicam a $\Phi_t$, e nem
+as garantias que esses métodos oferecem. A analogia é mantida porque é esclarecedora
+quanto à \emph{intuição} de atrair e repelir; ela não é herança de propriedades. Ele é
 função das observações correntes \emph{e} de duas memórias de canal com decaimento,
 definidas adiante, de modo que é função do tempo, e não da observação instantânea
 isolada. Ele não depende de qual ação é tomada. Escreve-se $\Phi$ por $\Phi_t$ onde o

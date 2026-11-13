@@ -322,12 +322,22 @@ Cabe dizer quais resultados, e com que consequências.
     uma política tabular aprendida, selecionando a ação executada, não altera a
     completude de inspeção nem a segurança, e custa tempo na subtarefa reativa.
 
-    \item \textbf{Percepção e localização realistas impediriam a atribuição.} Com uma
-    cadeia de percepção real e localização estimada em tempo de execução, o erro de
-    detecção e o erro de localização dominam a variância dos desfechos medidos.
-    Diferenças de meio metro em afastamento mínimo, ou de dezenas de segundos em
-    atraso de inspeção, deixam de ser atribuíveis à regra de arbitragem --- que é
-    precisamente o objeto desta tese.
+%% Reescrito em 13/11/2026. A versao anterior afirmava que percepcao e localizacao
+    %% realistas "impediriam a atribuicao". Isso e forte demais: elas poderiam ser
+    %% compartilhadas e controladas entre bracos. A justificativa suficiente e de
+    %% custo e de isolamento, nao de impossibilidade.
+    \item \textbf{Percepção e localização realistas elevam o custo do isolamento.} Com
+    uma cadeia de percepção real e localização estimada em tempo de execução, o erro de
+    detecção e o erro de localização passam a contribuir para a variância dos desfechos
+    medidos, de sorte que separar o efeito da regra de arbitragem exigiria mais
+    execuções por braço e um controle explícito dessas fontes. Isso \emph{não} as torna
+    incompatíveis com atribuição: elas poderiam ser compartilhadas entre os braços e
+    controladas pelo desenho, como de fato se faz na varredura de ruído de percepção
+    (Seção~\ref{sec:res-ruido}), em que as duas realizações de ruído entram em todos os
+    braços comparados. A justificativa desta tese é mais modesta e é a suficiente: o
+    estudo \emph{isola o supervisor sob condições idealizadas} e deixa expressamente
+    aberta a sua validade externa, em vez de alegar que condições realistas seriam
+    inviáveis.
 \end{enumerate}
 
 Diante disso, três decisões de projeto foram tomadas, e são declaradas aqui como

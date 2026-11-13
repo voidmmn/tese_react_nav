@@ -82,13 +82,18 @@ direções.
 \section{Limites da Evidência}
 \label{sec:conc-limites}
 
+%% Reescrito em 13/11/2026: os numeros da reavaliacao do limiar de
+%% confirmacao apareciam aqui pela primeira vez, o que fazia da conclusao um capitulo
+%% com resultado inedito. Eles passam a ser apresentados na
+%% Secao~\ref{sec:res-confirmacao}, e aqui apenas se sintetiza.
 A completude de inspeção é relatada como a taxa de execuções que inspecionam
 \emph{todas} as anomalias: $10/10$ com percepção limpa, $4/9$ sob ruído alto de
-percepção e $9/10$ sob aglomeração densa. Uma reavaliação retrospectiva mostra que
-essa taxa é fortemente sensível ao critério de confirmação --- com limiar de
-$4{,}0$~m a taxa sob ruído alto se recupera para $9/9$ ---, embora a distância física
-de aproximação de fato se degrade (mediana de $2{,}23$ para $2{,}87$~m), de sorte que
-ambos os efeitos estão presentes.
+percepção e $9/10$ sob aglomeração densa. Conforme a
+Seção~\ref{sec:res-confirmacao}, essa taxa mistura dois efeitos que a análise separa e
+que ambos existem: o critério de confirmação é sensível ao limiar adotado, e a
+aproximação física também se degrada sob ruído. Elevar o limiar não corrige a segunda
+coisa --- apenas deixa de contar a primeira ---, razão pela qual o critério adotado
+permanece o justificado por construção.
 
 Nenhuma entrada na região de contato de $0{,}5$~m foi observada em qualquer
 configuração, mas com $8$ a $10$ execuções válidas por grupo o limite superior
@@ -138,6 +143,17 @@ Erro de localização, persistência de eventos, falsos positivos e negativos e
 geometria de mapa permanecem não modelados. O cenário adverso é uma única
 configuração densa e a varredura de ruído cobre dois níveis, de sorte que nenhum dos
 dois sustenta alegação geral de escalabilidade.
+
+%% Acrescentado em 13/11/2026: o que as repeticoes licenciam.
+As dez repetições por configuração estabelecem \emph{repetibilidade} daquele arranjo
+sob a não-determinação do simulador, e não mais do que isso: fora das duas
+configurações de ruído não há aleatorização planejada entre execuções
+(Seção~\ref{sec:res-ameacas}). Repetir o mesmo \textit{layout} e a mesma distribuição
+de eventos dez vezes não equivale a avaliar dez instalações, e os cenários não são
+amostra de população alguma --- são arranjos escolhidos para exercitar mecanismos
+específicos. Daí também que diferenças pequenas possam exibir separação estatística
+completa sem relevância operacional equivalente, razão pela qual as magnitudes são
+relatadas ao lado dos valores de $p$.
 
 A tabela de valor é tabular e, conforme a Seção~\ref{sec:prop-atualizacao}, não
 seleciona as ações executadas; não se faz, portanto, qualquer alegação de
@@ -199,6 +215,123 @@ a ponderação --- são onde o trabalho adicional pertence.
     níveis de ruído adicionais, para sustentar alegações de escalabilidade que uma
     única configuração adversa não sustenta.
 \end{itemize}
+
+%% Secao criada em 13/11/2026. O quadro abaixo permite conferir cada
+%% afirmacao desta tese contra a evidencia que a sustenta, as condicoes em que foi
+%% obtida e o limite que ela nao ultrapassa, sem percorrer o capitulo de resultados.
+\section{Quadro de Afirmações}
+\label{sec:conc-quadro}
+
+A \autoref{tab:conc-quadro} reúne cada afirmação desta tese com a evidência que a
+sustenta, as condições em que foi obtida e o limite que ela não ultrapassa. Nenhuma
+linha contém resultado que não esteja no Capítulo~\ref{cap:resultados}.
+
+\begin{table}[htb]
+\centering
+\caption{Afirmação, evidência, condições e limite. Os ponteiros remetem às seções de
+resultados correspondentes.}
+\label{tab:conc-quadro}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{0.215\textwidth}p{0.215\textwidth}p{0.195\textwidth}p{0.225\textwidth}}
+\hline
+\textbf{Afirmação} & \textbf{Evidência} & \textbf{Condições} & \textbf{Limite}\\
+\hline
+O afastamento diante de risco estático na rota vem da zona de exclusão deliberativa &
+KOF e KOa com afastamentos medianos de $1{,}73$ e $1{,}71$~m, sem diferença detectável
+($p_{\mathrm{Holm}}=0{,}4194$); §\ref{sec:res-ablacao} &
+Cenário de risco estático sobre a rota; $8$--$10$ execuções por braço &
+Não demonstra equivalência geral de componentes; não se transfere a risco emergente\\
+\hline
+Sem a zona de exclusão, o recuo reativo sozinho não resolve o risco na rota &
+Nenhuma das dez execuções de KOb concluiu a missão; duração censurada à direita
+($\ge 627$~s); §\ref{sec:res-ablacao} &
+Mesmo cenário; orçamento de parede de $600$~s &
+É limite inferior censurado, não tempo de missão medido\\
+\hline
+A camada reativa acrescenta as inspeções que a patrulha com zona de exclusão não faz &
+$3$ de $3$ contra $0$ de $3$; custo de $\approx 31$~s; §\ref{sec:res-ablacao} &
+Mesmo cenário &
+Inspeção é proxy de chegada creditada (§\ref{sec:setup-metricas})\\
+\hline
+O critério de seleção não teve efeito detectável &
+Desfechos discretos idênticos em dez execuções; TOST onde há margem;
+§\ref{sec:res-heu}, §\ref{sec:res-equivalencia} &
+Três cenários; sem ruído de percepção &
+Ausência de efeito detectado; equivalência só onde o TOST a declara\\
+\hline
+O modo de disparo altera o desfecho de segurança &
+$4{,}84$ contra $2{,}23$~m de afastamento mínimo, $\delta=-1{,}00$; atraso de
+$\approx 105$~s; §\ref{sec:res-heu} &
+Cenário de conflito, risco colocalizado com anomalia mais saliente &
+Disparo e persistência variam em conjunto; não são fatores separáveis
+(§\ref{sec:res-ameacas})\\
+\hline
+A precedência categórica tem custo &
+Supressão de $\approx 70$~s e uma de quatro inspeções abandonada em $10/10$;
+§\ref{sec:res-custo-precedencia} &
+Cenário de risco marginalmente elegível &
+Valor depende do limiar de elegibilidade e da geometria\\
+\hline
+A preempção e o recuo compram margem contra risco emergente &
+$+0{,}33$~m e $+0{,}51$~s, $\delta=1$; §\ref{sec:res-emergente} &
+Risco que ativa a $3$~m durante investigação; $8$ execuções válidas &
+Efeito do \emph{conjunto} de ações, não do deslocamento isolado; métricas de missão
+inteira\\
+\hline
+A tabela de valor com recompensa aumentada não supera a regra fixa &
+Mesma completude, tempo em investigação maior com $\delta=+1{,}00$;
+§\ref{sec:res-qdriven} &
+Três cenários; política treinada em simulador cinemático &
+Comparação entre as duas implementações testadas; camada de eventos e controlador não
+compartilhados (§\ref{sec:setup-qdriven})\\
+\hline
+A completude se degrada sob ruído alto de percepção &
+$4/9$ execuções completas; seis rejeições na confirmação;
+§\ref{sec:res-ruido} &
+Duas realizações de ruído; $9$ execuções válidas &
+Mistura sensibilidade do critério e piora da aproximação, ambas quantificadas
+(§\ref{sec:res-confirmacao})\\
+\hline
+Nenhuma entrada na região de contato foi observada &
+Zero entradas em todas as configurações; §\ref{sec:res-seguranca} &
+$8$--$10$ execuções por grupo &
+Limite superior de $95\%$ entre $25{,}9\%$ e $31{,}2\%$; não é colisão física medida\\
+\hline
+Os incrementos da atualização permanecem limitados &
+Resíduo completo $|\alpha\delta+\eta\Phi|$ tabulado;
+Tabela~\ref{tab:res-principal} &
+Todas as configurações com atualização ativa &
+Estabilidade dos incrementos, não convergência; a tabela não governa o comportamento\\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Trajetória de Transferência Tecnológica}
+\label{sec:conc-transferencia}
+
+As decisões que esta pesquisa permite informar são as mensuráveis, e só elas. Com os
+números acima, um projeto de inspeção robótica pode estimar o custo de missão por
+investigação adicional, o efeito da memória de risco sobre reativações, a perda de
+completude imposta por uma precedência de segurança rígida e as situações em que a
+expressão deliberativa do risco já responde pelo afastamento --- tornando dispensável
+investir em ponderação reativa para aquele caso. São parâmetros de projeto de
+supervisão, não garantias de planejamento de ronda: cada valor está condicionado ao
+cenário em que foi obtido, conforme a \autoref{tab:conc-quadro}.
+
+O que \emph{não} se oferece: estimativa financeira, nível de maturidade tecnológica,
+tempo de implantação ou ganho operacional em instalação real. Nada nesta tese sustenta
+tais números, e convertê-los a partir de resultados de simulação seria extrapolação.
+
+A trajetória de transferência, portanto, é formada por etapas \emph{não executadas},
+que se nomeiam como tais e em ordem de dependência: (i) substituir os eventos-oráculo
+por percepção térmica, acústica e visual real, com tratamento de falsos positivos e
+negativos, único passo que torna o restante mensurável em campo; (ii) liberar a
+transformada de localização e medir o efeito da deriva sobre confirmação de inspeção e
+afastamento; (iii) validação em \textit{hardware in the loop} sobre a plataforma
+quadrúpede, onde dinâmica e atraso de atuação entram em cena; e (iv) ensaio em
+subestação real, sob os requisitos normativos e de segurança da instalação, que esta
+tese não trata. Cada etapa é condição da seguinte, e nenhuma delas foi realizada aqui.
 
 \section{Considerações Finais}
 \label{sec:conc-finais}

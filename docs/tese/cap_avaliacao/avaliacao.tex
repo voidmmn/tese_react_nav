@@ -226,6 +226,16 @@ $70$ em \texttt{conflict}, $50$ em \texttt{route-hazard}, $40$ em \texttt{advers
 $20$ em \texttt{dyn-hazard} e $10$ em \texttt{marginal}. Cada configuração usa as
 sementes $1$ a $10$, uma por execução, e o manifesto registra a semente de cada uma.
 
+%% Acrescentado em 13/11/2026: dizer "sementes 1 a 10" sugeria aleatorizacao
+%% planejada em toda a matriz, o que nao e o caso.
+Convém ser exato quanto ao que a semente controla: ela alimenta \emph{apenas} o gerador
+de ruído de percepção. Em $30$ dos $32$ pares o ruído está desligado e a semente,
+portanto, não altera nada --- nessas repetições não há aleatorização planejada, e a
+variabilidade observada provém da não-determinação da simulação e do
+\textit{middleware}. Somente nas duas configurações de ruído a semente produz
+realizações distintas. A Seção~\ref{sec:res-ameacas} discute o que isso permite
+generalizar.
+
 As nove execuções imóveis distribuem-se por oito configurações --- APF, HEUc, HEUd,
 HYSoff, KOb, N2 e RHM com uma cada, DHa com duas ---, de modo que nenhuma configuração
 fica com menos de oito execuções válidas. As nove execuções interrompidas pelo limite
