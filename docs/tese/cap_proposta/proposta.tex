@@ -511,9 +511,14 @@ especificação e a implementação. O temporizador que \emph{dispara} a avalia�
 decaimento segue o relógio simulado, mas a condição que \emph{autoriza} a aplicação do
 fator $\lambda$ compara instantes de relógio \emph{de parede}. Como a simulação roda
 com fator de tempo real acima da unidade --- razão mediana de $1{,}12$ entre relógio
-simulado e relógio de parede, conforme a Seção~\ref{sec:setup-censo} ---, a aplicação
-efetiva ocorre a cada dois disparos, e não a cada um: o período de decaimento realizado
-é de cerca de $2$~s de tempo simulado, não de $1$~s. Isso é visível nos \textit{logs},
+simulado e relógio de parede, conforme a Seção~\ref{sec:setup-censo} ---, parte dos
+disparos não autoriza a aplicação. Quantificou-se isso nos \textit{logs} das dez
+execuções da configuração CM: dos $2\,715$ disparos de $1$~s do temporizador, $53{,}4\%$
+aplicaram o fator, de modo que o período de decaimento \emph{realizado} é de
+$1{,}87$~s de tempo simulado, e não de $1$~s%
+\footnote{Contagem feita comparando magnitudes de $\Phi$ entre disparos consecutivos: um
+disparo é contado como efetivo quando a magnitude cai. O valor por execução varia entre
+$51$ e $55\%$.}. Isso é visível nos \textit{logs},
 em que $\Phi$ repete o mesmo valor em disparos consecutivos de $1$~s antes de cair --- a
 sequência $0{,}015$; $0{,}015$; $0{,}013$; $0{,}011$; $0{,}011$; $0{,}009$; $0{,}009$ é
 um trecho literal de uma execução. A consequência é que a meia-vida realizada do canal
