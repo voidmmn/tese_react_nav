@@ -60,10 +60,15 @@ def ler_logs(results):
             if m and data:
                 h, mi, s, rotulo, rep = m.groups()
                 cen = re.search(r'scen=(\S+)', linha)
+                # revisao interna: o commit so existe nas baterias rodadas a partir de
+                # 13/11/2026; nas anteriores o campo fica vazio, e vazio e o
+                # registro honesto -- nao se infere commit por data.
+                com = re.search(r'commit=(\S+)', linha)
                 runs.append({
                     'inicio': datetime.datetime.fromisoformat(f'{data} {h}:{mi}:{s}'),
                     'rotulo': rotulo, 'rep': int(rep),
                     'cenario': cen.group(1) if cen else '',
+                    'commit': com.group(1) if com else '',
                     'desfecho': None, 'log': os.path.basename(lf),
                 })
             if runs and runs[-1]['desfecho'] is None:
@@ -106,6 +111,7 @@ def main(results):
             'cenario': reg['cenario'] if reg else '',
             'semente': reg['rep'] if reg else '',
             'bateria': reg['log'] if reg else '',
+            'commit': reg.get('commit', '') if reg else '',
             'inicio': quando.isoformat(sep=' '),
             'desfecho': (reg['desfecho'] or 'nao_registrado') if reg else 'nao_casado',
             'validade': 'valida' if valida else 'invalida',

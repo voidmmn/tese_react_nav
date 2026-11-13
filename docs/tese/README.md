@@ -99,6 +99,51 @@ docs/tese/
   `\cite`/`\citeonline`; resíduo de markdown/HTML removido do capítulo de proposta.
 - **Estado:** 139 páginas, **zero erros de compilação**.
 
+### Rodada de revisão de 13/11/2026
+
+Fechadas nesta rodada: auditoria bibliográfica completa, censo de execuções, relato
+estatístico integral, reenquadramento do Capítulo 3 como **Revisão Crítica da
+Literatura**, consistência de escopo, pergunta de pesquisa e contribuições declaradas,
+matriz de trabalhos próximos, especificação operacional do supervisor, delimitação da
+atribuição causal, documentação do baseline Q-driven, definições executáveis das
+métricas, alcance das repetições, papel do aprendizado, reorganização da conclusão,
+situação editorial do artigo e artefato de reprodutibilidade.
+
+**Estado:** 180 páginas, zero erros de compilação, zero citações indefinidas, zero
+referências cruzadas pendentes.
+
+#### Reprodutibilidade — o que identifica esta versão
+
+- A versão correspondente à tese é a etiqueta **`tese-defesa-v1`**, cujas notas de
+  lançamento registram o *commit* exato. O ramo `main` segue recebendo trabalho e
+  **não** é o estado avaliado.
+- `results/CHECKSUMS.sha256` cobre os **323** arquivos de resultado (320 CSVs por
+  execução + trilha de auditoria + família primária + manifesto). Conferir com
+  `cd results && sha256sum -c CHECKSUMS.sha256`.
+- `results/manifesto_execucoes.csv` é a fonte única dos totais: 32 pares, 320
+  tentativas, 311 válidas, 9 imóveis, 9 censuradas.
+- Cada tabela de resultado é regenerada por um *script* nomeado na §5.9 da tese.
+
+#### Mudanças no instrumento feitas nesta rodada
+
+- `rodar_experimentos.sh` passa a gravar `commit=<sha>` (com sufixo `+sujo` se a
+  árvore de trabalho estiver modificada) na linha de lançamento de cada execução.
+- `gerar_manifesto.py` passa a ler esse campo e a emitir a coluna `commit`. Nas
+  baterias anteriores a 13/11/2026 a coluna fica **vazia** — commit por execução não é
+  recuperável retroativamente, e inferi-lo pela data seria conjetura apresentada como
+  registro.
+
+#### Defeito de implementação documentado e **não** corrigido
+
+`AttractionField.step_decay()` autoriza a aplicação do fator de decaimento comparando
+instantes de **relógio de parede**, enquanto todos os temporizadores dos nós seguem o
+relógio simulado (`use_sim_time`). Com fator de tempo real acima da unidade, o período
+de decaimento realizado é de cerca de 2 s simulados em vez de 1 s. O comportamento é
+idêntico em todos os braços, de modo que não confunde contraste algum, e as janelas de
+persistência relatadas são medidas e não derivadas dos parâmetros. Está declarado na
+§4.6 da tese. **Corrigir antes de qualquer bateria nova**, porque mudaria o
+comportamento de todos os braços.
+
 ### Pendências registradas no próprio código
 
 1. **Título** (`main_ppgee_ufu.tex`): ainda é o da qualificação e promete RL e fusão
@@ -119,4 +164,14 @@ docs/tese/
 - Revisar os Capítulos 2 e 3 (fundamentação e revisão), herdados da qualificação:
   continuam válidos como contexto, mas não passaram por revisão nesta rodada.
 - Figuras conceituais (`architecture`, `stay_alert_fsm`) ainda têm texto interno em
-  inglês — regerar no Illustrae se a banca exigir.
+  inglês. Mitigação aplicada em 13/11/2026: ampliadas para a largura total do texto e
+  legendas reescritas traduzindo **todos** os rótulos internos, com remissão à tabela
+  de transições, que é a fonte normativa. Regerar no Illustrae continua sendo o
+  desfecho preferível.
+- Criar e publicar a etiqueta `tese-defesa-v1` no commit final, e colocar o *commit*
+  exato nas notas de lançamento — a §5.9 da tese já remete a ela.
+- Duas figuras conceituais foram **removidas** do Capítulo 1
+  (`fig_problema_pesquisa.jpg`, `fig_justificativa.jpg`): a primeira enumerava quatro
+  desafios que a tese não trata, a segunda nomeava fusão sensorial e aprendizado por
+  reforço como as contribuições científicas do trabalho. Os arquivos continuam em
+  `figuras/`.

@@ -82,7 +82,13 @@ run_one() {
   #     para que a matriz antiga rode byte-a-byte igual (gate de reúso F2.6). ---
   local sel=${11:-saliency} trig=${12:-phi}
   local hthr=${13:--1.0} ent=${14:-0.45} ext=${15:-0.25} cfd=${16:-0.0}
-  echo ">>> $(date +%H:%M:%S) $label rep $rep/$REPS (eta=$eta sa=$sa scen=$scen react=$react keepout=$keepout avoid=$avoid noise=$npos/$nint seed=$rep sel=$sel trig=$trig hthr=$hthr ent/ext=$ent/$ext cfd=$cfd)"
+  # 13/11/2026 -- revisao interna: grava o commit e o estado da arvore de trabalho na linha
+  # de lancamento. As baterias anteriores nao o faziam, de modo que o manifesto nao
+  # consegue atribuir commit por execucao retroativamente; daqui em diante consegue.
+  local commit; commit=$(git -C "$(dirname "${BASH_SOURCE[0]}")" rev-parse --short HEAD 2>/dev/null || echo "sem-git")
+  local dirty; dirty=$(git -C "$(dirname "${BASH_SOURCE[0]}")" status --porcelain 2>/dev/null | head -c1)
+  [ -n "$dirty" ] && commit="$commit+sujo"
+  echo ">>> $(date +%H:%M:%S) $label rep $rep/$REPS (commit=$commit eta=$eta sa=$sa scen=$scen react=$react keepout=$keepout avoid=$avoid noise=$npos/$nint seed=$rep sel=$sel trig=$trig hthr=$hthr ent/ext=$ent/$ext cfd=$cfd)"
   cleanup
   # §8: publish_keepout/enable_reactive_avoid explícitos; §13: run_seed=rep
   # (semente por repetição -> realizações de ruído independentes + registro).

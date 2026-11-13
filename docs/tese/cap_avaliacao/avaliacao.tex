@@ -67,7 +67,7 @@ eventos. Definem-se os seguintes cenários:
     que múltiplos eventos caiam simultaneamente dentro do raio sensorial e a camada
     tenha de arbitrar entre eles; o risco permanece inalterado.
 
-    \item[\texttt{route-hazard}] Mantém as três anomalias padrão mas move o risco
+    \item[\texttt{route\_hazard}] Mantém as três anomalias padrão mas move o risco
     \emph{para cima} da primeira perna de patrulha, em $(1{,}5,-9)$ --- bloqueando
     diretamente o caminho ao \textit{waypoint} seguinte ---, de sorte que um recuo
     puramente reativo não possa resolvê-lo sem desviar a rota. Aqui o risco detectado
@@ -81,12 +81,12 @@ eventos. Definem-se os seguintes cenários:
     puramente de magnitude preferiria a inspeção, ao passo que a regra de precedência
     deve disparar \textsc{Avoid}.
 
-    \item[\texttt{dyn-hazard}] Um risco colocalizado com uma anomalia permanece
+    \item[\texttt{dyn\_hazard}] Um risco colocalizado com uma anomalia permanece
     \emph{inativo} até que o robô --- já comprometido com sua inspeção --- se aproxime
     a $3$~m, ponto em que o ambiente o ativa. É o único cenário em que o risco
     \emph{emerge} durante uma investigação.
 
-    \item[\texttt{marginal}] Um risco de intensidade elegível mínima ao lado da
+    \item[\texttt{conflict\_marginal}] Um risco de intensidade elegível mínima ao lado da
     primeira perna de patrulha, junto a uma anomalia acústica legítima de intensidade
     $0{,}95$ posicionada a $4{,}3$~m dele, para medir o custo da precedência
     categórica na faixa em que o risco governa o campo sem disparar recuo.
@@ -149,19 +149,19 @@ E3  & Stay Alert                   & 0,5   & \checkmark & ---        & \texttt{d
 E4  & Stay Alert                   & 0,8   & \checkmark & ---        & \texttt{default} (3/1)\\
 E5  & Stay Alert                   & 0,5   & \checkmark & ---        & \texttt{adverse} (5/1)\\
 APF & campo potencial              & ---   & \checkmark & ---        & \texttt{default} (3/1)\\
-RHM & Stay Alert                   & 0,5   & \checkmark & \checkmark & \texttt{route-hazard} (3/1)\\
-RHB & nenhuma                      & ---   & ---        & ---        & \texttt{route-hazard} (3/1)\\
+RHM & Stay Alert                   & 0,5   & \checkmark & \checkmark & \texttt{route\_hazard} (3/1)\\
+RHB & nenhuma                      & ---   & ---        & ---        & \texttt{route\_hazard} (3/1)\\
 N1  & Stay Alert (ruído moderado)  & 0,5   & \checkmark & ---        & \texttt{default} (3/1)\\
 N2  & Stay Alert (ruído alto)      & 0,5   & \checkmark & ---        & \texttt{default} (3/1)\\
 CONF& Stay Alert                   & 0,5   & \checkmark & ---        & \texttt{conflict} (4/1)\\
-KOa & somente zona de exclusão     & 0,5   & ---        & \checkmark & \texttt{route-hazard} (3/1)\\
-KOb & somente recuo                & 0,5   & \checkmark & ---        & \texttt{route-hazard} (3/1)\\
-KOF & patrulha fixa com zona excl. & ---   & ---        & \checkmark & \texttt{route-hazard} (3/1)\\
-DHa & recuo $+$ zona de exclusão   & 0,5   & \checkmark & \checkmark & \texttt{dyn-hazard} (1/1)\\
-DHb & somente zona de exclusão     & 0,5   & ---        & \checkmark & \texttt{dyn-hazard} (1/1)\\
+KOa & somente zona de exclusão     & 0,5   & ---        & \checkmark & \texttt{route\_hazard} (3/1)\\
+KOb & somente recuo                & 0,5   & \checkmark & ---        & \texttt{route\_hazard} (3/1)\\
+KOF & patrulha fixa com zona excl. & ---   & ---        & \checkmark & \texttt{route\_hazard} (3/1)\\
+DHa & recuo $+$ zona de exclusão   & 0,5   & \checkmark & \checkmark & \texttt{dyn\_hazard} (1/1)\\
+DHb & somente zona de exclusão     & 0,5   & ---        & \checkmark & \texttt{dyn\_hazard} (1/1)\\
 HEU & supervisor heurístico        & ---   & \checkmark & ---        & \texttt{default}/\texttt{conflict}/\texttt{adverse}\\
 HEU-sel & seleção por proximidade  & 0,5   & \checkmark & ---        & \texttt{default}/\texttt{conflict}/\texttt{adverse}\\
-CM  & Stay Alert                   & 0,5   & \checkmark & ---        & \texttt{marginal} (4/1)\\
+CM  & Stay Alert                   & 0,5   & \checkmark & ---        & \texttt{conflict\_marginal} (4/1)\\
 %% Acrescentado em 13/11/2026: bloco exploratorio de RL comportamental.
 Q-driven & $Q$ greedy pre-treinada      & ---   & \checkmark & ---        & \texttt{default}/\texttt{conflict}/\texttt{adverse}\\
 %% Acrescentadas em 13/11/2026: as cinco varreduras executadas e relatadas nas
@@ -221,10 +221,13 @@ Confiabilidade de partida por tentativa         & $311/320 = 97{,}2\%$\\
 \end{tabular}
 \end{table}
 
-As $320$ execuções distribuem-se pelos seis cenários como $130$ em \texttt{default},
-$70$ em \texttt{conflict}, $50$ em \texttt{route-hazard}, $40$ em \texttt{adverse},
-$20$ em \texttt{dyn-hazard} e $10$ em \texttt{marginal}. Cada configuração usa as
-sementes $1$ a $10$, uma por execução, e o manifesto registra a semente de cada uma.
+\begin{sloppypar}
+As $320$ execuções distribuem-se pelos seis cenários como $130$ em
+\texttt{default}, $70$ em \texttt{conflict}, $50$ em \texttt{route\_hazard}, $40$ em
+\texttt{adverse}, $20$ em \texttt{dyn\_hazard} e $10$ em
+\texttt{conflict\_marginal}. Cada configuração usa as sementes $1$ a $10$, uma por
+execução, e o manifesto registra a semente de cada uma.
+\end{sloppypar}
 
 %% Acrescentado em 13/11/2026: dizer "sementes 1 a 10" sugeria aleatorizacao
 %% planejada em toda a matriz, o que nao e o caso.
@@ -536,13 +539,76 @@ inferência mais forte.
 \label{sec:setup-repro}
 
 O código completo, o mundo simulado, os arquivos de lançamento, o executor de
-bateria e o \textit{script} de análise estão publicamente
+bateria e os \textit{scripts} de análise estão publicamente
 disponíveis\footnote{\texttt{github.com/voidmmn/tese\_react\_nav}}. \textit{Scripts}
 de instalação configuram ROS~2 Humble, Gazebo Fortress e Nav2; um \textit{script} de
-lote executa a matriz completa e grava um arquivo CSV por execução, e o
-\textit{script} de análise produz a tabela-resumo e os testes estatísticos relatados
-no Capítulo~\ref{cap:resultados}.
+lote executa a matriz completa e grava um arquivo CSV por execução, e os
+\textit{scripts} de análise produzem as tabelas e os testes estatísticos relatados no
+Capítulo~\ref{cap:resultados}.
 
-Os valores por execução, com sementes e desfechos individuais, são publicados junto
-ao código, de modo que os denominadores de toda taxa relatada possam ser conferidos
-em vez de aceitos por confiança.
+%% Reescrito em 13/11/2026: a secao dizia que o material estava publicado,
+%% sem identificar QUAL versao corresponde a esta tese nem COMO conferir que os
+%% arquivos sao os mesmos. Passa a nomear a versao, o registro de integridade, o
+%% manifesto e o script que regenera cada tabela.
+\subsection{Qual Versão Corresponde a Esta Tese}
+
+A versão do repositório correspondente a esta tese é identificada pela etiqueta de
+versão \texttt{tese-defesa-v1}, cujas notas de lançamento registram o identificador de
+\textit{commit} exato. Quem for conferir deve usar essa etiqueta, e não o ramo
+principal, que continua a receber trabalho posterior --- o estado corrente do ramo
+principal \emph{não} é o estado avaliado aqui.
+
+A integridade dos dados é conferível sem depender do histórico de versionamento: o
+arquivo \texttt{results/CHECKSUMS.sha256} traz a soma SHA-256 de cada um dos $320$
+arquivos CSV por execução, mais a trilha de auditoria por episódio, a tabela da família
+de comparação primária e o manifesto --- $323$ registros ao todo, verificáveis em um
+comando. Dois arquivos corrompidos ou substituídos não passam nessa verificação, e é
+esse o teste que torna os números desta tese conferíveis em vez de aceitos por
+confiança.
+
+\subsection{O Que Regenera Cada Tabela}
+
+Nenhuma tabela de resultado foi digitada à mão a partir de leitura de saída. A
+correspondência é a seguinte:
+
+\begin{itemize}
+    \item \texttt{gerar\_manifesto.py} reconstrói
+    \texttt{results/manifesto\_execucoes.csv} --- um registro por execução, com
+    configuração, cenário, semente, bateria, desfecho, validade, motivo de exclusão,
+    duração, indicador de censura, distância percorrida, anomalias e arquivo de origem
+    --- de onde saem todos os totais do censo (Tabela~\ref{tab:setup-censo});
+    \item \texttt{analise\_estatistica.py} produz os testes, tamanhos de efeito,
+    intervalos \textit{bootstrap} e correções de Holm do
+    Capítulo~\ref{cap:resultados}, gravando \texttt{familia\_confirmatoria.csv};
+    \item \texttt{gerar\_tabela\_familia.py} converte esse CSV na
+    Tabela~\ref{tab:res-familia}, e falha se os testes não forem exatamente quinze;
+    \item \texttt{rescore\_confirmacao.py} produz o repontuamento retrospectivo da
+    Tabela~\ref{tab:res-confirmacao} sobre a trilha de auditoria, sem executar nada;
+    \item \texttt{gerar\_auditoria.py} constrói a trilha por episódio;
+    \texttt{metrica\_prioridade.py} produz o tempo até o alvo prioritário;
+    \texttt{gerar\_boxplots.py} e \texttt{gerar\_qconv.py} produzem as figuras de
+    distribuição; \texttt{gerar\_mapa.py} produz o mapa do mundo simulado;
+    \item \texttt{train\_qdriven.py} treina e serializa a tabela de valor do
+    \textit{baseline} (Seção~\ref{sec:setup-qdriven}), e \texttt{analise\_qdriven.py}
+    produz os contrastes correspondentes.
+\end{itemize}
+
+\subsection{O Que Não é Reproduzível e Por Quê}
+
+Duas limitações são declaradas em vez de contornadas.
+
+A primeira: \textbf{o manifesto não registra o identificador de \textit{commit} de cada
+execução}, porque o \textit{script} de bateria não o gravava no momento em que as
+baterias rodaram. Isso não é recuperável retroativamente --- inferir o
+\textit{commit} pela data seria conjetura apresentada como registro. A identificação
+disponível é, portanto, por etiqueta de versão e por soma de verificação dos
+resultados, e o \textit{script} de bateria passa a gravar o \textit{commit} por
+execução nas baterias seguintes.
+
+A segunda: \textbf{a reexecução não reproduz os mesmos números}. Conforme a
+Seção~\ref{sec:res-ameacas}, fora das duas configurações de ruído não há aleatorização
+planejada, e a variabilidade entre execuções vem da não-determinação da simulação e do
+\textit{middleware}. Reexecutar a matriz produz uma amostra nova da mesma distribuição,
+não uma cópia da existente. O que é reproduzível por construção é a \emph{análise}:
+dados os mesmos CSVs, todo número relatado é regenerado pelos \textit{scripts} acima,
+bit a bit.

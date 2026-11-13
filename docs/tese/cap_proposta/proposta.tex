@@ -115,15 +115,28 @@ navegação. O único braço em que uma tabela de valor governa a ação é o
 \textit{baseline} \textsc{Q-driven}, relatado separadamente
 (Seção~\ref{sec:res-qdriven}).
 
+%% Ampliada em 13/11/2026: de 0,9 para a largura total do texto, e a legenda
+%% passa a traduzir todo rotulo interno, porque a figura conceitual ainda traz texto
+%% em ingles. Ela e ilustrativa: o conteudo normativo esta no caminho causal acima e
+%% na Tabela~\ref{tab:prop-transicoes}.
 \begin{figure}[htb]
 \centering
-\includegraphics[width=0.9\textwidth]{figuras/architecture}
-\caption{Arquitetura de duas camadas. A camada deliberativa (topo) conduz uma
-patrulha por \textit{waypoints} através do Nav2 (NavfnPlanner $+$ MPPI), enviando
-\texttt{/cmd\_vel} ao robô. A camada reativa (base, \textsc{Stay Alert}) converte
-eventos percebidos no campo de atração/repulsão e executa a máquina de estados
-finitos; ela preempta o Nav2 com uma meta de aproximação ou recuo e pausa ou retoma a
-patrulha. O ambiente devolve pose (TF) e eventos.}
+\includegraphics[width=\textwidth]{figuras/architecture}
+\caption{Arquitetura de duas camadas. A camada deliberativa (topo, \emph{Deliberative
+--- Active sensing}) conduz uma patrulha por \textit{waypoints} (\emph{Waypoint
+patrol}) através do Nav2 (NavfnPlanner $+$ MPPI), enviando \texttt{/cmd\_vel} ao robô,
+e mantém o mapa de custos com a zona de exclusão (\emph{Costmap (keepout)}). A camada
+reativa (base, \emph{Reactive --- Stay Alert}) recebe eventos --- modalidade,
+intensidade e posição (\emph{Events: modality, intensity, position}) ---, compõe o
+campo de atração--repulsão (\emph{Attraction--repulsion field}~$\Phi$) e executa a
+máquina de estados (\emph{Stay Alert FSM}), cujo disparo é por limiar sobre $\Phi$
+(\emph{threshold on raw~$\Phi$}). As setas entre as camadas são, da esquerda para a
+direita: comando da patrulha (\emph{FSM $\rightarrow$ patrol: busy: pause/resume}),
+preempção do navegador (\emph{FSM $\rightarrow$ Nav2: preempt: approach/retreat goal})
+e o canal da zona de exclusão (\emph{keepout channel --- carries the clearance
+result}). O ambiente (\emph{Gazebo / Robot}) devolve pose por TF e eventos
+(\emph{pose (TF) $+$ events}). A figura é ilustrativa; o conteúdo normativo está no
+caminho causal enunciado acima e na Tabela~\ref{tab:prop-transicoes}.}
 \label{fig:prop-arquitetura}
 \end{figure}
 
@@ -370,16 +383,26 @@ da rota --- não há entrega, o risco continua a ser publicado e a reobservaçã
 $h$; a janela de supressão medida na Seção~\ref{sec:res-custo-precedencia} é,
 portanto, mais longa do que o decaimento sozinho produziria.
 
+%% Ampliada em 13/11/2026, com a legenda traduzindo os rotulos internos e
+%% remetendo a tabela de transicoes, que e a fonte normativa.
 \begin{figure}[htb]
 \centering
-\includegraphics[width=0.9\textwidth]{figuras/stay_alert_fsm}
-\caption{Máquina de estados \textsc{Stay Alert} e campo de atração--repulsão. Topo:
-ao longo da patrulha o robô comuta para \textsc{Investigate} (aproximar-se de uma
-anomalia) ou \textsc{Avoid} (recuar de um risco). Inferior esquerda: os três modos e
-suas transições (limiares $\theta_{\text{in}},\theta_{\text{out}}$; desfechos
-\emph{inspecionado}/\emph{esgotado}/\emph{seguro}/\emph{recuado}; a repulsão tem
-prioridade). Inferior direita: o campo puxa em direção à atração e empurra para longe
-da repulsão.}
+\includegraphics[width=\textwidth]{figuras/stay_alert_fsm}
+\caption{Máquina de estados \textsc{Stay Alert} e campo de atração--repulsão. Topo: ao
+longo da patrulha (\textsc{Patrol}) o robô comuta para \textsc{Investigate}
+(aproximar-se de uma anomalia) ou \textsc{Avoid} (recuar de um risco). Inferior
+esquerda: os três modos, suas ações (\emph{follow waypoints}: seguir
+\textit{waypoints}; \emph{go to inspection pose $+$ dwell}: ir à pose de inspeção e
+permanecer; \emph{go to retreat pose}: ir à pose de recuo) e suas transições, com os
+limiares $\theta_{\text{in}}$ e $\theta_{\text{out}}$ e os desfechos \emph{inspected}
+(inspecionado), \emph{timeout} (esgotado), \emph{safe} (seguro) e \emph{retreated}
+(recuado); a repulsão tem prioridade. A nota ao pé reproduz a regra do período
+refratário: após deixar \textsc{Avoid}, a reentrada fica bloqueada por
+$t_{\text{ref}}$ enquanto a zona de exclusão deliberativa contorna o risco. Inferior
+direita: o campo puxa em direção à atração (\emph{attraction}) e empurra para longe da
+repulsão (\emph{repulsion}), com o neutro entre as duas. A lista completa e normativa
+das transições, incluindo a terceira saída de \textsc{Avoid}, está na
+Tabela~\ref{tab:prop-transicoes}.}
 \label{fig:prop-fsm}
 \end{figure}
 
