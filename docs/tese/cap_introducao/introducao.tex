@@ -134,7 +134,10 @@ Cabe dizer quais resultados, e com que consequências.
     e nenhum experimento conduzido atribuiu efeito observável à atualização. Treinar
     uma política sobre essa tabela exigiria política de exploração, mapeamento de
     ação para velocidade e comparação contra \textit{Q-learning} tabular comum ---
-    um estudo próprio, e não um módulo a mais.
+    um estudo próprio, e não um módulo a mais. Esse estudo foi posteriormente
+    conduzido em sua forma executada e é relatado na Seção~\ref{sec:res-qdriven}:
+    uma política tabular aprendida, selecionando a ação executada, não altera a
+    completude de inspeção nem a segurança, e custa tempo na subtarefa reativa.
 
     \item \textbf{Percepção e localização realistas impediriam a atribuição.} Com uma
     cadeia de percepção real e localização estimada em tempo de execução, o erro de
@@ -200,10 +203,12 @@ e~\ref{cap:revisao}); substituída pela abstração de eventos
 (Seção~\ref{sec:conc-futuro})\\
 \hline
 Desenvolver e treinar modelo de aprendizado por reforço &
-Entregue como formulação e análise, não como mecanismo &
+Entregue como formulação, análise e comparação executada &
 Seção~\ref{sec:prop-atualizacao}; resíduo completo
-$|\alpha\delta+\eta\Phi|$ no Capítulo~\ref{cap:resultados}; política aprendida
-nomeada em trabalhos futuros\\
+$|\alpha\delta+\eta\Phi|$ no Capítulo~\ref{cap:resultados}; e baseline
+\textsc{Q-driven} --- tabela $Q$ treinada com recompensa aumentada por $\Phi$,
+selecionando a ação executada --- medido contra o método nos três cenários
+(Seção~\ref{sec:res-qdriven})\\
 \hline
 Integrar com \ac{SLAM} e modelos tridimensionais &
 Não entregue como proposto &

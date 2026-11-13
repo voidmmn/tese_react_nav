@@ -303,6 +303,122 @@ de precedência; apresenta-se essa como a leitura mais consistente com os
 \textit{logs}, e não como fator isolado: separar a fonte do disparo da persistência
 exigiria uma variante adicional que não foi executada.
 
+%% Secao escrita em 13/11/2026, a partir da bateria qdriven de 12/11/2026
+%% (QDRVd/QDRVc/QDRVa, 10 execucoes cada, 30/30 COMPLETE, zero timeouts).
+%% O no existia desde a bateria de resubmissao e nunca havia sido executado.
+%% EXPLORATORIA: a familia confirmatoria esta fechada e corrigida por Holm desde
+%% a bateria de outubro; o p corrigido reportado aqui e interno a esta familia.
+\section{Contra Aprendizado por Reforço Comportamental}
+\label{sec:res-qdriven}
+
+As comparações anteriores substituem o \emph{sinal} que dispara a reação. Resta
+substituir o \emph{mecanismo de decisão} propriamente dito: em vez de um limiar sobre
+o campo que emite uma meta à pilha de navegação, uma política aprendida que seleciona
+a ação executada. É a formulação que a Seção~\ref{sec:prop-atualizacao} registra como
+nota de projeto, aqui posta para funcionar.
+
+O baseline \textsc{Q-driven} carrega uma tabela $Q(s,a)$ pré-treinada com
+\emph{recompensa aumentada} pelo campo $\Phi$, discretizando o estado em tipo de
+evento, faixa de distância e setor de rumo, com ações em
+$\{$avançar, esquerda, direita, parar$\}$. Durante o episódio reativo é essa tabela
+que escolhe a ação, em modo \textit{greedy}, comandando diretamente a velocidade do
+robô --- enquanto no método proposto a tabela é passiva e o disparo por limiar emite
+uma meta ao Nav2/MPPI. Tudo o mais é compartilhado: a mesma patrulha deliberativa por
+baixo, o mesmo protocolo de eventos, o mesmo avaliador independente de inspeção, e os
+mesmos parâmetros de inspeção --- distância de parada $\rho=2$~m e recuo em
+$R+\Delta=6{,}5$~m. A separação é, portanto, de mecanismo, e não de parametrização.
+
+A Tabela~\ref{tab:res-qdriven} reúne os contrastes nos três cenários, com dez
+execuções por configuração e trinta de trinta concluindo a missão. Estes contrastes
+são \textbf{exploratórios}: a família confirmatória foi fechada antes desta bateria, e
+o $p$ corrigido por Holm que a tabela traz é interno a esta família exploratória, não
+à primária.
+
+\begin{table}[htb]
+\centering
+\caption{Método proposto contra o baseline \textsc{Q-driven} de aprendizado por
+reforço comportamental, nos três cenários. Medianas sobre execuções válidas,
+$n=10$ por configuração. $\delta$ é o Cliff's delta (positivo quando o
+\textsc{Q-driven} apresenta valor maior) e o intervalo é o IC~$95\%$
+\textit{bootstrap} da diferença de médias. Contrastes exploratórios; a correção de
+Holm é interna a esta família. Não se compara o número de desvios de rota: a métrica
+conta metas enviadas ao Nav2 e o \textsc{Q-driven} comanda velocidade diretamente, de
+modo que seu zero é artefato de definição e não desempenho.}
+\label{tab:res-qdriven}
+\footnotesize
+\begin{tabular}{llrrrcr}
+\hline
+\textbf{Cenário} & \textbf{Métrica} & \textbf{Método} & \textbf{Q-driven} &
+$\bm{\delta}$ & \textbf{IC~95\%} & $\bm{p_{\mathrm{Holm}}}$\\
+\hline
+\texttt{default}  & anomalias inspecionadas   & 3,00 & 3,00 & $0{,}00$ & --- & $1{,}000$\\
+                  & duração da missão (s)     & 364,87 & 361,05 & $-0{,}74$ & $[-4{,}19;\,+1{,}88]$ & $0{,}051$\\
+                  & tempo em investigação (s) & 35,10 & 48,60 & $+1{,}00$ & $[+12{,}66;\,+13{,}84]$ & $0{,}003$\\
+                  & afastamento mínimo (m)    & 4,85 & 4,98 & $+1{,}00$ & $[+0{,}10;\,+0{,}14]$ & $2{,}6\cdot10^{-4}$\\
+                  & distância percorrida (m)  & 86,59 & 85,72 & $-1{,}00$ & $[-0{,}94;\,-0{,}72]$ & $2{,}6\cdot10^{-4}$\\
+\hline
+\texttt{conflict} & anomalias inspecionadas   & 3,00 & 3,00 & $0{,}00$ & --- & $1{,}000$\\
+                  & duração da missão (s)     & 363,69 & 360,61 & $-0{,}80$ & $[-4{,}59;\,+1{,}93]$ & $0{,}039$\\
+                  & tempo em investigação (s) & 34,80 & 48,50 & $+1{,}00$ & $[+13{,}42;\,+14{,}65]$ & $0{,}003$\\
+                  & afastamento mínimo (m)    & 4,84 & 4,98 & $+1{,}00$ & $[+0{,}13;\,+0{,}16]$ & $2{,}6\cdot10^{-4}$\\
+                  & distância percorrida (m)  & 86,43 & 85,69 & $-1{,}00$ & $[-0{,}85;\,-0{,}70]$ & $2{,}6\cdot10^{-4}$\\
+\hline
+\texttt{adverse}  & anomalias inspecionadas   & 5,00 & 5,00 & $+0{,}10$ & $[+0{,}00;\,+0{,}30]$ & $1{,}000$\\
+                  & duração da missão (s)     & 397,73 & 502,77 & $+1{,}00$ & $[+99{,}17;\,+109{,}39]$ & $2{,}6\cdot10^{-4}$\\
+                  & tempo em investigação (s) & 61,70 & 82,75 & $+1{,}00$ & $[+20{,}47;\,+25{,}32]$ & $0{,}003$\\
+                  & afastamento mínimo (m)    & 4,88 & 4,98 & $+1{,}00$ & $[+0{,}11;\,+0{,}15]$ & $2{,}6\cdot10^{-4}$\\
+                  & distância percorrida (m)  & 92,29 & 98,38 & $+1{,}00$ & $[+5{,}90;\,+6{,}44]$ & $2{,}6\cdot10^{-4}$\\
+\hline
+\end{tabular}
+\end{table}
+
+Três leituras decorrem desses números.
+
+Primeiro, \emph{a política aprendida não compra completude de inspeção}. Nos três
+cenários o número de anomalias inspecionadas é o mesmo --- três, três e cinco ---, sem
+diferença detectável. O resultado é coerente com a arquitetura: \emph{o que}
+inspecionar é decidido pela camada de eventos, idêntica nos dois braços; a política
+governa apenas \emph{como} o robô chega ao alvo. Trocar o mecanismo de decisão motora
+não desloca o desfecho que define a tarefa de inspeção.
+
+Segundo, \emph{a política aprendida é mais lenta na subtarefa reativa, com separação
+completa}. O tempo em investigação sobe de $35{,}1$ para $48{,}6$~s em
+\texttt{default}, de $34{,}8$ para $48{,}5$~s em \texttt{conflict} e de $61{,}7$ para
+$82{,}8$~s em \texttt{adverse}, com $\delta=+1{,}00$ nos três --- nenhuma execução do
+método se sobrepõe a nenhuma execução do baseline. Comandar velocidade por política
+\textit{greedy} alcança a mesma distância de parada de $2$~m gastando
+consistentemente mais tempo do que emitir uma meta a um planejador e a um controlador
+maduros.
+
+Terceiro, \emph{esse custo só se manifesta na missão quando a densidade de eventos o
+impede de ser absorvido}. Em \texttt{default} e \texttt{conflict} a missão do baseline
+até termina cerca de três segundos mais cedo, porque ele dispensa as idas e voltas de
+meta do Nav2 e percorre pouco menos de um metro a menos; o acréscimo em investigação
+cabe nas folgas da ronda. No cenário adverso --- cinco anomalias aglomeradas e dois
+riscos --- ele deixa de caber: a missão passa de $397{,}7$ para $502{,}8$~s, um
+acréscimo de $105$~s ou $26\%$, com $\delta=+1{,}00$ e intervalo de confiança
+inteiramente afastado de zero.
+
+A resposta de segurança não distingue os dois braços. Nos três cenários, ambos
+registram zero entradas na região de contato de $0{,}5$~m, zero violações de zona de
+segurança e zero tempo sob a faixa de afastamento de $2$~m; o afastamento mínimo
+mediano difere em $0{,}10$ a $0{,}14$~m a favor do baseline, separação completa porém
+de magnitude operacionalmente desprezível diante do recuo comandado de $6{,}5$~m. Isso
+reforça, por uma terceira via independente, a atribuição estabelecida na
+Seção~\ref{sec:res-ablacao}: a segurança observada vem da geometria do recuo e da zona
+de exclusão, e não do mecanismo que decide a reação.
+
+\paragraph*{O que este contraste não estabelece} A tabela $Q$ foi treinada em um
+simulador cinemático rápido, que representa posição e evento mas não a geometria dos
+obstáculos do mundo simulado. Parte da desvantagem medida é, portanto, limitação de
+\emph{transferência} entre os dois simuladores, e não propriedade intrínseca do
+aprendizado por reforço. A alegação que estes números sustentam é restrita: uma
+política tabular treinada com recompensa aumentada por $\Phi$, nos moldes previstos
+para este sistema, não melhora a completude de inspeção nem a segurança sobre o
+disparo por limiar, e custa tempo na subtarefa reativa. Uma política treinada no
+próprio ambiente de avaliação, com ações mapeadas para o controlador em vez de para a
+velocidade do robô, é outra pergunta --- registrada na Seção~\ref{sec:conc-futuro}.
+
 \section{Resposta a Risco e Segurança}
 \label{sec:res-seguranca}
 

@@ -138,12 +138,19 @@ persistência apontam na mesma direção: a arbitragem e sua extensão temporal 
 a ponderação --- são onde o trabalho adicional pertence.
 
 \begin{itemize}
+%% Reescrito em 13/11/2026: a comparacao contra Q-learning tabular, que este item
+    %% dava como pendente, foi executada (Secao~\ref{sec:res-qdriven}). O que resta em
+    %% aberto e a politica de DEFERENCIA, treinada no proprio ambiente de experimentacao.
     \item \textbf{Política aprendida de deferência.} Uma política que
     \emph{aprenda} quando deferir ao canal de risco, em vez de sempre deferir,
     endereçaria o excesso de conservadorismo que foi medido. A formulação de valor da
-    Seção~\ref{sec:prop-atualizacao} é o substrato natural para isso, mas exige uma
-    política de exploração, um mapeamento de ações para velocidades e uma comparação
-    contra \textit{Q-learning} tabular comum --- o que está além deste estudo.
+    Seção~\ref{sec:prop-atualizacao} é o substrato natural para isso. A comparação
+    contra uma política tabular treinada com recompensa aumentada já foi conduzida
+    (Seção~\ref{sec:res-qdriven}) e não favoreceu o braço aprendido; resta, porém, a
+    pergunta que ela não responde --- uma política treinada no \emph{próprio}
+    ambiente de avaliação, com ações mapeadas para o controlador em vez de para a
+    velocidade do robô, e com a deferência ao canal de risco como objeto do
+    aprendizado em vez de regra fixa.
 
     \item \textbf{Percepção real.} Substituir os eventos-oráculo por percepção
     térmica, acústica e visual real alimentando a camada de eventos, com tratamento
