@@ -17,11 +17,89 @@ O desenvolvimento de sistemas de navegação autônoma para esses robôs é um c
 Contudo, apesar dos avanços significativos, muitas das soluções atuais de inspeção robótica em subestações ainda operam predominantemente com base em rotas pré-definidas ou otimizadas para cobertura de área \cite{TJH2b2023Trends}. Essa abordagem, embora útil para tarefas de monitoramento rotineiro (ronda), pode não ser a mais eficiente ou eficaz para uma inspeção verdadeiramente investigativa. Eventos anômalos ou condições que exigem atenção imediata podem ocorrer fora da rota planejada ou exigir uma resposta dinâmica que vai além do simples seguimento de um caminho. A capacidade de um robô não apenas seguir uma rota, mas perceber ativamente seu entorno, interpretar múltiplos estímulos sensoriais de forma integrada e reagir inteligentemente a eventos inesperados, direcionando sua atenção para onde ela é mais necessária, representa um desafio e uma oportunidade significativa para a próxima geração de sistemas de inspeção autônoma.
 
 Apesar do potencial da robótica autônoma, a implementação eficaz de sistemas de inspeção em subestações elétricas enfrenta desafios significativos que limitam o desempenho e a confiabilidade das abordagens atuais, majoritariamente baseadas em rotas pré-definidas \cite{TJH2b2023Trends}. A simples execução de rondas programadas, embora útil para cobertura sistemática, falha em abordar a necessidade de uma inspeção dinâmica e focada em eventos anômalos que podem surgir inesperadamente no ambiente complexo e muitas vezes hostil de uma subestação \cite{Wei2024Advancements}. A verdadeira inteligência em inspeção reside na capacidade do robô de perceber, interpretar e reagir adequadamente a estímulos ambientais em tempo real, adaptando sua trajetória e foco de inspeção conforme necessário.
-A navegação autônoma robusta neste ambiente é particularmente desafiadora devido a uma confluência de fatores ambientais e operacionais. Primeiramente, a presença de altos níveis de interferência eletromagnética ou \ac{EMI}, inerente às operações de alta tensão, pode afetar severamente o funcionamento de sensores eletrônicos e sistemas de comunicação do robô, comprometendo a aquisição de dados e a própria capacidade de navegação \cite{He2007EMCSubstation,tdworld2024Challenges,Yan2024CombinedNav}. Sensores de localização como GPS podem ser indisponíveis ou imprecisos, e até mesmo sensores como \ac{LiDAR} e câmeras podem sofrer interferências ou degradação de desempenho.
+A navegação autônoma robusta neste ambiente é particularmente desafiadora devido a uma confluência de fatores ambientais e operacionais. Primeiramente, a presença de altos níveis de interferência eletromagnética ou \ac{EMI}, inerente às operações de alta tensão, pode afetar severamente o funcionamento de sensores eletrônicos e sistemas de comunicação do robô, comprometendo a aquisição de dados e a própria capacidade de navegação \cite{He2007EMCSubstation,tdworld2024Challenges}. Sensores de localização como GPS podem ser indisponíveis ou imprecisos, a ponto de os sistemas de navegação relatados para inspeção de subestação recorrerem à combinação de DGPS com odometria \cite{Yan2024CombinedNav}, e até mesmo sensores como \ac{LiDAR} e câmeras podem sofrer interferências ou degradação de desempenho.
 Adicionalmente, o ambiente físico das subestações impõe obstáculos consideráveis. A abundância de estruturas metálicas (equipamentos, grades, postes) pode causar múltiplas reflexões e oclusões para sensores baseados em ondas, como \ac{LiDAR} e radar, além de dificultar a interpretação de dados visuais \cite{Wijayathunga2023Challenges, Cai2025AttentionSeg}. A variabilidade extrema nas condições de iluminação, alternando entre luz solar direta, sombras profundas e iluminação artificial noturna, representa um desafio significativo para algoritmos de visão computacional. A necessidade de operar tanto em ambientes internos quanto externos adiciona outra camada de complexidade, exigindo que o sistema de navegação se adapte a diferentes tipos de terreno, condições atmosféricas e características espaciais \cite{Alatise2020Review}. A presença de obstáculos fixos e potencialmente dinâmicos (veículos de manutenção, pessoal) também requer capacidades avançadas de detecção e desvio.
 Portanto, o problema central de pesquisa abordado nesta tese reside na \textbf{limitação dos atuais \textit{frameworks} de navegação robótica para inspeção de subestações em lidar de forma adaptativa e reativa com a complexidade ambiental e a natureza dinâmica dos eventos de interesse}. Falta uma abordagem que use a saliência do que é percebido para guiar ativamente a navegação, permitindo que o robô seja ``atraído'' por anomalias relevantes e ``repelido'' por perigos, e que o faça de modo a permitir atribuir qual mecanismo entrega qual efeito. É esse recorte --- a \emph{lógica de decisão} que arbitra entre inspecionar e se afastar, e não a cadeia de percepção que a alimenta --- que esta tese ataca. A \autoref{fig:problema_pesquisa} mostra um infográfico com uma representação do problema da pesquisa.
 
 \section{Problema de Pesquisa}
+\label{sec:intro-problema}
+
+%% Secao preenchida em 13/11/2026. Ela existia apenas com titulo e figura, de modo
+%% que a pergunta de pesquisa nao estava enunciada em lugar algum do documento. As
+%% subperguntas abaixo sao, uma a uma, o contraste experimental que as responde.
+
+Robôs de inspeção de subestações em operação seguem rondas pré-programadas: o percurso
+é fixo e não se altera em função do que o robô percebe no caminho
+\cite{TJH2b2023Trends,Liu2016VisualNavSubstation}. A literatura que propõe superar essa
+limitação acopla percepção e reação em sistemas que percebem, decidem e se desviam ao
+mesmo tempo, e relata o desempenho \emph{agregado} do conjunto. Daí decorre o problema
+desta tese, que é de atribuição e não de desempenho: quando uma arquitetura desse tipo
+inspeciona mais e se afasta mais de um risco do que uma ronda fixa, não se sabe
+\emph{qual} de seus mecanismos produziu cada efeito --- e a comparação contra a ronda
+fixa não ajuda a descobrir, porque a ronda fixa não dispõe de mecanismo algum para
+deixar a rota e perde por construção.
+
+Essa indeterminação tem consequência prática. Quem for implantar um supervisor de
+inspeção precisa decidir onde investir: em perceber melhor para ponderar alvos, em
+expressar o risco no planejamento deliberativo, em dar memória temporal ao sinal de
+perigo, ou em nenhuma dessas coisas. Sem atribuição, a decisão é tomada por analogia
+com um resultado agregado que pode ter vindo de outro componente. E há um custo que o
+relato agregado esconde: uma precedência de segurança que funciona bem também recusa
+inspeções legítimas, e esse preço raramente é medido.
+
+Formula-se, assim, a pergunta central:
+
+\begin{quote}
+Em uma arquitetura de inspeção que acopla o que o robô percebe à forma como ele reage,
+\emph{qual mecanismo responde por qual efeito, e a que custo} --- quando cada mecanismo
+é trocado ou removido isoladamente, mantidos o mesmo controlador de navegação, o mesmo
+cenário e o mesmo protocolo de medida?
+\end{quote}
+
+Ela se desdobra em seis subperguntas, cada uma amarrada a um contraste executado:
+
+\begin{enumerate}
+    \item \textbf{Origem do afastamento.} Diante de um risco \emph{estático} sobre a
+    rota de patrulha, o afastamento observado é produzido pela ponderação reativa ou
+    pela expressão deliberativa da repulsão no \textit{costmap}? \emph{Contraste:}
+    patrulha fixa com a mesma zona de exclusão e sem supervisor reativo, contra a
+    ablação que retém a inspeção reativa, contra a ablação sem zona de exclusão
+    (Seção~\ref{sec:res-ablacao}).
+
+    \item \textbf{Critério de seleção.} Ponderar o alvo por saliência produz desfecho
+    diferente de simplesmente escolher o mais próximo? \emph{Contraste:} variante que
+    difere \emph{apenas} na regra de seleção, nos três cenários
+    (Seção~\ref{sec:res-heu}).
+
+    \item \textbf{Modo de disparo e persistência.} Substituir o campo com limiar e
+    decaimento por detecção bruta altera o desfecho de segurança quando um risco está
+    colocalizado com uma anomalia mais saliente? \emph{Contraste:} heurística genérica
+    de detectar--selecionar--desviar--retornar sobre o \emph{mesmo} controlador
+    Nav2/MPPI (Seção~\ref{sec:res-heu}), com a ressalva de que disparo e persistência
+    variam em conjunto (Seção~\ref{sec:res-ameacas}).
+
+    \item \textbf{Custo da precedência.} Qual é o preço, em inspeções perdidas e em
+    tempo de missão, de conceder prioridade categórica ao canal de risco? \emph{
+    Contraste:} cenário com risco marginalmente elegível
+    (Seção~\ref{sec:res-custo-precedencia}) e varreduras de limiar e de histerese
+    (Seções~\ref{sec:res-sens-limiar} e~\ref{sec:res-histerese}).
+
+    \item \textbf{Papel do aprendizado.} Uma tabela de valor treinada com recompensa
+    aumentada pelo campo, \emph{selecionando} as ações, supera a regra fixa de
+    precedência? \emph{Contraste:} linha de base \textsc{Q-driven} nos três cenários
+    (Seção~\ref{sec:res-qdriven}).
+
+    \item \textbf{Métrica contra propriedade física.} Quanto da completude de inspeção
+    relatada é propriedade do comportamento e quanto é do critério de confirmação
+    adotado? \emph{Contraste:} varredura de ruído de percepção e reavaliação
+    retrospectiva do limiar de confirmação sobre os mesmos registros
+    (Seções~\ref{sec:res-ruido} e~\ref{sec:res-inspecao}).
+\end{enumerate}
+
+A resposta a essas subperguntas --- inclusive quando ela é negativa, como nos itens 2
+e~5 --- é o que esta tese oferece como contribuição, e não a demonstração de que um
+robô de inspeção pode desviar de um obstáculo.
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{figuras/fig_problema_pesquisa.jpg}
@@ -99,6 +177,110 @@ experimentalmente a cada mecanismo o efeito que ele de fato produz.
     dados por execução e \textit{scripts} de análise, de modo que todo denominador
     relatado possa ser conferido.
 \end{enumerate}
+
+%% Secao criada em 13/11/2026. As contribuicoes estavam dispersas entre objetivos,
+%% metodologia e conclusao, o que deixava o leitor sem saber o que e herdado, o que e
+%% modificacao e qual evidencia sustenta cada uma. Cada item declara os cinco campos
+%% na mesma ordem, e nenhum deles omite a limitacao.
+\section{Contribuições}
+\label{sec:intro-contribuicoes}
+
+Cada contribuição é declarada em cinco campos --- componente herdado, modificação
+proposta, evidência produzida, conhecimento novo e limitação ---, de modo que o que é
+reivindicado como original possa ser separado do que é reaproveitado e confrontado com
+a evidência correspondente. Duas das seis contribuições são \emph{resultados
+negativos}: eles são declarados como contribuição porque delimitam uma classe de
+arquitetura que vem sendo adotada sem esse escrutínio, e não porque confirmam a
+proposta.
+
+\begin{enumerate}
+    \item \textbf{Campo de atração--repulsão com canais de memória e precedência
+    categórica.} \emph{Herdado:} campos de atração e repulsão para navegação
+    \cite{Arkin1989,Barraquand1992} e prioridade fixa entre camadas de comportamento
+    \cite{Brooks1986}. \emph{Modificação:} o canal de risco não disputa magnitude com
+    o canal de inspeção --- ele governa por precedência categórica sempre que um risco
+    é elegível --- e carrega memória própria, com limiar de elegibilidade e decaimento
+    (Seção~\ref{sec:prop-campo}). \emph{Evidência:} contraste contra uma heurística
+    genérica de detectar--selecionar--desviar--retornar executada sobre o mesmo
+    controlador Nav2/MPPI, e varreduras de limiar e de histerese
+    (Seções~\ref{sec:res-heu}, \ref{sec:res-sens-limiar} e~\ref{sec:res-histerese}).
+    \emph{Conhecimento novo:} o que separa esta camada de uma heurística de desviar e
+    retornar é a persistência temporal do canal de risco, e não a ponderação por
+    saliência. \emph{Limitação:} no contraste executado, o modo de disparo e a
+    persistência variam em conjunto, de modo que não são fatores separáveis com as
+    configurações rodadas (Seção~\ref{sec:res-ameacas}).
+
+    \item \textbf{Expressão deliberativa da repulsão acoplada ao recuo reativo.}
+    \emph{Herdado:} inflação de obstáculos em mapa de custos na pilha de navegação
+    \cite{Macenski2022}. \emph{Modificação:} projeção persistente do risco detectado
+    como zona de exclusão no mapa de custos global, acoplada à preempção reativa, para
+    tratar riscos que bloqueiam a própria rota de patrulha
+    (Seção~\ref{sec:prop-keepout}). \emph{Evidência:} ablação em três braços --- com
+    zona e sem supervisor, com ambos, e sem zona (Seção~\ref{sec:res-ablacao}).
+    \emph{Conhecimento novo:} sobre um risco estático na rota, o afastamento é
+    atribuível à zona de exclusão deliberativa e não à ponderação reativa; e sem ela o
+    recuo reativo sozinho não resolveu o risco dentro do orçamento de execução concedido
+    --- nenhuma execução concluiu a missão. \emph{Limitação:} o resultado vale para o
+    cenário de risco estático sobre a rota e para as configurações estudadas; ausência
+    de benefício adicional detectado não demonstra equivalência geral de componentes.
+
+    \item \textbf{Desenho de avaliação que isola o mecanismo.} \emph{Herdado:}
+    protocolos de comparação por simulação em navegação autônoma. \emph{Modificação:} a
+    heurística comparada roda sobre o \emph{mesmo} controlador Nav2/MPPI e a mesma
+    camada de eventos, o que remove o controlador como confundidor, e cada variante
+    troca um fator por vez (Capítulo~\ref{cap:avaliacao}). \emph{Evidência:} $32$ pares
+    configuração--cenário, $320$ execuções tentadas e $311$ válidas, com família de
+    comparação primária de $15$ testes declarada a priori quanto à regra de
+    multiplicidade (Seções~\ref{sec:setup-censo} e~\ref{sec:res-familias}).
+    \emph{Conhecimento novo:} o ganho sobre uma ronda fixa não é informativo sobre
+    mecanismo; o contraste informativo é contra a mesma arquitetura com um fator
+    trocado. \emph{Limitação:} um único \textit{layout} e uma única distribuição de
+    eventos por cenário --- o que as repetições estabelecem é repetibilidade naquelas
+    condições, não validade externa.
+
+    \item \textbf{Custo medido da precedência de segurança.} \emph{Herdado:} a prática
+    de dar prioridade à segurança, corrente desde as arquiteturas em camadas.
+    \emph{Modificação:} um cenário desenhado para tornar esse custo \emph{observável},
+    com um risco marginalmente elegível cuja presença não justifica o recuo
+    (Seção~\ref{sec:res-custo-precedencia}). \emph{Evidência:} supressão da atração por
+    cerca de $70$~s e renúncia a uma de quatro inspeções em $10/10$ execuções.
+    \emph{Conhecimento novo:} a precedência categórica tem preço quantificável e
+    reprodutível, em inspeções perdidas e em tempo de missão, em vez de efeito
+    colateral aceitável não examinado. \emph{Limitação:} o valor depende do limiar de
+    elegibilidade e da geometria do cenário, e não é uma constante da arquitetura.
+
+    \item \textbf{Resultado negativo: o critério de seleção não teve efeito
+    detectável.} \emph{Herdado:} a ponderação de alvos por saliência.
+    \emph{Modificação:} variante que difere \emph{apenas} na regra de seleção ---
+    o alvo mais próximo em lugar do mais saliente (Seção~\ref{sec:res-heu}).
+    \emph{Evidência:} desfechos discretos idênticos ao longo das dez execuções nos
+    cenários de referência e distribuições sobrepostas no cenário adverso, com
+    equivalência declarada por \ac{TOST} onde as margens a sustentam
+    (Seção~\ref{sec:res-equivalencia}). \emph{Conhecimento novo:} nestes cenários, a
+    saliência não domina a proximidade, o que redireciona o esforço de projeto para a
+    arbitragem e sua extensão temporal. \emph{Limitação:} não detectar diferença não é
+    equivalência, exceto onde o \ac{TOST} a declara com margem justificada; e a
+    utilidade da saliência em outras distribuições de eventos não é eliminada.
+
+    \item \textbf{Resultado negativo: a tabela de valor não substitui a regra de
+    precedência.} \emph{Herdado:} \textit{Q-learning} tabular com recompensa aumentada.
+    \emph{Modificação:} além da atualização passiva do método principal
+    (Seção~\ref{sec:prop-atualizacao}), uma linha de base em que a tabela de valor
+    \emph{seleciona} a ação executada, medida nos três cenários
+    (Seção~\ref{sec:res-qdriven}). \emph{Evidência:} bloco de doze testes com correção
+    interna de multiplicidade. \emph{Conhecimento novo:} a tabela de valor treinada com
+    recompensa aumentada pelo campo não superou a regra fixa de precedência nas
+    implementações comparadas. \emph{Limitação:} a comparação é entre as duas
+    implementações efetivamente testadas --- a política atua em velocidade e foi
+    treinada em simulador cinemático, enquanto o método envia metas ao Nav2/MPPI ---, e
+    não entre os paradigmas de decisão em geral.
+\end{enumerate}
+
+Um sétimo item é artefato, e não conhecimento: o pacote reprodutível
+--- código, mundo simulado, manifesto por execução e \textit{scripts} que regeneram as
+tabelas de resultado a partir dos registros ---, cuja limitação está declarada no
+Capítulo~\ref{cap:resultados}: as baterias já executadas não gravaram o identificador
+de \textit{commit} por execução, o que não é recuperável retroativamente.
 
 %% Secao criada em 12/11/2026. Registra, de frente e na introducao, o estreitamento
 %% de escopo em relacao a proposta qualificada em 12/09/2026. O enquadramento e

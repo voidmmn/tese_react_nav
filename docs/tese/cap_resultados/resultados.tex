@@ -2,10 +2,41 @@
 \label{cap:resultados}
 
 Este capítulo apresenta a avaliação experimental da arquitetura descrita no
-Capítulo~\ref{cap:proposta}. Os resultados aqui relatados são os mesmos que
-sustentam o artigo publicado no periódico \textit{IEEE Access}, aceito em novembro
-de 2026, e foram obtidos integralmente em simulação, no ambiente descrito na
-Seção~\ref{sec:setup-ambiente}.
+Capítulo~\ref{cap:proposta}, obtida integralmente em simulação, no ambiente descrito
+na Seção~\ref{sec:setup-ambiente}.
+
+%% Corrigido em 13/11/2026. A frase anterior dizia "o artigo publicado [...] aceito em
+%% novembro de 2026", misturando dois estados editoriais distintos. A situacao efetiva
+%% na data de fechamento desta versao e: aceito em 09/11/2026 com alteracoes menores,
+%% arquivos finais entregues, sem DOI atribuido e sem versao online.
+Parte destes resultados sustenta o artigo \citeonline{MirandaNeto2026TwoLayer},
+\emph{aceito para publicação} no periódico \textit{IEEE Access} em 9 de novembro de
+2026, com as alterações menores solicitadas atendidas e os arquivos finais entregues.
+Na data de fechamento desta versão da tese o artigo ainda não havia recebido
+identificador digital nem versão \textit{online}; emprega-se, por isso, "aceito" e não
+"publicado". O que esta tese acrescenta ao artigo é documentado e verificável:
+
+\begin{itemize}
+    \item a linha de base \textsc{Q-driven}, em que a tabela de valor \emph{seleciona}
+    a ação executada, medida nos três cenários (Seção~\ref{sec:res-qdriven}), deixada
+    fora do artigo;
+    \item as varreduras de limiar de elegibilidade e de histerese
+    (Seções~\ref{sec:res-sens-limiar} e~\ref{sec:res-histerese}), que acrescentam cinco
+    pares configuração--cenário aos dezesseis do artigo;
+    \item o censo de execuções reconciliado (Seção~\ref{sec:setup-censo}), que dá
+    $320$~tentativas e $311$ execuções válidas contra as $160$ tentativas e $154$
+    válidas do subconjunto do artigo, com cada exclusão nominalmente atribuída;
+    \item a família de comparação primária impressa integralmente, com as quinze linhas
+    geradas por \textit{script} a partir dos registros, a regra de multiplicidade
+    declarada por família e a equivalência por \ac{TOST}
+    (Seções~\ref{sec:res-familias} e~\ref{sec:res-equivalencia});
+    \item a declaração de censura à direita da ablação sem zona de exclusão
+    (Seção~\ref{sec:res-ablacao}), que no artigo aparecia como duração de missão;
+    \item a formalização completa da camada de supervisão, com o ciclo de vida de alvo
+    e as condições de saída (Capítulo~\ref{cap:proposta}), e a discussão de limites de
+    evidência e de validade externa dos Capítulos~\ref{cap:resultados}
+    e~\ref{cap:conclusao}.
+\end{itemize}
 
 Antes de qualquer número, convém fixar o que esta avaliação pode e o que não pode
 sustentar. A percepção é abstraída em eventos-oráculo: o simulador publica
