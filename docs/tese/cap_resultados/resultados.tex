@@ -34,12 +34,20 @@ mencionada, é avaliada por dois testes unilaterais (TOST); taxas de sucesso por
 missão são relatadas com intervalos de Wilson.
 
 \subsection{Execuções Válidas e Confiabilidade de Inicialização}
+\label{sec:res-validade}
 
+%% Reconciliado em 13/11/2026. Os numeros anteriores (160/154/6) eram os da matriz de
+%% dezesseis configuracoes do artigo, nao os desta tese, que acrescentou KOF, CM, as
+%% cinco varreduras e os blocos HEU, HEU-sel e Q-driven. Totais agora vindos do mesmo
+%% manifesto da Tabela~\ref{tab:setup-censo}.
 Execuções em que a plataforma não se moveu (distância percorrida $\approx 0$)
 constituem um desfecho de confiabilidade de inicialização, não um resultado de
-navegação. Das $160$ execuções tentadas, $154$ atenderam ao critério de movimento
-para análise comportamental e $6$ permaneceram imóveis. O critério observável e
-publicado para essas seis é a \emph{imobilidade} --- o critério de distância do
+navegação. Das $320$ execuções tentadas desta tese (Tabela~\ref{tab:setup-censo}),
+$311$ atenderam ao critério de movimento para análise comportamental e $9$
+permaneceram imóveis. As dezesseis configurações herdadas do artigo correspondem a
+$160$ dessas tentativas, com $154$ válidas e $6$ imóveis; as demais foram acrescentadas
+nesta tese e são censadas junto com elas. O critério observável e
+publicado para essas nove é a \emph{imobilidade} --- o critério de distância do
 analisador; a maioria acumula relógio de missão sem qualquer deslocamento. Lemos
 esse padrão como consistente com uma falha de \emph{inicialização} (o contêiner de
 navegação não subindo o robô), mas não certificamos essa causa de infraestrutura a
@@ -50,7 +58,8 @@ Relatam-se duas visões complementares, em vez de agregá-las:
 \begin{enumerate}
     \item desempenho \emph{condicional à inicialização bem-sucedida}, calculado
     sobre as execuções válidas ($n=8$ a $10$ por configuração);
-    \item confiabilidade de partida \emph{por tentativa} ($154/160 = 96{,}25\%$).
+    \item confiabilidade de partida \emph{por tentativa} ($311/320 = 97{,}2\%$; sobre
+    as dezesseis configurações do artigo, $154/160 = 96{,}25\%$).
 \end{enumerate}
 
 As execuções imóveis \emph{não} são promediadas nas métricas comportamentais --- sua
@@ -408,8 +417,8 @@ Terceiro, \emph{esse custo só se manifesta na missão quando a densidade de eve
 impede de ser absorvido}. Em \texttt{default} e \texttt{conflict} a missão do baseline
 até termina cerca de três segundos mais cedo, porque ele dispensa as idas e voltas de
 meta do Nav2 e percorre pouco menos de um metro a menos; o acréscimo em investigação
-cabe nas folgas da ronda. No cenário adverso --- cinco anomalias aglomeradas e dois
-riscos --- ele deixa de caber: a missão passa de $397{,}7$ para $502{,}8$~s, um
+cabe nas folgas da ronda. No cenário adverso --- cinco anomalias aglomeradas sobre o
+mesmo risco único do cenário padrão --- ele deixa de caber: a missão passa de $397{,}7$ para $502{,}8$~s, um
 acréscimo de $105$~s ou $26\%$, com $\delta=+1{,}00$ e intervalo de confiança
 inteiramente afastado de zero.
 
@@ -500,8 +509,19 @@ reativo desabilitado) o planejador ainda contorna o risco e inspeciona as três
 anomalias no mesmo afastamento de $1{,}71$~m, ligeiramente mais rápido que o método
 completo ($352$ contra $372$~s). Com o \emph{recuo reativo apenas} (KOb, zona de
 exclusão desabilitada) o robô não consegue livrar o risco sobre a rota: oscila
-($29{,}6\pm3{,}9$ recuos), quase nada inspeciona ($0{,}2\pm0{,}4$) e estoura o tempo
-($627\pm6$~s).
+($29{,}6\pm3{,}9$ recuos) e quase nada inspeciona ($0{,}2\pm0{,}4$).
+
+%% Acrescentado em 13/11/2026: a duracao da KOb e CENSURADA a direita. As dez execucoes
+%% foram encerradas pelo limite de relogio de parede sem atingir COMPLETE, de modo que
+%% 627 s e o relogio simulado no instante do corte, nao um tempo de missao.
+A KOb não encerra a missão: \emph{nenhuma} de suas dez execuções atingiu o estado
+\texttt{COMPLETE} dentro do limite de $600$~s de relógio de parede, e todas foram
+encerradas pelo \textit{script} de execução. Os $627\pm6$~s que a
+Tabela~\ref{tab:res-ablacao} registra são, portanto, o relógio de missão simulado no
+instante da interrupção --- um \emph{limite inferior} censurado à direita, e não uma
+duração de missão comparável às demais. A leitura correta é qualitativa e mais forte do
+que um número: sem a zona de exclusão, o recuo reativo sozinho não resolve um risco
+sobre a rota em tempo algum dentro do orçamento concedido.
 
 Essas duas ablações, porém, ainda carregam a camada reativa. A referência mais justa
 é uma \emph{patrulha fixa portando a mesma zona de exclusão disparada por detecção e
@@ -536,7 +556,10 @@ risco \emph{emerge} durante uma investigação, o que se quantifica a seguir.
 \caption{Ablação de zona de exclusão e recuo no risco sobre a rota
 (média\,$\pm$\,desvio padrão sobre execuções válidas; $n=9$ para RHM, $10$ para KOa,
 $9$ para KOb). RHM é o método completo (recuo $+$ zona de exclusão); KOa é
-somente-zona (recuo desabilitado); KOb é somente-recuo (zona desabilitada).}
+somente-zona (recuo desabilitado); KOb é somente-recuo (zona desabilitada). A duração
+da KOb vem precedida de $\ge$ porque é censurada à direita: nenhuma de suas execuções
+encerrou a missão dentro do limite de relógio de parede, e o valor é o relógio de
+missão no instante da interrupção.}
 \label{tab:res-ablacao}
 \footnotesize
 \setlength{\tabcolsep}{5pt}
@@ -550,7 +573,7 @@ Recuos                      & $1{,}0\pm0{,}0$   & $0{,}0\pm0{,}0$   & $29{,}6\pm
 Colisões                    & $0{,}0\pm0{,}0$   & $0{,}0\pm0{,}0$   & $0{,}0\pm0{,}0$\\
 Dist.\ mín.\ ao risco [m]   & $1{,}71\pm0{,}01$ & $1{,}71\pm0{,}01$ & $4{,}29\pm0{,}08$\\
 Tempo mín.\ até colisão [s] & $5{,}6\pm0{,}9$   & $5{,}8\pm0{,}1$   & $8{,}7\pm0{,}2$\\
-Duração da missão [s]       & $372\pm1$         & $352\pm1$         & $627\pm6$\\
+Duração da missão [s]       & $372\pm1$         & $352\pm1$         & $\ge 627\pm6$\\
 \hline
 \end{tabular}
 \end{table}
@@ -694,6 +717,7 @@ não são comparáveis: em CONF a anomalia preterida é colocalizada com o risco
 distância. A mesma contagem é comportamento correto em um cenário e falha no outro.
 
 \subsection{Sensibilidade Local ao Limiar de Elegibilidade do Risco}
+\label{sec:res-sens-limiar}
 
 Variar o limiar de entrada do supervisor não testa a precedência, porque o que
 governa a supressão é o limiar de \emph{elegibilidade de modalidade}
@@ -713,6 +737,7 @@ restante do trabalho não é produzido por um limiar escolhido abaixo do valor e
 degradação aparece.
 
 \subsection{Histerese: Sem Efeito Detectável da Largura Testada, mas a Posição Importa}
+\label{sec:res-histerese}
 
 Comparam-se três pares de entrada/saída escolhidos de modo que posição e largura
 variem independentemente: a referência $(0{,}45;\,0{,}25)$, de largura $0{,}20$; uma

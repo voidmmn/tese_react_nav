@@ -104,6 +104,20 @@ $\eta=0$, de um cenário adverso, de um risco colocado sobre a rota e de perturb
 de ruído de percepção (Tabela~\ref{tab:setup-matriz}). Cada configuração é executada
 $n=10$ vezes, sem interface gráfica e com limite de $600$~s por execução.
 
+%% Acrescentado em 13/11/2026: o limite de execucao e de RELOGIO DE PAREDE, enquanto a
+%% duracao de missao relatada e de relogio simulado. Sem essa distincao a KOb aparece
+%% com 627 s sob um limite de 600 s, o que parece contradicao e nao e.
+Esse limite é de \emph{relógio de parede} e governa o \textit{script} de execução, que
+encerra o processo quando a missão não atinge o estado \texttt{COMPLETE} dentro da
+janela. A duração de missão relatada no Capítulo~\ref{cap:resultados} é medida no
+\emph{relógio simulado}, a partir do início da missão e já descontada a subida dos nós.
+Os dois relógios não coincidem: sobre as execuções concluídas, a razão mediana entre o
+relógio simulado e o de parede é de $1{,}12$ (faixa de $1{,}11$ a $1{,}15$), de sorte que
+o limite de $600$~s de parede corresponde a aproximadamente $674$~s de relógio simulado,
+ou cerca de $627$~s de missão. É por isso que uma configuração interrompida pelo limite
+pode exibir duração de missão superior a $600$~s: o valor relatado é o do relógio
+simulado no instante da interrupção, e não uma missão concluída.
+
 \begin{table}[htb]
 \centering
 \caption{Matriz experimental ($10$ execuções tentadas por configuração).
@@ -112,7 +126,15 @@ são parâmetros de lançamento, listados aqui porque a entrega descrita na
 Seção~\ref{sec:prop-keepout} só ocorre onde a zona de exclusão está habilitada. A
 zona de exclusão está ligada apenas onde um risco se encontra sobre a rota de
 patrulha ou emerge durante uma investigação; em todo cenário fora da rota ela está
-desligada, e a reobservação pode seguir renovando o canal de risco.}
+desligada, e a reobservação pode seguir renovando o canal de risco. As linhas HEU,
+HEU-sel e Q-driven abrangem três cenários cada, o que as desdobra em três rótulos de
+execução; as demais correspondem a um rótulo cada. São, portanto, $32$ pares
+configuração--cenário e $320$ execuções tentadas, censadas na
+Tabela~\ref{tab:setup-censo}. As três linhas HAZ varrem o limiar de elegibilidade de
+modalidade $\theta_{\mathcal{H}}$ (Seção~\ref{sec:res-sens-limiar}) e as duas linhas
+HYS variam o par entrada/saída da histerese contra a referência $0{,}45/0{,}25$
+(Seção~\ref{sec:res-histerese}); ambas as varreduras mantêm \textsc{Stay Alert} ativa
+com $\eta=0{,}5$.}
 \label{tab:setup-matriz}
 \footnotesize
 \begin{tabular}{llcccl}
@@ -142,9 +164,95 @@ HEU-sel & seleção por proximidade  & 0,5   & \checkmark & ---        & \texttt
 CM  & Stay Alert                   & 0,5   & \checkmark & ---        & \texttt{marginal} (4/1)\\
 %% Acrescentado em 13/11/2026: bloco exploratorio de RL comportamental.
 Q-driven & $Q$ greedy pre-treinada      & ---   & \checkmark & ---        & \texttt{default}/\texttt{conflict}/\texttt{adverse}\\
+%% Acrescentadas em 13/11/2026: as cinco varreduras executadas e relatadas nas
+%% Secoes~\ref{sec:res-sens-limiar} e~\ref{sec:res-histerese} faltavam nesta matriz,
+%% embora a introducao as mencionasse e os dados existissem. Sem elas o censo de
+%% execucoes nao fechava.
+HAZ20 & $\theta_{\mathcal{H}}=0{,}20$  & 0,5   & \checkmark & ---        & \texttt{conflict} (4/1)\\
+HAZ30 & $\theta_{\mathcal{H}}=0{,}30$  & 0,5   & \checkmark & ---        & \texttt{conflict} (4/1)\\
+HAZ40 & $\theta_{\mathcal{H}}=0{,}40$  & 0,5   & \checkmark & ---        & \texttt{conflict} (4/1)\\
+HYSnar & histerese $0{,}45/0{,}35$     & 0,5   & \checkmark & ---        & \texttt{default} (3/1)\\
+HYSoff & histerese $0{,}55/0{,}35$     & 0,5   & \checkmark & ---        & \texttt{default} (3/1)\\
 \hline
 \end{tabular}
 \end{table}
+
+%% Secao acrescentada em 13/11/2026 para fechar o censo de execucoes. O problema que
+%% ela resolve: a introducao declarava vinte configuracoes, a matriz listava vinte e
+%% uma linhas, os dados em disco tinham trinta e dois rotulos, e a Secao 6.1.1 falava
+%% de 160 tentativas -- numero correto para a matriz do artigo, nao para a desta tese.
+%% Todos os totais abaixo saem do mesmo manifesto, gerado por
+%% src/tese_nav/scripts/gerar_manifesto.py a partir dos CSVs e dos logs de bateria.
+\section{Censo de Execuções}
+\label{sec:setup-censo}
+
+Todos os totais de execução citados nesta tese derivam de um único manifesto,
+reconstruído a partir dos arquivos de métrica por execução e dos \textit{logs} de
+bateria, com um registro por execução: rótulo, cenário, semente, horário de início,
+desfecho do \textit{script} de execução, critério de validade, duração e arquivo de
+origem. O manifesto é regenerado por \texttt{gerar\_manifesto.py} e acompanha o pacote
+de reprodução.
+
+A Tabela~\ref{tab:setup-censo} separa as quatro contagens que não devem ser somadas
+entre si.
+
+\begin{table}[htb]
+\centering
+\caption{Censo das execuções analisadas. O critério de validade é o de movimento
+(distância percorrida $>1$~m): uma execução imóvel é um desfecho de confiabilidade de
+inicialização, não um resultado de navegação, e é relatada separadamente na
+Seção~\ref{sec:res-validade}. ``Interrompida pelo limite'' designa execução válida que
+não atingiu \texttt{COMPLETE} dentro dos $600$~s de relógio de parede, de sorte que sua
+duração é um limite inferior e não um tempo de missão.}
+\label{tab:setup-censo}
+\footnotesize
+\begin{tabular}{lr}
+\hline
+\textbf{Contagem} & \textbf{Valor}\\
+\hline
+Pares configuração--cenário                     & $32$\\
+Execuções tentadas ($10$ por par)               & $320$\\
+Execuções válidas                               & $311$\\
+\quad das quais concluíram a missão             & $302$\\
+\quad das quais interrompidas pelo limite       & $9$ (todas KOb)\\
+Execuções imóveis (falha de inicialização)      & $9$\\
+Confiabilidade de partida por tentativa         & $311/320 = 97{,}2\%$\\
+\hline
+\end{tabular}
+\end{table}
+
+As $320$ execuções distribuem-se pelos seis cenários como $130$ em \texttt{default},
+$70$ em \texttt{conflict}, $50$ em \texttt{route-hazard}, $40$ em \texttt{adverse},
+$20$ em \texttt{dyn-hazard} e $10$ em \texttt{marginal}. Cada configuração usa as
+sementes $1$ a $10$, uma por execução, e o manifesto registra a semente de cada uma.
+
+As nove execuções imóveis distribuem-se por oito configurações --- APF, HEUc, HEUd,
+HYSoff, KOb, N2 e RHM com uma cada, DHa com duas ---, de modo que nenhuma configuração
+fica com menos de oito execuções válidas. As nove execuções interrompidas pelo limite
+são \emph{todas} da configuração KOb, que não encerra a missão por construção, conforme
+se analisa na Seção~\ref{sec:res-ablacao}; em todas as demais configurações, toda
+execução válida atingiu \texttt{COMPLETE}.
+
+Três contagens \emph{não} entram nesse censo, para que não sejam confundidas com
+execuções da matriz:
+
+\begin{enumerate}
+    \item \textbf{Baterias anteriores descartadas.} Os \textit{logs} registram $479$
+    lançamentos ao todo, contra as $320$ execuções analisadas. O excedente são baterias
+    anteriores substituídas --- uma bateria contaminada por nó órfão entre execuções, um
+    bloco interrompido pela metade e um ensaio de regressão para o portão de reúso ---,
+    preservadas em diretórios separados em vez de apagadas. Uma execução descartada não
+    é uma execução da matriz, e nenhuma delas entra em qualquer tabela de resultados.
+
+    \item \textbf{Controles reutilizados.} Onde um bloco posterior se compara a um
+    controle já executado, o controle é \emph{reutilizado}, não reexecutado: reusar um
+    controle não cria execução nova. É o caso da configuração E3, que serve de controle
+    do método em \texttt{default} para mais de um contraste.
+
+    \item \textbf{Reanálises de registros existentes.} Reavaliar um limiar de métrica
+    sobre os mesmos \textit{logs} --- como a reanálise do limiar de confirmação de
+    inspeção da Seção~\ref{sec:res-ruido} --- é reanálise, não execução adicional.
+\end{enumerate}
 
 \section{Métricas}
 \label{sec:setup-metricas}
