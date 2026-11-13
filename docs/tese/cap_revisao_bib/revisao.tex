@@ -1,9 +1,18 @@
-\chapter{Revisão Sistemática da Literatura}
+%% Renomeado em 13/11/2026. O capitulo nao executa protocolo de revisao sistematica
+%% -- nao ha bases, consultas, datas, criterios de inclusao, numero de registros nem
+%% processo de selecao documentados -- e chamar-se sistematico prometia um metodo que
+%% nao foi realizado. Passa a declarar o que de fato e: revisao critica, com o critério
+%% de selecao explicitado abaixo e com o alcance da selecao reconhecido.
+\chapter{Revisão Crítica da Literatura}
 \label{cap:revisao}
 
 A automação industrial tem testemunhado avanços exponenciais nas últimas décadas, impulsionada pela necessidade de aumentar a eficiência, a segurança e a produtividade em diversos setores. Nesse cenário, os \ac{VTA}, também chamados por \ac{RMT} ou mesmo \ac{UGV} emergem como ferramentas promissoras, particularmente em ambientes complexos e perigosos, como subestações elétricas. A capacidade de um \ac{UGV} navegar autonomamente nesses ambientes é de suma importância, permitindo a execução de tarefas de inspeção de forma mais eficiente, segura e com menor custo operacional.
 
-Esta revisão sistemática analisa criticamente o estado da arte na integração sinérgica do Aprendizado por Reforço, Visão Computacional e Fusão de Sensores para o desenvolvimento de sistemas de navegação autônoma robustos e eficientes para \ac{UGV} operando em ambientes industriais desafiadores, com ênfase particular no contexto de subestações elétricas. O foco está no período entre 2015 e 2025, identificando os principais avanços, desafios persistentes e tendências emergentes nestas áreas e em sua intersecção.
+Esta revisão analisa criticamente o estado da arte na integração de Aprendizado por Reforço, Visão Computacional e Fusão de Sensores para navegação autônoma de \ac{UGV} em ambientes industriais desafiadores, com ênfase no contexto de subestações elétricas, no período entre 2015 e 2025.
+
+É uma \emph{revisão crítica}, e não uma revisão sistemática: não se executou protocolo prospectivo com bases, consultas, datas de busca, critérios de inclusão e exclusão, número de registros recuperados e processo de seleção documentado. A seleção foi feita por amostragem orientada ao problema --- trabalhos recuperados em busca temática nas três áreas e, dentro delas, os que (i) tratam navegação ou inspeção robótica autônoma, (ii) são citáveis por identificador verificável e (iii) sustentam ou contradizem alguma afirmação feita nesta tese. O alcance dessa seleção é, portanto, limitado: ela não autoriza alegação de cobertura exaustiva da literatura, e as lacunas apontadas adiante devem ser lidas como lacunas \emph{nesta amostra}, não como ausências demonstradas no campo.
+
+Os trabalhos citados ao longo do capítulo foram conferidos individualmente por identificador (DOI ou endereço resolvível) quanto a autoria, título, veículo e ano, e as afirmações atribuídas a cada um foram confrontadas com o conteúdo do trabalho.
 
 \section{Aprendizado por Reforço (RL) e Aprendizado por Reforço Profundo (DRL)}
 
@@ -11,26 +20,26 @@ Enquanto o Capítulo 2 apresentou os fundamentos teóricos do Aprendizado por Re
 
 \subsection{Evolução dos Algoritmos DRL para Navegação Robótica}
 
-A evolução dos algoritmos de \ac{DRL} para navegação robótica tem sido marcada por avanços significativos que superam as limitações dos métodos clássicos. \cite{Tai2017} demonstraram a viabilidade do uso de \ac{DQN} para navegação de robôs móveis em ambientes com obstáculos, utilizando dados de sensores laser diretamente como entrada. \cite{Zhu2017} expandiram esta abordagem incorporando informações visuais, permitindo navegação baseada em alvos visuais sem necessidade de mapas explícitos.
+A evolução dos algoritmos de \ac{DRL} para navegação robótica tem sido marcada por avanços significativos que superam as limitações dos métodos clássicos. \citeonline{Tai2017} demonstraram a viabilidade do uso de \ac{DQN} para navegação de robôs móveis em ambientes com obstáculos, utilizando dados de sensores laser diretamente como entrada. \citeonline{Zhu2017} expandiram esta abordagem incorporando informações visuais, permitindo navegação baseada em alvos visuais sem necessidade de mapas explícitos.
 
-Um avanço significativo foi apresentado por \cite{Schulman2017} com o algoritmo \ac{PPO}, que se tornou um padrão na área devido à sua estabilidade e eficiência. \cite{Haarnoja2018} introduziram o \ac{SAC}, que incorpora um termo de entropia na função objetivo, resultando em políticas mais robustas e explorativas. Análises comparativas realizadas por \cite{Ibarz2021} demonstraram que algoritmos baseados em política como \ac{PPO} e \ac{SAC} geralmente superam métodos baseados em valor como \ac{DQN} em tarefas de navegação robótica com espaços de ação contínuos.
+Um avanço significativo foi apresentado por \cite{Schulman2017} com o algoritmo \ac{PPO}, que se tornou um padrão na área devido à sua estabilidade e eficiência. \citeonline{Haarnoja2018} introduziram o \ac{SAC}, que incorpora um termo de entropia na função objetivo, resultando em políticas mais robustas e explorativas. Análises comparativas realizadas por \citeonline{Ibarz2021} demonstraram que algoritmos baseados em política como \ac{PPO} e \ac{SAC} geralmente superam métodos baseados em valor como \ac{DQN} em tarefas de navegação robótica com espaços de ação contínuos.
 
 \subsection{Abordagens Sim-to-Real para Navegação Autônoma}
 
-Um dos maiores desafios na aplicação de \ac{DRL} em robótica no mundo real é o \textit{reality gap} – a discrepância entre o ambiente simulado onde o agente é treinado e o ambiente real onde será implantado. \cite{Tobin2017} introduziram a técnica de \textit{Domain Randomization}, que envolve a introdução de variabilidade significativa nos parâmetros da simulação durante o treinamento, tornando a política robusta o suficiente para operar no domínio real.
+Um dos maiores desafios na aplicação de \ac{DRL} em robótica no mundo real é o \textit{reality gap} – a discrepância entre o ambiente simulado onde o agente é treinado e o ambiente real onde será implantado. \citeonline{Tobin2017} introduziram a técnica de \textit{Domain Randomization}, que envolve a introdução de variabilidade significativa nos parâmetros da simulação durante o treinamento, tornando a política robusta o suficiente para operar no domínio real.
 
-\cite{Peng2018} expandiram esta abordagem com o conceito de \textit{Dynamics Randomization}, focando especificamente na variabilidade dos parâmetros físicos. \cite{Sadeghi2017} demonstraram navegação visual sem necessidade de dados reais durante o treinamento, utilizando apenas ambientes simulados com randomização visual extensiva.
+\citeonline{Peng2018} expandiram esta abordagem com o conceito de \textit{Dynamics Randomization}, focando especificamente na variabilidade dos parâmetros físicos. \citeonline{Sadeghi2017} demonstraram navegação visual sem necessidade de dados reais durante o treinamento, utilizando apenas ambientes simulados com randomização visual extensiva.
 %% Frase removida em 13/11/2026 (auditoria bibliografica): atribuia a um trabalho
 %% nao localizado em nenhuma base uma abordagem hibrida de randomizacao de dominio
 %% com adaptacao adversarial.
 
-Estudos comparativos realizados por \cite{Hwangbo2019} e \cite{Loquercio2021} demonstraram que abordagens Sim-to-Real bem projetadas podem atingir desempenho comparável ou superior a métodos treinados diretamente no mundo real, com fração do custo e tempo de desenvolvimento.
+Estudos comparativos realizados por \cite{Hwangbo2019} e \citeonline{Loquercio2021} demonstraram que abordagens Sim-to-Real bem projetadas podem atingir desempenho comparável ou superior a métodos treinados diretamente no mundo real, com fração do custo e tempo de desenvolvimento.
 
 \subsection{Aprendizado por Reforço Seguro para Ambientes Industriais}
 
-A segurança é uma preocupação primordial na navegação autônoma em ambientes industriais como subestações elétricas. \cite{Garciaetal2015} apresentaram uma revisão abrangente de métodos de \ac{RL} Seguro, categorizando-os em abordagens baseadas em modificação da função de recompensa, modificação do processo de exploração, e modificação do critério de otimização.
+A segurança é uma preocupação primordial na navegação autônoma em ambientes industriais como subestações elétricas. \citeonline{Garciaetal2015} apresentaram uma revisão abrangente de métodos de \ac{RL} Seguro, categorizando-os em abordagens baseadas em modificação da função de recompensa, modificação do processo de exploração, e modificação do critério de otimização.
 
-\cite{Achiam2017} introduziram o \ac{CPO}, um algoritmo que garante restrições de segurança durante o processo de otimização da política. \cite{Chow2018} expandiram esta abordagem com o conceito de \ac{CMDP}, onde o objetivo é maximizar a recompensa enquanto se satisfaz restrições de custo. \cite{Thananjeyan2021} demonstraram a aplicação de \ac{RL} Seguro em navegação robótica em ambientes industriais, utilizando funções de barreira para garantir a permanência em um conjunto seguro de estados.
+\citeonline{Achiam2017} introduziram o \ac{CPO}, um algoritmo que garante restrições de segurança durante o processo de otimização da política. \citeonline{Chow2018} expandiram esta abordagem com o conceito de \ac{CMDP}, onde o objetivo é maximizar a recompensa enquanto se satisfaz restrições de custo. \citeonline{Thananjeyan2021} demonstraram a aplicação de \ac{RL} Seguro em navegação robótica em ambientes industriais, utilizando funções de barreira para garantir a permanência em um conjunto seguro de estados.
 
 Uma abordagem particularmente promissora para ambientes como subestações elétricas foi proposta por \cite{Brunke2022}, combinando \ac{RL} com controladores de segurança baseados em modelo que podem intervir quando a política aprendida propõe ações potencialmente perigosas. Esta abordagem híbrida permite explorar os benefícios do aprendizado adaptativo enquanto mantém garantias formais de segurança.
 
@@ -71,9 +80,9 @@ A Visão Computacional tem se estabelecido como um componente fundamental para s
 
 O período 2015-2025 testemunhou uma evolução significativa nas arquiteturas de redes neurais para percepção visual em robótica. As \ac{CNN} tradicionais como AlexNet e VGG foram gradualmente substituídas por arquiteturas mais eficientes como ResNet \cite{He2016} e MobileNet \cite{Howard2017}, que oferecem melhor equilíbrio entre precisão e requisitos computacionais, essencial para aplicações embarcadas em robôs móveis.
 
-Um avanço particularmente relevante para navegação robótica foi o desenvolvimento de arquiteturas específicas para segmentação semântica, como U-Net \cite{Ronneberger2015}, PSPNet \cite{Zhao2017} e DeepLabv3+ \cite{Chen2018}. Estas redes permitem a classificação pixel a pixel de imagens, facilitando a identificação precisa de obstáculos, áreas navegáveis e objetos de interesse. \cite{Milioto2019} demonstraram a aplicação eficaz destas arquiteturas para segmentação semântica em tempo real em robôs móveis, utilizando técnicas de otimização específicas para plataformas embarcadas.
+Um avanço particularmente relevante para navegação robótica foi o desenvolvimento de arquiteturas específicas para segmentação semântica, como U-Net \cite{Ronneberger2015}, PSPNet \cite{Zhao2017} e DeepLabv3+ \cite{Chen2018}. Estas redes permitem a classificação pixel a pixel de imagens, facilitando a identificação precisa de obstáculos, áreas navegáveis e objetos de interesse. \citeonline{Milioto2019} demonstraram a aplicação eficaz destas arquiteturas para segmentação semântica em tempo real em robôs móveis, utilizando técnicas de otimização específicas para plataformas embarcadas.
 
-Mais recentemente, arquiteturas baseadas em Transformers como DETR \cite{Carion2020} e Swin Transformer \cite{Liu2021SwinTransformer} têm demonstrado resultados promissores em tarefas de percepção visual para robótica, superando abordagens baseadas em CNN em diversos benchmarks. \cite{Ramakrishnan2022} demonstraram a aplicação de Transformers para navegação visual em ambientes complexos, explorando sua capacidade de modelar dependências de longo alcance e integrar informações contextuais.
+Mais recentemente, arquiteturas baseadas em Transformers como DETR \cite{Carion2020} e Swin Transformer \cite{Liu2021SwinTransformer} têm demonstrado resultados promissores em tarefas de percepção visual para robótica, superando abordagens baseadas em CNN em diversos benchmarks. \citeonline{Ramakrishnan2022} demonstraram a aplicação de Transformers para navegação visual em ambientes complexos, explorando sua capacidade de modelar dependências de longo alcance e integrar informações contextuais.
 
 \subsection{Técnicas de Percepção Visual Robusta para Ambientes Industriais}
 
@@ -94,9 +103,9 @@ Na direção da percepção especializada para esse domínio, \citeonline{Cai202
 
 \subsection{Navegação Visual e Localização Baseada em Visão}
 
-A navegação visual, que utiliza informações visuais como principal fonte para orientação e planejamento de trajetória, tem avançado significativamente no período analisado. \cite{Zhu2017} demonstraram navegação baseada em alvos visuais utilizando \ac{DRL}, onde o robô aprende a navegar até um alvo especificado por uma imagem. \cite{Gupta2017} expandiram esta abordagem com um sistema que constrói mapas cognitivos do ambiente a partir de observações visuais, permitindo planejamento de trajetória em ambientes previamente inexplorados.
+A navegação visual, que utiliza informações visuais como principal fonte para orientação e planejamento de trajetória, tem avançado significativamente no período analisado. \citeonline{Zhu2017} demonstraram navegação baseada em alvos visuais utilizando \ac{DRL}, onde o robô aprende a navegar até um alvo especificado por uma imagem. \citeonline{Gupta2017} expandiram esta abordagem com um sistema que constrói mapas cognitivos do ambiente a partir de observações visuais, permitindo planejamento de trajetória em ambientes previamente inexplorados.
 
-A localização baseada em visão, essencial em ambientes onde GPS não está disponível ou é impreciso (como dentro de subestações), também apresentou avanços significativos. \cite{Sarlin2019} introduziram o HF-Net, uma arquitetura eficiente para localização visual que combina detecção de pontos-chave e descrição global, permitindo localização precisa com baixo custo computacional. \cite{Toft2020} demonstraram localização robusta em condições variáveis de iluminação e clima, utilizando técnicas de adaptação de domínio e representações invariantes a condições ambientais.
+A localização baseada em visão, essencial em ambientes onde GPS não está disponível ou é impreciso (como dentro de subestações), também apresentou avanços significativos. \citeonline{Sarlin2019} introduziram o HF-Net, uma arquitetura eficiente para localização visual que combina detecção de pontos-chave e descrição global, permitindo localização precisa com baixo custo computacional. \citeonline{Toft2020} demonstraram localização robusta em condições variáveis de iluminação e clima, utilizando técnicas de adaptação de domínio e representações invariantes a condições ambientais.
 
 Para ambientes industriais específicos como subestações, \citeonline{Liu2016VisualNavSubstation} descreveram um método de navegação visual para robô de inspeção, e \citeonline{Fan2024MultiSensorSubstation} relatam posicionamento preciso por fusão multissensorial aplicado à navegação autônoma desse mesmo tipo de robô.
 
@@ -147,11 +156,11 @@ A fusão sensorial representa um componente crítico para sistemas de navegaçã
 
 \subsection{Evolução das Arquiteturas de Fusão Multimodal}
 
-O período 2015-2025 testemunhou uma evolução significativa nas arquiteturas de fusão sensorial multimodal para robótica. \cite{Chen2017} propuseram uma das primeiras arquiteturas de fusão profunda para navegação robótica, combinando dados de LiDAR e câmeras para detecção robusta de obstáculos. \cite{Valada2018} expandiram esta abordagem com uma arquitetura que aprende representações complementares de múltiplas modalidades sensoriais, demonstrando melhorias significativas em segmentação semântica para navegação.
+O período 2015-2025 testemunhou uma evolução significativa nas arquiteturas de fusão sensorial multimodal para robótica. \citeonline{Chen2017} propuseram uma das primeiras arquiteturas de fusão profunda para navegação robótica, combinando dados de LiDAR e câmeras para detecção robusta de obstáculos. \citeonline{Valada2018} expandiram esta abordagem com uma arquitetura que aprende representações complementares de múltiplas modalidades sensoriais, demonstrando melhorias significativas em segmentação semântica para navegação.
 
-Um avanço particularmente relevante foi introduzido por \cite{Jaritz2019}, que propuseram técnicas para fusão de dados de sensores com diferentes resoluções e campos de visão, um desafio comum em sistemas robóticos que combinam LiDAR e câmeras. \cite{Bijelic2020} demonstraram uma arquitetura de fusão para condições adversas, combinando câmeras RGB, térmicas, LiDAR e radar para navegação robusta em diferentes condições ambientais.
+Um avanço particularmente relevante foi introduzido por \cite{Jaritz2019}, que propuseram técnicas para fusão de dados de sensores com diferentes resoluções e campos de visão, um desafio comum em sistemas robóticos que combinam LiDAR e câmeras. \citeonline{Bijelic2020} demonstraram uma arquitetura de fusão para condições adversas, combinando câmeras RGB, térmicas, LiDAR e radar para navegação robusta em diferentes condições ambientais.
 
-Mais recentemente, arquiteturas baseadas em Transformers têm demonstrado resultados promissores para fusão sensorial. \cite{Prakash2021} introduziram o TransFuser, uma arquitetura que utiliza mecanismos de atenção cruzada para fusão eficiente de dados visuais e LiDAR. \cite{Xiao2023} expandiram esta abordagem com uma arquitetura que integra informações temporais, demonstrando melhorias significativas em cenários dinâmicos.
+Mais recentemente, arquiteturas baseadas em Transformers têm demonstrado resultados promissores para fusão sensorial. \citeonline{Prakash2021} introduziram o TransFuser, uma arquitetura que utiliza mecanismos de atenção cruzada para fusão eficiente de dados visuais e LiDAR. \citeonline{Xiao2023} expandiram esta abordagem com uma arquitetura que integra informações temporais, demonstrando melhorias significativas em cenários dinâmicos.
 
 \subsection{Técnicas de Fusão Robusta para Ambientes com Interferência}
 
@@ -205,35 +214,74 @@ A integração efetiva de Aprendizado por Reforço, Visão Computacional e Fusã
 
 \subsection{Arquiteturas Integradas para Navegação Autônoma}
 
-O período 2015-2025 testemunhou o desenvolvimento de diversas arquiteturas que integram múltiplas técnicas para navegação autônoma robusta. \cite{Zhu2017} propuseram uma das primeiras arquiteturas que combinava visão computacional com aprendizado por reforço profundo para navegação baseada em alvos visuais. \cite{Tai2017} expandiram esta abordagem incorporando dados de LiDAR, demonstrando melhorias significativas em ambientes com obstáculos complexos.
+O período 2015-2025 testemunhou o desenvolvimento de diversas arquiteturas que integram múltiplas técnicas para navegação autônoma robusta. \citeonline{Zhu2017} propuseram uma das primeiras arquiteturas que combinava visão computacional com aprendizado por reforço profundo para navegação baseada em alvos visuais. \citeonline{Tai2017} expandiram esta abordagem incorporando dados de LiDAR, demonstrando melhorias significativas em ambientes com obstáculos complexos.
 
-\cite{Chaplot2020} introduziram uma arquitetura hierárquica que integra mapeamento semântico baseado em visão com planejamento de trajetória baseado em aprendizado por reforço, permitindo navegação eficiente em ambientes previamente inexplorados. \cite{Ramakrishnan2022} expandiram esta abordagem com um sistema que incorpora memória episódica, facilitando a navegação em ambientes grandes e complexos.
+\citeonline{Chaplot2020} introduziram uma arquitetura hierárquica que integra mapeamento semântico baseado em visão com planejamento de trajetória baseado em aprendizado por reforço, permitindo navegação eficiente em ambientes previamente inexplorados. \citeonline{Ramakrishnan2022} expandiram esta abordagem com um sistema que incorpora memória episódica, facilitando a navegação em ambientes grandes e complexos.
 
-Para aplicações em ambientes industriais, \cite{Kahn2021} propuseram uma arquitetura que integra percepção visual, fusão sensorial e aprendizado por reforço com garantias de segurança, demonstrando navegação robusta mesmo em presença de obstáculos dinâmicos e condições ambientais variáveis. \cite{Yan2024CombinedNav} demonstraram um sistema especificamente projetado para subestações elétricas, que combina fusão sensorial robusta a interferência eletromagnética com técnicas de aprendizado por reforço seguro.
+Para aplicações em ambientes industriais, \citeonline{Kahn2021} propuseram uma arquitetura que integra percepção visual, fusão sensorial e aprendizado por reforço com garantias de segurança, demonstrando navegação robusta mesmo em presença de obstáculos dinâmicos e condições ambientais variáveis. \citeonline{Yan2024CombinedNav} demonstraram um sistema especificamente projetado para subestações elétricas, que combina fusão sensorial robusta a interferência eletromagnética com técnicas de aprendizado por reforço seguro.
 
 \subsection{Frameworks Modulares e Adaptáveis}
 
-Uma tendência significativa tem sido o desenvolvimento de frameworks modulares que permitem adaptação a diferentes ambientes e requisitos operacionais. \cite{Savva2019} introduziram o Habitat, uma plataforma para pesquisa em navegação visual incorporada que facilita a integração de diferentes algoritmos de percepção e controle. \cite{Wijmans2020} utilizaram esta plataforma para demonstrar navegação ponto-a-ponto em ambientes complexos utilizando apenas sensores visuais.
+Uma tendência significativa tem sido o desenvolvimento de frameworks modulares que permitem adaptação a diferentes ambientes e requisitos operacionais. \citeonline{Savva2019} introduziram o Habitat, uma plataforma para pesquisa em navegação visual incorporada que facilita a integração de diferentes algoritmos de percepção e controle. \citeonline{Wijmans2020} utilizaram esta plataforma para demonstrar navegação ponto-a-ponto em ambientes complexos utilizando apenas sensores visuais.
 
-\cite{Ehsani2021} propuseram o ManipulaTHOR, um framework que estende a navegação visual com capacidades de manipulação, essencial para tarefas de inspeção que requerem interação com o ambiente. \cite{Deitke2020RoboTHOR} expandiram esta abordagem com o RoboTHOR, que facilita a transferência de políticas aprendidas em simulação para robôs reais.
+\citeonline{Ehsani2021} propuseram o ManipulaTHOR, um framework que estende a navegação visual com capacidades de manipulação, essencial para tarefas de inspeção que requerem interação com o ambiente. \citeonline{Deitke2020RoboTHOR} expandiram esta abordagem com o RoboTHOR, que facilita a transferência de políticas aprendidas em simulação para robôs reais.
 
-Para aplicações industriais específicas, \cite{Iberdrola2022} demonstraram um framework modular para inspeção autônoma de subestações elétricas, que permite configuração flexível de diferentes sensores e algoritmos de controle baseados nas características específicas de cada subestação. \cite{Lactec2022} expandiram esta abordagem com um sistema que incorpora conhecimento de domínio específico sobre equipamentos elétricos, facilitando a detecção e classificação de anomalias durante a navegação.
+%% Reescrito em 13/11/2026. A redacao anterior descrevia a Iberdrola2022 como um
+%% "framework modular com configuracao flexivel de sensores" e a Lactec2022 como uma
+%% extensao dele com conhecimento de dominio. Nenhuma das duas fontes afirma isso:
+%% sao, respectivamente, um comunicado de imprensa sobre o robo Antecursor I e uma
+%% nota institucional sobre o desenvolvimento de um robo de inspecao. A cadeia de
+%% "expandiram esta abordagem" entre elas nao existe na literatura.
+No lado industrial, o que se encontra documentado são relatos institucionais de
+plataformas em operação, e não arquiteturas descritas em detalhe metodológico: a
+Iberdrola divulga o robô Antecursor~I, que transmite imagens de inspeção em tempo real
+a partir de subestações \cite{Iberdrola2022}, e o Lactec noticia o desenvolvimento de
+um robô para inspeção em subestações de extra alta tensão \cite{Lactec2022}. Esses
+relatos atestam o interesse operacional pelo problema, mas são comunicações
+corporativas: não informam a arquitetura de decisão, os comparadores empregados nem as
+métricas obtidas, de modo que não podem ser tomados como evidência comparável à da
+literatura revisada por pares e são citados aqui apenas como indicação de demanda
+prática.
 
 \subsection{Integração com Sistemas de Gerenciamento de Ativos}
 
-Uma evolução importante para aplicações práticas tem sido a integração de sistemas de navegação autônoma com plataformas de gerenciamento de ativos industriais. \cite{Clouglobal2024} demonstraram um sistema que integra dados coletados por \ac{UGV} autônomos com plataformas de manutenção preditiva, permitindo correlacionar anomalias detectadas com históricos de manutenção e previsões de falha.
-
-\cite{Selinc2024} propuseram uma arquitetura que integra sistemas de inspeção autônoma com protocolos padrão da indústria elétrica como IEC 61850, facilitando a incorporação de dados de inspeção robótica em sistemas SCADA existentes. \cite{Eletrobras2024} expandiram esta abordagem com um sistema que utiliza modelos digitais (digital twins) para contextualizar e interpretar dados coletados durante inspeções autônomas.
-
-Esta integração representa um avanço significativo em direção à aplicação prática de sistemas de navegação autônoma em ambientes industriais, permitindo que os dados coletados sejam efetivamente utilizados para melhorar processos de manutenção e operação.
+%% Reescrito em 13/11/2026. A versao anterior atribuia sistemas e arquiteturas a tres
+%% fontes que nao os descrevem -- um blog de fornecedor sobre automacao de subestacoes
+%% digitais, uma pagina de produto e uma chamada de desafio de P&D -- e encadeava
+%% entre elas um "expandiram esta abordagem" inexistente.
+A integração entre inspeção robótica e plataformas de gerenciamento de ativos é
+apontada como caminho natural de aplicação, mas a documentação disponível é
+predominantemente industrial, e não científica. A automação da subestação digital e a
+padronização de comunicação que a sustenta --- da qual a IEC~61850 é o exemplo
+corrente --- são descritas em material de fornecedores e de integradores
+\cite{Clouglobal2024,Selinc2024}, enquanto a inspeção remota e autônoma em subestação
+de alta tensão com robôs terrestres aparece formulada como \emph{desafio} de pesquisa
+e desenvolvimento por operador do setor \cite{Eletrobras2024}. Registra-se, portanto,
+a existência da demanda e do substrato de integração, sem atribuir a essas fontes
+arquiteturas, resultados ou métricas que elas não reportam. Esta tese não trata dessa
+camada de integração: seu objeto é a lógica de decisão que leva o sensor até o evento
+e o afasta do risco.
 
 \subsection{Avaliação Comparativa de Sistemas Integrados}
 
-A avaliação objetiva e comparativa de sistemas integrados para navegação autônoma representa um desafio significativo devido à diversidade de ambientes, tarefas e métricas utilizadas. \cite{Anderson2018} propuseram o benchmark Room-to-Room (R2R) para navegação visual baseada em linguagem natural, estabelecendo um padrão para comparação de diferentes abordagens.
+A avaliação objetiva e comparativa de sistemas integrados para navegação autônoma representa um desafio significativo devido à diversidade de ambientes, tarefas e métricas utilizadas. \citeonline{Anderson2018} propuseram o benchmark Room-to-Room (R2R) para navegação visual baseada em linguagem natural, estabelecendo um padrão para comparação de diferentes abordagens.
 
-\cite{Savva2019} expandiram esta ideia com o PointNav, um benchmark para navegação ponto-a-ponto em ambientes desconhecidos utilizando apenas sensores visuais e inerciais. \cite{Kadian2020} introduziram métricas específicas para avaliar a transferibilidade de políticas de navegação da simulação para o mundo real, um aspecto crítico para aplicações práticas.
+\citeonline{Savva2019} expandiram esta ideia com o PointNav, um benchmark para navegação ponto-a-ponto em ambientes desconhecidos utilizando apenas sensores visuais e inerciais. \citeonline{Kadian2020} introduziram métricas específicas para avaliar a transferibilidade de políticas de navegação da simulação para o mundo real, um aspecto crítico para aplicações práticas.
 
-Para ambientes industriais específicos, \cite{GlobalGrowthInsights2024} propuseram um framework de avaliação para sistemas de inspeção autônoma em subestações elétricas, considerando métricas como precisão de navegação, robustez a interferência eletromagnética, eficiência energética e capacidade de detecção de anomalias. \cite{Wei2024Advancements} expandiram este framework com métricas específicas para avaliar a integração com sistemas de gerenciamento de ativos e o impacto econômico da automação de inspeções.
+%% Reescrito em 13/11/2026. A versao anterior apresentava um relatorio de mercado
+%% como "framework de avaliacao" e a revisao de Wei e Rey como uma extensao dele.
+%% Nenhuma das duas fontes propoe metricas de avaliacao.
+Para inspeção de subestações, em contraste, \emph{não} se identificou nesta amostra um
+\textit{benchmark} consolidado: não há conjunto de cenários, métricas e linhas de base
+compartilhados que permita comparar dois supervisores de inspeção publicados por grupos
+distintos. O que existe são um levantamento de mercado do segmento de robôs de inspeção
+de subestações \cite{GlobalGrowthInsights2024}, útil como indicação de adoção e não
+como instrumento de avaliação, e a revisão de \citeonline{Wei2024Advancements} sobre o
+estado da pesquisa e do desenvolvimento desses robôs. Essa ausência tem consequência
+direta sobre o desenho experimental desta tese: na falta de um \textit{benchmark}
+externo, a comparação é construída \emph{internamente}, por ablações sobre um mesmo
+controlador compartilhado (Capítulo~\ref{cap:avaliacao}), o que torna cada contraste
+interpretável sem depender de uma referência comum que o campo ainda não possui.
 
 \subsection{Análise Crítica e Direções Futuras}
 
@@ -247,20 +295,52 @@ Finalmente, a validação e certificação de sistemas autônomos para aplicaç�
 
 \section{Conclusão e Implicações para o Framework Proposto}
 
-Esta revisão sistemática analisou criticamente o estado da arte na integração de Aprendizado por Reforço, Visão Computacional e Fusão Sensorial para navegação autônoma de \ac{UGV} em ambientes industriais complexos, com foco particular em subestações elétricas. A análise revela avanços significativos em cada área individual, bem como em sua integração, mas também identifica desafios persistentes que motivam o desenvolvimento de novas abordagens.
+Esta revisão analisou criticamente o estado da arte na integração de Aprendizado por Reforço, Visão Computacional e Fusão Sensorial para navegação autônoma de \ac{UGV} em ambientes industriais complexos, com foco particular em subestações elétricas. A análise revela avanços significativos em cada área individual, bem como em sua integração, mas também identifica desafios persistentes que motivam o desenvolvimento de novas abordagens.
 
-Os avanços em algoritmos de \ac{DRL} como \ac{PPO} e \ac{SAC}, combinados com técnicas de transferência Sim-to-Real e garantias de segurança, oferecem um paradigma poderoso para navegação adaptativa em ambientes dinâmicos. As arquiteturas modernas de visão computacional, particularmente aquelas baseadas em segmentação semântica e Transformers, permitem percepção robusta mesmo em condições desafiadoras de iluminação e interferência. As técnicas avançadas de fusão sensorial, especialmente aquelas com ponderação adaptativa baseada em contexto, permitem integrar eficientemente múltiplas modalidades sensoriais para percepção confiável em ambientes com interferência eletromagnética.
+%% Reescrito em 13/11/2026. A versao anterior atribuia ao trabalho proposto tres
+%% diferenciais -- modularidade configuravel, incorporacao de conhecimento de dominio
+%% e mecanismos de deteccao e mitigacao de interferencia eletromagnetica -- que o
+%% sistema avaliado nao implementa: ele recebe eventos-oraculo. A delimitacao da
+%% Secao~\ref{sec:intro-escopo} passa a valer tambem aqui, com a mesma particao
+%% entregue / abstraido / futuro.
+Os avanços em algoritmos de \ac{DRL}, combinados com técnicas de transferência
+Sim-to-Real, oferecem um paradigma para navegação adaptativa em ambientes dinâmicos; as
+arquiteturas modernas de visão computacional ampliam a percepção sob condições
+desafiadoras; e as técnicas de fusão sensorial integram modalidades heterogêneas. Esses
+avanços formam o contexto em que esta tese se situa, e não o que ela entrega.
 
-No entanto, desafios significativos persistem, incluindo a escalabilidade para ambientes de grande escala, a robustez a condições extremas e eventos imprevistos, e a integração efetiva de conhecimento de domínio específico nos algoritmos de navegação e inspeção. Estes desafios motivam o desenvolvimento do framework modular proposto nesta tese, que busca combinar os avanços recentes nestas áreas com uma arquitetura flexível e adaptável às características específicas de subestações elétricas.
+O que esta amostra da literatura \emph{não} estabelece, e que motiva o trabalho dos
+capítulos seguintes, é \emph{qual mecanismo} de uma arquitetura integrada responde por
+qual ganho. Os trabalhos revisados relatam desempenho agregado de sistemas que
+percebem, decidem e se desviam simultaneamente; a comparação predominante é contra uma
+ronda fixa, que não dispõe de mecanismo para deixar a rota e por isso perde por
+construção. É essa lacuna de \emph{atribuição} que a arquitetura de duas camadas do
+Capítulo~\ref{cap:proposta} ataca, e é por isso que o Capítulo~\ref{cap:resultados}
+desmonta experimentalmente a própria proposta em vez de apenas vencer uma linha de
+base.
 
-O framework proposto se diferencia das abordagens existentes em três aspectos fundamentais:
+Em relação ao que a revisão levantou, a delimitação desta tese é a seguinte, nos mesmos
+termos da Seção~\ref{sec:intro-escopo}:
 
 \begin{enumerate}
-    \item \textbf{Modularidade e Adaptabilidade}: Uma arquitetura que permite configuração flexível de diferentes sensores, algoritmos de percepção e estratégias de controle baseadas nas características específicas de cada subestação e missão de inspeção.
-    
-    \item \textbf{Integração de Conhecimento de Domínio}: Incorporação explícita de conhecimento sobre equipamentos elétricos, padrões de interferência eletromagnética e requisitos de segurança específicos de subestações nos algoritmos de navegação e inspeção.
-    
-    \item \textbf{Robustez a Condições Adversas}: Mecanismos específicos para detecção e mitigação de interferência eletromagnética, adaptação a condições variáveis de iluminação e operação confiável mesmo com falhas parciais de sensores.
+    \item \textbf{Entregue e avaliado}: a supervisão de missão em duas camadas --- a
+    regra de prioridade com precedência categórica de segurança, a memória temporal do
+    canal de risco com limiar e decaimento, a geração de metas de inspeção e de recuo e
+    a integração com a navegação deliberativa ---, avaliada em simulação com ablações
+    sobre um controlador compartilhado e atribuição estatística de efeitos a mecanismos.
+
+    \item \textbf{Abstraído}: a detecção, a classificação, a intensidade e a posição
+    dos eventos, que entram na arquitetura como eventos-oráculo; e a transformada de
+    localização, mantida fixa. São controles de confundimento declarados, adotados para
+    que o efeito de cada mecanismo possa ser atribuído, e não capacidades alegadas.
+
+    \item \textbf{Futuro}: a percepção térmica, acústica e visual real alimentando a
+    camada de eventos, com tratamento explícito de falsos positivos e negativos; a
+    robustez a interferência eletromagnética, que esta tese não implementa nem mede; a
+    integração sensorial aprendida; e a validação operacional em instalação real
+    (Seção~\ref{sec:conc-futuro}).
 \end{enumerate}
 
-Estas características posicionam o framework proposto para superar limitações identificadas na literatura atual, contribuindo para o avanço do estado da arte em navegação autônoma para inspeção de subestações elétricas e propondo uma base como ponto de partida para pesquisas futuras em áreas críticas.
+Nenhum mecanismo de percepção, de fusão sensorial ou de mitigação de interferência é
+alegado como contribuição desta tese. O que se alega é a decomposição experimental de
+uma camada de supervisão de inspeção, com os limites de evidência declarados.

@@ -66,9 +66,17 @@ A camada \textsc{Stay Alert} \emph{não} substitui o planejador: enquanto $\Phi$
 neutro o robô segue a patrulha; quando um evento se torna saliente, \textsc{Stay
 Alert} preempta o \textit{waypoint} corrente, emite uma meta de navegação focada ---
 uma pose de aproximação ou de recuo --- e devolve o controle à patrulha uma vez
-tratado o evento. Esse desacoplamento preserva as garantias deliberativas de uma
-pilha madura ao mesmo tempo em que acrescenta uma resposta reativa rápida e
-interpretável.
+tratado o evento. O que esse desacoplamento preserva é concreto e verificável: o
+Nav2 permanece o único produtor de \texttt{/cmd\_vel}, e portanto o planejamento
+global, a checagem de colisão contra o mapa de custos e a geração de trajetória
+continuam inteiramente a cargo da pilha de navegação. A camada reativa altera
+\emph{qual} meta é perseguida e \emph{quando}, nunca os comandos de velocidade. Não
+se alega, com isso, qualquer garantia formal de evitação de colisão, de
+\textit{liveness} ou de otimalidade: o Nav2/MPPI não as oferece, e trocar a meta em
+tempo de execução não as criaria. A propriedade reivindicada é de arquitetura ---
+a resposta reativa é acrescentada sem substituir a camada que dirige o robô ---,
+e seu preço em afastamento e em completude está medido no
+Capítulo~\ref{cap:resultados}.
 
 \begin{figure}[htb]
 \centering
