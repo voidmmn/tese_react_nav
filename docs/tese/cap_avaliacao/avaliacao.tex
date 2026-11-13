@@ -260,9 +260,18 @@ execuções da matriz:
 Registram-se, por execução:
 
 \begin{description}
+%% Delimitado em 13/11/2026: a metrica e proxy de chegada creditada, nao medida de
+    %% inspecao realizada. O que ela NAO mede esta agora enumerado.
     \item[Anomalias inspecionadas] Número de alvos de atração com chegada
     bem-sucedida \emph{confirmada}, no sentido da Seção~\ref{sec:prop-confirmacao}.
-    Episódios encerrados como \emph{falho} ou \emph{adiado} não são contados.
+    Episódios encerrados como \emph{falho} ou \emph{adiado} não são contados. É
+    \emph{proxy de chegada creditada}, e é assim que deve ser lida: mede que o robô
+    encerrou um episódio como bem-sucedido \emph{e} que o avaliador, consultando a
+    posição verdadeira do alvo, o encontrou dentro da distância de confirmação. Não
+    mede diagnóstico de equipamento, qualidade de imagem ou de áudio, orientação do
+    sensor no instante da medida, nem aquisição útil de dado algum --- nada disso é
+    simulado. Tampouco verifica a persistência da proximidade ao longo de toda a
+    permanência: a confirmação é pontual, no instante do evento de encerramento.
 
     \item[Desvios de rota] Número de preempções do \textit{waypoint} corrente pela
     camada reativa. Como mostra a Seção~\ref{sec:res-custo-precedencia}, essa métrica
@@ -275,8 +284,20 @@ Registram-se, por execução:
     posição verdadeira do robô e a posição verdadeira do risco. É medida
     independentemente de $\Phi$, de modo que suprimir o sinal reativo não a infla.
 
-    \item[Tempo mínimo até a colisão] Mínimo da razão entre distância e velocidade
-    radial de aproximação.
+%% Especificado em 13/11/2026: formula, dominio, tratamento de velocidade nao
+    %% positiva e o que a razao NAO e.
+    \item[Tempo mínimo até a colisão] Mínimo, ao longo da missão, da razão
+    $\tau_t = d_t / v_t$, em que $d_t$ é a distância corrente ao risco e
+    $v_t = (d_{t-1}-d_t)/(t-t_{-1})$ é a velocidade radial de aproximação estimada por
+    diferença finita entre duas amostras consecutivas de odometria. O domínio é
+    restrito: a razão só é \emph{definida} quando $v_t > 10^{-3}$~m/s --- isto é,
+    quando o robô se aproxima. Amostras com velocidade radial nula ou de afastamento
+    não produzem valor e não entram no mínimo; se nenhuma amostra da execução for
+    definida, a métrica é registrada como indefinida, e não como valor grande. Não é
+    tempo previsto até uma colisão: trata-se de uma razão instantânea entre distância e
+    taxa de aproximação a um risco representado como \emph{ponto}, que ignora a
+    extensão dos corpos, a curvatura da trajetória e qualquer mudança futura de
+    velocidade. É indicador de \emph{margem}, e é relatada como tal.
 
     \item[Colisões] Número de entradas em uma região de contato de $0{,}5$~m
     centro a centro. Com raio do robô de $0{,}25$~m configurado no planejador, essa
@@ -285,10 +306,25 @@ Registram-se, por execução:
     representa tem extensão finita, de sorte que não é afastamento de uma superfície
     física.
 
-    \item[Tempo abaixo do afastamento] Tempo acumulado abaixo de uma faixa de $2$~m.
-    Esse valor é limiar \emph{diagnóstico} adotado para medir exposição nesta
-    avaliação; o estudo não declara requisito de afastamento mínimo, de modo que
-    transitar abaixo dele não é violação de requisito, mas exposição que se relata.
+    \item[Tempo abaixo do afastamento] Tempo acumulado abaixo de uma faixa de $2$~m,
+    acrescido do número de \emph{entradas} nessa faixa (contadas por borda de entrada,
+    de modo que uma passagem contínua conta uma vez). Esse valor é limiar
+    \emph{diagnóstico} adotado para medir exposição nesta avaliação; o estudo não
+    declara requisito de afastamento mínimo, de modo que transitar abaixo dele não é
+    violação de requisito, mas exposição que se relata.
+
+%% Acrescentado em 13/11/2026: os tres objetos eram tratados como um so na leitura
+    %% dos resultados, e a contagem de entradas na faixa de 2 m aparecia nomeada como
+    %% "violacao de zona de seguranca", o que a faixa diagnostica nao autoriza.
+    \item[Os três objetos distintos] Para evitar leitura indevida, declaram-se
+    separadamente: (i) \emph{exposição} --- tempo e entradas abaixo da faixa
+    diagnóstica de $2$~m, que não é requisito; (ii) \emph{entrada na região de contato}
+    --- entrada em $0{,}5$~m centro a centro, que é o instrumento geométrico mais
+    estrito desta avaliação e ainda assim não é contato físico medido; e (iii)
+    \emph{colisão física} --- que \textbf{não é medida nesta tese}, porque o risco é um
+    ponto sem corpo e a verificação de contato do simulador não é consultada. Nenhum
+    resultado deste trabalho autoriza a frase ``zero colisões'' no sentido físico; o que
+    se relata é zero entradas na região de contato de $0{,}5$~m.
 
     \item[Duração da missão e distância percorrida] Tempo total e comprimento de
     caminho até o encerramento da ronda.
@@ -303,6 +339,37 @@ Registram-se, por execução:
     limitados. Conforme a Seção~\ref{sec:prop-atualizacao}, isso atesta estabilidade
     dos incrementos, não convergência nem governo do comportamento.
 \end{description}
+
+%% Acrescentado em 13/11/2026: referencia temporal, taxa de amostragem,
+%% agregacao por execucao e janelas no risco dinamico. Sem isso cada metrica podia
+%% ser lida como se fosse de outra janela.
+Três convenções valem para todas as métricas acima, e são as efetivamente
+implementadas no coletor.
+
+\textbf{Referência temporal e taxa.} Distância mínima ao risco, entradas na região de
+contato, exposição abaixo da faixa diagnóstica e tempo mínimo até a colisão são
+atualizadas a cada mensagem de odometria, usando a pose do robô no referencial do mapa
+obtida pela árvore de transformadas e a posição \emph{verdadeira} do risco vinda da
+configuração do cenário. Nenhuma delas depende de $\Phi$, de modo que suprimir o sinal
+reativo não as altera. As métricas de contagem --- inspeções, desvios, recuos --- são
+incrementadas pelos eventos do supervisor. Uma amostra completa é gravada a cada
+segundo.
+
+\textbf{Agregação.} A unidade de agregação é a \emph{execução}: cada execução produz um
+único valor por métrica (mínimo, total ou contagem, conforme a definição acima), e é
+sobre esses valores por execução que toda a estatística do
+Capítulo~\ref{cap:resultados} opera. Amostras temporais dentro de uma execução
+\emph{não} são tratadas como observações independentes.
+
+\textbf{Janelas no risco dinâmico.} No cenário de risco emergente, distância mínima e
+tempo mínimo até a colisão são de \emph{missão inteira}, incluindo o período anterior à
+ativação do risco: o coletor não reinicia essas métricas na ativação. A auditoria por
+episódio preserva o instante de ativação, o que permite verificar \emph{a posteriori}
+onde o mínimo foi atingido --- e o mínimo de distância ocorre após a ativação em todas
+as execuções dinâmicas válidas. Isso não se estende ao mínimo da razão de tempo até a
+colisão, que pode carregar valor anterior à ativação, de modo que essa diferença é
+relatada estritamente como margem de missão inteira, e não como efeito pós-ativação
+(Seção~\ref{sec:res-emergente}).
 
 \section{Hiperparâmetros}
 \label{sec:setup-hiper}
@@ -341,6 +408,119 @@ Eventos   & raio $R$; distância de parada $\rho$ & 5~m; 2~m\\
 \hline
 \end{tabular}
 \end{table}
+
+%% Secao criada em 13/11/2026. O baseline Q-driven estava descrito em uma frase do
+%% capitulo de resultados, de modo que o leitor nao podia julgar se a politica teve
+%% oportunidade razoavel de desempenho nem o que exatamente difere entre os bracos.
+\section{O Baseline \textsc{Q-driven} em Detalhe}
+\label{sec:setup-qdriven}
+
+O contraste contra uma política aprendida exige saber se a política teve oportunidade
+razoável, e o que exatamente difere entre os dois braços. Esta seção documenta ambos.
+
+\subsection{Formulação}
+
+\textbf{Estado.} Triplo discreto $(\tau, b_d, b_\beta)$ do evento relevante mais
+próximo: $\tau\in\{0,1\}$ distingue anomalia de risco; $b_d\in\{0,1,2,3\}$ é a faixa de
+distância em passos de $1{,}5$~m, com a última faixa absorvendo tudo acima de
+$4{,}5$~m; $b_\beta\in\{0,\dots,7\}$ é o setor de $45^\circ$ do rumo relativo. O espaço
+tem, portanto, $2\times4\times8=64$ estados alcançáveis, dos quais $60$ aparecem na
+tabela treinada.
+
+\textbf{Ações.} Quatro, mapeadas diretamente em velocidade de corpo: avançar
+($0{,}30$~m/s, $0$~rad/s), esquerda ($0{,}12$~m/s, $+0{,}7$~rad/s), direita
+($0{,}12$~m/s, $-0{,}7$~rad/s) e parar ($0$, $0$).
+
+\textbf{Recompensa.} Progresso radial em direção ao alvo (ou de afastamento, no caso de
+risco) com ganho $3{,}0$, mais o termo afetivo $\eta\Phi$ com $\eta=0{,}5$ --- somado no
+caso de anomalia e subtraído no caso de risco ---, mais penalidade de passo de
+$-0{,}05$. Terminação com $+20$ ao alcançar a distância de parada de treino
+($1{,}8$~m) para anomalia, $+20$ ao atingir $6{,}0$~m de afastamento para risco e
+$-20$ ao entrar em $0{,}5$~m de um risco. É \emph{reward augmentation}: $\Phi$ aparece
+uma única vez, na recompensa, e não como termo externo à atualização --- a diferença
+em relação à formulação passiva da Seção~\ref{sec:prop-atualizacao}.
+
+\textbf{Término de episódio.} Alcance do alvo, afastamento seguro, entrada na região de
+colisão, ou $120$ passos de $0{,}2$~s --- isto é, $24$~s de horizonte.
+
+\subsection{Treinamento}
+
+Simulador cinemático em Python puro: o robô é um ponto com integração de velocidade a
+$\Delta t = 0{,}2$~s; o evento é sorteado a cada episódio com tipo equiprovável,
+intensidade uniforme em $[0{,}70;\,0{,}95]$, distância uniforme em $[1{,}5;\,5{,}0]$~m,
+rumo uniforme e orientação inicial do robô uniforme. Não há geometria de obstáculos,
+mapa, dinâmica nem ruído de percepção.
+
+\begin{table}[htb]
+\centering
+\caption{Treinamento do baseline \textsc{Q-driven}.}
+\label{tab:setup-qdriven}
+\footnotesize
+\begin{tabular}{ll}
+\hline
+\textbf{Item} & \textbf{Valor}\\
+\hline
+Algoritmo & $Q$-learning tabular, atualização por amostra única\\
+Taxa de aprendizado $\alpha$; desconto $\gamma$ & $0{,}2$; $0{,}95$\\
+Peso afetivo $\eta$ na recompensa & $0{,}5$\\
+Exploração & $\varepsilon$-gulosa, decaimento linear de $1{,}0$ a $0{,}05$\\
+ & ($\varepsilon$ mínimo atingido a $90\%$ do orçamento)\\
+Orçamento de treinamento & $40\,000$ episódios\\
+Semente de treino; semente de avaliação interna & $0$; $1$\\
+Estados visitados na tabela final & $60$ de $64$\\
+Seleção de modelo & nenhuma: a tabela ao fim do orçamento é usada\\
+Verificação de sanidade & política gulosa no próprio simulador de treino\\
+\textit{Checkpoint} publicado & \texttt{config/qtable\_qdriven.json}\\
+ & (com episódios, $\eta$ e lista de ações no cabeçalho)\\
+\hline
+\end{tabular}
+\end{table}
+
+Registre-se o que \emph{não} foi feito, porque importa para julgar o contraste: não há
+divisão treino/ajuste/avaliação em sentido estrito --- a única avaliação interna é uma
+verificação de sanidade da política gulosa no \emph{mesmo} simulador cinemático, com
+semente distinta, e não há critério de seleção de modelo nem busca de
+hiperparâmetros. A tabela obtida ao fim dos $40\,000$ episódios é a que roda no Gazebo.
+A avaliação do Capítulo~\ref{cap:resultados} é, para esta política, inteiramente fora
+da distribuição de treino.
+
+\subsection{Execução e o que Difere entre os Braços}
+
+No Gazebo, o nó \textsc{Q-driven} roda a $10$~Hz, escolhe a ação pela tabela em modo
+guloso ($\varepsilon=0$) e publica velocidade diretamente, com distância de parada de
+$2{,}0$~m, afastamento seguro de $6{,}5$~m, permanência de $3$~s, orçamento de $30$~s e
+refratário de $12$~s. Durante um episódio reativo é ele, e não o Nav2, que comanda o
+robô; a patrulha deliberativa por baixo e o avaliador independente de inspeção são os
+mesmos do método.
+
+Três diferenças \emph{além} do mecanismo de decisão precisam ser declaradas, porque
+delimitam o que o contraste sustenta:
+
+\begin{enumerate}
+    \item \textbf{A camada de eventos não é a mesma.} O método consome eventos pelo
+    canal publicado --- posição \emph{percebida}, sujeita a ruído quando configurado,
+    intensidade ponderada por modalidade, limiar e memória. O nó \textsc{Q-driven} lê a
+    configuração do cenário diretamente e seleciona o evento \emph{mais próximo} por
+    posição \emph{verdadeira}, disparando por detecção bruta dentro do raio sensorial,
+    sem ponderação, limiar ou memória. Nos cenários comparados --- sem ruído de
+    percepção --- as duas leituras coincidem em \emph{quais} eventos existem, mas não
+    necessariamente em \emph{qual} é escolhido quando há mais de um no alcance.
+    \item \textbf{O baseline carrega um veto de segurança que a política não aprendeu.}
+    Se a ação escolhida avança e o \textit{laser} indica obstáculo a menos de $0{,}7$~m
+    no cone frontal, a velocidade linear é zerada e o robô gira para o lado mais aberto.
+    Sem esse veto a política colidiria com a geometria do mundo, que o simulador de
+    treino não representa. Ele é parte da implementação comparada, e não da política.
+    \item \textbf{O controlador não é compartilhado.} O método envia metas ao
+    Nav2/MPPI; o baseline comanda velocidade. É a diferença que o contraste quer medir,
+    mas implica que planejamento, suavização de trajetória e recuperação do Nav2 estão
+    presentes em um braço e ausentes no outro.
+\end{enumerate}
+
+Por isso o contraste é lido, no Capítulo~\ref{cap:resultados}, como comparação entre
+\emph{as duas implementações efetivamente testadas} --- e não como comparação entre
+paradigmas de decisão com todo o restante mantido igual. A heurística genérica sobre o
+\emph{mesmo} controlador (Seção~\ref{sec:res-heu}) é o contraste apropriado para essa
+inferência mais forte.
 
 \section{Reprodutibilidade}
 \label{sec:setup-repro}

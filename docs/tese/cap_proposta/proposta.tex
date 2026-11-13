@@ -229,9 +229,38 @@ ele emite um evento com a identidade do alvo e o motivo.
 
 O \emph{avaliador}, um nó separado, recebe esse evento e só então compara a pose do
 robô com a posição \emph{verdadeira} do alvo: dentro de uma \emph{distância de
-confirmação} --- a distância de parada acrescida de uma tolerância --- a anomalia é
-creditada como \emph{inspecionada}; caso contrário, o episódio é registrado como
-rejeição na confirmação.
+confirmação} a anomalia é creditada como \emph{inspecionada}; caso contrário, o
+episódio é registrado como rejeição na confirmação.
+
+%% Acrescentado em 13/11/2026: as tres distancias tinham justificativas
+%% distintas que o texto nao separava, e a de confirmacao aparecia como "distancia de
+%% parada acrescida de uma tolerancia", sem dizer de que tolerancias se trata.
+Três distâncias diferentes atuam nessa cadeia, com justificativas distintas, e
+convém não confundi-las:
+
+\begin{itemize}
+    \item a \textbf{distância de parada} $\rho=2$~m é uma \emph{escolha de projeto}:
+    é onde a meta de inspeção é colocada, longe o bastante do equipamento para não
+    ocupar sua vizinhança imediata e perto o bastante para que um sensor de inspeção
+    o enquadre. Ela define o comportamento;
+    \item a \textbf{tolerância do navegador} de $0{,}25$~m em posição é um
+    \emph{parâmetro do Nav2}: é o raio dentro do qual o navegador declara a meta
+    alcançada. Ela não é escolha desta tese, e é a razão pela qual a chegada
+    bem-sucedida não significa estar exatamente a $2$~m;
+    \item a \textbf{distância de confirmação} de $3{,}3$~m é um \emph{instrumento de
+    medida}, não um requisito de comportamento. Ela é composta de três termos
+    explícitos: a distância de parada ($2{,}0$~m), uma margem de conclusão
+    ($0{,}8$~m) que absorve a tolerância do navegador e o deslocamento residual
+    durante a permanência, e um acréscimo fixo ($0{,}5$~m) que absorve a diferença
+    entre a posição do evento usada pela meta --- \emph{percebida}, possivelmente
+    ruidosa --- e a posição \emph{verdadeira} contra a qual o avaliador confere.
+\end{itemize}
+
+A escolha de $3{,}3$~m é, portanto, justificada por construção, e não pelo resultado
+que produz --- ponto que importa porque a Seção~\ref{sec:res-inspecao} reavalia os
+mesmos registros com um limiar de $4{,}0$~m e mostra que a taxa creditada é sensível a
+ele. Essa reavaliação é retrospectiva e serve para separar sensibilidade da métrica de
+degradação física da aproximação; não é o critério adotado.
 
 A confirmação, portanto, jamais retroalimenta o comportamento: nenhum episódio é
 prolongado ou abreviado por ela. É também uma aproximação: não se verifica

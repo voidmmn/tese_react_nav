@@ -25,10 +25,17 @@ afastamentos mínimos medianos semelhantes ($1{,}73$ e $1{,}71$~m), sem diferen�
 estatisticamente detectável ($p_{\mathrm{Holm}}=0{,}4194$); o método completo (RHM)
 situa-se nos mesmos $1{,}71$~m.
 
-O benefício de segurança sobre esse risco é, portanto, atribuível à zona de exclusão
-deliberativa, e não à ponderação reativa. O que a camada reativa acrescenta sobre o
-KOF são as inspeções em si ($3$ contra $0$ de $3$), ao custo de cerca de $31$~s de
-tempo de missão adicional para o KOa.
+%% Delimitado em 13/11/2026. A atribuicao vale para o cenario e as configuracoes
+%% estudadas; ausencia de beneficio adicional detectado nao demonstra equivalencia
+%% geral entre os componentes.
+Nesse cenário e nessas configurações, portanto, o benefício de segurança é atribuível
+à zona de exclusão deliberativa, e não à ponderação reativa. A afirmação é dessa
+extensão: ela não estabelece equivalência geral entre os dois componentes, nem se
+transfere a riscos que não estejam estáticos sobre a rota --- a comparação de risco
+emergente da Seção~\ref{sec:res-emergente} mostra justamente o caso em que a resposta
+reativa acrescenta margem. O que a camada reativa acrescenta sobre o KOF são as
+inspeções em si ($3$ contra $0$ de $3$), ao custo de cerca de $31$~s de tempo de
+missão adicional para o KOa.
 
 \subsection{O Critério de Seleção Não Teve Efeito Detectável; o Modo de Disparo Teve}
 
@@ -42,7 +49,8 @@ O que \emph{mudou} o desfecho foi o \emph{modo de disparo}: uma heurística gen�
 de detectar--selecionar--desviar--retornar, sobre o mesmo controlador Nav2/MPPI e
 acionada por detecção bruta, acaba por inspecionar a anomalia colocalizada com um
 risco e reduz o afastamento mínimo à metade ($4{,}84$ contra $2{,}23$~m, $\delta$ de
-Cliff $+1{,}00$), ao mesmo tempo em que atrasa a inspeção prioritária em cerca de
+Cliff $-1{,}00$ na convenção comparador-menos-método adotada em toda a tese --- o braço
+comparado é o menor), ao mesmo tempo em que atrasa a inspeção prioritária em cerca de
 $105$~s.
 
 Essa troca \emph{não} remove a precedência categórica --- a heurística ainda
@@ -58,10 +66,18 @@ Essa precedência carrega um custo que foi medido: um risco marginalmente elegí
 suprime a atração por cerca de $70$~s e abre mão de uma de quatro inspeções em
 $10/10$ execuções.
 
-Em conjunto, o que distingue esta camada de uma heurística genérica de desviar e
-retornar é o canal de risco com limiar e decaimento, e não a ponderação por
-saliência; e ela troca completude por afastamento de um modo que está agora
-quantificado nas duas direções.
+%% Delimitado em 13/11/2026. A frase anterior afirmava sem condicao que o
+%% distintivo e o canal de risco "e nao a ponderacao por saliencia". A segunda
+%% metade e ausencia de efeito DETECTADO nos cenarios e no tamanho amostral
+%% executados, e nao demonstracao de que a ponderacao seja inutil.
+Em conjunto, nos cenários executados e com oito a dez execuções por braço, o que
+distingue esta camada de uma heurística genérica de desviar e retornar é o canal de
+risco com limiar e decaimento. A ponderação por saliência, no mesmo conjunto de
+condições, não produziu diferença detectável --- o que delimita a sua contribuição
+\emph{nestas distribuições de eventos} e não estabelece que ela seja dispensável em
+outras, com anomalias de intensidades mais separadas ou em maior número. E a camada
+troca completude por afastamento de um modo que está agora quantificado nas duas
+direções.
 
 \section{Limites da Evidência}
 \label{sec:conc-limites}
@@ -151,6 +167,21 @@ a ponderação --- são onde o trabalho adicional pertence.
     ambiente de avaliação, com ações mapeadas para o controlador em vez de para a
     velocidade do robô, e com a deferência ao canal de risco como objeto do
     aprendizado em vez de regra fixa.
+
+%% Acrescentados em 13/11/2026: os dois desenhos que permitiriam alegacoes isoladas
+    %% onde hoje so ha o conjunto de intervencoes. Ficam nomeados aqui para que o
+    %% limite das atribuicoes dos Capitulos~\ref{cap:resultados} e~\ref{cap:conclusao}
+    %% tenha o experimento correspondente identificado.
+    \item \textbf{Separar disparo de persistência.} Um desenho que varie
+    independentemente a fonte do disparo e a extensão temporal da memória, mantendo
+    constantes a seleção, a prioridade e o controlador, permitiria isolar o fator que
+    hoje só se pode atribuir ao par. É o experimento que a
+    Seção~\ref{sec:res-ameacas} identifica como ausente.
+
+    \item \textbf{Separar interrupção de deslocamento.} Uma variante de parada e
+    espera --- mesma preempção da investigação, mesmo tratamento do sinal de risco,
+    sem a meta de recuo --- separaria o efeito de interromper a aproximação do efeito
+    de deslocar-se, que a comparação de risco emergente hoje mede em conjunto.
 
     \item \textbf{Percepção real.} Substituir os eventos-oráculo por percepção
     térmica, acústica e visual real alimentando a camada de eventos, com tratamento

@@ -474,10 +474,25 @@ evento, faixa de distância e setor de rumo, com ações em
 $\{$avançar, esquerda, direita, parar$\}$. Durante o episódio reativo é essa tabela
 que escolhe a ação, em modo \textit{greedy}, comandando diretamente a velocidade do
 robô --- enquanto no método proposto a tabela é passiva e o disparo por limiar emite
-uma meta ao Nav2/MPPI. Tudo o mais é compartilhado: a mesma patrulha deliberativa por
-baixo, o mesmo protocolo de eventos, o mesmo avaliador independente de inspeção, e os
-mesmos parâmetros de inspeção --- distância de parada $\rho=2$~m e recuo em
-$R+\Delta=6{,}5$~m. A separação é, portanto, de mecanismo, e não de parametrização.
+uma meta ao Nav2/MPPI. A formulação completa, o orçamento de treinamento e o
+\textit{checkpoint} estão na Seção~\ref{sec:setup-qdriven}.
+
+%% Corrigido em 13/11/2026. A redacao anterior dizia "tudo o mais e compartilhado"
+%% e "a separacao e de mecanismo, e nao de parametrizacao". Nao e exato: o no
+%% Q-driven le a configuracao do cenario e seleciona o evento mais PROXIMO por
+%% posicao VERDADEIRA, com disparo por deteccao bruta; carrega um veto de seguranca
+%% por laser que a politica nao aprendeu; e nao usa o Nav2 durante o episodio. As
+%% tres diferencas estao agora declaradas na Secao~\ref{sec:setup-qdriven}.
+Compartilham-se a patrulha deliberativa por baixo, o avaliador independente de
+inspeção e os parâmetros de inspeção --- distância de parada $\rho=2$~m e recuo em
+$R+\Delta=6{,}5$~m. \emph{Não} se compartilham, e isso delimita o que o contraste
+sustenta, a camada de eventos (o baseline seleciona o evento mais próximo por posição
+verdadeira, com disparo por detecção bruta, sem ponderação, limiar ou memória), o veto
+de segurança por \textit{laser} que o baseline carrega e a política não aprendeu, e o
+controlador em si. A comparação é, portanto, entre as \emph{duas implementações
+efetivamente testadas}, e não entre mecanismos de decisão com todo o restante mantido
+igual --- inferência que o contraste contra a heurística genérica sobre o mesmo
+controlador (Seção~\ref{sec:res-heu}) é o desenho apropriado para sustentar.
 
 A Tabela~\ref{tab:res-qdriven} reúne os contrastes nos três cenários, com dez
 execuções por configuração e trinta de trinta concluindo a missão. Estes contrastes
@@ -536,9 +551,11 @@ Três leituras decorrem desses números.
 Primeiro, \emph{a política aprendida não compra completude de inspeção}. Nos três
 cenários o número de anomalias inspecionadas é o mesmo --- três, três e cinco ---, sem
 diferença detectável. O resultado é coerente com a arquitetura: \emph{o que}
-inspecionar é decidido pela camada de eventos, idêntica nos dois braços; a política
-governa apenas \emph{como} o robô chega ao alvo. Trocar o mecanismo de decisão motora
-não desloca o desfecho que define a tarefa de inspeção.
+inspecionar é determinado pelo conjunto de eventos do cenário, o mesmo nos dois braços
+--- ainda que a regra que escolhe entre eventos concorrentes difira
+(Seção~\ref{sec:setup-qdriven}) ---, enquanto a política governa \emph{como} o robô
+chega ao alvo. Nos cenários comparados, trocar o mecanismo de decisão motora não
+deslocou o desfecho que define a tarefa de inspeção.
 
 Segundo, \emph{a política aprendida é mais lenta na subtarefa reativa, com separação
 completa}. O tempo em investigação sobe de $35{,}1$ para $48{,}6$~s em
@@ -559,13 +576,24 @@ acréscimo de $105$~s ou $26\%$, com $\delta=+1{,}00$ e intervalo de confiança
 inteiramente afastado de zero.
 
 A resposta de segurança não distingue os dois braços. Nos três cenários, ambos
-registram zero entradas na região de contato de $0{,}5$~m, zero violações de zona de
-segurança e zero tempo sob a faixa de afastamento de $2$~m; o afastamento mínimo
+registram zero entradas na região de contato de $0{,}5$~m e zero entradas --- logo,
+zero tempo --- na faixa diagnóstica de afastamento de $2$~m; o afastamento mínimo
 mediano difere em $0{,}10$ a $0{,}14$~m a favor do baseline, separação completa porém
-de magnitude operacionalmente desprezível diante do recuo comandado de $6{,}5$~m. Isso
-reforça, por uma terceira via independente, a atribuição estabelecida na
-Seção~\ref{sec:res-ablacao}: a segurança observada vem da geometria do recuo e da zona
-de exclusão, e não do mecanismo que decide a reação.
+de magnitude operacionalmente desprezível diante do recuo comandado de $6{,}5$~m.
+
+%% Corrigido em 13/11/2026. A redacao anterior atribuia esse resultado a zona de
+%% exclusao, que esta DESLIGADA em default, conflict e adverse (Tabela~\ref{tab:setup-matriz}).
+%% A explicacao agora segue a configuracao efetivamente usada.
+A explicação tem de seguir a configuração usada: nestes três cenários a zona de
+exclusão está \emph{desligada} (Tabela~\ref{tab:setup-matriz}), de modo que ela não pode
+responder por nada aqui. O que ambos os braços têm em comum é a \emph{geometria} da
+resposta --- distância de parada de $2$~m na aproximação e afastamento comandado de
+$6{,}5$~m diante de risco, idênticos por parametrização --- e o fato de o risco, nesses
+cenários, não estar sobre a rota. É isso, e não o mecanismo que decide a reação, que
+explica a coincidência: dois mecanismos de decisão diferentes, sob a mesma geometria de
+resposta e o mesmo arranjo de risco, produzem a mesma margem. A atribuição da
+Seção~\ref{sec:res-ablacao}, que envolve a zona de exclusão, refere-se ao cenário de
+risco \emph{sobre a rota} e não é reforçada nem contestada por este contraste.
 
 \paragraph*{O que este contraste não estabelece} A tabela $Q$ foi treinada em um
 simulador cinemático rápido, que representa posição e evento mas não a geometria dos
@@ -747,10 +775,28 @@ $2{,}55\pm0{,}15$~m e tempo radial até a colisão de $5{,}23\pm0{,}45$~s. Com o
 desabilitado (DHb, somente zona de exclusão) o robô prossegue até a pose de parada da
 inspeção, aproximando-se a $2{,}22\pm0{,}01$~m ($4{,}72\pm0{,}21$~s).
 
-O recuo reativo compra, portanto, $+0{,}33$~m de afastamento (IC $95\%$
+%% Delimitado em 13/11/2026. A intervencao DHa contra DHb nao e "o deslocamento de
+%% recuo": habilitar o recuo reativo habilita o conjunto inteiro -- preempcao da
+%% investigacao, troca de meta, entrega do risco a zona de exclusao (que ocorre na
+%% ENTRADA em Avoid) e refratario. Em tres das oito execucoes a meta de recuo foi
+%% abortada e a margem apareceu de todo modo, o que mostra que o deslocamento nao e
+%% condicao necessaria do efeito.
+A intervenção comparada, portanto, compra $+0{,}33$~m de afastamento (IC $95\%$
 $[+0{,}23;+0{,}42]$, $\delta$ de Cliff igual a $1$, $p=4{,}6\times10^{-5}$) e
 $+0{,}51$~s de margem de tempo até a colisão ($[+0{,}20;+0{,}84]$, $\delta=0{,}85$,
 $p=1{,}0\times10^{-3}$) contra um risco emergente.
+
+Convém nomear com precisão \emph{o que} foi comparado. Habilitar o recuo reativo não
+habilita apenas um deslocamento: habilita o \emph{conjunto} de ações de preempção e
+recuo --- interromper a investigação em curso, trocar a meta de navegação, entregar o
+risco à zona de exclusão (entrega que ocorre na \emph{entrada} em \textsc{Avoid}, e
+portanto não existe em DHb) e armar o refratário. O efeito relatado é desse conjunto, e
+não do deslocamento de recuo isolado. A evidência interna reforça a distinção: nas três
+execuções em que a própria meta de recuo é abortada, a margem aparece de todo modo, de
+sorte que o deslocamento não é condição necessária do efeito medido. Separar a
+interrupção da aproximação do deslocamento exigiria uma variante de parada e espera, com
+a mesma preempção e o mesmo tratamento do risco mas sem a meta de recuo --- desenho
+nomeado na Seção~\ref{sec:conc-futuro} e não executado aqui.
 
 Essa margem é uma troca deliberada, não um ganho gratuito: DHa roda cerca de
 $9{,}4$~s a mais ($348$ contra $338$~s) e $1{,}6$~m a mais, e \emph{adia} a inspeção
