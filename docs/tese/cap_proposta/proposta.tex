@@ -239,9 +239,16 @@ independentemente a distância de parada completa nem a orientação, tampouco a
 persistência ao longo de toda a permanência, e a métrica é nomeada de acordo.
 
 O episódio \emph{não} termina meramente porque $\Phi$ decaiu, o que previne oscilação
-ao atravessar um ``vale'' de baixa saliência entre eventos. O modo \textsc{Avoid}
-termina quando o risco deixa o alcance, $\Phi > -\theta_{\text{out}}$ (\emph{seguro}),
-ou ao alcançar a pose de recuo (\emph{recuado}), e então arma o período refratário.
+ao atravessar um ``vale'' de baixa saliência entre eventos.
+
+%% Corrigido em 13/11/2026: a lista verbal traz tres saidas de Avoid, nao duas -- o
+%% esgotamento do orcamento estava no Algoritmo~\ref{alg:stayalert} e faltava aqui --
+%% e o refratario e armado em TODAS elas, nao apenas no recuo completado.
+O modo \textsc{Avoid} tem \emph{três} saídas, as mesmas do
+Algoritmo~\ref{alg:stayalert}: o sinal de risco cessa, $\Phi > -\theta_{\text{out}}$
+(\emph{seguro}); a pose de recuo é alcançada (\emph{recuado}); ou o orçamento
+$t_{\max}$ se esgota (\emph{esgotado}). O período refratário $t_{\text{ref}}$ é armado
+em \emph{qualquer} das três, e não apenas quando o recuo se completa.
 
 Uma anomalia é \emph{comprometida} no \emph{início} de sua investigação --- após o
 que deixa de atrair, removendo a oscilação
@@ -334,6 +341,347 @@ da repulsão.}
 \ENDIF
 \end{algorithmic}
 \end{algorithm}
+
+%% Secao criada em 13/11/2026. O supervisor estava descrito entre equacoes,
+%% pseudocodigo e comentarios dos resultados, de modo que um leitor nao conseguiria
+%% reimplementa-lo sem adivinhar regras. Esta secao fixa o que faltava: inicializacao,
+%% ordem de operacoes, taxas e relogios, vinculo de identidade, meta de recuo
+%% inviavel, todas as saidas de Avoid, ciclo de vida do alvo, onde a supressao do
+%% risco ocorre e a tabela de transicoes -- com tres rastros de log reais.
+\section{Especificação Operacional}
+\label{sec:prop-especificacao}
+
+Esta seção fixa o que falta para reimplementar o supervisor sem inferir regras: o
+estado inicial, a ordem das operações, as taxas e os relógios, o vínculo entre valor
+retido e identidade de evento, o ciclo de vida de um alvo e o comportamento nos casos
+difíceis. Os rastros ao final são extraídos de \textit{logs} de execuções reais.
+
+\subsection{Inicialização}
+
+Ao subir, o supervisor assume modo \textsc{Patrol}; ambos os acumuladores são nulos
+($h=0$, $a=0$, logo $\Phi=0$); nenhuma pose de inspeção ou de recuo está recebida (as
+duas referências são nulas, e a ausência de pose de recuo \emph{impede} a entrada em
+\textsc{Avoid} por si só); a identidade de alvo é indefinida; o instante de liberação
+do refratário é zero, de modo que a primeira preempção não é bloqueada; o desfecho de
+navegação é indefinido e o contador de episódios é zero. No gerador de eventos, os
+quatro conjuntos de estado de alvo --- comprometido, concluído, falho e adiado ---
+começam vazios, e nenhum risco está travado na zona de exclusão nem entregue a ela.
+
+\subsection{Taxas e Relógios}
+
+\begin{table}[htb]
+\centering
+\caption{Taxas dos componentes e relógio que governa cada temporização. Todos os nós
+rodam com \texttt{use\_sim\_time} verdadeiro, de modo que seus temporizadores seguem o
+relógio simulado. A exceção está registrada na última linha e discutida no texto.}
+\label{tab:prop-taxas}
+\footnotesize
+\begin{tabular}{p{0.34\textwidth}p{0.16\textwidth}p{0.40\textwidth}}
+\hline
+\textbf{Componente ou temporização} & \textbf{Taxa ou valor} & \textbf{Relógio}\\
+\hline
+Publicação de eventos (intensidades, poses de inspeção e de recuo, identidade de alvo,
+nuvem da zona de exclusão) & $2$~Hz & simulado\\
+\hline
+Leitura e publicação de $\Phi$ & $1$~Hz & simulado\\
+\hline
+Ciclo do supervisor (avaliação das guardas) & $5$~Hz & simulado\\
+\hline
+Controlador MPPI do Nav2 & $20$~Hz & simulado\\
+\hline
+\textit{Costmap} local / global & $5$~Hz / $1$~Hz & simulado\\
+\hline
+Permanência $t_{\text{dwell}}$, orçamento $t_{\max}$, refratário $t_{\text{ref}}$ &
+$3$~s, $15$--$40$~s, $8$~s & simulado\\
+\hline
+Período de decaimento $T_d$ dos acumuladores & $1$~s nominal & \textbf{de parede}\\
+\hline
+\end{tabular}
+\end{table}
+
+A última linha merece registro explícito, porque é uma discrepância real entre a
+especificação e a implementação. O temporizador que \emph{dispara} a avaliação do
+decaimento segue o relógio simulado, mas a condição que \emph{autoriza} a aplicação do
+fator $\lambda$ compara instantes de relógio \emph{de parede}. Como a simulação roda
+com fator de tempo real acima da unidade --- razão mediana de $1{,}12$ entre relógio
+simulado e relógio de parede, conforme a Seção~\ref{sec:setup-censo} ---, a aplicação
+efetiva ocorre a cada dois disparos, e não a cada um: o período de decaimento realizado
+é de cerca de $2$~s de tempo simulado, não de $1$~s. Isso é visível nos \textit{logs},
+em que $\Phi$ repete o mesmo valor em disparos consecutivos de $1$~s antes de cair --- a
+sequência $0{,}015$; $0{,}015$; $0{,}013$; $0{,}011$; $0{,}011$; $0{,}009$; $0{,}009$ é
+um trecho literal de uma execução. A consequência é que a meia-vida realizada do canal
+é cerca do dobro da nominal. Esse comportamento é idêntico em \emph{todos} os braços
+experimentais, porque o campo é o mesmo código em todos, de modo que ele não confunde
+contraste algum; e as janelas de persistência relatadas no
+Capítulo~\ref{cap:resultados} são \emph{medidas} nos registros, não derivadas de
+$\lambda$ e $T_d$. Ainda assim, quem reimplementar o supervisor deve ler $T_d$ como
+``um período de decaimento'', e não como ``um segundo de tempo simulado''.
+
+\subsection{Ordem das Operações}
+
+Em cada ciclo, na ordem:
+
+\begin{enumerate}
+    \item \textbf{Ativação ambiental.} Um risco com raio de ativação só passa a
+    existir --- para o canal reativo \emph{e} para a zona de exclusão --- quando a
+    posição verdadeira do robô entra nesse raio. A decisão é tomada antes de qualquer
+    distribuição de observação.
+    \item \textbf{Observação.} Cada evento vivo dentro do raio $R$ tem sua intensidade
+    percebida computada pela Equação~\eqref{eq:prop-intensidade} e publicada. Riscos
+    entregues à zona de exclusão são omitidos nesta etapa (adiante).
+    \item \textbf{Elegibilidade.} Uma leitura abaixo do limiar da própria modalidade é
+    descartada e não entra em canal algum.
+    \item \textbf{Atualização por máximo e saturação.} A leitura elegível atualiza o
+    canal da sua modalidade por retenção de máximo
+    (Equação~\eqref{eq:prop-canais}) e o valor armazenado é saturado no próprio lugar.
+    \item \textbf{Decaimento.} Decorrido um período de decaimento, ambos os canais
+    relaxam por $\lambda$ e são zerados abaixo de $\varepsilon$
+    (Equação~\eqref{eq:prop-decaimento}). Um canal cujo conjunto elegível próprio
+    esteja vazio é deixado ao decaimento enquanto o outro ainda pode ser atualizado.
+    \item \textbf{Leitura do campo.} $\Phi$ é lido por precedência categórica
+    (Equação~\eqref{eq:prop-precedencia}).
+    \item \textbf{Avaliação das guardas.} O supervisor avalia, \emph{nesta} ordem, a
+    preempção de segurança, depois o ramo de \textsc{Patrol}, depois o de
+    \textsc{Investigate}, depois o de \textsc{Avoid}. No máximo \emph{uma} transição
+    ocorre por ciclo: a preempção de segurança retorna imediatamente após entrar em
+    \textsc{Avoid}.
+\end{enumerate}
+
+\subsection{Vínculo entre Valor Retido e Identidade do Evento}
+
+Os acumuladores retêm \emph{magnitude}, não identidade: $h$ e $a$ são escalares. A
+identidade vem por um canal separado --- o gerador de eventos publica, a $2$~Hz, a
+identidade do evento de atração selecionado (o mais saliente não comprometido, ou o
+mais próximo no contraste de seleção) junto com a pose de inspeção correspondente, e a
+pose de recuo do risco mais próximo. O supervisor \emph{retém} a última pose e a última
+identidade recebidas, e as consome no instante do disparo.
+
+Daí decorrem duas propriedades que precisam ser conhecidas:
+
+\begin{itemize}
+    \item o canal pode reter uma intensidade de um evento que, no passo corrente, já não
+    é o publicado --- a magnitude sobrevive à observação que a produziu, por construção
+    (Seção~\ref{sec:prop-campo}); e
+    \item a pose e a identidade usadas na transição são as \emph{últimas recebidas}, não
+    necessariamente contemporâneas do valor que armou a guarda. No modo de disparo por
+    campo isso é aceito deliberadamente, porque a magnitude retida é o próprio mecanismo
+    sob estudo; no contraste de disparo por detecção bruta, em que não há magnitude a
+    consultar, exige-se explicitamente que a pose seja \emph{fresca} --- recebida dentro
+    de uma janela de $1$~s ---, e essa janela de frescor é o que define ``evento no
+    alcance'' naquele braço.
+\end{itemize}
+
+O crédito de inspeção é feito \emph{por identidade}: o supervisor ecoa, no evento de
+início, a identidade que recebeu, e o avaliador trava nessa identidade para decidir o
+desfecho no fim do episódio. Isso torna o crédito robusto à posição exata do robô no
+instante do evento, e impede que uma anomalia seja creditada por aproximação de outra.
+
+\subsection{Meta de Recuo Inviável}
+
+Uma meta de recuo pode ser rejeitada pelo planejador, abortada durante a execução, ou
+nem chegar a ser enviada se o servidor de navegação não responder. O comportamento é
+assimétrico em relação à investigação, e a assimetria é deliberada:
+
+\begin{itemize}
+    \item em \textsc{Investigate}, um desfecho de navegação rejeitado, abortado ou
+    cancelado encerra o episódio imediatamente como \emph{falho}, sem esperar o
+    orçamento;
+    \item em \textsc{Avoid}, o desfecho de navegação \emph{não} é consultado nas
+    guardas de saída. Uma meta de recuo abortada não encerra o modo: ele persiste até
+    que o sinal de risco cesse (\emph{seguro}), que a pose seja alcançada
+    (\emph{recuado}) ou que o orçamento se esgote (\emph{esgotado}).
+\end{itemize}
+
+A razão é que o propósito do modo é a resposta ao risco, não a chegada a uma pose: sair
+de \textsc{Avoid} por falha de navegação devolveria o robô à patrulha com o risco ainda
+ativo e com o refratário armado, bloqueando a próxima preempção. A consequência medida
+está na Seção~\ref{sec:res-emergente}: em três das oito execuções válidas de risco
+emergente a meta de recuo é ela própria abortada e o episódio ainda assim termina como
+esquiva, pelo decaimento do canal após a entrega à zona de exclusão. Nesses casos o
+afastamento relatado é o mínimo de posição \emph{verdadeira} medido pelo coletor, e não
+uma chegada presumida.
+
+\subsection{Ciclo de Vida de um Alvo}
+
+Um alvo de atração percorre os estados da \autoref{tab:prop-ciclo}. O ponto que importa
+para a leitura dos resultados é qual transição devolve o alvo ao conjunto elegível:
+\emph{somente} o adiamento por risco. Concluído e falho permanecem comprometidos, de
+modo que \emph{não existe} regra de nova tentativa.
+
+\begin{table}[htb]
+\centering
+\caption{Ciclo de vida de um alvo de atração. ``Volta a atrair'' indica se o alvo
+retorna ao conjunto elegível do canal de atração.}
+\label{tab:prop-ciclo}
+\footnotesize
+\begin{tabular}{p{0.17\textwidth}p{0.40\textwidth}p{0.18\textwidth}p{0.14\textwidth}}
+\hline
+\textbf{Estado} & \textbf{Como se entra} & \textbf{Conta como inspeção} &
+\textbf{Volta a atrair}\\
+\hline
+Disponível & estado inicial & --- & sim\\
+\hline
+Comprometido & início da investigação, pela identidade ecoada & não & não\\
+\hline
+Concluído & saída \emph{inspecionado} \textbf{e} confirmação geométrica pelo avaliador
+& sim & não\\
+\hline
+Falho & esgotamento do orçamento; falha de navegação; ou saída \emph{inspecionado}
+\textbf{sem} confirmação & não & não\\
+\hline
+Adiado & preempção por risco durante a investigação & não & \textbf{sim}\\
+\hline
+\end{tabular}
+\end{table}
+
+Isso explica, sem invocar política de recuperação alguma, os episódios adicionais
+observados na Seção~\ref{sec:res-adverso}. Um alvo falho continua comprometido e
+\emph{não} volta a ser publicado como atração; o que sobrevive é o \emph{valor retido}
+no canal $a$ e a pose latchada no supervisor. Se o episódio falho termina antes de o
+próximo período de decaimento reduzir esse valor abaixo de $\theta_{\text{in}}$, a
+guarda de \textsc{Patrol} dispara de novo no ciclo seguinte, sobre a mesma pose e a
+mesma identidade. Foi exatamente o que ocorreu em duas das três execuções com falha de
+navegação, e o que não ocorreu na terceira --- onde um passo de decaimento caiu entre a
+saída e a reavaliação. Não é recuperação por projeto: é coincidência de temporização, e
+é assim que deve ser lido.
+
+\subsection{Onde a Publicação do Risco é Suprimida}
+
+A entrega de um risco à zona de exclusão suprime sua publicação \textbf{na fonte}: o
+gerador de eventos deixa de publicar aquele risco, de modo que nenhuma observação nova
+alcança o canal reativo. Não é supressão no consumo, e não é zeramento do canal --- o
+valor já armazenado em $h$ permanece e decai.
+
+Continuam conhecendo o risco, no mesmo instante:
+
+\begin{itemize}
+    \item o \textit{costmap} global, pela nuvem da zona de exclusão, que segue sendo
+    publicada a $2$~Hz com a posição \emph{percebida} travada na primeira detecção, até
+    o fim da missão --- o planejador continua contornando a marca;
+    \item o coletor de métricas, que mede a distância ao risco pela posição
+    \emph{verdadeira} via árvore de transformadas, independentemente de $\Phi$.
+\end{itemize}
+
+Registre-se, portanto, de forma inequívoca: \textbf{o desaparecimento do sinal reativo
+não é o desaparecimento do perigo}. O que desaparece é um canal de decisão; a geometria
+permanece, continua roteando o planejador e continua sendo medida. Note-se ainda que o
+travamento da zona de exclusão e a entrega são eventos \emph{distintos}: o travamento
+ocorre na primeira detecção dentro do raio de projeção, acionado por detecção; a entrega
+--- e portanto a supressão --- ocorre na entrada em \textsc{Avoid}, e somente onde o
+canal de exclusão está habilitado.
+
+\subsection{A Descontinuidade na Borda do Alcance}
+
+A Equação~\eqref{eq:prop-intensidade} vale $I_e/2$ em $d=R$ e a observação é anulada
+para $d>R$: há um degrau de $I_e/2$ para zero na borda. Ele é mantido por ser a forma
+honesta de representar um sensor com alcance finito, e quatro mecanismos impedem que
+produza oscilação. A histerese separa entrada e saída ($\theta_{\text{in}}$ contra
+$\theta_{\text{out}}$). O compromisso remove o alvo do conjunto elegível no início do
+episódio. O refratário bloqueia nova preempção por $t_{\text{ref}}$ após qualquer saída
+de \textsc{Avoid}. E o decaimento faz o canal esvair-se gradualmente em vez de cair a
+zero no instante em que a observação cessa --- é justamente esta última propriedade que
+o contraste contra o disparo por detecção bruta isola.
+
+\subsection{Tabela de Transições}
+
+\begin{table}[htb]
+\centering
+\caption{Transições do supervisor. As guardas são avaliadas na ordem das linhas e no
+máximo uma transição ocorre por ciclo. $t_{\text{avoid}}$ é o instante de liberação do
+refratário.}
+\label{tab:prop-transicoes}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{0.11\textwidth}p{0.33\textwidth}p{0.10\textwidth}p{0.12\textwidth}p{0.21\textwidth}}
+\hline
+\textbf{Origem} & \textbf{Guarda} & \textbf{Destino} & \textbf{Desfecho} &
+\textbf{Efeitos}\\
+\hline
+qualquer $\ne$ \textsc{Avoid} &
+recuo reativo habilitado $\wedge$ $\Phi\le-\theta_{\text{in}}$ $\wedge$ pose de recuo
+recebida $\wedge$ $t\ge t_{\text{avoid}}$ &
+\textsc{Avoid} & --- &
+pausa a patrulha; envia meta de recuo; entrega o risco à zona de exclusão onde
+habilitada\\
+\hline
+\textsc{Investigate} & (a guarda acima, com modo $=$ \textsc{Investigate}) &
+\textsc{Avoid} & \emph{adiado} & alvo volta ao conjunto elegível\\
+\hline
+\textsc{Patrol} &
+$\Phi\ge\theta_{\text{in}}$ $\wedge$ pose de inspeção recebida &
+\textsc{Investigate} & --- &
+compromete o alvo pela identidade ecoada; pausa a patrulha; envia meta de aproximação\\
+\hline
+\textsc{Investigate} & navegação bem-sucedida $\wedge$ permanência $\ge t_{\text{dwell}}$ &
+\textsc{Patrol} & \emph{inspecionado} & avaliador decide crédito ou rejeição\\
+\hline
+\textsc{Investigate} & navegação rejeitada, abortada ou cancelada &
+\textsc{Patrol} & \emph{falho} & alvo marcado falho; segue comprometido\\
+\hline
+\textsc{Investigate} & decorrido $\ge t_{\max}$ &
+\textsc{Patrol} & \emph{esgotado} & alvo marcado falho; segue comprometido\\
+\hline
+\textsc{Avoid} & $\Phi>-\theta_{\text{out}}$ &
+\textsc{Patrol} & \emph{seguro} & arma $t_{\text{avoid}}$; retoma a patrulha\\
+\hline
+\textsc{Avoid} & pose de recuo alcançada &
+\textsc{Patrol} & \emph{recuado} & arma $t_{\text{avoid}}$; retoma a patrulha\\
+\hline
+\textsc{Avoid} & decorrido $\ge t_{\max}$ &
+\textsc{Patrol} & \emph{esgotado} & arma $t_{\text{avoid}}$; retoma a patrulha\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Três Rastros de Execuções Reais}
+
+Os rastros abaixo são transcritos de \textit{logs} de execução, com os instantes
+relativos ao início do episódio e as mensagens abreviadas.
+
+\paragraph{Risco que surge durante a investigação, com meta de recuo abortada.}
+Execução do cenário de risco emergente. O robô investiga o alvo $0$; o risco $100$ é
+ativado pelo ambiente quando o robô chega a $3$~m; a investigação é preemptada; a meta
+de recuo é abortada pelo planejador $20$~ms depois; e o episódio ainda assim termina
+como \emph{seguro}, $14$~s mais tarde, pelo decaimento do canal após a entrega:
+
+\begin{quote}\footnotesize\ttfamily
++0{,}0\;s \ \ investigate\_start alvo=0\\
++9{,}3\;s \ \ HAZARD\_ACTIVATED id=100 robot=(1{,}21,-10{,}20)\\
++9{,}3\;s \ \ KEEPOUT\_FIRST id=100 \ \ \ REACTIVE\_FIRST id=100\\
++10{,}0\;s \ investigate\_end reason=deferred\_hazard \ \ (alvo 0 adiado)\\
++10{,}0\;s \ perigo 100 entregue à zona de exclusão \ \ avoid\_start\\
++10{,}0\;s \ nav\_result outcome=aborted\\
++24{,}0\;s \ avoid\_end reason=safe
+\end{quote}
+
+\paragraph{Falha de navegação com reinício no ciclo seguinte.}
+Execução do cenário denso. A meta de aproximação ao alvo $4$ é abortada $3$~ms após o
+envio; o episódio encerra como \emph{falho} no ciclo seguinte do supervisor
+($0{,}2$~s); e $1{,}0$~s depois a guarda de \textsc{Patrol} dispara outra vez, com
+$\Phi$ \emph{no mesmo valor} --- o canal ainda não sofreu decaimento ---, sobre a mesma
+pose e a mesma identidade:
+
+\begin{quote}\footnotesize\ttfamily
++0{,}000\;s \ investigate\_start alvo=4 \ \ ($\Phi=+0{,}466$)\\
++0{,}003\;s \ nav\_result outcome=aborted\\
++0{,}200\;s \ investigate\_end reason=failed \ \ (alvo 4 falho, segue comprometido)\\
++1{,}200\;s \ investigate\_start alvo=4 \ \ ($\Phi=+0{,}466$)\\
++12{,}200\;s investigate\_end reason=inspected \ \ (confirmado a 2{,}22~m)
+\end{quote}
+
+Na terceira execução com falha de navegação, um passo de decaimento caiu entre a saída e
+a reavaliação, o valor retido ficou abaixo de $\theta_{\text{in}}$ e nenhum reinício
+ocorreu --- a patrulha seguiu para o \textit{waypoint} seguinte.
+
+\paragraph{Evento marginal persistente.}
+Na configuração de risco marginalmente elegível, o risco permanece acima do limiar de
+modalidade e abaixo do que justificaria o recuo pelo critério operacional, de modo que
+$h$ é renovado a cada observação e a precedência categórica mantém $\Phi<0$ enquanto o
+robô está no alcance. Como a zona de exclusão está desabilitada nesse cenário, não há
+entrega e a reobservação renova o canal: a supressão da atração dura, medida nos
+registros, cerca de $70$~s, e uma de quatro inspeções é abandonada em todas as
+execuções (Seção~\ref{sec:res-custo-precedencia}). É o preço da precedência, exibido
+pelo mecanismo que o produz.
 
 \section{Sensoriamento Ativo e Abstração de Eventos}
 \label{sec:prop-sensoriamento}
