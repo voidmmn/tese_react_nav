@@ -29,9 +29,22 @@ distribuição \emph{exata} de $U$ para amostras sem empates com $n_1+n_2\le20$
 (todos os pares aqui), o $p$ exato de permutação bilateral para braços constantes
 completamente separados, e a aproximação normal corrigida para empates apenas quando
 há empates. Cada comparação é acompanhada do tamanho de efeito $\delta$ de Cliff e de
-intervalos de confiança \textit{bootstrap} de $95\%$. Equivalência, quando
-mencionada, é avaliada por dois testes unilaterais (TOST); taxas de sucesso por
-missão são relatadas com intervalos de Wilson.
+intervalos de confiança \textit{bootstrap} de $95\%$.
+
+%% Acrescentado em 13/11/2026: o bootstrap era citado sem especificacao. Os parametros
+%% abaixo sao os do codigo (analise_estatistica.py, funcao boot_ci).
+O \textit{bootstrap} é especificado assim: a estatística reamostrada é a
+\emph{diferença de médias} entre os dois braços; o intervalo é de \emph{percentil}
+($2{,}5$ e $97{,}5$); são $10\,000$ reamostragens com reposição; a unidade reamostrada
+é a \emph{execução}, independentemente em cada braço; e a semente do gerador é fixa
+($0$), de sorte que o intervalo relatado é reproduzível byte a byte. A unidade de
+independência é, em toda esta tese, a \emph{execução}: amostras temporais dentro de
+uma mesma execução nunca são tratadas como ensaios independentes, e nenhuma análise
+reamostra amostras em vez de execuções.
+
+Taxas de sucesso por missão são relatadas com intervalos de Wilson. Equivalência,
+quando alegada, é avaliada por dois testes unilaterais (TOST) com margem declarada
+antes do teste, conforme a Seção~\ref{sec:res-equivalencia}.
 
 \subsection{Execuções Válidas e Confiabilidade de Inicialização}
 \label{sec:res-validade}
@@ -96,8 +109,82 @@ de aceito por confiança.
 
 Todo o restante --- os cenários \texttt{conflict} e \texttt{adverse}, as varreduras
 de limiar e de histerese, a configuração de risco marginal e toda reanálise de
-execuções previamente gravadas --- é \emph{exploratório}, é relatado com $p$ não
-corrigido e é rotulado como exploratório na própria frase que o enuncia.
+execuções previamente gravadas --- é \emph{exploratório} e é rotulado como
+exploratório na própria frase que o enuncia.
+
+%% Acrescentado em 13/11/2026: a regra de multiplicidade estava enunciada de forma
+%% absoluta ("todo o restante com p nao corrigido"), o que contradizia a tabela do
+%% baseline Q-driven, que traz p corrigido por Holm. A regra passa a ser enunciada com
+%% sua excecao, porque a excecao e deliberada e conservadora.
+A regra de multiplicidade é, exatamente: a correção de Holm é aplicada \emph{dentro}
+de uma família declarada e nunca entre famílias. São três as famílias declaradas nesta
+tese. A primária, de quinze testes, tabulada integralmente na
+Tabela~\ref{tab:res-familia}. A do contraste contra o \textit{baseline} de
+aprendizado por reforço comportamental, de doze testes, cujo $p$ corrigido aparece na
+Tabela~\ref{tab:res-qdriven} e é interno a ela --- corrigir ali é escolha
+conservadora, não promoção daquele bloco à condição de confirmatório. E os contrastes
+exploratórios restantes, relatados com $p$ \emph{bruto}, cada um identificado como
+tal. Nenhum $p$ bruto desta tese é apresentado como se fosse corrigido, e nenhum $p$
+corrigido mistura famílias.
+
+A Tabela~\ref{tab:res-familia} traz a família primária completa, sem omissão de teste,
+de modo que o denominador da correção de Holm seja conferível. A convenção de sinal é
+uniforme em todas as tabelas de contraste da tese: $\Delta$ e o $\delta$ de Cliff são
+do \emph{braço comparado menos o método}, isto é, positivos quando o braço comparado
+apresenta o valor maior.
+
+\begin{table}[htb]
+\centering
+\caption{Família de comparação primária completa: três contrastes
+---~proposta contra o supervisor heurístico genérico (HEU) e contra a variante de
+seleção de um fator (HEU-sel), ambos em \texttt{default}; e a ablação
+somente-\textit{keep-out} contra a patrulha fixa portando o mesmo \textit{keep-out}
+(KOa contra KOF), em \texttt{route-hazard}~--- por cinco desfechos, totalizando quinze
+testes. $n$ é o par de execuções válidas. $\Delta$ é a diferença de médias e o
+$\delta$ de Cliff o tamanho de efeito, ambos do braço comparado menos o método;
+positivos, portanto, quando o braço comparado apresenta o valor maior. O IC\,$95\%$ é
+\textit{bootstrap} de percentil sobre a diferença de médias. O teste é indicado de forma abreviada:
+``$U$ exato'' é o $U$ de Mann--Whitney com distribuição exata, ``permut.'' é o $p$
+exato de permutação bilateral para braços constantes completamente separados,
+``normal'' é a aproximação normal corrigida para empates e ``idênt.'' designa braços
+com os mesmos valores constantes, para os quais nenhum teste se aplica e $p=1$ por
+construção. A correção de Holm é interna a esta família de quinze testes.
+Tabela gerada por \texttt{gerar\_tabela\_familia.py} a partir de
+\texttt{familia\_confirmatoria.csv}.}
+\label{tab:res-familia}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\input{tabelas/familia_primaria}
+\end{table}
+
+%% Secao acrescentada em 13/11/2026: o TOST era mencionado no protocolo sem que
+%% nenhum resultado dele aparecesse. Ou se relata, ou se retira a mencao; os
+%% resultados existem e dizem algo util sobre a varredura de eta, entao relatam-se.
+\subsection{Equivalência Declarada por TOST}
+\label{sec:res-equivalencia}
+
+Ausência de diferença detectável não é equivalência. Onde a equivalência é alegada,
+ela é testada por dois testes unilaterais (TOST) com margem fixada antes do teste. Duas
+margens são usadas: $\pm5$~s para duração de missão e $\pm0{,}5$ para anomalias
+inspecionadas. A primeira é cerca de $1{,}4\%$ da missão nominal de $364$~s e fica
+abaixo da menor diferença de duração que qualquer contraste desta tese trata como
+consequente ($31$~s, entre KOF e KOa); a segunda é meia inspeção, isto é, menos do que
+a menor unidade observável do desfecho, de modo que declarar equivalência nela exige
+que os braços coincidam em contagem inteira.
+
+Sob essas margens, a ablação $\eta=0$ é \emph{equivalente} ao método em duração de
+missão nas três calibrações de $\eta$ testadas: $\Delta=+0{,}70$~s contra $\eta=0{,}5$
+($p_{\mathrm{TOST}}=4{,}1\times10^{-7}$), $+0{,}39$~s contra $\eta=0{,}3$
+($8{,}6\times10^{-7}$) e $+0{,}55$~s contra $\eta=0{,}8$ ($1{,}6\times10^{-8}$). É
+afirmação mais forte do que ``nenhuma diferença detectada'': a duração da missão não
+muda com $\eta$ dentro de uma margem declarada --- o que é coerente com a tabela de
+valor não selecionar as ações executadas (Seção~\ref{sec:prop-atualizacao}).
+
+Em contraste, sob ruído alto de percepção a equivalência \emph{não} se sustenta: para
+anomalias inspecionadas, N2 contra o método dá $\Delta=-0{,}67$ com
+$p_{\mathrm{TOST}}=0{,}750$, de sorte que a margem de meia inspeção não é excluída.
+Com ruído moderado (N1) os braços são idênticos e o TOST não se aplica, por exigir
+variância positiva. Nenhuma outra equivalência é alegada nesta tese.
 
 \section{Detecção e Comportamento de Inspeção}
 \label{sec:res-inspecao}
@@ -244,7 +331,8 @@ que as duas regras discordam por construção. A diferença é grande e na dire�
 precedência \emph{persistente} da camada proposta visa evitar: o HEU também
 preempta, mas não mantém o canal de risco aberto. O HEU inspeciona a anomalia
 colocalizada (mediana $4$ de $4$ contra $3$ da camada proposta) e paga por isso: o
-afastamento mínimo cai de $4{,}84$ para $2{,}23$~m ($\delta$ de Cliff $+1{,}00$,
+afastamento mínimo cai de $4{,}84$ para $2{,}23$~m ($\delta$ de Cliff $-1{,}00$ na
+convenção uniforme da tese --- o braço comparado é o menor,
 separação completa; IC \textit{bootstrap} da diferença $[+2{,}60;+2{,}63]$~m;
 $p<0{,}0001$), os recuos sobem de $1$ para $4$ conforme o supervisor oscila, a
 duração da missão cresce cerca de $106$~s, e o tempo até inspecionar o alvo
@@ -264,11 +352,15 @@ afastamento são da ordem de centímetros.
 \caption{Camada proposta contra supervisor genérico de
 detectar--selecionar--desviar--retornar (HEU) e contra variante de seleção de um
 fator (HEU-sel), todos sobre o mesmo controlador Nav2/MPPI. Medianas sobre execuções
-válidas. O bloco \texttt{default} pertence à família de comparação primária
-(corrigida por Holm); os blocos \texttt{conflict} e \texttt{adverse} são
-exploratórios e são relatados com $p$ não corrigido. $n$: \texttt{default}
-$10/9/10$, \texttt{conflict} $10/9/10$, \texttt{adverse} $10/10/10$
-(proposta/HEU/HEU-sel).}
+válidas. O $\delta$ de Cliff segue a convenção uniforme da tese --- braço comparado
+menos método, positivo quando o HEU apresenta o valor maior. O bloco \texttt{default}
+pertence à família de comparação primária e traz $p$ corrigido por Holm, marcado com
+$\dagger$ e tabulado por inteiro na Tabela~\ref{tab:res-familia}; os blocos
+\texttt{conflict} e \texttt{adverse} são exploratórios e trazem $p$ bruto. O tempo
+até o alvo prioritário vem da análise instrumentada de ordem de visita
+(\texttt{metrica\_prioridade.py}), que não produz teste de hipótese, daí os traços.
+$n$: \texttt{default} $10/9/10$, \texttt{conflict} $10/9/10$, \texttt{adverse}
+$10/10/10$ (proposta/HEU/HEU-sel).}
 \label{tab:res-heu}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -277,20 +369,25 @@ $10/9/10$, \texttt{conflict} $10/9/10$, \texttt{adverse} $10/10/10$
 \textbf{Cenário} & \textbf{Métrica} & \textbf{Proposta} & \textbf{HEU} &
 \textbf{HEU-sel} & \textbf{$\delta$ (vs.\ HEU)} & \textbf{$p$ (vs.\ HEU)}\\
 \hline
+%% Atualizada em 13/11/2026. Duas correcoes: (i) o sinal do delta estava invertido em
+%% relacao a familia_confirmatoria.csv e a Tabela~\ref{tab:res-qdriven}, que usam
+%% "comparado menos metodo"; (ii) os p dos desfechos discretos eram da versao anterior
+%% de mwu(), anterior a permutacao exata para bracos constantes disjuntos. Valores
+%% recalculados com analise_estatistica.py.
 \texttt{default} & Anomalias inspecionadas    & $3$     & $3$     & $3$     & $+0{,}00$ & $1{,}0000^{\dagger}$\\
-                 & Recuos                     & $1$     & $2$     & $1$     & $-1{,}00$ & $3{,}0\times10^{-4\dagger}$\\
-                 & Dist.\ mín.\ ao risco [m]  & $4{,}85$  & $4{,}91$  & $4{,}85$  & $-0{,}73$ & $0{,}0511^{\dagger}$\\
-                 & Tempo de investigação [s]  & $35{,}1$  & $41{,}2$  & $35{,}3$  & $-1{,}00$ & $0{,}0027^{\dagger}$\\
+                 & Recuos                     & $1$     & $2$     & $1$     & $+1{,}00$ & $3{,}0\times10^{-4\dagger}$\\
+                 & Dist.\ mín.\ ao risco [m]  & $4{,}85$  & $4{,}91$  & $4{,}85$  & $+0{,}73$ & $0{,}0511^{\dagger}$\\
+                 & Tempo de investigação [s]  & $35{,}1$  & $41{,}2$  & $35{,}3$  & $+1{,}00$ & $0{,}0027^{\dagger}$\\
 \hline
-\texttt{conflict} & Anomalias inspecionadas   & $3$     & $4$     & $3$     & $-0{,}67$ & $0{,}0160$\\
-                 & Recuos                     & $1$     & $4$     & $1$     & $-1{,}00$ & $0{,}0003$\\
-                 & \textbf{Dist.\ mín.\ risco [m]} & $\mathbf{4{,}84}$ & $\mathbf{2{,}23}$ & $4{,}82$ & $+1{,}00$ & $<\!0{,}0001$\\
-                 & Duração da missão [s]      & $363{,}7$ & $469{,}7$ & $364{,}4$ & $-0{,}89$ & $0{,}0013$\\
+\texttt{conflict} & Anomalias inspecionadas   & $3$     & $4$     & $3$     & $+0{,}67$ & $0{,}0028$\\
+                 & Recuos                     & $1$     & $4$     & $1$     & $+1{,}00$ & $4{,}0\times10^{-5}$\\
+                 & \textbf{Dist.\ mín.\ risco [m]} & $\mathbf{4{,}84}$ & $\mathbf{2{,}23}$ & $4{,}82$ & $-1{,}00$ & $2{,}2\times10^{-5}$\\
+                 & Duração da missão [s]      & $363{,}7$ & $469{,}7$ & $364{,}4$ & $+0{,}89$ & $0{,}0013$\\
                  & Tempo até alvo prioritário [s]& $239{,}9$ & $345{,}0$ & $240{,}4$ & ---     & ---\\
 \hline
-\texttt{adverse} & Anomalias inspecionadas    & $5$     & $5$     & $5$     & $-0{,}10$ & $0{,}7337$\\
-                 & Recuos                     & $1$     & $2$     & $1$     & $-1{,}00$ & $0{,}0002$\\
-                 & Dist.\ mín.\ ao risco [m]  & $4{,}88$  & $4{,}90$  & $4{,}85$  & $-0{,}58$ & $0{,}0288$\\
+\texttt{adverse} & Anomalias inspecionadas    & $5$     & $5$     & $5$     & $+0{,}10$ & $0{,}3681$\\
+                 & Recuos                     & $1$     & $2$     & $1$     & $+1{,}00$ & $1{,}1\times10^{-5}$\\
+                 & Dist.\ mín.\ ao risco [m]  & $4{,}88$  & $4{,}90$  & $4{,}85$  & $+0{,}58$ & $0{,}0288$\\
 \hline
 \end{tabular}
 
@@ -353,9 +450,11 @@ $R+\Delta=6{,}5$~m. A separação é, portanto, de mecanismo, e não de parametr
 
 A Tabela~\ref{tab:res-qdriven} reúne os contrastes nos três cenários, com dez
 execuções por configuração e trinta de trinta concluindo a missão. Estes contrastes
-são \textbf{exploratórios}: a família confirmatória foi fechada antes desta bateria, e
-o $p$ corrigido por Holm que a tabela traz é interno a esta família exploratória, não
-à primária.
+são \textbf{exploratórios}: a família de comparação primária
+(Seção~\ref{sec:res-familias}) foi fechada antes desta bateria, e o $p$ corrigido por
+Holm que a tabela traz é interno a esta família de doze testes, não à primária ---
+corrigir aqui é escolha conservadora e não promove este bloco à condição de
+confirmatório.
 
 \begin{table}[htb]
 \centering
@@ -364,9 +463,15 @@ reforço comportamental, nos três cenários. Medianas sobre execuções válida
 $n=10$ por configuração. $\delta$ é o Cliff's delta (positivo quando o
 \textsc{Q-driven} apresenta valor maior) e o intervalo é o IC~$95\%$
 \textit{bootstrap} da diferença de médias. Contrastes exploratórios; a correção de
-Holm é interna a esta família. Não se compara o número de desvios de rota: a métrica
-conta metas enviadas ao Nav2 e o \textsc{Q-driven} comanda velocidade diretamente, de
-modo que seu zero é artefato de definição e não desempenho.}
+Holm é interna a esta família de doze testes. $\delta$ e o intervalo seguem a convenção
+uniforme da tese (braço comparado menos método). Note-se que $p$ e intervalo tratam
+objetos distintos: o $p$ é de um teste de \emph{postos} e o intervalo é da
+\emph{diferença de médias}, de modo que um $p$ pequeno com intervalo contendo zero ---
+como em duração da missão no cenário \texttt{conflict} --- não é inconsistência, e o
+$p$ não deve ser lido como evidência sobre a diferença de médias. Não se compara o
+número de desvios de rota: a métrica conta metas enviadas ao Nav2 e o
+\textsc{Q-driven} comanda velocidade diretamente, de modo que seu zero é artefato de
+definição e não desempenho.}
 \label{tab:res-qdriven}
 \footnotesize
 \begin{tabular}{llrrrcr}
