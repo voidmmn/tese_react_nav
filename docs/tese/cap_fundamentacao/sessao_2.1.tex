@@ -5,11 +5,11 @@ A fusão sensorial heterogênea representa um campo fundamental na robótica aut
 
 \subsection{Conceitos Fundamentais de Fusão Sensorial}
 
-A fusão sensorial pode ser definida como o processo de integração de dados provenientes de múltiplos sensores, com o objetivo de produzir informações mais precisas, completas e confiáveis do que seria possível utilizando cada sensor individualmente \cite{Hall1997}. Em robótica móvel, a percepção ambiental precisa ser robusta mesmo em condições adversas, como as encontradas em subestações elétricas \cite{Oliveira2021EstudoAplicacao}.
+A fusão sensorial pode ser definida como o processo de integração de dados provenientes de múltiplos sensores, com o objetivo de produzir informações mais precisas, completas e confiáveis do que seria possível utilizando cada sensor individualmente \cite{Hall1997}. Em robótica móvel, a percepção ambiental precisa ser robusta mesmo em condições adversas, como as encontradas em subestações elétricas \cite{Neto2021FiltrosRadarLidar}.
 
-Em sistemas robóticos autônomos, a fusão sensorial busca superar as limitações inerentes a cada tipo de sensor, como limitações de alcance, sensibilidade a condições ambientais, ruído e incerteza nas medições, e interferência eletromagnética - particularmente relevante em subestações elétricas \cite{Liu2016EMC}.
+Em sistemas robóticos autônomos, a fusão sensorial busca superar as limitações inerentes a cada tipo de sensor, como limitações de alcance, sensibilidade a condições ambientais, ruído e incerteza nas medições, e interferência eletromagnética - particularmente relevante em subestações elétricas \cite{He2007EMCSubstation}.
 
-A heterogeneidade na fusão sensorial refere-se à integração de dados provenientes de sensores de naturezas fundamentalmente distintas, como sensores visuais (câmeras \ac{RGB}), térmicos (câmeras termográficas), acústicos (microfones), de distância (\ac{LiDAR}, ultrassom), inerciais (\ac{IMU}) e químicos (sensores de gás) \cite{Kim2023MultimodalFusion}. Esta abordagem multimodal permite uma percepção mais completa do ambiente, explorando as complementaridades entre diferentes modalidades sensoriais.
+A heterogeneidade na fusão sensorial refere-se à integração de dados provenientes de sensores de naturezas fundamentalmente distintas, como sensores visuais (câmeras \ac{RGB}), térmicos (câmeras termográficas), acústicos (microfones), de distância (\ac{LiDAR}, ultrassom), inerciais (\ac{IMU}) e químicos (sensores de gás) \cite{Alatise2020Review}. Esta abordagem multimodal permite uma percepção mais completa do ambiente, explorando as complementaridades entre diferentes modalidades sensoriais.
 
 \subsection{Níveis de Fusão Sensorial}
 A fusão sensorial pode ser realizada em diferentes níveis de abstração \cite{Costa2018ImplementacaoFusao, Santos2023FusaoSensorial}:
@@ -75,7 +75,7 @@ Este nível requer menor largura de banda para comunicação entre subsistemas, 
 
 \subsubsection{Filtro de Kalman e suas Variantes}
 
-O Filtro de Kalman é uma das técnicas mais utilizadas para fusão sensorial, especialmente para estimação de estados em sistemas dinâmicos lineares com ruído gaussiano \cite{Oliveira2021EstudoAplicacao}. 
+O Filtro de Kalman é uma das técnicas mais utilizadas para fusão sensorial, especialmente para estimação de estados em sistemas dinâmicos lineares com ruído gaussiano \cite{Neto2021FiltrosRadarLidar}. 
 
 O fluxograma que representa o Filtro de Kalman para fusão de sensores na \autoref{fig:filtro_kalman} segue as principais etapas do algoritmo de forma cíclica. 
 
@@ -142,7 +142,7 @@ Em fusão sensorial, as redes Bayesianas permitem integrar informações de dife
 
 \subsubsection{Redes Neurais e Aprendizado Profundo}
 
-Técnicas de aprendizado de máquina, especialmente redes neurais profundas, têm sido cada vez mais aplicadas para fusão sensorial \cite{Kim2023MultimodalFusion}. Estas abordagens permitem aprender automaticamente representações e relações complexas entre diferentes modalidades sensoriais.
+Técnicas de aprendizado de máquina, especialmente redes neurais profundas, têm sido cada vez mais aplicadas para fusão sensorial \cite{Wu2022LidarFusionSurvey, Ou2024SensorFusionDRL}. Estas abordagens permitem aprender automaticamente representações e relações complexas entre diferentes modalidades sensoriais.
 
 Arquiteturas comuns incluem Redes Neurais Convolucionais (\ac{CNN}) para processamento de dados espaciais, Redes Neurais Recorrentes (\ac{RNN}) para sequências temporais, e arquiteturas multimodais específicas para combinar diferentes tipos de dados sensoriais.
 
@@ -156,7 +156,7 @@ Onde $X_i$ representa os dados do sensor $i$, $f_i$ é a rede neural específica
 
 \subsection{Desafios da Fusão em Ambientes com Interferência Eletromagnética}
 
-A fusão sensorial em subestações elétricas enfrenta desafios específicos devido à presença de campos eletromagnéticos intensos \cite{Liu2016EMC, Wang2024CombinedNav}:
+A fusão sensorial em subestações elétricas enfrenta desafios específicos devido à presença de campos eletromagnéticos intensos \cite{He2007EMCSubstation, Yan2024CombinedNav}:
 
 \begin{itemize}
     \item \textbf{Interferência em Sensores Eletrônicos}: Campos eletromagnéticos podem induzir ruídos e distorções em sensores eletrônicos, afetando a qualidade dos dados. Sensores magnéticos, inerciais e de comunicação sem fio são particularmente suscetíveis.
@@ -166,11 +166,11 @@ A fusão sensorial em subestações elétricas enfrenta desafios específicos de
     \item \textbf{Heterogeneidade da Interferência}: Diferentes sensores são afetados de maneiras distintas pela interferência eletromagnética, o que deve ser considerado na estratégia de fusão.
 \end{itemize}
 
-Técnicas de mitigação incluem blindagem eletromagnética, filtragem digital e algoritmos de detecção e compensação de interferência \cite{Wang2024CombinedNav}.
+Técnicas de mitigação incluem blindagem eletromagnética, filtragem digital e algoritmos de detecção e compensação de interferência \cite{Yan2024CombinedNav}.
 
 \subsection{Modelos de Pesos e Bias para Relevância Sensorial}
 
-Um aspecto crucial da fusão sensorial heterogênea é a atribuição de pesos relativos a cada sensor, refletindo sua confiabilidade, relevância e qualidade momentânea dos dados \cite{Oliveira2021EstudoAplicacao, Schneider2018FusaoSensores}.
+Um aspecto crucial da fusão sensorial heterogênea é a atribuição de pesos relativos a cada sensor, refletindo sua confiabilidade, relevância e qualidade momentânea dos dados \cite{Neto2021FiltrosRadarLidar, Schneider2018FusaoSensores}.
 
 \subsubsection{Ponderação Baseada em Covariância}
 
@@ -190,7 +190,7 @@ Com $\sigma_i^2$ representando a variância do erro de medição do sensor $i$.
 
 \subsubsection{Ponderação Adaptativa Baseada em Contexto}
 
-Em ambientes dinâmicos como subestações elétricas, a confiabilidade dos sensores pode variar em função do contexto operacional. Modelos adaptativos de ponderação consideram fatores contextuais para ajustar os pesos dos sensores em tempo real \cite{Wang2024CombinedNav}:
+Em ambientes dinâmicos como subestações elétricas, a confiabilidade dos sensores pode variar em função do contexto operacional. Modelos adaptativos de ponderação consideram fatores contextuais para ajustar os pesos dos sensores em tempo real \cite{Yan2024CombinedNav}:
 
 \begin{equation}
 w_i(t) = f_w(w_i^{base}, c_1(t), c_2(t), ..., c_m(t))

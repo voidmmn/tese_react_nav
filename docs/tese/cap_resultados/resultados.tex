@@ -114,14 +114,21 @@ inspeções. A Figura~\ref{fig:res-traj} mostra o mecanismo: a camada reativa de
 patrulha para alcançar a pose de parada de cada anomalia e retorna, ao passo que E1
 traça a ronda diretamente.
 
+%% Reorganizada em 13/11/2026: a tabela nao cabia na largura da pagina (102,5pt de
+%% excesso). No formato anterior, metricas nas linhas e configuracoes nas colunas,
+%% TODAS as sete colunas de dados eram dimensionadas pela celula mais larga do
+%% documento ("0,021 +- 0,009", da linha do residuo). Transpondo, cada coluna passa a
+%% ser dimensionada pela propria metrica. Nenhum valor foi alterado.
 \begin{table}[htb]
 \centering
 \caption{Resultados por configuração (média\,$\pm$\,desvio padrão sobre execuções
 válidas). E1 é a patrulha fixa de referência; E0 é a ablação com \textsc{Stay Alert}
 ativa e peso de atualização de valor $\eta=0$; E2--E4 ativam \textsc{Stay Alert} com
 $\eta\in\{0{,}3;\,0{,}5;\,0{,}8\}$; E5 é o cenário adverso ($\eta=0{,}5$); APF é a
-linha de base de campo potencial artificial. O total de anomalias do cenário é $3$
-(E0--E4, APF) e $5$ (E5). O ``resíduo de atualização'' é
+linha de base de campo potencial artificial. As colunas são, pela ordem: anomalias
+inspecionadas, desvios de rota, esquivas de risco, distância mínima ao risco, duração
+da missão, distância percorrida e resíduo de atualização. O total de anomalias do
+cenário é $3$ (E0--E4, APF) e $5$ (E5). O resíduo de atualização é
 $|\alpha\delta+\eta\Phi|$ completo, identicamente nulo quando a atualização de valor
 está inativa (E1, APF). O APF, sendo um controlador contínuo de forças, não possui
 contagem discreta de desvios de rota.}
@@ -130,15 +137,22 @@ contagem discreta de desvios de rota.}
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{lccccccc}
 \hline
-\textbf{Métrica} & \textbf{E1} & \textbf{E0 ($\eta{=}0$)} & \textbf{E2} & \textbf{E3} & \textbf{E4} & \textbf{E5} & \textbf{APF}\\
+\textbf{Config.}
+ & \shortstack{\textbf{Anom.}\\\textbf{insp.}}
+ & \shortstack{\textbf{Desvios}\\\textbf{de rota}}
+ & \shortstack{\textbf{Esquivas}\\\textbf{de risco}}
+ & \shortstack{\textbf{Dist. mín.}\\\textbf{[m]}}
+ & \shortstack{\textbf{Missão}\\\textbf{[s]}}
+ & \shortstack{\textbf{Percurso}\\\textbf{[m]}}
+ & \shortstack{\textbf{Resíduo}\\\textbf{atualiz.}}\\
 \hline
-Anomalias inspecionadas    & $0{,}0\pm0{,}0$ & $3{,}0\pm0{,}0$ & $3{,}0\pm0{,}0$ & $3{,}0\pm0{,}0$ & $3{,}0\pm0{,}0$ & $4{,}9\pm0{,}3$ & $3{,}0\pm0{,}0$\\
-Desvios de rota            & $0{,}0\pm0{,}0$ & $4{,}0\pm0{,}0$ & $4{,}0\pm0{,}0$ & $4{,}0\pm0{,}0$ & $4{,}0\pm0{,}0$ & $9{,}4\pm0{,}8$ & ---\\
-Esquivas de risco          & $0{,}0\pm0{,}0$ & $1{,}0\pm0{,}0$ & $1{,}0\pm0{,}0$ & $1{,}0\pm0{,}0$ & $1{,}0\pm0{,}0$ & $1{,}0\pm0{,}0$ & $1{,}0\pm0{,}0$\\
-Dist.\ mín.\ ao risco [m]  & $4{,}71\pm0{,}00$ & $4{,}84\pm0{,}02$ & $4{,}87\pm0{,}02$ & $4{,}86\pm0{,}03$ & $4{,}87\pm0{,}03$ & $4{,}85\pm0{,}03$ & $4{,}81\pm0{,}00$\\
-Duração da missão [s]      & $320\pm0$ & $364\pm1$ & $364\pm2$ & $364\pm1$ & $364\pm1$ & $397\pm4$ & $404\pm5$\\
-Distância percorrida [m]   & $80{,}4\pm0{,}0$ & $86{,}6\pm0{,}1$ & $86{,}5\pm0{,}1$ & $86{,}6\pm0{,}2$ & $86{,}5\pm0{,}1$ & $92{,}2\pm0{,}4$ & $86{,}4\pm0{,}1$\\
-Resíduo de atualização     & $0{,}000$ & $0{,}021\pm0{,}009$ & $0{,}021\pm0{,}007$ & $0{,}020\pm0{,}010$ & $0{,}022\pm0{,}011$ & $0{,}022\pm0{,}008$ & $0{,}000$\\
+E1                & $0{,}0\pm0{,}0$ & $0{,}0\pm0{,}0$ & $0{,}0\pm0{,}0$ & $4{,}71\pm0{,}00$ & $320\pm0$ & $80{,}4\pm0{,}0$ & $0{,}000$\\
+E0 ($\eta{=}0$)   & $3{,}0\pm0{,}0$ & $4{,}0\pm0{,}0$ & $1{,}0\pm0{,}0$ & $4{,}84\pm0{,}02$ & $364\pm1$ & $86{,}6\pm0{,}1$ & $0{,}021\pm0{,}009$\\
+E2                & $3{,}0\pm0{,}0$ & $4{,}0\pm0{,}0$ & $1{,}0\pm0{,}0$ & $4{,}87\pm0{,}02$ & $364\pm2$ & $86{,}5\pm0{,}1$ & $0{,}021\pm0{,}007$\\
+E3                & $3{,}0\pm0{,}0$ & $4{,}0\pm0{,}0$ & $1{,}0\pm0{,}0$ & $4{,}86\pm0{,}03$ & $364\pm1$ & $86{,}6\pm0{,}2$ & $0{,}020\pm0{,}010$\\
+E4                & $3{,}0\pm0{,}0$ & $4{,}0\pm0{,}0$ & $1{,}0\pm0{,}0$ & $4{,}87\pm0{,}03$ & $364\pm1$ & $86{,}5\pm0{,}1$ & $0{,}022\pm0{,}011$\\
+E5                & $4{,}9\pm0{,}3$ & $9{,}4\pm0{,}8$ & $1{,}0\pm0{,}0$ & $4{,}85\pm0{,}03$ & $397\pm4$ & $92{,}2\pm0{,}4$ & $0{,}022\pm0{,}008$\\
+APF               & $3{,}0\pm0{,}0$ & ---             & $1{,}0\pm0{,}0$ & $4{,}81\pm0{,}00$ & $404\pm5$ & $86{,}4\pm0{,}1$ & $0{,}000$\\
 \hline
 \end{tabular}
 \end{table}

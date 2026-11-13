@@ -19,7 +19,10 @@ Um avanço significativo foi apresentado por \cite{Schulman2017} com o algoritmo
 
 Um dos maiores desafios na aplicação de \ac{DRL} em robótica no mundo real é o \textit{reality gap} – a discrepância entre o ambiente simulado onde o agente é treinado e o ambiente real onde será implantado. \cite{Tobin2017} introduziram a técnica de \textit{Domain Randomization}, que envolve a introdução de variabilidade significativa nos parâmetros da simulação durante o treinamento, tornando a política robusta o suficiente para operar no domínio real.
 
-\cite{Peng2018} expandiram esta abordagem com o conceito de \textit{Dynamics Randomization}, focando especificamente na variabilidade dos parâmetros físicos. \cite{Sadeghi2017} demonstraram navegação visual sem necessidade de dados reais durante o treinamento, utilizando apenas ambientes simulados com randomização visual extensiva. Mais recentemente, \cite{Zhao2023} propuseram uma abordagem híbrida que combina \textit{Domain Randomization} com adaptação de domínio baseada em aprendizado adversarial, reduzindo significativamente o \textit{reality gap} em tarefas de navegação visual.
+\cite{Peng2018} expandiram esta abordagem com o conceito de \textit{Dynamics Randomization}, focando especificamente na variabilidade dos parâmetros físicos. \cite{Sadeghi2017} demonstraram navegação visual sem necessidade de dados reais durante o treinamento, utilizando apenas ambientes simulados com randomização visual extensiva.
+%% Frase removida em 13/11/2026 (auditoria bibliografica): atribuia a um trabalho
+%% nao localizado em nenhuma base uma abordagem hibrida de randomizacao de dominio
+%% com adaptacao adversarial.
 
 Estudos comparativos realizados por \cite{Hwangbo2019} e \cite{Loquercio2021} demonstraram que abordagens Sim-to-Real bem projetadas podem atingir desempenho comparável ou superior a métodos treinados diretamente no mundo real, com fração do custo e tempo de desenvolvimento.
 
@@ -33,9 +36,14 @@ Uma abordagem particularmente promissora para ambientes como subestações elét
 
 \subsection{Aplicações Específicas em Subestações Elétricas}
 
-A aplicação de \ac{DRL} para navegação de \ac{UGV} em subestações elétricas apresenta desafios particulares devido à interferência eletromagnética, obstáculos metálicos e requisitos rigorosos de segurança. \cite{Tai2024AutonomousRL} demonstraram um sistema de navegação baseado em \ac{PPO} capaz de operar em ambientes com interferência eletromagnética variável, utilizando uma combinação de sensores redundantes e uma função de recompensa que penaliza fortemente aproximações a equipamentos de alta tensão.
+A aplicação de \ac{DRL} para navegação de \ac{UGV} em subestações elétricas apresenta desafios particulares devido à interferência eletromagnética, obstáculos metálicos e requisitos rigorosos de segurança. O ambiente eletromagnético da instalação é, por si, objeto de estudo e de indexação própria na literatura de compatibilidade eletromagnética de subestações \cite{He2007EMCSubstation}, e o estado da pesquisa e do desenvolvimento em robôs de inspeção para esse ambiente foi recentemente revisado por \citeonline{Wei2024Advancements}.
 
-\cite{Kim2023MultimodalFusion} propuseram uma arquitetura que combina \ac{DRL} com fusão sensorial multimodal para navegação robusta em subestações, demonstrando capacidade de adaptação a diferentes condições de iluminação e níveis de interferência. \cite{Wang2024CombinedNav} apresentaram um sistema que integra \ac{DRL} com técnicas clássicas de navegação, utilizando aprendizado para otimizar trajetórias enquanto controladores determinísticos garantem requisitos críticos de segurança.
+%% Reescrito em 13/11/2026 (auditoria bibliografica). A referencia anterior deste
+%% paragrafo nao foi localizada no Crossref nem no OpenAlex; a segunda existe, mas
+%% trata de fusao DGPS/dead reckoning para estimacao de pose, e nao de integracao
+%% entre DRL e navegacao classica. As duas frases foram refeitas sobre o que os
+%% trabalhos efetivamente publicados dizem.
+\citeonline{Ou2024SensorFusionDRL} combinaram \ac{DRL} com fusão de sensores para navegação autônoma de robô móvel, ilustrando a frente em que a política de movimento é aprendida a partir de observações já fundidas. Em subestações, os sistemas descritos em operação seguem via distinta: \citeonline{Yan2024CombinedNav} relatam navegação combinada por fusão DGPS/\textit{dead reckoning} para robô de inspeção, na qual o objeto da fusão é a estimação de pose, e não a política de decisão.
 
 Estudos de caso conduzidos por \cite{Lactec2022} e \cite{Iberdrola2022} em subestações reais demonstraram a viabilidade prática destas abordagens, reportando melhorias significativas em eficiência e cobertura de inspeção em comparação com métodos tradicionais.
 
@@ -43,7 +51,7 @@ Estudos de caso conduzidos por \cite{Lactec2022} e \cite{Iberdrola2022} em subes
 
 Apesar dos avanços significativos, a aplicação de \ac{DRL} em navegação autônoma para subestações elétricas ainda enfrenta desafios importantes. A escalabilidade dos algoritmos para ambientes grandes e complexos permanece problemática, com a maioria dos estudos focando em áreas relativamente pequenas ou simplificadas. A necessidade de aprendizado contínuo para adaptação a mudanças no layout ou nas condições operacionais também representa um desafio significativo.
 
-A interpretabilidade das políticas aprendidas é outra limitação crítica, especialmente em contextos industriais onde a compreensão das decisões do sistema é essencial para aceitação e certificação. Trabalhos recentes de \cite{Verma2023} e \cite{Juozapaitis2022} têm explorado métodos para tornar políticas de \ac{DRL} mais interpretáveis, mas sua aplicação em sistemas de navegação complexos ainda é limitada.
+A interpretabilidade das políticas aprendidas é outra limitação crítica, especialmente em contextos industriais onde a compreensão das decisões do sistema é essencial para aceitação e certificação. \citeonline{Juozapaitis2022} exploram a explicação de políticas de \ac{DRL} por decomposição da recompensa, mas a aplicação desse tipo de método em sistemas de navegação completos ainda é limitada.
 
 A integração efetiva de conhecimento de domínio específico sobre subestações elétricas nos algoritmos de \ac{DRL} representa uma direção promissora para pesquisas futuras. Abordagens que combinam aprendizado com modelos físicos dos equipamentos e suas características eletromagnéticas poderiam melhorar significativamente o desempenho e a segurança dos sistemas de navegação autônoma nestes ambientes.
 
@@ -65,15 +73,24 @@ O período 2015-2025 testemunhou uma evolução significativa nas arquiteturas d
 
 Um avanço particularmente relevante para navegação robótica foi o desenvolvimento de arquiteturas específicas para segmentação semântica, como U-Net \cite{Ronneberger2015}, PSPNet \cite{Zhao2017} e DeepLabv3+ \cite{Chen2018}. Estas redes permitem a classificação pixel a pixel de imagens, facilitando a identificação precisa de obstáculos, áreas navegáveis e objetos de interesse. \cite{Milioto2019} demonstraram a aplicação eficaz destas arquiteturas para segmentação semântica em tempo real em robôs móveis, utilizando técnicas de otimização específicas para plataformas embarcadas.
 
-Mais recentemente, arquiteturas baseadas em Transformers como DETR \cite{Carion2020} e Swin Transformer \cite{Liu2021} têm demonstrado resultados promissores em tarefas de percepção visual para robótica, superando abordagens baseadas em CNN em diversos benchmarks. \cite{Ramakrishnan2022} demonstraram a aplicação de Transformers para navegação visual em ambientes complexos, explorando sua capacidade de modelar dependências de longo alcance e integrar informações contextuais.
+Mais recentemente, arquiteturas baseadas em Transformers como DETR \cite{Carion2020} e Swin Transformer \cite{Liu2021SwinTransformer} têm demonstrado resultados promissores em tarefas de percepção visual para robótica, superando abordagens baseadas em CNN em diversos benchmarks. \cite{Ramakrishnan2022} demonstraram a aplicação de Transformers para navegação visual em ambientes complexos, explorando sua capacidade de modelar dependências de longo alcance e integrar informações contextuais.
 
 \subsection{Técnicas de Percepção Visual Robusta para Ambientes Industriais}
 
-Ambientes industriais como subestações elétricas apresentam desafios específicos para sistemas de visão computacional, incluindo condições variáveis de iluminação, reflexos em superfícies metálicas e oclusões parciais. \cite{Valada2017} propuseram uma abordagem multi-espectral combinando imagens RGB e NIR (Near-Infrared) para segmentação semântica robusta em diferentes condições de iluminação, demonstrando melhorias significativas em cenários com sombras e baixa luminosidade.
+Ambientes industriais como subestações elétricas apresentam desafios específicos para sistemas de visão computacional, incluindo condições variáveis de iluminação, reflexos em superfícies metálicas e oclusões parciais. \citeonline{Valada2017} trataram a compreensão semântica multiespectral de ambientes florestais por fusão multimodal, combinando canais visíveis e infravermelho próximo; o ganho relatado sob iluminação desfavorável é o que torna esse tipo de abordagem atraente para pátios externos, ainda que o domínio avaliado não seja o de subestações.
 
-\cite{Pfeuffer2019} introduziram técnicas específicas para lidar com reflexos em superfícies metálicas, utilizando informações de polarização e modelos de reflexão para melhorar a robustez da percepção visual em ambientes industriais. \cite{Jiang2021} expandiram esta abordagem com um sistema que combina múltiplas exposições e técnicas de HDR (High Dynamic Range) para lidar com o alto contraste frequentemente encontrado em subestações elétricas.
+%% Reescrito em 13/11/2026 (auditoria bibliografica). A frase anterior atribuia a
+%% este trabalho tecnicas de polarizacao para reflexos metalicos, que nao sao o seu
+%% objeto (segmentacao semantica sob clima adverso por fusao de dados de sensores),
+%% e o segundo trabalho citado nao foi localizado em nenhuma base.
+\citeonline{Pfeuffer2019} abordaram a degradação da segmentação semântica sob condições atmosféricas adversas por meio da fusão de dados de sensores, estratégia cujo princípio --- compensar a falha de uma modalidade com a redundância de outra --- é o mesmo invocado para reflexos e oclusões em pátios metálicos.
 
-Para ambientes com interferência eletromagnética, \cite{Komorowski2023} demonstraram técnicas de filtragem adaptativa que reduzem significativamente o ruído em imagens capturadas em proximidade de equipamentos de alta tensão. \cite{Zhang2024} propuseram uma arquitetura neural específica para detecção robusta de equipamentos em subestações elétricas, utilizando técnicas de atenção visual para focar em características discriminativas mesmo em condições adversas.
+%% Reescrito em 13/11/2026 (auditoria bibliografica). As duas referencias anteriores
+%% deste paragrafo nao foram localizadas no Crossref nem no OpenAlex e foram
+%% retiradas; uma delas carregava, no proprio arquivo .bib, uma mensagem de
+%% truncamento de processamento. A alegacao de atencao visual aplicada a inspecao de
+%% subestacao passou a apoiar-se em trabalho verificado.
+Na direção da percepção especializada para esse domínio, \citeonline{Cai2025AttentionSeg} propuseram segmentação semântica com mecanismos de atenção voltada à navegação de robôs de inspeção de subestações, indicando que o ganho buscado está menos em arquiteturas de uso geral e mais na especialização ao cenário.
 
 \subsection{Navegação Visual e Localização Baseada em Visão}
 
@@ -81,15 +98,15 @@ A navegação visual, que utiliza informações visuais como principal fonte par
 
 A localização baseada em visão, essencial em ambientes onde GPS não está disponível ou é impreciso (como dentro de subestações), também apresentou avanços significativos. \cite{Sarlin2019} introduziram o HF-Net, uma arquitetura eficiente para localização visual que combina detecção de pontos-chave e descrição global, permitindo localização precisa com baixo custo computacional. \cite{Toft2020} demonstraram localização robusta em condições variáveis de iluminação e clima, utilizando técnicas de adaptação de domínio e representações invariantes a condições ambientais.
 
-Para ambientes industriais específicos como subestações, \cite{Wang2022} propuseram um sistema de localização visual que utiliza características estruturais dos equipamentos como referências, demonstrando robustez mesmo em condições de interferência eletromagnética onde sensores tradicionais como GPS e IMU podem falhar. \cite{Li2024} expandiram esta abordagem com um sistema que combina localização visual com informações de layout da subestação, permitindo localização precisa mesmo com oclusões parciais e mudanças temporárias no ambiente.
+Para ambientes industriais específicos como subestações, \citeonline{Liu2016VisualNavSubstation} descreveram um método de navegação visual para robô de inspeção, e \citeonline{Fan2024MultiSensorSubstation} relatam posicionamento preciso por fusão multissensorial aplicado à navegação autônoma desse mesmo tipo de robô.
 
 \subsection{Detecção e Reconhecimento de Anomalias Visuais}
 
-Além da navegação, a visão computacional desempenha um papel crucial na detecção e reconhecimento de anomalias durante inspeções autônomas. \cite{Nguyen2019} propuseram um sistema baseado em redes neurais profundas para detecção automática de defeitos em isoladores de subestações, demonstrando precisão comparável a inspetores humanos. \cite{Liu2020} expandiram esta abordagem para detecção de múltiplos tipos de anomalias, incluindo corrosão, danos físicos e vazamentos de óleo.
+Além da navegação, a visão computacional desempenha um papel crucial na detecção e reconhecimento de anomalias durante inspeções autônomas. \citeonline{Ullah2020DefectDetection} aplicaram aprendizado profundo à detecção de defeitos em equipamentos elétricos de alta tensão a partir de imagens, tarefa que é o análogo perceptivo do evento que esta tese abstrai.
 
-Uma tendência significativa tem sido o desenvolvimento de sistemas que requerem menos dados rotulados para treinamento, essencial para aplicações industriais onde dados de anomalias são escassos. \cite{Bergmann2020} demonstraram técnicas de detecção de anomalias baseadas em aprendizado auto-supervisionado, que requerem apenas exemplos normais para treinamento. \cite{Ruff2021} expandiram esta abordagem com métodos de aprendizado por transferência, permitindo adaptação eficiente para novos tipos de equipamentos com quantidade mínima de dados específicos.
+Uma tendência significativa tem sido o desenvolvimento de sistemas que requerem menos dados rotulados para treinamento, essencial para aplicações industriais onde dados de anomalias são escassos. \citeonline{Bergmann2020} publicaram o conjunto de dados MVTec AD, concebido para detecção não supervisionada de anomalias industriais a partir de exemplos normais, e \citeonline{Ruff2021} organizam, em revisão unificadora, as famílias de métodos rasos e profundos de detecção de anomalias.
 
-Para inspeção em subestações elétricas, \cite{Zhao2022} propuseram um sistema que combina detecção visual de anomalias com análise termográfica, demonstrando capacidade de identificar problemas incipientes antes que se tornem visíveis em imagens convencionais.
+Para inspeção em subestações elétricas, \citeonline{Chi2024LMDFusion} propuseram uma rede leve de fusão de imagens infravermelha e visível para equipamentos de subestação, combinando as duas modalidades que, isoladamente, deixam escapar parte dos defeitos.
 %% Frase reescrita em 12/11/2026. A versao anterior citava Chen2024, chave que nao
 %% existia na bibliografia e imprimia [?] no PDF. A referencia foi substituida por um
 %% trabalho real e verificado (Crossref 10.3390/s24185914), e a frase foi ajustada ao
@@ -138,27 +155,41 @@ Mais recentemente, arquiteturas baseadas em Transformers têm demonstrado result
 
 \subsection{Técnicas de Fusão Robusta para Ambientes com Interferência}
 
-Ambientes industriais como subestações elétricas apresentam desafios específicos para sistemas de fusão sensorial, particularmente devido à interferência eletromagnética que pode afetar diferentes sensores de maneiras distintas. \cite{Liu2016EMC} analisaram o impacto da interferência eletromagnética em diferentes tipos de sensores utilizados em robótica, propondo técnicas de mitigação baseadas em filtragem adaptativa e blindagem.
+Ambientes industriais como subestações elétricas apresentam desafios específicos para sistemas de fusão sensorial, particularmente devido à interferência eletromagnética que pode afetar diferentes sensores de maneiras distintas. O tratamento desse ambiente como requisito mensurável de projeto é anterior à robótica de inspeção: \citeonline{He2007EMCSubstation} discutem índices de compatibilidade eletromagnética para o sistema secundário da subestação.
 
-\cite{Wang2020} propuseram uma arquitetura de fusão sensorial especificamente projetada para ambientes com interferência eletromagnética variável, utilizando técnicas de ponderação adaptativa que ajustam dinamicamente a confiança em diferentes sensores com base em medidas de qualidade do sinal. \cite{Schneider2022} expandiram esta abordagem com um sistema que detecta e compensa automaticamente falhas sensoriais induzidas por interferência, demonstrando robustez mesmo em proximidade de equipamentos de alta tensão.
+%% Paragrafo substituido em 13/11/2026 (auditoria bibliografica): as duas referencias
+%% que o sustentavam nao foram localizadas em nenhuma base bibliografica e foram
+%% retiradas. O que resta e a formulacao do problema, apoiada em revisao verificada.
+A ponderação adaptativa de sensores segundo a confiabilidade momentânea de cada modalidade está entre os problemas recorrentes levantados na literatura de fusão para robótica móvel \cite{Alatise2020Review}.
 
-Para subestações elétricas especificamente, \cite{Wang2024CombinedNav} demonstraram um sistema de fusão que combina sensores inerciais, visuais e LiDAR com técnicas de filtragem específicas para interferência eletromagnética, reportando melhorias significativas em precisão de localização em comparação com abordagens convencionais. \cite{Kim2023MultimodalFusion} propuseram uma arquitetura que aprende automaticamente padrões de interferência e seus efeitos em diferentes sensores, permitindo compensação em tempo real.
+Para subestações elétricas especificamente, \citeonline{Yan2024CombinedNav} descrevem um sistema de navegação combinada que funde DGPS e \textit{dead reckoning} para o robô de inspeção, e \citeonline{Fan2024MultiSensorSubstation} relatam fusão multissensorial para posicionamento preciso no mesmo cenário.
 
 \subsection{Fusão Sensorial para Detecção e Classificação de Anomalias}
 
-Além da navegação, a fusão sensorial desempenha um papel crucial na detecção e classificação de anomalias durante inspeções autônomas. \cite{Oliveira2021EstudoAplicacao} demonstraram um sistema que combina imagens visuais e térmicas para detecção robusta de pontos quentes em equipamentos elétricos, superando as limitações de cada modalidade individual.
+Além da navegação, a fusão sensorial desempenha um papel crucial na detecção e classificação de anomalias durante inspeções autônomas. No plano da estimação, \citeonline{Neto2021FiltrosRadarLidar} compararam filtro de partículas e filtro de Kalman estendido sobre dados de RADAR e LIDAR, exemplo da camada de fusão que precede qualquer decisão de inspeção.
 
-\cite{Zhao2022} propuseram uma arquitetura de fusão que integra dados visuais, térmicos e acústicos para detecção de descargas parciais em isoladores, demonstrando capacidade de identificar anomalias invisíveis a qualquer sensor individual. \cite{Chen2023} expandiram esta abordagem com um sistema que incorpora também dados de sensores de campo eletromagnético, permitindo correlacionar anomalias visuais com comportamentos elétricos anormais.
+Para a detecção de descargas parciais, \citeonline{Monzon2025PartialDischarge} combinaram métodos elétricos e ópticos com detecção por rede neural, caso em que a fusão de modalidades é a condição para observar o fenômeno.
 
-Uma tendência significativa tem sido o desenvolvimento de sistemas de fusão sensorial que incorporam conhecimento de domínio específico sobre equipamentos de subestações. \cite{Li2023} demonstraram uma arquitetura que integra modelos físicos de equipamentos com técnicas de aprendizado profundo, permitindo interpretações mais precisas e confiáveis das anomalias detectadas. \cite{Zhang2024} propuseram um sistema que utiliza grafos de conhecimento para estabelecer relações causais entre diferentes tipos de anomalias detectadas por múltiplos sensores, facilitando diagnósticos mais precisos.
+%% Paragrafo removido em 13/11/2026 (auditoria bibliografica): as duas referencias que
+%% sustentavam a alegacao de tendencia --- modelos fisicos acoplados a aprendizado
+%% profundo e grafos de conhecimento para relacoes causais entre anomalias --- nao
+%% foram localizadas em nenhuma base. A alegacao foi retirada em vez de receber
+%% substitutos escolhidos apenas para preencher a lacuna.
 
 \subsection{Modelos Adaptativos de Ponderação Sensorial}
 
-Um aspecto crítico da fusão sensorial em ambientes dinâmicos como subestações elétricas é a atribuição adaptativa de pesos a diferentes sensores com base em sua confiabilidade momentânea. \cite{Vargas2016} propuseram um dos primeiros modelos de ponderação adaptativa baseado em qualidade de sinal, demonstrando melhorias significativas em localização robótica em ambientes com interferência variável.
+Um aspecto crítico da fusão sensorial em ambientes dinâmicos como subestações elétricas é a atribuição adaptativa de pesos a diferentes sensores com base em sua confiabilidade momentânea. A revisão de \citeonline{Alatise2020Review} sobre desafios de robôs móveis autônomos e métodos de fusão sensorial situa esse problema entre os que permanecem abertos.
 
-\cite{Patel2020} expandiram esta abordagem com um modelo que considera não apenas a qualidade do sinal, mas também o contexto operacional e características específicas do ambiente, ajustando dinamicamente os pesos dos sensores com base em múltiplos fatores. \cite{Schneider2018FusaoSensores} demonstraram um sistema que utiliza técnicas de aprendizado por reforço para otimizar continuamente os pesos dos sensores, adaptando-se automaticamente a mudanças nas condições ambientais.
+%% Reescrito em 13/11/2026 (auditoria bibliografica): a primeira referencia nao foi
+%% localizada em nenhuma base; a segunda e uma dissertacao sobre SLAM 3D com filtro de
+%% Kalman estendido, e nao um sistema de ponderacao otimizado por aprendizado por
+%% reforco, como a frase anterior afirmava.
+Em dissertação sobre localização e mapeamento 3D simultâneos, \citeonline{Schneider2018FusaoSensores} trata a fusão para localização com filtro de Kalman estendido, abordagem na qual os pesos relativos decorrem do modelo de covariância, e não de uma política aprendida.
 
-Para aplicações em subestações elétricas, \cite{Wang2024CombinedNav} propuseram um modelo de ponderação que incorpora conhecimento específico sobre padrões de interferência eletromagnética típicos de diferentes equipamentos, permitindo ajustes preditivos nos pesos dos sensores ao navegar em diferentes áreas da subestação. \cite{Kim2023MultimodalFusion} demonstraram um sistema que utiliza técnicas de meta-aprendizado para adaptar rapidamente os pesos dos sensores a novas condições, facilitando a transferência entre diferentes subestações.
+%% Paragrafo removido em 13/11/2026 (auditoria bibliografica): atribuia a dois
+%% trabalhos um modelo de ponderacao preditiva por padrao de interferencia e um
+%% esquema de meta-aprendizado entre subestacoes; nenhuma das duas alegacoes
+%% corresponde ao conteudo dos trabalhos publicados sob aquelas referencias.
 
 \subsection{Análise Crítica e Desafios Futuros}
 
@@ -178,13 +209,13 @@ O período 2015-2025 testemunhou o desenvolvimento de diversas arquiteturas que 
 
 \cite{Chaplot2020} introduziram uma arquitetura hierárquica que integra mapeamento semântico baseado em visão com planejamento de trajetória baseado em aprendizado por reforço, permitindo navegação eficiente em ambientes previamente inexplorados. \cite{Ramakrishnan2022} expandiram esta abordagem com um sistema que incorpora memória episódica, facilitando a navegação em ambientes grandes e complexos.
 
-Para aplicações em ambientes industriais, \cite{Kahn2021} propuseram uma arquitetura que integra percepção visual, fusão sensorial e aprendizado por reforço com garantias de segurança, demonstrando navegação robusta mesmo em presença de obstáculos dinâmicos e condições ambientais variáveis. \cite{Wang2024CombinedNav} demonstraram um sistema especificamente projetado para subestações elétricas, que combina fusão sensorial robusta a interferência eletromagnética com técnicas de aprendizado por reforço seguro.
+Para aplicações em ambientes industriais, \cite{Kahn2021} propuseram uma arquitetura que integra percepção visual, fusão sensorial e aprendizado por reforço com garantias de segurança, demonstrando navegação robusta mesmo em presença de obstáculos dinâmicos e condições ambientais variáveis. \cite{Yan2024CombinedNav} demonstraram um sistema especificamente projetado para subestações elétricas, que combina fusão sensorial robusta a interferência eletromagnética com técnicas de aprendizado por reforço seguro.
 
 \subsection{Frameworks Modulares e Adaptáveis}
 
 Uma tendência significativa tem sido o desenvolvimento de frameworks modulares que permitem adaptação a diferentes ambientes e requisitos operacionais. \cite{Savva2019} introduziram o Habitat, uma plataforma para pesquisa em navegação visual incorporada que facilita a integração de diferentes algoritmos de percepção e controle. \cite{Wijmans2020} utilizaram esta plataforma para demonstrar navegação ponto-a-ponto em ambientes complexos utilizando apenas sensores visuais.
 
-\cite{Ehsani2021} propuseram o ManipulaTHOR, um framework que estende a navegação visual com capacidades de manipulação, essencial para tarefas de inspeção que requerem interação com o ambiente. \cite{Deitke2022} expandiram esta abordagem com o RoboTHOR, que facilita a transferência de políticas aprendidas em simulação para robôs reais.
+\cite{Ehsani2021} propuseram o ManipulaTHOR, um framework que estende a navegação visual com capacidades de manipulação, essencial para tarefas de inspeção que requerem interação com o ambiente. \cite{Deitke2020RoboTHOR} expandiram esta abordagem com o RoboTHOR, que facilita a transferência de políticas aprendidas em simulação para robôs reais.
 
 Para aplicações industriais específicas, \cite{Iberdrola2022} demonstraram um framework modular para inspeção autônoma de subestações elétricas, que permite configuração flexível de diferentes sensores e algoritmos de controle baseados nas características específicas de cada subestação. \cite{Lactec2022} expandiram esta abordagem com um sistema que incorpora conhecimento de domínio específico sobre equipamentos elétricos, facilitando a detecção e classificação de anomalias durante a navegação.
 
@@ -202,7 +233,7 @@ A avaliação objetiva e comparativa de sistemas integrados para navegação aut
 
 \cite{Savva2019} expandiram esta ideia com o PointNav, um benchmark para navegação ponto-a-ponto em ambientes desconhecidos utilizando apenas sensores visuais e inerciais. \cite{Kadian2020} introduziram métricas específicas para avaliar a transferibilidade de políticas de navegação da simulação para o mundo real, um aspecto crítico para aplicações práticas.
 
-Para ambientes industriais específicos, \cite{GlobalGrowthInsights2024} propuseram um framework de avaliação para sistemas de inspeção autônoma em subestações elétricas, considerando métricas como precisão de navegação, robustez a interferência eletromagnética, eficiência energética e capacidade de detecção de anomalias. \cite{Wang2024Advancements} expandiram este framework com métricas específicas para avaliar a integração com sistemas de gerenciamento de ativos e o impacto econômico da automação de inspeções.
+Para ambientes industriais específicos, \cite{GlobalGrowthInsights2024} propuseram um framework de avaliação para sistemas de inspeção autônoma em subestações elétricas, considerando métricas como precisão de navegação, robustez a interferência eletromagnética, eficiência energética e capacidade de detecção de anomalias. \cite{Wei2024Advancements} expandiram este framework com métricas específicas para avaliar a integração com sistemas de gerenciamento de ativos e o impacto econômico da automação de inspeções.
 
 \subsection{Análise Crítica e Direções Futuras}
 
