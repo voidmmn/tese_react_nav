@@ -189,12 +189,18 @@ indefinidas, nenhum estouro de linha novo (os cinco maiores são os pré-existen
 
 - [ ] **DOI do artigo** — marcado como `PENDENTE` em `MirandaNeto2026TwoLayer`. O IEEE
   Xplore não entrega conteúdo a cliente automatizado; colar da página do artigo.
-- [ ] **Figura 1 (`fig_contextualizacao`)** — não substituída. Há um
-  `fig_contextualizacao.jpeg` em `figuras_novo/`, mas é **fotografia real** de um
-  quadrúpede em subestação da Eletrobras Eletronorte, com marca de terceiro visível.
-  A legenda atual declara que a figura é ilustrativa e **não** registro fotográfico,
-  o que deixaria de ser verdade. Exige decisão sobre autoria da foto e permissão de
-  uso da marca antes de entrar.
+- [x] **Figura 1 (`fig_contextualizacao`)** — RESOLVIDA em 14/11/2026. O autor
+  confirmou que a fotografia é sua, feita em subestação da Eletronorte, com uso
+  autorizado. A ilustração conceitual genérica foi substituída pela foto. A legenda
+  foi reescrita: deixa de negar que seja registro fotográfico e passa a declarar o que
+  é, mantendo a ressalva essencial de que a plataforma retratada **não** é a avaliada.
+  Fonte passou a "Fotografia do autor, registrada em subestação da Eletronorte".
+  Largura reduzida de 0,8 para 0,45 do texto, porque a foto é em retrato (720x1280) e
+  a 0,8 ocuparia 22,8 cm de altura. A placa de um veículo de terceiro ao fundo foi
+  borrada por privacidade, e a alteração está declarada na própria legenda e no
+  comentário do fonte.
+  - [ ] Se existir o original em resolução maior que 720x1280, vale substituir: a
+    7,2 cm de largura a imagem atual rende 254 ppi, abaixo dos 300 usados no resto.
 - [ ] **Figuras 14, 15 e 16** (`world_map`, `traj_overlay`, `box_panel`) — intocadas por
   serem saída de script, não ilustração conceitual. Regeneráveis pelos scripts
   listados em §5.9.2.
