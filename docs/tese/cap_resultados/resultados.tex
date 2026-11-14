@@ -176,28 +176,42 @@ relatado na orientação oposta, \emph{DHa menos DHb}, porque ali o enunciado é
 margem que a intervenção acrescenta. Naquela seção os braços e o sentido de cada
 diferença são nomeados por extenso, e nenhum sinal deve ser lido pela convenção geral.
 
+%% Trazido das legendas em 14/11/2026: estas convencoes valem para todas as
+%% tabelas de contraste e repetiam-se legenda a legenda, inflando-as.
+Valem para todas as tabelas de contraste desta tese, e não se repetem nas legendas: o
+intervalo de confiança de $95\%$ é \textit{bootstrap} de percentil sobre a diferença de
+médias; $\Delta$ é a diferença de médias e o $\delta$ de Cliff é o tamanho de efeito; e
+o teste aplicado é indicado de forma abreviada. ``$U$ exato'' é o $U$ de
+Mann--Whitney com distribuição exata. ``Permut.'' é o $p$ exato de permutação bilateral,
+usado quando os braços são constantes e completamente separados. ``Normal'' é a
+aproximação normal corrigida para empates. E ``idênt.'' designa braços com os mesmos
+valores constantes, para os quais nenhum teste se aplica e $p=1$ por construção ---
+caso em que o que se relata é desempenho observado idêntico, não equivalência.
+
 \begin{table}[htb]
 \centering
+%% 14/11/2026: a legenda desta tabela ocupava area comparavel ao corpo, que
+%% ficava reduzido. As explicacoes gerais -- convencao de sinal, natureza do IC e
+%% nomenclatura dos testes -- valem para todas as tabelas de contraste da tese e
+%% passaram para o protocolo, acima; a legenda guarda apenas o que identifica ESTA
+%% tabela, e o corpo pode crescer de scriptsize para footnotesize.
 \caption{Família de comparação primária completa: três contrastes
 ---~proposta contra o supervisor heurístico genérico (HEU) e contra a variante de
 seleção de um fator (HEU-sel), ambos em \texttt{default}; e a ablação
 somente-\textit{keep-out} contra a patrulha fixa portando o mesmo \textit{keep-out}
 (KOa contra KOF), em \texttt{route\_hazard}~--- por cinco desfechos, totalizando quinze
-testes. $n$ é o par de execuções válidas. $\Delta$ é a diferença de médias e o
-$\delta$ de Cliff o tamanho de efeito, ambos do braço comparado menos o método;
-positivos, portanto, quando o braço comparado apresenta o valor maior. O IC\,$95\%$ é
-\textit{bootstrap} de percentil sobre a diferença de médias. O teste é indicado de forma abreviada:
-``$U$ exato'' é o $U$ de Mann--Whitney com distribuição exata, ``permut.'' é o $p$
-exato de permutação bilateral para braços constantes completamente separados,
-``normal'' é a aproximação normal corrigida para empates e ``idênt.'' designa braços
-com os mesmos valores constantes, para os quais nenhum teste se aplica e $p=1$ por
-construção. A correção de Holm é interna a esta família de quinze testes.
-Tabela gerada por \texttt{gerar\_tabela\_familia.py} a partir de
+testes. $n$ é o par de execuções válidas. Convenção de sinal, intervalo e nomenclatura
+dos testes seguem o protocolo desta seção. A correção de Holm é interna a esta família
+de quinze testes. Gerada por \texttt{gerar\_tabela\_familia.py} a partir de
 \texttt{familia\_confirmatoria.csv}.}
 \label{tab:res-familia}
+%% footnotesize estoura a largura em 82 pt; mantem-se scriptsize. O ganho de leitura
+%% vem da legenda enxugada, nao do corpo maior.
 \scriptsize
-\setlength{\tabcolsep}{3pt}
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.2}
 \input{tabelas/familia_primaria}
+\renewcommand{\arraystretch}{1.0}
 \end{table}
 
 %% Secao acrescentada em 13/11/2026: o TOST era mencionado no protocolo sem que
@@ -723,7 +737,7 @@ detecção, que o planejador contorna. $n$ válido: RHB $10$, RHM $9$.}
 \hline
 Anomalias inspecionadas        & $0{,}0\pm0{,}0$   & $3{,}0\pm0{,}0$\\
 Recuos                         & $0{,}0\pm0{,}0$   & $1{,}0\pm0{,}0$\\
-Colisões                       & $0{,}0\pm0{,}0$   & $0{,}0\pm0{,}0$\\
+Entradas em região de contato  & $0{,}0\pm0{,}0$   & $0{,}0\pm0{,}0$\\
 Dist.\ mín.\ ao risco [m]      & $0{,}71\pm0{,}00$ & $1{,}71\pm0{,}01$\\
 Tempo mín.\ até colisão [s]    & $2{,}8\pm0{,}1$   & $5{,}6\pm0{,}9$\\
 Tempo abaixo do afastamento [s]& $14{,}4\pm0{,}0$  & $9{,}2\pm0{,}1$\\
@@ -746,14 +760,33 @@ exclusão desabilitada) o robô não consegue livrar o risco sobre a rota: oscil
 %% Acrescentado em 13/11/2026: a duracao da KOb e CENSURADA a direita. As dez execucoes
 %% foram encerradas pelo limite de relogio de parede sem atingir COMPLETE, de modo que
 %% 627 s e o relogio simulado no instante do corte, nao um tempo de missao.
-A KOb não encerra a missão: \emph{nenhuma} de suas dez execuções atingiu o estado
-\texttt{COMPLETE} dentro do limite de $600$~s de relógio de parede, e todas foram
-encerradas pelo \textit{script} de execução. Os $627\pm6$~s que a
-Tabela~\ref{tab:res-ablacao} registra são, portanto, o relógio de missão simulado no
-instante da interrupção --- um \emph{limite inferior} censurado à direita, e não uma
-duração de missão comparável às demais. A leitura correta é qualitativa e mais forte do
-que um número: sem a zona de exclusão, o recuo reativo sozinho não resolve um risco
-sobre a rota em tempo algum dentro do orçamento concedido.
+%% Reescrito em 14/11/2026. Tres correcoes: (i) os denominadores nao estavam
+%% declarados -- das dez tentativas, uma permaneceu imovel (percurso 1,8e-16 m, zero
+%% recuos) e nao gera trajetoria interpretavel; as estatisticas da tabela sao sobre as
+%% NOVE validas, o que se conferiu recalculando-as (29,6+-3,9 recuos e 0,2+-0,4
+%% anomalias so fecham com n=9). (ii) a notacao ">= 627 +- 6 s" sugeria media e desvio
+%% do tempo verdadeiro de conclusao, que e desconhecido; 627 e 6 descrevem os tempos
+%% de INTERRUPCAO. (iii) "nao encerra a missao" afirmava impossibilidade; o
+%% experimento so observa o que nao ocorreu dentro do orcamento concedido.
+A KOb não encerrou a missão em nenhuma execução válida dentro do orçamento concedido:
+das dez tentativas, \emph{nenhuma} atingiu o estado \texttt{COMPLETE} dentro do limite
+de $600$~s de relógio de parede, e todas foram encerradas pelo \textit{script} de
+execução.
+
+Os denominadores importam e são distintos. Uma das dez tentativas permaneceu
+\emph{imóvel} --- percurso da ordem de $10^{-16}$~m e nenhum recuo registrado ---, o
+que caracteriza falha de inicialização e não trajetória interpretável; ela é excluída
+das estatísticas. As demais \textbf{nove} são trajetórias válidas, censuradas à
+direita, e são elas que sustentam os números da Tabela~\ref{tab:res-ablacao}: os
+$29{,}6\pm3{,}9$ recuos e as $0{,}2\pm0{,}4$ anomalias inspecionadas são médias sobre
+essas nove.
+
+Quanto à duração, $627\pm6$~s descreve os \emph{tempos de interrupção} dessas nove
+execuções, não a média e o desvio de uma duração de conclusão --- que é desconhecida. A
+duração de conclusão está censurada à direita, e nenhum limite superior para ela é
+observável nestes dados. A leitura correta é qualitativa e mais forte do que um número:
+sem a zona de exclusão, o recuo reativo sozinho não resolveu um risco sobre a rota em
+nenhuma das nove trajetórias válidas, dentro do orçamento concedido.
 
 Essas duas ablações, porém, ainda carregam a camada reativa. A referência mais justa
 é uma \emph{patrulha fixa portando a mesma zona de exclusão disparada por detecção e
@@ -788,10 +821,13 @@ risco \emph{emerge} durante uma investigação, o que se quantifica a seguir.
 \caption{Ablação de zona de exclusão e recuo no risco sobre a rota
 (média\,$\pm$\,desvio padrão sobre execuções válidas; $n=9$ para RHM, $10$ para KOa,
 $9$ para KOb). RHM é o método completo (recuo $+$ zona de exclusão); KOa é
-somente-zona (recuo desabilitado); KOb é somente-recuo (zona desabilitada). A duração
-da KOb vem precedida de $\ge$ porque é censurada à direita: nenhuma de suas execuções
-encerrou a missão dentro do limite de relógio de parede, e o valor é o relógio de
-missão no instante da interrupção.}
+somente-zona (recuo desabilitado); KOb é somente-recuo (zona desabilitada). \textsuperscript{$\dagger$}~A duração de
+missão da KOb é \emph{censurada à direita} e por isso não é tabulada como média:
+nenhuma de suas nove execuções válidas encerrou a missão dentro do limite de relógio de
+parede. O tempo até a interrupção foi de $627\pm6$~s ($n=9$), que descreve o instante
+do corte e \emph{não} a duração de conclusão --- esta é desconhecida e sem limite
+superior observável nestes dados. Uma décima tentativa permaneceu imóvel e está
+excluída de todas as colunas.}
 \label{tab:res-ablacao}
 \footnotesize
 \setlength{\tabcolsep}{5pt}
@@ -802,10 +838,10 @@ missão no instante da interrupção.}
 \hline
 Anomalias inspecionadas     & $3{,}0\pm0{,}0$   & $3{,}0\pm0{,}0$   & $0{,}2\pm0{,}4$\\
 Recuos                      & $1{,}0\pm0{,}0$   & $0{,}0\pm0{,}0$   & $29{,}6\pm3{,}9$\\
-Colisões                    & $0{,}0\pm0{,}0$   & $0{,}0\pm0{,}0$   & $0{,}0\pm0{,}0$\\
+Entradas em região de contato & $0{,}0\pm0{,}0$ & $0{,}0\pm0{,}0$   & $0{,}0\pm0{,}0$\\
 Dist.\ mín.\ ao risco [m]   & $1{,}71\pm0{,}01$ & $1{,}71\pm0{,}01$ & $4{,}29\pm0{,}08$\\
 Tempo mín.\ até colisão [s] & $5{,}6\pm0{,}9$   & $5{,}8\pm0{,}1$   & $8{,}7\pm0{,}2$\\
-Duração da missão [s]       & $372\pm1$         & $352\pm1$         & $\ge 627\pm6$\\
+Duração da missão [s]       & $372\pm1$         & $352\pm1$         & censurada\textsuperscript{$\dagger$}\\
 \hline
 \end{tabular}
 \end{table}
@@ -1160,7 +1196,7 @@ anomalias. $n$ válido: E3 $10$, N1 $10$, N2 $9$.}
 Anomalias inspecionadas    & $3{,}0\pm0{,}0$  & $3{,}0\pm0{,}0$  & $2{,}3\pm0{,}7$\\
 Taxa de inspeção completa  & $10/10$          & $10/10$          & $4/9$\\
 Recuos                     & $1{,}0\pm0{,}0$  & $1{,}1\pm0{,}3$  & $1{,}7\pm0{,}5$\\
-Colisões                   & $0{,}0\pm0{,}0$  & $0{,}0\pm0{,}0$  & $0{,}0\pm0{,}0$\\
+Entradas em reg.\ de contato & $0{,}0\pm0{,}0$ & $0{,}0\pm0{,}0$ & $0{,}0\pm0{,}0$\\
 Dist.\ mín.\ ao risco [m]  & $4{,}86\pm0{,}03$& $5{,}01\pm0{,}11$& $5{,}29\pm0{,}20$\\
 Duração da missão [s]      & $364\pm1$        & $367\pm5$        & $374\pm8$\\
 \hline

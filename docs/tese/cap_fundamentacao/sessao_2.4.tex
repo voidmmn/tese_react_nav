@@ -46,9 +46,17 @@ Os principais desafios arquiteturais incluem heterogeneidade de componentes, dis
     \includegraphics[width=0.8\textwidth]{figuras/fig_arquiteturas_roboticas.pdf}
     \caption{Paradigmas arquiteturais em robótica: as três colunas empregam as mesmas
     caixas --- percepção, planejamento e atuação ---, variando apenas como se conectam.
-    A via rápida em traço grosso na coluna híbrida é a camada reativa, que alcança a
-    atuação sem passar pelo planejamento; é esse o paradigma da arquitetura proposta no
-    Capítulo~\ref{cap:proposta}.}
+%% Corrigido em 14/11/2026: a legenda dizia que a camada reativa "alcanca a
+%% atuacao sem passar pelo planejamento" e que esse e o paradigma da proposta. Nao e o
+%% da implementacao: a camada reativa envia METAS ao Nav2, que continua planejando e
+%% controlando, e permanece o unico produtor de /cmd_vel. O que a reacao contorna e a
+%% DECISAO da patrulha sobre para onde ir, nao o planejamento do movimento.
+    A via rápida em traço grosso na coluna híbrida é a camada reativa, que no esquema
+    canônico alcança a atuação sem passar pelo planejamento. A arquitetura proposta no
+    Capítulo~\ref{cap:proposta} segue esse paradigma em um sentido mais restrito, que
+    convém fixar desde já: a camada reativa \emph{preempta a decisão} da patrulha sobre
+    qual meta perseguir, mas não contorna o planejamento nem o controle de movimento ---
+    ela envia metas ao Nav2, que permanece o único produtor de comandos de velocidade.}
     \legend{Fonte: Adaptado de \citeonline{Kortenkamp2016} e
     \citeonline{Brugali2009ComponentI}.}
     \label{fig:arquiteturas_roboticas}
