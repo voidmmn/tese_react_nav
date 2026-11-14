@@ -160,6 +160,15 @@ de modo que o denominador da correção de Holm seja conferível. A convenção 
 uniforme em todas as tabelas de contraste da tese: $\Delta$ e o $\delta$ de Cliff são
 do \emph{braço comparado menos o método}, isto é, positivos quando o braço comparado
 apresenta o valor maior.
+%% Acrescentado em 14/11/2026: a secao de risco emergente relatava ganhos do
+%% metodo com sinal positivo, orientacao inversa a esta convencao. Em vez de inverter
+%% os numeros -- que vem da trilha de auditoria nessa orientacao -- a excecao passa a
+%% ser declarada aqui e a direcao e nomeada em palavras no local, de modo que nenhum
+%% sinal precise ser presumido pelo leitor.
+Abre-se uma exceção, declarada: na Seção~\ref{sec:res-emergente} o contraste é
+relatado na orientação oposta, \emph{DHa menos DHb}, porque ali o enunciado é sobre a
+margem que a intervenção acrescenta. Naquela seção os braços e o sentido de cada
+diferença são nomeados por extenso, e nenhum sinal deve ser lido pela convenção geral.
 
 \begin{table}[htb]
 \centering
@@ -191,14 +200,37 @@ Tabela gerada por \texttt{gerar\_tabela\_familia.py} a partir de
 \subsection{Equivalência Declarada por TOST}
 \label{sec:res-equivalencia}
 
+%% Reescrito em 14/11/2026. Duas correcoes: (i) a justificativa da margem de
+%% +-0,5 dizia que declarar equivalencia nela "exige que os bracos coincidam em
+%% contagem inteira". E falso para um TOST de DIFERENCA DE MEDIAS: as observacoes sao
+%% inteiras, a diferenca de medias nao -- medias 3,0 e 2,7 diferem em 0,3 com
+%% contagens distintas. A margem passa a ser justificada pelo que ela e: a maior
+%% diferenca MEDIA tida por desprezivel na aplicacao. (ii) a margem era declarada
+%% "fixada antes do teste", o que nao e o mesmo que fixada antes de conhecer os dados;
+%% esta secao foi escrita depois das execucoes, entao as margens sao retrospectivas e
+%% passam a ser declaradas como tal.
 Ausência de diferença detectável não é equivalência. Onde a equivalência é alegada,
-ela é testada por dois testes unilaterais (TOST) com margem fixada antes do teste. Duas
-margens são usadas: $\pm5$~s para duração de missão e $\pm0{,}5$ para anomalias
-inspecionadas. A primeira é cerca de $1{,}4\%$ da missão nominal de $364$~s e fica
-abaixo da menor diferença de duração que qualquer contraste desta tese trata como
-consequente ($31$~s, entre KOF e KOa); a segunda é meia inspeção, isto é, menos do que
-a menor unidade observável do desfecho, de modo que declarar equivalência nela exige
-que os braços coincidam em contagem inteira.
+ela é testada por dois testes unilaterais (TOST) sobre a \emph{diferença de médias},
+na variante de Welch (variâncias desiguais, graus de liberdade por
+Welch--Satterthwaite), ao nível $\alpha=0{,}05$ em cada cauda; a equivalência é
+declarada quando $p_{\mathrm{TOST}}<0{,}05$. O teste exige variância positiva nos dois
+braços: desfechos constantes nas dez execuções são relatados como desempenho observado
+idêntico, nunca como equivalência.
+
+Duas margens são usadas: $\pm5$~s para duração de missão e $\pm0{,}5$ anomalia para
+anomalias inspecionadas. Cada uma expressa a maior diferença \emph{média} que se
+considera sem consequência para a aplicação. A de $5$~s é cerca de $1{,}4\%$ da missão
+nominal de $364$~s e fica abaixo da menor diferença de duração que qualquer contraste
+desta tese trata como consequente ($31$~s, entre KOF e KOa). A de meia anomalia é
+metade da menor unidade \emph{observável} do desfecho: uma diferença média inferior a
+ela não chega a corresponder, em média, a uma inspeção por execução. Ela não exige que
+os braços coincidam em contagem inteira --- médias de $3{,}0$ e $2{,}7$ diferem em
+$0{,}3$ e ficariam dentro da margem, embora as execuções individuais difiram.
+
+Registra-se a cronologia: esta seção foi escrita depois das execuções, de modo que as
+duas margens são \emph{retrospectivas}. Foram fixadas antes de se chamar o teste, mas
+não antes de se conhecer os dados, e por isso os resultados de equivalência abaixo são
+exploratórios, não confirmatórios.
 
 Sob essas margens, a ablação $\eta=0$ é \emph{equivalente} ao método em duração de
 missão nas três calibrações de $\eta$ testadas: $\Delta=+0{,}70$~s contra $\eta=0{,}5$
@@ -212,7 +244,18 @@ Em contraste, sob ruído alto de percepção a equivalência \emph{não} se sust
 anomalias inspecionadas, N2 contra o método dá $\Delta=-0{,}67$ com
 $p_{\mathrm{TOST}}=0{,}750$, de sorte que a margem de meia inspeção não é excluída.
 Com ruído moderado (N1) os braços são idênticos e o TOST não se aplica, por exigir
-variância positiva. Nenhuma outra equivalência é alegada nesta tese.
+variância positiva.
+
+%% Acrescentado em 14/11/2026: a frase "nenhuma outra equivalencia e alegada"
+%% era verdadeira nesta secao, mas a contribuicao 5 e o quadro final importavam estes
+%% TOST para o critério de SELECAO, que nao foi testado por TOST algum. A delimitacao
+%% passa a ser explicita aqui, onde os contrastes estao nomeados.
+Nenhuma outra equivalência é alegada nesta tese. Em particular, os únicos contrastes
+submetidos a TOST são os desta seção --- a ablação $\eta=0$ contra as calibrações de
+$\eta$, em duração de missão, e N2 contra o método, em anomalias inspecionadas. O
+critério de seleção (saliência contra proximidade, Seção~\ref{sec:res-heu})
+\emph{não} foi submetido a teste de equivalência: o que ali se afirma é ausência de
+diferença detectável nas condições avaliadas, e nada mais forte.
 
 \section{Detecção e Comportamento de Inspeção}
 \label{sec:res-inspecao}
@@ -778,11 +821,15 @@ inspeção, aproximando-se a $2{,}22\pm0{,}01$~m ($4{,}72\pm0{,}21$~s).
 %% ENTRADA em Avoid) e refratario. Em tres das oito execucoes a meta de recuo foi
 %% abortada e a margem apareceu de todo modo, o que mostra que o deslocamento nao e
 %% condicao necessaria do efeito.
-A intervenção comparada, portanto, compra $+0{,}33$~m de afastamento
-(IC $95\%$ de $[+0{,}23;+0{,}42]$, $\delta$ de Cliff igual a $1$,
-$p=4{,}6\times10^{-5}$) e
-$+0{,}51$~s de margem de tempo até a colisão ($[+0{,}20;+0{,}84]$, $\delta=0{,}85$,
-$p=1{,}0\times10^{-3}$) contra um risco emergente.
+A intervenção comparada, portanto, compra margem contra um risco emergente. Em
+afastamento mínimo, \textbf{DHa supera DHb em $0{,}33$~m} (IC $95\%$ de
+$[0{,}23;0{,}42]$ para a diferença DHa menos DHb; $|\delta|$ de Cliff igual a $1$, isto
+é, \emph{separação completa} entre os dois conjuntos de execuções, no sentido favorável
+a DHa; $p=4{,}6\times10^{-5}$). Em margem de tempo radial até a colisão,
+\textbf{DHa supera DHb em $0{,}51$~s} ($[0{,}20;0{,}84]$, $|\delta|=0{,}85$, também
+favorável a DHa, $p=1{,}0\times10^{-3}$). Os sinais desta seção correm na orientação
+DHa menos DHb, inversa à convenção geral da Seção~\ref{sec:res-protocolo}, e por isso
+cada direção está nomeada por extenso.
 
 Convém nomear com precisão \emph{o que} foi comparado. Habilitar o recuo reativo não
 habilita apenas um deslocamento: habilita o \emph{conjunto} de ações de preempção e

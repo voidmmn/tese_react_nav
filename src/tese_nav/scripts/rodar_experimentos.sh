@@ -88,7 +88,7 @@ run_one() {
   local commit; commit=$(git -C "$(dirname "${BASH_SOURCE[0]}")" rev-parse --short HEAD 2>/dev/null || echo "sem-git")
   local dirty; dirty=$(git -C "$(dirname "${BASH_SOURCE[0]}")" status --porcelain 2>/dev/null | head -c1)
   [ -n "$dirty" ] && commit="$commit+sujo"
-  echo ">>> $(date +%H:%M:%S) $label rep $rep/$REPS (commit=$commit eta=$eta sa=$sa scen=$scen react=$react keepout=$keepout avoid=$avoid noise=$npos/$nint seed=$rep sel=$sel trig=$trig hthr=$hthr ent/ext=$ent/$ext cfd=$cfd)"
+  echo ">>> $(date +%H:%M:%S) $label rep $rep/$REPS (commit=$commit clk=${DECAY_CLOCK:-wall} eta=$eta sa=$sa scen=$scen react=$react keepout=$keepout avoid=$avoid noise=$npos/$nint seed=$rep sel=$sel trig=$trig hthr=$hthr ent/ext=$ent/$ext cfd=$cfd)"
   cleanup
   # §8: publish_keepout/enable_reactive_avoid explícitos; §13: run_seed=rep
   # (semente por repetição -> realizações de ruído independentes + registro).
@@ -99,6 +99,7 @@ run_one() {
     selection_mode:="$sel" trigger_mode:="$trig" \
     hazard_threshold:="$hthr" enter_threshold:="$ent" exit_threshold:="$ext" \
     inspect_confirm_dist:="$cfd" \
+    decay_clock:="${DECAY_CLOCK:-wall}" \
     headless:=true \
     > "$RESULTS/launch_${label}_r${rep}.log" 2>&1 &
   local t=0

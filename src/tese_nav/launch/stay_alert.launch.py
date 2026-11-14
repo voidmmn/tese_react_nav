@@ -45,6 +45,9 @@ def generate_launch_description():
 
     sim = {'use_sim_time': ParameterValue(use_sim_time, value_type=bool)}
     eta_p = {'eta': ParameterValue(eta, value_type=float)}
+    # verificacao do decaimento (14/11/2026): relogio da guarda de decaimento ('wall' historico | 'sim')
+    clk_p = {'decay_clock': ParameterValue(
+        LaunchConfiguration('decay_clock'), value_type=str)}
     scen_p = {'scenario': scenario}
     # §8: keepout deliberativo é um canal de mapa controlado EXPLICITAMENTE
     # (default off); RHM e a ablação de keepout ligam via `publish_keepout`. Sem
@@ -92,6 +95,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('run_label', default_value='E3'),
         DeclareLaunchArgument('eta', default_value='0.5'),
+        DeclareLaunchArgument('decay_clock', default_value='wall'),
         DeclareLaunchArgument('enable_stay_alert', default_value='true'),
         DeclareLaunchArgument('enable_anomaly', default_value='true'),
         DeclareLaunchArgument('use_sim_time', default_value='true'),
@@ -126,7 +130,7 @@ def generate_launch_description():
         # Método proposto (Stay Alert): bellman + FSM afetivo
         Node(package='tese_nav', executable='bellman_node',
              name='bellman_node', output='screen',
-             parameters=[params, eta_p, sim, modthr_p],
+             parameters=[params, eta_p, sim, modthr_p, clk_p],
              condition=when('stay_alert')),
         Node(package='tese_nav', executable='stay_alert_node',
              name='stay_alert_node', output='screen',

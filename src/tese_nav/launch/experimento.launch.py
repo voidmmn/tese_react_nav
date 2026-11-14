@@ -62,10 +62,15 @@ def generate_launch_description():
             'enter_threshold': LaunchConfiguration('enter_threshold'),
             'exit_threshold': LaunchConfiguration('exit_threshold'),
             'inspect_confirm_dist': LaunchConfiguration('inspect_confirm_dist'),
+            # verificacao do decaimento (14/11/2026): relogio da guarda de decaimento
+            'decay_clock': LaunchConfiguration('decay_clock'),
         }.items())
 
     return LaunchDescription([
         DeclareLaunchArgument('run_label', default_value='E3'),
+        DeclareLaunchArgument('decay_clock', default_value='wall',
+                              description="relogio da guarda de decaimento: "
+                                          "'wall' (historico) | 'sim'"),
         DeclareLaunchArgument('eta', default_value='0.5'),
         DeclareLaunchArgument('enable_stay_alert', default_value='true'),
         DeclareLaunchArgument('headless', default_value='true'),

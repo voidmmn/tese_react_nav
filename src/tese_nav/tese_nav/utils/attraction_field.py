@@ -53,6 +53,16 @@ class AttractionField:
     _haz: float = 0.0            # perigo corrente (magnitude >= 0)
     _last_decay: float = field(default_factory=time.monotonic)
 
+    # --- instrumentacao verificacao do decaimento (14/11/2026) ---------------------------------
+    # Contar quedas de |Phi| entre amostras NAO conta aplicacoes de lambda:
+    # entre amostras NAO conta aplicacoes de lambda: renovacao por observacao,
+    # maximo, saturacao e troca de canal alteram Phi sem decaimento, e uma
+    # renovacao exata mascara um decaimento aplicado. Os contadores abaixo
+    # registram a aplicacao DIRETAMENTE, no ponto em que ela ocorre.
+    _n_steps: int = 0            # chamadas a step_decay
+    _n_applied: int = 0          # chamadas em que o fator foi de fato aplicado
+    _n_obs: int = 0              # leituras aceitas (acima do limiar de modalidade)
+
     # ------------------------------------------------------------------ #
     def observe(self, modality: str, intensity: float) -> float:
         """
@@ -67,6 +77,7 @@ class AttractionField:
         if intensity < thr:
             return self.value
 
+        self._n_obs += 1
         contribution = w * intensity
         if modality == 'hazard':
             # canal de segurança: acumula a MAGNITUDE do perigo mais forte
@@ -79,10 +90,21 @@ class AttractionField:
         return self.value
 
     # ------------------------------------------------------------------ #
-    def step_decay(self) -> float:
-        """Aplica decaimento temporal a ambos os canais. Chamar periodicamente."""
-        now = time.monotonic()
+    def step_decay(self, now: float | None = None) -> float:
+        """Aplica decaimento temporal a ambos os canais. Chamar periodicamente.
+
+        `now` ausente mantem o comportamento historico: a guarda compara
+        instantes de relogio de PAREDE (`time.monotonic`) enquanto o
+        temporizador que chama este metodo corre em tempo SIMULADO. Passar
+        `now` permite alimentar a guarda com o mesmo relogio do temporizador,
+        usado na verificacao direcionada de verificacao do decaimento; o padrao fica inalterado
+        para nao mexer no comportamento que produziu as 320 execucoes.
+        """
+        self._n_steps += 1
+        if now is None:
+            now = time.monotonic()
         if now - self._last_decay >= self.decay_period:
+            self._n_applied += 1
             self._att *= self.decay
             self._haz *= self.decay
             if abs(self._att) < _EPS:
@@ -99,6 +121,11 @@ class AttractionField:
         if self._haz > _EPS:
             return -self._haz
         return self._att
+
+    @property
+    def decay_stats(self) -> tuple:
+        """(chamadas, aplicacoes, observacoes aceitas) desde a construcao."""
+        return (self._n_steps, self._n_applied, self._n_obs)
 
     # canais individuais (diagnóstico/auditoria)
     @property

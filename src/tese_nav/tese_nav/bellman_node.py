@@ -86,6 +86,13 @@ class BellmanNode(Node):
         self.residual_pub = self.create_publisher(Float64, '/bellman/update_residual', 10)
         self.dev_pub = self.create_publisher(Int32, '/bellman/route_deviations', 10)
 
+        # verificacao do decaimento (14/11/2026): seletor do relogio da guarda de decaimento.
+        # 'wall' = comportamento historico (relogio de parede), que produziu as
+        # 320 execucoes; 'sim' = guarda alimentada pelo mesmo relogio do
+        # temporizador. O padrao e 'wall' para nao alterar o historico.
+        self.declare_parameter('decay_clock', 'wall')
+        self.decay_clock = self.get_parameter('decay_clock').value
+
         # decaimento + publicação periódica
         self.create_timer(self.field.decay_period, self._tick)
 
@@ -149,7 +156,11 @@ class BellmanNode(Node):
 
     # ------------------------------------------------------------------ #
     def _tick(self):
-        phi = self.field.step_decay()
+        if self.decay_clock == 'sim':
+            now = self.get_clock().now().nanoseconds * 1e-9
+            phi = self.field.step_decay(now)
+        else:
+            phi = self.field.step_decay()
 
         self.attraction_pub.publish(Float64(data=float(phi)))
 
@@ -167,9 +178,11 @@ class BellmanNode(Node):
         self.td_pub.publish(Float64(data=float(self.q.mean_abs_td())))
 
         if abs(phi) > 1e-3:
+            n_steps, n_applied, n_obs = self.field.decay_stats
             self.get_logger().info(
                 f'Phi={phi:+.3f} | Q-entries={self.q.size()} '
-                f'| desvios={self.route_deviations}')
+                f'| desvios={self.route_deviations} '
+                f'| lam={n_applied}/{n_steps} obs={n_obs} clk={self.decay_clock}')
 
 
 def main(args=None):

@@ -20,7 +20,19 @@ Enquanto o Capítulo 2 apresentou os fundamentos teóricos do Aprendizado por Re
 
 \subsection{Evolução dos Algoritmos DRL para Navegação Robótica}
 
-A evolução dos algoritmos de \ac{DRL} para navegação robótica tem sido marcada por avanços significativos que superam as limitações dos métodos clássicos. \citeonline{Tai2017} demonstraram a viabilidade do uso de \ac{DQN} para navegação de robôs móveis em ambientes com obstáculos, utilizando dados de sensores laser diretamente como entrada. \citeonline{Zhu2017} expandiram esta abordagem incorporando informações visuais, permitindo navegação baseada em alvos visuais sem necessidade de mapas explícitos.
+A evolução dos algoritmos de \ac{DRL} para navegação robótica tem sido marcada por avanços significativos que superam as limitações dos métodos clássicos. %% Corrigido em 14/11/2026 (auditoria bibliografica, duas correcoes nesta frase):
+%% (i) Tai2017 era descrito como uso de DQN. O trabalho e de CONTROLE CONTINUO,
+%% treinado por DDPG assincrono -- DQN opera sobre acoes discretas e nao e o
+%% algoritmo da fonte; (ii) dizia-se que Zhu2017 "expandiu" Tai2017, e mais adiante
+%% nesta mesma revisao dizia-se o inverso. Os dois trabalhos sao de 2017 e
+%% independentes; a genealogia nao e demonstravel e foi substituida por comparacao
+%% factual entre as abordagens.
+\citeonline{Tai2017} demonstraram navegação sem mapa de robôs móveis por aprendizado
+profundo com \emph{controle contínuo}, treinada por \ac{DDPG} assíncrono e alimentada
+diretamente por leituras esparsas de laser, com transferência da política do simulador
+para o robô real. \citeonline{Zhu2017}, no mesmo ano e por via independente, trataram
+a navegação dirigida a alvo a partir de imagens, dispensando igualmente mapa explícito,
+mas tomando como entrada a cena visual e o alvo desejado em vez de distâncias.
 
 Um avanço significativo foi apresentado por \cite{Schulman2017} com o algoritmo \ac{PPO}, que se tornou um padrão na área devido à sua estabilidade e eficiência. \citeonline{Haarnoja2018} introduziram o \ac{SAC}, que incorpora um termo de entropia na função objetivo, resultando em políticas mais robustas e explorativas. Análises comparativas realizadas por \citeonline{Ibarz2021} demonstraram que algoritmos baseados em política como \ac{PPO} e \ac{SAC} geralmente superam métodos baseados em valor como \ac{DQN} em tarefas de navegação robótica com espaços de ação contínuos.
 
@@ -39,9 +51,20 @@ Estudos comparativos realizados por \cite{Hwangbo2019} e \citeonline{Loquercio20
 
 A segurança é uma preocupação primordial na navegação autônoma em ambientes industriais como subestações elétricas. \citeonline{Garciaetal2015} apresentaram uma revisão abrangente de métodos de \ac{RL} Seguro, categorizando-os em abordagens baseadas em modificação da função de recompensa, modificação do processo de exploração, e modificação do critério de otimização.
 
-\citeonline{Achiam2017} introduziram o \ac{CPO}, um algoritmo que garante restrições de segurança durante o processo de otimização da política. \citeonline{Chow2018} expandiram esta abordagem com o conceito de \ac{CMDP}, onde o objetivo é maximizar a recompensa enquanto se satisfaz restrições de custo. \citeonline{Thananjeyan2021} demonstraram a aplicação de \ac{RL} Seguro em navegação robótica em ambientes industriais, utilizando funções de barreira para garantir a permanência em um conjunto seguro de estados.
+\citeonline{Achiam2017} introduziram o \ac{CPO}, um algoritmo que garante restrições de segurança durante o processo de otimização da política. \citeonline{Chow2018} expandiram esta abordagem com o conceito de \ac{CMDP}, onde o objetivo é maximizar a recompensa enquanto se satisfaz restrições de custo. %% Corrigido em 14/11/2026: a frase atribuia a Thananjeyan2021 funcoes de barreira e
+%% garantia de invariancia em conjunto seguro, e situava o trabalho em navegacao
+%% industrial. O titulo da propria entrada e "Recovery RL: safe reinforcement learning
+%% with LEARNED recovery zones": o mecanismo e um critico de seguranca APRENDIDO que
+%% alterna entre politica de tarefa e politica de recuperacao. Nada ali garante
+%% invariancia, e os ensaios nao sao de navegacao industrial. Garantia formal nao se
+%% atribui a uma fonte sem que a fonte a demonstre.
+\citeonline{Thananjeyan2021} seguiram outro caminho: em vez de restringir a
+otimização, aprenderam um crítico de segurança a partir de violações observadas e o
+usaram para alternar entre uma política de tarefa e uma política de recuperação quando
+o risco estimado cresce. A salvaguarda é, portanto, aprendida e probabilística --- não
+oferece a garantia de invariância que uma função de barreira persegue.
 
-Uma abordagem particularmente promissora para ambientes como subestações elétricas foi proposta por \cite{Brunke2022}, combinando \ac{RL} com controladores de segurança baseados em modelo que podem intervir quando a política aprendida propõe ações potencialmente perigosas. Esta abordagem híbrida permite explorar os benefícios do aprendizado adaptativo enquanto mantém garantias formais de segurança.
+Uma abordagem particularmente promissora para ambientes como subestações elétricas foi proposta por \citeonline{Brunke2022}, combinando \ac{RL} com controladores de segurança baseados em modelo que podem intervir quando a política aprendida propõe ações potencialmente perigosas. Esta abordagem híbrida permite explorar os benefícios do aprendizado adaptativo enquanto mantém garantias formais de segurança.
 
 \subsection{Aplicações Específicas em Subestações Elétricas}
 
@@ -215,7 +238,14 @@ A integração efetiva de Aprendizado por Reforço, Visão Computacional e Fusã
 
 \subsection{Arquiteturas Integradas para Navegação Autônoma}
 
-O período 2015-2025 testemunhou o desenvolvimento de diversas arquiteturas que integram múltiplas técnicas para navegação autônoma robusta. \citeonline{Zhu2017} propuseram uma das primeiras arquiteturas que combinava visão computacional com aprendizado por reforço profundo para navegação baseada em alvos visuais. \citeonline{Tai2017} expandiram esta abordagem incorporando dados de LiDAR, demonstrando melhorias significativas em ambientes com obstáculos complexos.
+O período 2015-2025 testemunhou o desenvolvimento de diversas arquiteturas que integram múltiplas técnicas para navegação autônoma robusta. %% Corrigido em 14/11/2026: este trecho afirmava que Tai2017 expandiu Zhu2017,
+%% enquanto a secao anterior afirmava o contrario. Ambos sao de 2017; nenhum expande
+%% o outro. Mantem-se a comparacao de entrada sensorial, que e verificavel.
+\citeonline{Zhu2017} propuseram uma das primeiras arquiteturas que combinava visão
+computacional com aprendizado por reforço profundo para navegação dirigida a alvos
+visuais. \citeonline{Tai2017}, de forma contemporânea e independente, partiram de
+leituras esparsas de laser em vez de imagens, com o que trocaram riqueza semântica da
+entrada por um espaço de observação de dimensão muito menor.
 
 %% Reescrito em 13/11/2026: o mapeamento do Active Neural SLAM e metrico aprendido,
 %% nao semantico, e o Occupancy Anticipation nao incorpora memoria episodica -- ele
@@ -238,7 +268,16 @@ desta tese.
 
 Uma tendência significativa tem sido o desenvolvimento de frameworks modulares que permitem adaptação a diferentes ambientes e requisitos operacionais. \citeonline{Savva2019} introduziram o Habitat, uma plataforma para pesquisa em navegação visual incorporada que facilita a integração de diferentes algoritmos de percepção e controle. \citeonline{Wijmans2020} utilizaram esta plataforma para demonstrar navegação ponto-a-ponto em ambientes complexos utilizando apenas sensores visuais.
 
-\citeonline{Ehsani2021} propuseram o ManipulaTHOR, um framework que estende a navegação visual com capacidades de manipulação, essencial para tarefas de inspeção que requerem interação com o ambiente. \citeonline{Deitke2020RoboTHOR} expandiram esta abordagem com o RoboTHOR, que facilita a transferência de políticas aprendidas em simulação para robôs reais.
+%% Corrigido em 14/11/2026: o texto apresentava o RoboTHOR (2020) como expansao do
+%% ManipulaTHOR (2021), sequencia cronologicamente impossivel. O ano de Deitke2020
+%% havia sido corrigido antes, mas a relacao temporal permaneceu errada.
+%% Os dois sao extensoes irmas da mesma plataforma, em eixos distintos.
+\citeonline{Deitke2020RoboTHOR} introduziram o RoboTHOR, que acrescenta à plataforma
+um par entre cenas simuladas e suas contrapartes físicas, voltado a medir a perda de
+desempenho na transferência do simulador para o robô real. No ano seguinte,
+\citeonline{Ehsani2021} propuseram o ManipulaTHOR, que estende a mesma plataforma em
+outro eixo --- o da manipulação, e não o da transferência ---, acrescentando um braço
+articulado à navegação visual.
 
 %% Reescrito em 13/11/2026. A redacao anterior descrevia a Iberdrola2022 como um
 %% "framework modular com configuracao flexivel de sensores" e a Lactec2022 como uma
