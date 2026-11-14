@@ -120,3 +120,30 @@ a figura nova substituir a antiga**. Marcar `[x]` ao aplicar.
   ROS Master". O Master faz registro e descoberta; depois disso os nós comunicam-se
   ponto a ponto. A figura nova deixa essa distinção explícita, e o texto precisa
   acompanhá-la para não contradizê-la.
+
+## Figura 12 — `architecture` (§4.1) — REFEITA, pendências de texto
+
+- [ ] A legenda atual existe quase só para **traduzir cada rótulo interno** entre
+  parênteses (`\emph{Deliberative --- Active sensing}`, `\emph{Waypoint patrol}`, etc.).
+  Com a figura em português, toda essa tradução sai e a legenda encolhe para descrever
+  o que a figura mostra.
+- [ ] A figura nova desenha $\Phi$ como **série temporal escalar com limiar**, em vez da
+  superfície espacial anterior. Isso agora concorda com o parágrafo de §4.2 que
+  distingue $\Phi$ de um campo potencial espacial. Vale uma frase na legenda apontando
+  que o decaimento aparece em degraus, por ser aplicado uma vez por período.
+
+## Figura 13 — `stay_alert_fsm` (§4.5) — pendências de texto
+
+- [ ] **A legenda contradiz o §4.2.** Hoje diz: "o campo puxa em direção à atração
+  (\emph{attraction}) e empurra para longe da repulsão (\emph{repulsion})". Essa é
+  exatamente a leitura de campo potencial espacial que o §4.2 nega — "não se toma seu
+  gradiente e dele não se extrai direção de movimento alguma". Reescrever: $\Phi$
+  arbitra qual canal governa e arma o disparo; a direção vem da geometria da meta
+  emitida.
+- [ ] **A ressalva sobre a terceira saída de `AVOID` pode sair.** A legenda hoje diz que
+  "a lista completa e normativa das transições, incluindo a terceira saída de
+  \textsc{Avoid}, está na Tabela~\ref{tab:prop-transicoes}" porque a figura antiga só
+  mostrava duas. A figura nova inclui as três (seguro / recuado / esgotado), então a
+  remissão passa a ser complementar, não corretiva.
+- [ ] Como na Figura 12, a legenda deixa de precisar traduzir rótulos internos
+  (`follow waypoints`, `inspected`, `timeout`, `safe`, `retreated`) e encolhe bastante.
