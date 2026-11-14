@@ -526,21 +526,52 @@ decaimento segue o relógio simulado, mas a condição que \emph{autoriza} a apl
 fator $\lambda$ compara instantes de relógio \emph{de parede}. Como a simulação roda
 com fator de tempo real acima da unidade --- razão mediana de $1{,}12$ entre relógio
 simulado e relógio de parede, conforme a Seção~\ref{sec:setup-censo} ---, parte dos
-disparos não autoriza a aplicação. Quantificou-se isso nos \textit{logs} das dez
-execuções da configuração CM: dos $2\,715$ disparos de $1$~s do temporizador, $53{,}4\%$
-aplicaram o fator, de modo que o período de decaimento \emph{realizado} é de
-$1{,}87$~s de tempo simulado, e não de $1$~s%
-\footnote{Contagem feita comparando magnitudes de $\Phi$ entre disparos consecutivos: um
-disparo é contado como efetivo quando a magnitude cai. O valor por execução varia entre
-$51$ e $55\%$.}. Isso é visível nos \textit{logs},
+disparos não autoriza a aplicação. %% Reescrito em 14/11/2026. Duas correcoes de peso. (i) A quantificacao
+%% anterior -- 53,4% de 2715 disparos, periodo 1,87 s -- contava como aplicacao de
+%% lambda toda QUEDA de |Phi| entre amostras consecutivas. Isso nao mede o que se
+%% queria: renovacao por observacao, retencao de maximo, saturacao e troca de canal
+%% alteram Phi sem decaimento, e uma renovacao exata MASCARA um decaimento aplicado.
+%% O estimador foi refeito sobre pares inequivocos e da 1,65 s, nao 1,87 s.
+%% (ii) Retirada a afirmacao de que o defeito "nao confunde contraste algum". Codigo
+%% compartilhado garante distorcao de igual magnitude, nao influencia igual sobre a
+%% decisao: HEU dispara por deteccao bruta e nao carrega a memoria para a decisao.
+Quantificar isso exige cuidado, porque a queda de $\Phi$ entre amostras \emph{não} é
+contador inequívoco de aplicações de $\lambda$: renovação por observação, retenção de
+máximo, saturação e troca de canal alteram $\Phi$ sem decaimento, e uma renovação que
+devolva o canal ao valor anterior mascara um decaimento que de fato ocorreu. A contagem
+restringe-se, por isso, a pares consecutivos de um mesmo canal em que as atualizações
+concorrentes podem ser descartadas: acima de um piso de magnitude em que as três casas
+decimais do registro resolvem a razão, e com razão igual a $\lambda$ --- decaimento
+aplicado, sem observação --- ou exatamente igual a $1$ --- nenhum dos dois, pois sem
+decaimento e sem observação o valor é idêntico. Toda razão fora dessas duas é indício de
+atualização concorrente, e o par é excluído.
+
+Assim medido nas dez execuções da configuração CM: de $1\,002$ pares admitidos,
+$60{,}5\%$ aplicam o fator, de modo que o período de decaimento \emph{realizado} é de
+cerca de $1{,}65$~s de tempo simulado, e não de $1$~s%
+\footnote{A estimativa é estável: varrendo o piso de magnitude entre $0{,}03$ e $0{,}12$
+e a tolerância de razão entre $0{,}015$ e $0{,}04$, o período fica entre $1{,}64$ e
+$1{,}74$~s. O preço da restrição é alto --- $65\%$ dos pares são excluídos, a maioria na
+cauda de baixa magnitude e na fase de reobservação ---, e é esse preço que torna o
+restante interpretável.}. Isso é visível nos \textit{logs},
 em que $\Phi$ repete o mesmo valor em disparos consecutivos de $1$~s antes de cair --- a
 sequência $0{,}015$; $0{,}015$; $0{,}013$; $0{,}011$; $0{,}011$; $0{,}009$; $0{,}009$ é
-um trecho literal de uma execução. A consequência é que a meia-vida realizada do canal
-é $1{,}87$ vez a nominal. Esse comportamento é idêntico em \emph{todos} os braços
-experimentais, porque o campo é o mesmo código em todos, de modo que ele não confunde
-contraste algum; e as janelas de persistência relatadas no
-Capítulo~\ref{cap:resultados} são \emph{medidas} nos registros, não derivadas de
-$\lambda$ e $T_d$. Ainda assim, quem reimplementar o supervisor deve ler $T_d$ como
+um trecho literal de uma execução.
+
+O mesmo estimador aplicado braço a braço dá períodos entre $1{,}57$ e $1{,}70$~s em
+nove configurações, com faixas por execução largamente sobrepostas. A distorção é,
+portanto, de magnitude semelhante em todos eles --- o que era de esperar, já que o campo
+é o mesmo código. \textbf{Disso não se segue, porém, que o defeito não confunda
+contraste algum}, e a tese não o afirma. Distorção igual na \emph{dinâmica do campo} não
+é influência igual sobre a \emph{decisão}: o método e a variante de seleção disparam
+sobre o campo e carregam a memória para dentro da decisão, enquanto a heurística de
+detecção bruta não a consulta. Um defeito na memória pesa sobre quem a usa para decidir
+e não pesa sobre quem a ignora. O que se pode afirmar é que a dinâmica do campo é
+igualmente distorcida; que os contrastes sejam insensíveis a essa distorção é afirmação
+distinta, e é verificada à parte na
+Seção~\ref{sec:res-verificacao-relogio}. As janelas de persistência relatadas no
+Capítulo~\ref{cap:resultados} são, em todo caso, \emph{medidas} nos registros, não
+derivadas de $\lambda$ e $T_d$. Ainda assim, quem reimplementar o supervisor deve ler $T_d$ como
 ``um período de decaimento'', e não como ``um segundo de tempo simulado''.
 
 \subsection{Ordem das Operações}
