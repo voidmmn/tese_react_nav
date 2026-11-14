@@ -40,7 +40,8 @@ ax.plot(xs, ys, '--', color='tab:blue', lw=1.3, zorder=3, label='rota de patrulh
 for i, (x, y) in enumerate(wps[:-1]):
     ax.plot(x, y, 'o', color='tab:blue', ms=7, zorder=4)
     ax.text(x + 0.6, y + 0.6, f'W{i}', fontsize=8, color='tab:blue', zorder=5)
-ax.text(-10, -10 - 1.6, 'start/return', ha='center', va='top', fontsize=7,
+# Rotulo traduzido em 14/11/2026: era o unico texto em ingles restante nas figuras.
+ax.text(-10, -10 - 1.6, 'partida / retorno', ha='center', va='top', fontsize=7,
         color='tab:blue')
 
 # anomalias (atração) com raio de detecção
