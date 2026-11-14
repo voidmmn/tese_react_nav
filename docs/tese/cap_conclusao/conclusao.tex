@@ -165,9 +165,18 @@ avaliadas --- estabilidade dos incrementos, e não convergência.
 \section{Trabalhos Futuros}
 \label{sec:conc-futuro}
 
+%% Corrigido em 14/11/2026: a abertura excluia a ponderacao como lugar de
+%% interesse de forma categorica. Nao detectar efeito em tres cenarios nao elimina a
+%% utilidade da saliencia em outras distribuicoes de eventos -- afirmar isso e
+%% justamente o tipo de generalizacao que o resto do capitulo recusa.
 A ausência de efeito detectável da regra de seleção e o custo quantificado da
-persistência apontam na mesma direção: a arbitragem e sua extensão temporal --- e não
-a ponderação --- são onde o trabalho adicional pertence.
+persistência apontam na mesma direção: \emph{nas distribuições de eventos estudadas},
+a arbitragem e sua extensão temporal são onde o trabalho adicional rende mais do que a
+ponderação. A delimitação importa: os cenários executados colocam poucos eventos
+simultâneos e bem separados, condições em que saliência e proximidade tendem a
+coincidir na escolha. Em distribuições mais densas, ou com eventos de intensidades
+muito desiguais a distâncias comparáveis, a ponderação pode voltar a pesar --- o que
+este trabalho não testou e, portanto, não exclui.
 
 \begin{itemize}
 %% Reescrito em 13/11/2026: a comparacao contra Q-learning tabular, que este item
@@ -282,12 +291,13 @@ Risco que ativa a $3$~m durante investigação; $8$ execuções válidas &
 Efeito do \emph{conjunto} de ações, não do deslocamento isolado; métricas de missão
 inteira\\
 \hline
-A tabela de valor com recompensa aumentada não supera a regra fixa &
-Mesma completude, tempo em investigação maior com $\delta=+1{,}00$;
-§\ref{sec:res-qdriven} &
+Controlar o movimento por tabela de valor não melhorou a subtarefa reativa &
+Mesma completude; tempo em investigação maior com $\delta=+1{,}00$ nos três cenários;
+demais métricas mistas; §\ref{sec:res-qdriven} &
 Três cenários; política treinada em simulador cinemático &
 Comparação entre as duas implementações testadas; camada de eventos e controlador não
-compartilhados (§\ref{sec:setup-qdriven})\\
+compartilhados (§\ref{sec:setup-qdriven}); não testa arbitragem aprendida entre risco
+e inspeção nem isola o efeito do aprendizado\\
 \hline
 A completude se degrada sob ruído alto de percepção &
 $4/9$ execuções completas; seis rejeições na confirmação;

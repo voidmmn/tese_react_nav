@@ -216,10 +216,15 @@ proposta.
     genérica de detectar--selecionar--desviar--retornar executada sobre o mesmo
     controlador Nav2/MPPI, e varreduras de limiar e de histerese
     (Seções~\ref{sec:res-heu}, \ref{sec:res-sens-limiar} e~\ref{sec:res-histerese}).
+%% Corrigido em 14/11/2026: o "conhecimento novo" atribuia a separacao a
+%% persistencia, embora a limitacao da mesma alinea reconheca que ela nao foi separada
+%% do disparo. Um item nao pode afirmar no primeiro paragrafo o que nega no segundo.
     \emph{Conhecimento novo:} nos cenários executados, o que separa esta camada de uma
-    heurística de desviar e retornar é a persistência temporal do canal de risco; a
-    ponderação por saliência não produziu diferença detectável no mesmo conjunto de
-    condições. \emph{Limitação:} no contraste executado, o modo de disparo e a
+    heurística de desviar e retornar é o conjunto formado pela fonte do disparo e pela
+    persistência temporal do canal de risco, que variam juntos neste desenho; os
+    rastros são compatíveis com participação da memória na diferença observada, sem
+    estabelecê-la como fator isolado. A ponderação por saliência não produziu diferença
+    detectável no mesmo conjunto de condições. \emph{Limitação:} no contraste executado, o modo de disparo e a
     persistência variam em conjunto, de modo que não são fatores separáveis com as
     configurações rodadas (Seção~\ref{sec:res-ameacas}).
 
@@ -237,11 +242,24 @@ proposta.
     cenário de risco estático sobre a rota e para as configurações estudadas; ausência
     de benefício adicional detectado não demonstra equivalência geral de componentes.
 
-    \item \textbf{Desenho de avaliação que isola o mecanismo.} \emph{Herdado:}
+%% Delimitado em 14/11/2026: "cada variante troca um fator por vez" e amplo
+%% demais perante as ressalvas da propria tese. Trocar um PARAMETRO de configuracao
+%% nao e trocar um FATOR: no contraste contra deteccao bruta, um parametro move
+%% disparo e persistencia juntos; em DHa/DHb move um conjunto de acoes; no Q-driven
+%% move eventos, controle e orcamento. O titulo tambem deixa de dizer "isola".
+    \item \textbf{Desenho de avaliação que compartilha o controlador.} \emph{Herdado:}
     protocolos de comparação por simulação em navegação autônoma. \emph{Modificação:} a
     heurística comparada roda sobre o \emph{mesmo} controlador Nav2/MPPI e a mesma
     camada de eventos, o que remove o controlador como confundidor, e cada variante
-    troca um fator por vez (Capítulo~\ref{cap:avaliacao}). \emph{Evidência:} $32$ pares
+    altera um único \emph{parâmetro} de configuração (Capítulo~\ref{cap:avaliacao}).
+    Um parâmetro, porém, não é sempre um fator: o contraste em que um único fator é de
+    fato alterado é o da regra de seleção --- saliência contra proximidade, com o mesmo
+    disparo por campo (Seção~\ref{sec:res-heu}) ---, ao qual se somam as varreduras de
+    $\eta$, de limiar de elegibilidade, de histerese e de ruído. Nos demais, o
+    parâmetro move mais de um fator: trocar o disparo por detecção bruta remove também
+    a persistência; habilitar o recuo habilita o conjunto de preempção, troca de meta e
+    entrega à zona de exclusão; e o \textsc{Q-driven} troca, além da decisão, a
+    interface de atuação e o orçamento de treinamento. \emph{Evidência:} $32$ pares
     configuração--cenário, $320$ execuções tentadas e $311$ válidas, com família de
     comparação primária de $15$ testes declarada a priori quanto à regra de
     multiplicidade (Seções~\ref{sec:setup-censo} e~\ref{sec:res-familias}).
@@ -279,18 +297,31 @@ proposta.
     afirmação vale nas condições avaliadas, e a utilidade da saliência em outras
     distribuições de eventos não é eliminada.
 
-    \item \textbf{Resultado negativo: a tabela de valor não substitui a regra de
-    precedência.} \emph{Herdado:} \textit{Q-learning} tabular com recompensa aumentada.
+%% Renomeado em 14/11/2026. O titulo anterior era "a tabela de valor nao
+%% substitui a regra de precedencia". O estado aprendido e o tipo, a distancia e o
+%% rumo de UM evento relevante, e as acoes sao movimentos: a politica decide COMO ir
+%% ate um alvo ja selecionado, nao QUAL evento tem precedencia sobre qual. O desenho
+%% nao testa substituicao da precedencia, e o titulo passa a nomear o que foi testado.
+    \item \textbf{Resultado negativo: controlar o movimento por tabela de valor não
+    melhorou a subtarefa reativa.} \emph{Herdado:} \textit{Q-learning} tabular com
+    recompensa aumentada.
     \emph{Modificação:} além da atualização passiva do método principal
     (Seção~\ref{sec:prop-atualizacao}), uma linha de base em que a tabela de valor
     \emph{seleciona} a ação executada, medida nos três cenários
-    (Seção~\ref{sec:res-qdriven}). \emph{Evidência:} bloco de doze testes com correção
-    interna de multiplicidade. \emph{Conhecimento novo:} a tabela de valor treinada com
-    recompensa aumentada pelo campo não superou a regra fixa de precedência nas
-    implementações comparadas. \emph{Limitação:} a comparação é entre as duas
-    implementações efetivamente testadas --- a política atua em velocidade e foi
-    treinada em simulador cinemático, enquanto o método envia metas ao Nav2/MPPI ---, e
-    não entre os paradigmas de decisão em geral.
+    (Seção~\ref{sec:res-qdriven}). \emph{Evidência:} bloco de vinte e quatro testes --- três
+    cenários por oito desfechos --- com correção interna de multiplicidade. \emph{Conhecimento novo:} nas implementações
+    comparadas, a linha de base tabular de controle de movimento apresentou tempo em
+    investigação maior nos três cenários, com separação completa, e nenhuma diferença
+    detectada de completude de inspeção; nas demais métricas o resultado é misto ---
+    menor duração mediana e menor percurso em \texttt{default} e \texttt{conflict},
+    maior afastamento mínimo, pior em \texttt{adverse}. \emph{Limitação:} a comparação
+    é entre as duas implementações efetivamente testadas --- a política atua em
+    velocidade e foi treinada em simulador cinemático, enquanto o método envia metas ao
+    Nav2/MPPI ---, e não entre os paradigmas de decisão em geral. Os resultados não
+    isolam o efeito do aprendizado, e \emph{não} avaliam uma política aprendida de
+    arbitragem entre risco e inspeção: o estado observado pela política contém um único
+    evento, de sorte que ela decide como mover-se até um alvo já selecionado, e não
+    qual evento tem precedência.
 \end{enumerate}
 
 Um sétimo item é artefato, e não conhecimento: o pacote reprodutível

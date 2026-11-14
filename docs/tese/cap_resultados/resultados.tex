@@ -148,7 +148,13 @@ A regra de multiplicidade é, exatamente: a correção de Holm é aplicada \emph
 de uma família declarada e nunca entre famílias. São três as famílias declaradas nesta
 tese. A primária, de quinze testes, tabulada integralmente na
 Tabela~\ref{tab:res-familia}. A do contraste contra o \textit{baseline} de
-aprendizado por reforço comportamental, de doze testes, cujo $p$ corrigido aparece na
+%% Corrigido em 14/11/2026: o tamanho desta familia era declarado como doze
+%% aqui e em outros tres lugares, enquanto a Tabela 13 exibe quinze linhas. Nenhum dos
+%% dois numeros e o denominador: o script percorre 3 cenarios x 8 metricas e corrige
+%% Holm sobre as 24. Conferido pelo proprio menor p da tabela, 2,6e-4, que e
+%% 1,08e-5 x 24. O denominador maior torna a correcao MAIS conservadora.
+aprendizado por reforço comportamental, de \textbf{vinte e quatro testes} --- três
+cenários por oito desfechos ---, cujo $p$ corrigido aparece na
 Tabela~\ref{tab:res-qdriven} e é interno a ela --- corrigir ali é escolha
 conservadora, não promoção daquele bloco à condição de confirmatório. E os contrastes
 exploratórios restantes, relatados com $p$ \emph{bruto}, cada um identificado como
@@ -538,9 +544,23 @@ A Tabela~\ref{tab:res-qdriven} reúne os contrastes nos três cenários, com dez
 execuções por configuração e trinta de trinta concluindo a missão. Estes contrastes
 são \textbf{exploratórios}: a família de comparação primária
 (Seção~\ref{sec:res-familias}) foi fechada antes desta bateria, e o $p$ corrigido por
-Holm que a tabela traz é interno a esta família de doze testes, não à primária ---
-corrigir aqui é escolha conservadora e não promove este bloco à condição de
-confirmatório.
+Holm que a tabela traz é interno a esta família de vinte e quatro testes, não à
+primária --- corrigir aqui é escolha conservadora e não promove este bloco à condição
+de confirmatório.
+
+%% Acrescentado em 14/11/2026: ao reler a secao notei que o
+%% denominador da correcao nao estava transparente. Declara-se agora quais testes
+%% compoem a familia e quais ficam fora da tabela, e por que.
+A família é formada pelos três cenários (\texttt{default}, \texttt{conflict},
+\texttt{adverse}) e por oito desfechos cada. A tabela exibe cinco desses desfechos por
+cenário, quinze linhas. Os nove restantes --- tempo sob a faixa de $2$~m, entradas em
+região de contato e violações de zona de segurança, nos três cenários --- são
+\emph{identicamente nulos nos dois braços} em todas as trinta execuções: $\delta=0$,
+$p=1$ e $p_{\mathrm{Holm}}=1$. Não informam contraste algum, e por isso ficam fora do
+corpo da tabela; permanecem, contudo, no denominador de Holm, o que torna a correção
+mais conservadora do que seria sobre as quinze linhas exibidas. Os vinte e quatro
+testes, com $p$ bruto e ajustado, estão em \texttt{qdriven\_exploratorio.csv} no
+pacote de reprodutibilidade (Seção~\ref{sec:setup-repro}).
 
 \begin{table}[htb]
 \centering
@@ -549,7 +569,8 @@ reforço comportamental, nos três cenários. Medianas sobre execuções válida
 $n=10$ por configuração. $\delta$ é o Cliff's delta (positivo quando o
 \textsc{Q-driven} apresenta valor maior) e o intervalo é o IC~$95\%$
 \textit{bootstrap} da diferença de médias. Contrastes exploratórios; a correção de
-Holm é interna a esta família de doze testes. $\delta$ e o intervalo seguem a convenção
+Holm é interna à família de vinte e quatro testes descrita no texto, da qual esta
+tabela exibe quinze linhas; as outras nove são nulas nos dois braços. $\delta$ e o intervalo seguem a convenção
 uniforme da tese (braço comparado menos método). Note-se que $p$ e intervalo tratam
 objetos distintos: o $p$ é de um teste de \emph{postos} e o intervalo é da
 \emph{diferença de médias}, de modo que um $p$ pequeno com intervalo contendo zero ---
@@ -629,9 +650,16 @@ exclusão está \emph{desligada} (Tabela~\ref{tab:setup-matriz}), de modo que el
 responder por nada aqui. O que ambos os braços têm em comum é a \emph{geometria} da
 resposta --- distância de parada de $2$~m na aproximação e afastamento comandado de
 $6{,}5$~m diante de risco, idênticos por parametrização --- e o fato de o risco, nesses
-cenários, não estar sobre a rota. É isso, e não o mecanismo que decide a reação, que
-explica a coincidência: dois mecanismos de decisão diferentes, sob a mesma geometria de
-resposta e o mesmo arranjo de risco, produzem a mesma margem. A atribuição da
+cenários, não estar sobre a rota. %% Delimitado em 14/11/2026: a frase dizia "e isso, e nao o mecanismo, que
+%% explica a coincidencia". A geometria nao foi variada independentemente, de modo que
+%% a exclusao causal nao esta sustentada: e explicacao plausivel, nao demonstrada.
+Essa geometria compartilhada é a explicação mais plausível da coincidência: dois
+mecanismos de decisão diferentes, sob a mesma geometria de resposta e o mesmo arranjo
+de risco, produzem a mesma margem. Registre-se, porém, o que sustenta essa leitura e o
+que não: a geometria \emph{não} foi variada independentemente do mecanismo em nenhum
+dos contrastes desta tese, de sorte que não se pode excluir que o mecanismo de decisão
+contribua para a margem sob outras parametrizações. A afirmação é de explicação
+suficiente nas configurações rodadas, não de exclusão causal do mecanismo. A atribuição da
 Seção~\ref{sec:res-ablacao}, que envolve a zona de exclusão, refere-se ao cenário de
 risco \emph{sobre a rota} e não é reforçada nem contestada por este contraste.
 

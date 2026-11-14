@@ -362,18 +362,32 @@ trabalho precisa ser confrontada diretamente.
 
 A \autoref{tab:rev-proximos} organiza esse confronto por quatro atributos que são
 exatamente os que esta tese manipula experimentalmente: como o conflito entre reagir e
-prosseguir é resolvido; se há persistência temporal explícita do sinal que motivou a
-reação; se uma camada deliberativa madura é reaproveitada em vez de substituída; e se o
+prosseguir é resolvido; se o sinal que motivou a reação é retido em um
+\emph{acumulador com decaimento} --- e não apenas se há alguma forma de estado
+temporal, que quase toda arquitetura tem; se uma camada deliberativa madura é reaproveitada em vez de substituída; e se o
 efeito de cada mecanismo de supervisão é atribuído experimentalmente, em vez de
 reportado no agregado.
 
 \begin{table}[htb]
 \centering
-\caption{Trabalhos mais próximos, por atributo de supervisão. A última coluna
-distingue reportar o desempenho do sistema completo de atribuir efeito a um mecanismo
-de supervisão isolado --- nos trabalhos de política aprendida, o objeto do estudo é a
-política, e a arbitragem entre reagir e prosseguir não é um mecanismo separável sobre o
-qual se possa ablacionar.}
+%% Reescrito em 14/11/2026. A coluna chamava-se "persistencia temporal
+%% explicita" e marcava "Nao" para Brooks1986 -- mas a subsuncao usa maquinas de
+%% estado AUMENTADAS, com estado interno e constantes de tempo na supressao e na
+%% inibicao. Ausencia de acumulador com decaimento nao e ausencia de persistencia
+%% temporal. A coluna passa a nomear o mecanismo especifico que esta tese manipula, e
+%% a legenda distingue os quatro estatutos possiveis de uma celula.
+\caption{Trabalhos mais próximos, por atributo de supervisão. A terceira coluna
+pergunta por um mecanismo \emph{específico} --- o sinal que motivou a reação ser retido
+em um acumulador que decai ---, e não por persistência temporal em geral: estado
+interno, temporizadores e mapas acumulados são formas de persistência que vários destes
+trabalhos têm. As células distinguem quatro estatutos: \emph{não possui} o mecanismo;
+\emph{não o documenta} como mecanismo; \emph{usa outro mecanismo}, que é então
+nomeado; e \emph{não aplicável} ao desenho. A última coluna distingue reportar o
+desempenho do sistema completo de atribuir efeito a um mecanismo de supervisão isolado
+--- nos trabalhos de política aprendida, o objeto do estudo é a política, e a
+arbitragem entre reagir e prosseguir não é um mecanismo separável sobre o qual se possa
+ablacionar. Trabalhos agrupados em uma mesma linha compartilham o estatuto nestes
+quatro atributos, e não são por isso equivalentes em todos os aspectos.}
 \label{tab:rev-proximos}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -381,25 +395,26 @@ qual se possa ablacionar.}
 \hline
 \textbf{Trabalho / classe} &
 \textbf{Conflito entre reagir e prosseguir} &
-\textbf{Persistência temporal explícita} &
+\textbf{Acumulador do sinal, com decaimento} &
 \textbf{Camada deliberativa reaproveitada} &
 \textbf{Atribuição entre mecanismos}\\
 \hline
 \citeonline{Brooks1986} --- controle em camadas &
 Supressão e inibição por prioridade fixa de camada &
-Não &
+Outro mecanismo: estado interno em máquinas de estado aumentadas, com constantes de
+tempo na supressão e na inibição &
 Não (sem planejador) &
 Demonstração do sistema\\
 \hline
 \citeonline{Arkin1989,Arkin1998} --- esquemas motores &
 Soma vetorial de comportamentos ponderados por ganhos &
-Não &
+Não possui: a soma é função das percepções do instante &
 Não (comportamental) &
 Demonstração do sistema\\
 \hline
 \citeonline{Barraquand1992}; \citeonline{Koren1991} --- campos potenciais &
 Gradiente do campo somado; limitações do método analisadas &
-Não &
+Não possui: o campo é função da configuração corrente &
 Sim, no caso numérico &
 Análise do método\\
 \hline

@@ -419,8 +419,10 @@ Tabela~\ref{tab:prop-transicoes}.}
 \caption{Camada reativa \textsc{Stay Alert} (por ciclo de controle)}
 \label{alg:stayalert}
 \begin{algorithmic}[1]
-\STATE \textbf{entrada:} campo $\Phi$; evento selecionado $e^\star$ (mais saliente no
-       alcance); limiares $\theta_{\text{in}},\theta_{\text{out}}$;
+\STATE \textbf{entrada:} campo $\Phi$; evento selecionado $e^\star$ --- o mais
+       saliente entre os publicados no alcance ou, se o supervisor já tem pose e
+       identidade retidas de um alvo comprometido, esse alvo, ainda que não esteja
+       sendo publicado; limiares $\theta_{\text{in}},\theta_{\text{out}}$;
        $t_{\text{dwell}}, t_{\max}$; refratário $t_{\text{ref}}$
 \STATE \textbf{Preempção de segurança} (um risco interrompe \emph{qualquer} estado):
 \IF{o recuo reativo está habilitado \textbf{e} modo $\ne$ \textsc{Avoid}
@@ -443,8 +445,10 @@ Tabela~\ref{tab:prop-transicoes}.}
 \ELSIF{modo $=$ \textsc{Investigate}}
   \IF{navegação \textbf{bem-sucedida} \textbf{e} permanência $\ge t_{\text{dwell}}$}
      \STATE sair (\emph{inspecionado}); retomar patrulha
-  \ELSIF{decorrido $\ge t_{\max}$ \textbf{ou} navegação abortada/cancelada}
-     \STATE sair (\emph{falho}); retomar patrulha
+  \ELSIF{navegação rejeitada, abortada ou cancelada}
+     \STATE sair (\emph{falho}); retomar patrulha \COMMENT{não aguarda $t_{\max}$}
+  \ELSIF{decorrido $\ge t_{\max}$}
+     \STATE sair (\emph{esgotado}); retomar patrulha
   \ENDIF
 \ELSIF{modo $=$ \textsc{Avoid}}
   \IF{$\Phi > -\theta_{\text{out}}$ \textbf{ou} pose de recuo alcançada}
@@ -541,7 +545,30 @@ $\lambda$ e $T_d$. Ainda assim, quem reimplementar o supervisor deve ler $T_d$ c
 
 \subsection{Ordem das Operações}
 
-Em cada ciclo, na ordem:
+%% Delimitado em 14/11/2026: a enumeracao sugeria uma transacao sincronizada
+%% por ciclo. Os nos correm em temporizadores independentes e taxas diferentes
+%% (Tabela de Taxas e Relogios), de modo que a sequencia e uma dependencia LOGICA, nao
+%% uma ordem atomica assegurada pelo sistema. O mecanismo real -- callbacks sobre a
+%% ultima mensagem retida -- passa a ser descrito, com os entrelacamentos admitidos.
+A sequência abaixo é a ordem de \emph{dependência lógica} entre as operações: cada
+etapa consome o que a anterior produziu. Ela \emph{não} descreve uma transação atômica,
+e o sistema não assegura nenhuma. Os componentes são nós independentes, com
+temporizadores próprios e taxas distintas (Seção~\ref{sec:prop-relogios}): o gerador de
+eventos publica a $2$~Hz, o campo decai e é publicado a $1$~Hz e o supervisor avalia as
+guardas na sua própria taxa. A comunicação é por \textit{callback} sobre a
+\emph{última mensagem retida}: cada nó age sobre o valor mais recente que recebeu, que
+pode ter sido produzido um ou mais ciclos antes.
+
+Três entrelaçamentos decorrem disso e são admitidos pelo projeto. Uma observação pode
+chegar entre a leitura do campo e a avaliação das guardas, caso em que ela só pesa no
+ciclo seguinte. O supervisor pode disparar sobre uma pose retida cujo evento já não
+está sendo publicado --- é o redisparo descrito na Seção~\ref{sec:prop-ciclo-alvo}. E o
+decaimento pode ocorrer entre a saída de um episódio e a reavaliação da guarda, o que
+decide se um alvo falho volta a disparar. Nenhum desses entrelaçamentos é uma condição
+de corrida nociva: o campo é escalar e monótono entre observações, e o supervisor toma
+no máximo uma transição por ciclo.
+
+Em cada ciclo, na ordem lógica:
 
 \begin{enumerate}
     \item \textbf{Ativação ambiental.} Um risco com raio de ativação só passa a
@@ -624,22 +651,35 @@ afastamento relatado é o mínimo de posição \emph{verdadeira} medido pelo col
 uma chegada presumida.
 
 \subsection{Ciclo de Vida de um Alvo}
+\label{sec:prop-ciclo-alvo}
 
-Um alvo de atração percorre os estados da \autoref{tab:prop-ciclo}. O ponto que importa
-para a leitura dos resultados é qual transição devolve o alvo ao conjunto elegível:
-\emph{somente} o adiamento por risco. Concluído e falho permanecem comprometidos, de
-modo que \emph{não existe} regra de nova tentativa.
+Um alvo de atração percorre os estados da \autoref{tab:prop-ciclo}. %% Delimitado em 14/11/2026: "nao volta a atrair" e "nao pode ser investigado
+%% novamente" nao sao a mesma coisa, e o paragrafo seguinte a esta tabela ja descrevia
+%% o redisparo. A elegibilidade da tabela e a do PUBLICADOR; o supervisor pode
+%% redisparar sobre pose e identidade retidas. A distincao passa a ser explicita aqui.
+O ponto que importa
+para a leitura dos resultados é qual transição devolve o alvo ao conjunto elegível
+\emph{do publicador}: \emph{somente} o adiamento por risco. Concluído e falho
+permanecem comprometidos, de modo que \emph{não existe regra projetada} de nova
+tentativa. Isso não equivale a dizer que um alvo falho não volta a ser investigado: o
+supervisor retém a pose e a identidade, e pode redisparar sobre elas enquanto o valor
+no canal de atração não tiver decaído abaixo de $\theta_{\text{in}}$ --- redisparo que
+é consequência de temporização, não de política de recuperação, e que o parágrafo após
+a tabela descreve com os casos observados.
 
 \begin{table}[htb]
 \centering
-\caption{Ciclo de vida de um alvo de atração. ``Volta a atrair'' indica se o alvo
-retorna ao conjunto elegível do canal de atração.}
+\caption{Ciclo de vida de um alvo de atração. A última coluna indica se o alvo retorna
+ao conjunto elegível \emph{do publicador} de eventos --- isto é, se volta a ser
+publicado à camada reativa. Ela \emph{não} responde se o alvo pode ser investigado de
+novo: o supervisor retém pose e identidade do alvo comprometido e pode redisparar sobre
+elas a partir do valor ainda não decaído, sem que o evento seja republicado.}
 \label{tab:prop-ciclo}
 \footnotesize
 \begin{tabular}{p{0.17\textwidth}p{0.40\textwidth}p{0.18\textwidth}p{0.14\textwidth}}
 \hline
 \textbf{Estado} & \textbf{Como se entra} & \textbf{Conta como inspeção} &
-\textbf{Volta a atrair}\\
+\textbf{Volta a ser publicado}\\
 \hline
 Disponível & estado inicial & --- & sim\\
 \hline
@@ -649,7 +689,7 @@ Concluído & saída \emph{inspecionado} \textbf{e} confirmação geométrica pel
 & sim & não\\
 \hline
 Falho & esgotamento do orçamento; falha de navegação; ou saída \emph{inspecionado}
-\textbf{sem} confirmação & não & não\\
+\textbf{sem} confirmação & não & não --- mas pode ser redisparado pelo valor retido\\
 \hline
 Adiado & preempção por risco durante a investigação & não & \textbf{sim}\\
 \hline
@@ -701,16 +741,37 @@ produza oscilação. A histerese separa entrada e saída ($\theta_{\text{in}}$ c
 $\theta_{\text{out}}$). O compromisso remove o alvo do conjunto elegível no início do
 episódio. O refratário bloqueia nova preempção por $t_{\text{ref}}$ após qualquer saída
 de \textsc{Avoid}. E o decaimento faz o canal esvair-se gradualmente em vez de cair a
-zero no instante em que a observação cessa --- é justamente esta última propriedade que
-o contraste contra o disparo por detecção bruta isola.
+zero no instante em que a observação cessa.
+%% Corrigido em 14/11/2026: a frase dizia que o contraste contra deteccao
+%% bruta ISOLA a propriedade do decaimento. Nao isola, e dize-lo aqui contradizia o
+%% capitulo de resultados e a conclusao, que delimitam o mesmo contraste corretamente.
+%% Trocar o disparo troca tambem a persistencia: sao um unico fator nesse desenho.
+Convém não exagerar o que o contraste contra o disparo por detecção bruta mostra sobre
+esta última propriedade. Trocar o limiar sobre o campo por detecção instantânea altera
+\emph{conjuntamente} a fonte do disparo e a persistência temporal, de sorte que o
+desenho não as separa; os rastros são compatíveis com participação da memória na
+diferença observada, mas não a estabelecem como fator isolado. Um desenho que variasse
+os dois independentemente é apontado entre os trabalhos futuros.
 
 \subsection{Tabela de Transições}
 
 \begin{table}[htb]
 \centering
-\caption{Transições do supervisor. As guardas são avaliadas na ordem das linhas e no
-máximo uma transição ocorre por ciclo. $t_{\text{avoid}}$ é o instante de liberação do
-refratário.}
+%% Reescrito em 14/11/2026. Duas correcoes. (i) A primeira linha cobria
+%% "qualquer estado /= Avoid", inclusive Investigate, e a segunda descrevia justamente
+%% a preempcao de Investigate: pela semantica de primeira guarda satisfeita, a segunda
+%% nunca disparava e o desfecho "adiado" se perdia. As duas linhas passam a ser
+%% mutuamente exclusivas por origem, espelhando o teste interno do Algoritmo 1.
+%% (ii) o Algoritmo 1 fundia o estouro de tempo da investigacao em "falho"; o codigo
+%% emite 'failed' e 'timeout' separados, e a tabela estava certa -- corrigiu-se o
+%% algoritmo. "Falho" e "esgotado" sao MOTIVOS distintos de um mesmo desfecho (o alvo
+%% segue comprometido em ambos), e a falha nao aguarda t_max.
+\caption{Transições do supervisor. As guardas são avaliadas na ordem das linhas, as
+origens são mutuamente exclusivas e no máximo uma transição ocorre por ciclo.
+$t_{\text{avoid}}$ é o instante de liberação do refratário. \emph{Falho} e
+\emph{esgotado} distinguem o motivo da desistência --- falha de navegação relatada
+pelo Nav2 e estouro de $t_{\max}$, respectivamente ---; em ambos o alvo segue
+comprometido, e a falha de navegação não aguarda $t_{\max}$.}
 \label{tab:prop-transicoes}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -719,15 +780,16 @@ refratário.}
 \textbf{Origem} & \textbf{Guarda} & \textbf{Destino} & \textbf{Desfecho} &
 \textbf{Efeitos}\\
 \hline
-qualquer $\ne$ \textsc{Avoid} &
-recuo reativo habilitado $\wedge$ $\Phi\le-\theta_{\text{in}}$ $\wedge$ pose de recuo
-recebida $\wedge$ $t\ge t_{\text{avoid}}$ &
+\textsc{Patrol} &
+$G_{\text{avoid}}$: recuo reativo habilitado $\wedge$ $\Phi\le-\theta_{\text{in}}$
+$\wedge$ pose de recuo recebida $\wedge$ $t\ge t_{\text{avoid}}$ &
 \textsc{Avoid} & --- &
 pausa a patrulha; envia meta de recuo; entrega o risco à zona de exclusão onde
 habilitada\\
 \hline
-\textsc{Investigate} & (a guarda acima, com modo $=$ \textsc{Investigate}) &
-\textsc{Avoid} & \emph{adiado} & alvo volta ao conjunto elegível\\
+\textsc{Investigate} & $G_{\text{avoid}}$ (a mesma guarda) &
+\textsc{Avoid} & \emph{adiado} &
+os efeitos acima \emph{e} o alvo volta ao conjunto elegível\\
 \hline
 \textsc{Patrol} &
 $\Phi\ge\theta_{\text{in}}$ $\wedge$ pose de inspeção recebida &
