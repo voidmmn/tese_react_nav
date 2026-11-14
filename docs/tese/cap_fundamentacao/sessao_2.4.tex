@@ -20,7 +20,7 @@ Os sistemas robóticos típicos são compostos por vários subsistemas intercone
 
 \subsubsection{Paradigmas Arquiteturais}
 
-A \autoref{fig:arquiteturas_roboticas} mostra diferentes paradigmas arquiteturais propostos para organizar e integrar os componentes de software \cite{Kortenkamp2016, Brugali2009ComponentI}:
+A \autoref{fig:arquiteturas_roboticas} compara os três paradigmas de \emph{fluxo de controle} propostos para organizar e integrar os componentes de software \cite{Kortenkamp2016, Brugali2009ComponentI} --- deliberativo, reativo e híbrido ---, mostrando como percepção, planejamento e atuação se conectam em cada um. A arquitetura baseada em componentes, descrita por último nesta lista, situa-se em outro eixo: não é uma forma de encadear percepção e ação, mas de organizar o software em módulos reutilizáveis, e por isso não figura na comparação:
 
 \begin{itemize}
     \item \textbf{Arquitetura Deliberativa}: Baseada no paradigma Sense-Plan-Act (SPA), adequada para ambientes estruturados e tarefas bem definidas.
@@ -36,9 +36,21 @@ Os principais desafios arquiteturais incluem heterogeneidade de componentes, dis
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{figuras/fig_arquiteturas_roboticas.png}
-    \caption{Paradigmas Arquiteturais em Robótica.}
-    \legend {Fonte: Adaptado de \cite{Kortenkamp2016, Brugali2009ComponentI}.}
+%% Figura refeita em 14/11/2026. A versao anterior era um infografico de apresentacao:
+%% icones decorativos sem relacao com o conteudo (uma casinha em balao de fala para
+%% "Arquitetura Reativa", pecas de encaixe para "Baseada em Componentes"), texto que
+%% nao constava da tese ("estrutura alta"/"estrutura baixa"), ordem embaralhada em
+%% relacao a lista acima e titulo interno duplicando a legenda. Sobretudo, nao mostrava
+%% arquitetura alguma: eram quatro rotulos com icones, sem o encadeamento entre
+%% percepcao, planejamento e atuacao, que e o que distingue os paradigmas.
+    \includegraphics[width=0.8\textwidth]{figuras/fig_arquiteturas_roboticas.pdf}
+    \caption{Paradigmas arquiteturais em robótica: as três colunas empregam as mesmas
+    caixas --- percepção, planejamento e atuação ---, variando apenas como se conectam.
+    A via rápida em traço grosso na coluna híbrida é a camada reativa, que alcança a
+    atuação sem passar pelo planejamento; é esse o paradigma da arquitetura proposta no
+    Capítulo~\ref{cap:proposta}.}
+    \legend{Fonte: Adaptado de \citeonline{Kortenkamp2016} e
+    \citeonline{Brugali2009ComponentI}.}
     \label{fig:arquiteturas_roboticas}
 \end{figure}
 
@@ -96,18 +108,31 @@ Os bags são um formato de arquivo para armazenar e reproduzir mensagens ROS/ROS
 
 \subsubsection{Middleware e Comunicação}
 
-Uma das principais diferenças entre ROS e ROS2 está na camada de middleware que gerencia a comunicação entre os componentes do sistema \cite{Macenski2022, ROS2Design2024}. A \autoref{fig:ros_vs_ros2} mostra a arquitetura de comunicação proposta na documentação oficial do ROS/ROS2.
+Uma das principais diferenças entre ROS e ROS2 está na camada de middleware que gerencia a comunicação entre os componentes do sistema \cite{Macenski2022, ROS2Design2024}. A \autoref{fig:ros_vs_ros2} contrasta as duas arquiteturas de descoberta, separando o que é registro do que é tráfego de dados.
 
 \paragraph{ROS Master vs. DDS}
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{figuras/fig_ros_vs_ros2.jpg}
-    \caption{Arquitetura de Comunicação: ROS vs. ROS2.}
-    \legend {Fonte: Adaptado da documentação oficial.}
+%% Figura refeita em 14/11/2026. Na versao anterior o "Middleware DDS" aparecia como
+%% hub central do painel ROS2, na mesma posicao e topologia do ROS Master a esquerda --
+%% de modo que os dois paineis mostravam a MESMA arquitetura com nomes diferentes no
+%% meio, apagando justamente a diferenca que a secao descreve. No painel ROS, todas as
+%% ligacoes passavam pelo Master, reproduzindo o equivoco de que os dados trafegam por
+%% ele. A fonte tambem nao citava nada ("documentacao oficial", sem referencia).
+    \includegraphics[width=0.8\textwidth]{figuras/fig_ros_vs_ros2.pdf}
+    \caption{Arquiteturas de descoberta no ROS e no ROS~2, com os nós nas mesmas
+    posições nos dois painéis. À esquerda, o registro (tracejado) é centralizado no ROS
+    Master, enquanto os dados (linha cheia) trafegam ponto a ponto. À direita não há
+    elemento central: o DDS reside dentro de cada nó e a descoberta é distribuída.}
+    \legend{Fonte: Elaborada pelo autor com base em \citeonline{Macenski2022} e na
+    documentação de projeto do ROS~2 \cite{ROS2Design2024}.}
     \label{fig:ros_vs_ros2}
 \end{figure}
 
-No ROS original, a comunicação entre nós é gerenciada pelo ROS Master, um serviço centralizado que mantém um registro de todos os nós, tópicos e serviços ativos \cite{Quigley2009, Joseph2018}. Esta arquitetura centralizada simplifica a implementação, mas introduz um ponto único de falha.
+%% Precisado em 14/11/2026, junto com a figura: dizer que "a comunicacao e gerenciada
+%% pelo ROS Master" induz a ideia de que os dados trafegam por ele, o que a figura nova
+%% desmente explicitamente ao separar registro (tracejado) de dados (linha cheia).
+No ROS original, é a \emph{descoberta} entre nós que é gerenciada pelo ROS Master, um serviço centralizado que mantém o registro de todos os nós, tópicos e serviços ativos \cite{Quigley2009, Joseph2018}. Concluída a negociação, os nós trocam mensagens diretamente entre si, ponto a ponto, sem que os dados passem pelo Master. Esta centralização da descoberta simplifica a implementação, mas introduz um ponto único de falha: sem o Master, nenhum nó novo encontra os demais.
 
 O ROS2 substitui o ROS Master por uma arquitetura baseada em DDS (Data Distribution Service), um padrão aberto para comunicação publicador/assinante em sistemas distribuídos \cite{Macenski2022, ROS2Design2024}. O DDS oferece recursos avançados como descoberta distribuída, qualidade de serviço (QoS), segurança, persistência e filtragem de conteúdo.
 

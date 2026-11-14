@@ -9,9 +9,14 @@ O aprendizado por reforço é um paradigma onde um agente aprende a tomar decis�
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{figuras/fig_agente_ambiente.jpg}
-    \caption{Ciclo de Interação Agente-Ambiente no Aprendizado por Reforço.}
-    \legend {Fonte: O próprio autor.}
+%% Figura refeita em 14/11/2026. A versao anterior omitia o ESTADO -- elemento central
+%% do paradigma, listado logo abaixo e presente em toda a formalizacao do MDP -- e
+%% trazia uma segunda seta do agente para o ambiente, horizontal e sem rotulo nenhum.
+    \includegraphics[width=0.8\textwidth]{figuras/fig_agente_ambiente.pdf}
+    \caption{Ciclo de interação agente--ambiente no aprendizado por reforço. O agente
+    emite a ação $a(t)$; o ambiente devolve o novo estado $s(t+1)$ e a recompensa
+    $r(t+1)$, com o avanço de um passo de tempo assinalado sobre a seta de retorno.}
+    \legend{Fonte: Elaborada pelo autor com base em \citeonline{Sutton2018}.}
     \label{fig:agente_ambiente}
 \end{figure}
 
@@ -118,9 +123,20 @@ A Deep Q-Network (DQN) é uma extensão do Q-Learning que utiliza redes neurais 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{figuras/fig_dqn.jpg}
-    \legend {Fonte: O próprio autor.}
-    \caption{Arquitetura de uma Deep Q-Network (DQN).}
+%% Figura refeita em 14/11/2026. A versao anterior tinha erros de arquitetura: um
+%% gargalo de um unico neuronio entre a camada oculta e as saidas; o buffer de
+%% repeticao desenhado como entrada da rede, em paralelo com o estado, quando ele e a
+%% fonte dos mini-lotes; a rede alvo recebendo seta de um valor Q em vez de uma copia
+%% dos pesos; e duas saidas rotuladas com o MESMO indice (Q_a, Q_a, Q_n). A ordem de
+%% \legend e \caption tambem estava invertida em relacao a todas as outras figuras.
+%% Ampliada para a largura total do texto: a 0,8 o menor rotulo ficava com 1,38 mm de
+%% altura de caixa alta (~6,9 pt equivalentes), abaixo do piso de legibilidade.
+    \includegraphics[width=\textwidth]{figuras/fig_dqn.pdf}
+    \caption{Arquitetura de uma \textit{Deep Q-Network} (DQN), com as duas inovações
+    discutidas a seguir: a repetição de experiências, que fornece os mini-lotes de
+    treino, e a rede alvo, que recebe periodicamente uma cópia dos pesos da rede
+    \textit{online} e participa do cálculo da perda de diferença temporal.}
+    \legend{Fonte: Elaborada pelo autor com base em \citeonline{Mnih2015}.}
     \label{fig:dqn}
 \end{figure}
 

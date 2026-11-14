@@ -7,9 +7,19 @@ A \autoref{fig:paradigmas_navegacao} mostra como a navegação robótica pode se
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{figuras/fig_paradigmas_navegacao.jpg}
-    \caption{Paradigmas de Navegação Robótica.}
-    \legend{Fonte: Adaptado de \cite{Siegwart2011, Murphy2000}.}
+%% Figura refeita em 14/11/2026. A versao anterior estava errada e era redundante: a
+%% coluna "Hibrida" trazia TRES caixas "Act" e NENHUMA "Plan", apagando o planejamento
+%% justo onde ele define o conceito; os rotulos estavam em ingles; e o desenho repetia
+%% a tricotomia da Figura~\ref{fig:arquiteturas_roboticas}, a uma secao de distancia.
+%% A versao atual mostra o que e especifico de NAVEGACAO -- a mesma planta com os
+%% mesmos obstaculos, variando o tracado --, de modo que as duas figuras deixam de se
+%% sobrepor.
+    \includegraphics[width=0.8\textwidth]{figuras/fig_paradigmas_navegacao.pdf}
+    \caption{Paradigmas de navegação robótica sobre a mesma planta: à esquerda, a rota
+    completa planejada sobre mapa conhecido; ao centro, a reação à percepção imediata,
+    que sem mapa fica retida num mínimo local antes de alcançar a meta; à direita, a
+    rota global corrigida localmente ao encontrar um obstáculo não mapeado.}
+    \legend{Fonte: Adaptado de \citeonline{Siegwart2011} e \citeonline{Murphy2000}.}
     \label{fig:paradigmas_navegacao}
 \end{figure}
 
@@ -157,9 +167,16 @@ Os principais desafios do SLAM incluem incertezas na odometria e nas medições,
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{figuras/fig_problema_slam.jpg}
-    \caption{O Problema do SLAM.}
-    \legend{Fonte: Adaptado de \cite{Durrant2006, Thrun2005}}
+%% Figura refeita em 14/11/2026. A versao anterior nao mostrava o problema: exibia
+%% quatro setas soltas entre robo, ambiente e mapa, sem a circularidade que e a
+%% dificuldade inteira do SLAM. Equiparava ainda "comandos de controle" e "odometria"
+%% num unico rotulo, sendo que u sao os comandos e a odometria e a medida do
+%% deslocamento resultante, com incerteza propria.
+    \includegraphics[width=0.8\textwidth]{figuras/fig_problema_slam.pdf}
+    \caption{O problema do SLAM: localizar exige o mapa e mapear exige a pose, de modo
+    que as duas estimativas são mutuamente dependentes e precisam ser resolvidas
+    simultaneamente, a partir das observações $z$ e dos comandos de controle $u$.}
+    \legend{Fonte: Adaptado de \citeonline{Durrant2006} e \citeonline{Thrun2005}.}
     \label{fig:problema_slam}
 \end{figure}
 

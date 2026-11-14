@@ -25,9 +25,19 @@ A fusão sensorial pode ser realizada em diferentes níveis de abstração \cite
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{figuras/fig_niveis_fusao.jpg}
-    \caption{Níveis de Fusão Sensorial.}
-    \legend{Fonte: O próprio autor.}
+%% Figura refeita em 14/11/2026. A versao anterior estava errada em dois dos tres
+%% niveis: o nivel medio trazia uma caixa DECISAO pendurada no sensor, que nao
+%% pertence a esse nivel, e o nivel alto mostrava UM sensor seguido de QUATRO decisoes
+%% soltas. As tres faixas tambem tinham estruturas diferentes entre si, de modo que a
+%% figura nao deixava ver o unico ponto da taxonomia: onde, no mesmo fluxo, a fusao
+%% ocorre. A versao atual usa o mesmo encadeamento nas tres faixas, variando so a
+%% posicao da caixa de fusao. Reduzida de \textwidth para 0,85 por ser didatica.
+    \includegraphics[width=0.85\textwidth]{figuras/fig_niveis_fusao.pdf}
+    \caption{Níveis de fusão sensorial: o mesmo encadeamento de três sensores,
+    variando o ponto em que a fusão ocorre --- sobre os dados brutos ($Z$), sobre as
+    características extraídas ($F$) ou sobre as decisões locais de cada sensor ($D$).}
+    \legend{Fonte: Elaborada pelo autor com base em \citeonline{Costa2018ImplementacaoFusao}
+    e \citeonline{Santos2023FusaoSensorial}.}
     \label{fig:niveis_fusao}
 \end{figure}
 A \autoref{fig:niveis_fusao} ilustra os níveis de fusão sensorial.
@@ -81,26 +91,35 @@ O fluxograma que representa o Filtro de Kalman para fusão de sensores na \autor
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{figuras/fig_filtro_kalman.jpg}
-    \caption{Fluxograma do Filtro de Kalman.}
-    \legend {Fonte: O próprio autor.}
+%% Figura refeita em 14/11/2026. A versao anterior trazia "FILTRO DE KALMAN" como uma
+%% caixa do fluxo, no mesmo nivel de MEDICAO e CORRECAO -- o todo desenhado como parte.
+%% O ciclo tambem nao fechava, e havia duas setas sem significado (ESTADO ESTIMADO para
+%% ESTADO PREVISTO contornando a PREDICAO, e CORRECAO para a caixa do filtro).
+    \includegraphics[width=0.8\textwidth]{figuras/fig_filtro_kalman.pdf}
+    \caption{Ciclo do Filtro de Kalman: as duas fases, predição (atualização de tempo)
+    e correção (atualização de medição), alternam-se indefinidamente, trocando entre si
+    o estado previsto e o estado estimado. O filtro é o ciclo, não uma de suas etapas.}
+    \legend{Fonte: Elaborada pelo autor.}
     \label{fig:filtro_kalman}
 \end{figure}
 
 Para cada etapa temos:
 
+%% Reescrita em 14/11/2026, junto com a figura. A enumeracao anterior tinha tres
+%% defeitos: (i) o item 1 dizia que a medicao "nao esta explicitamente rotulada" na
+%% figura, o que deixou de ser verdade; (ii) o item 6 listava "Ciclo Recursivo do
+%% Filtro de Kalman" como se fosse mais uma etapa, repetindo no texto o erro
+%% categorico que a figura antiga cometia -- o ciclo e o conjunto, nao uma etapa; e
+%% (iii) a ordem (medicao, correcao, estado estimado, predicao, estado previsto) nao
+%% correspondia ao ciclo canonico de duas fases agora desenhado.
 \begin{enumerate}
-    \item Medição do Sensor: Embora não esteja explicitamente rotulado, o processo começa com os dados vindos dos sensores (ex: IMU, GPS, LiDAR, etc.). Esses dados serão utilizados na etapa de correção.
+    \item \textbf{Predição (atualização de tempo).} Com base no modelo do sistema --- por exemplo, o modelo de movimento do robô ---, o filtro projeta o estado provável no instante seguinte, propagando também a incerteza associada ao processo. Seu resultado é o \emph{estado previsto}.
 
-    \item Correção: Essa etapa compara a medição vinda do sensor com a estimativa anterior do estado. A partir dessa comparação, calcula-se o chamado Ganho de Kalman, que indica quanto o filtro deve confiar na medição atual em relação à previsão anterior.
+    \item \textbf{Medição do sensor.} Chega uma nova observação dos sensores (\ac{IMU}, GPS, \ac{LiDAR}, entre outros), que alimenta a etapa de correção. Ao contrário do estado previsto, ela é informação externa ao modelo.
 
-    \item Estado Estimado: O novo estado estimado é calculado combinando a previsão anterior com a medição atual, ponderada pelo ganho de Kalman. Este estado é a melhor estimativa atual do sistema (posição, velocidade, etc.).
+    \item \textbf{Correção (atualização de medição).} Compara-se a medição com o estado previsto. Da comparação resulta o ganho de Kalman, que pondera quanto o filtro deve confiar na medição atual em relação à previsão. O resultado é o \emph{estado estimado}, melhor estimativa corrente das variáveis de estado --- posição, velocidade e demais.
 
-    \item Predição: Com base no modelo do sistema (ex: movimento do robô), o filtro projeta o próximo estado provável. Essa previsão considera ruídos e incertezas no processo.
-
-    \item Estado Previsto: É o resultado da predição: uma estimativa futura do estado, com base no estado atual e no modelo dinâmico. Essa estimativa alimenta a próxima etapa de correção, reiniciando o ciclo.
-
-    \item Ciclo Recursivo do Filtro de Kalman: O processo é iterativo e recursivo: o estado previsto passa pela próxima medição do sensor, sendo corrigido novamente, e assim por diante.
+    \item \textbf{Realimentação.} O estado estimado retorna à predição, que projeta o instante seguinte, e o ciclo recomeça. Note-se que o filtro \emph{é} esse ciclo: predição e correção alternam-se indefinidamente, e não existe uma etapa separada à qual caiba o nome de filtro de Kalman.
 \end{enumerate}
 
 O Filtro de Kalman é amplamente usado em fusão sensorial para, combinar medições ruidosas e incompletas de múltiplos sensores, obter uma estimativa mais confiável do estado do sistema e também para operar de forma online, ajustando-se em tempo real à medida que novas medições chegam.

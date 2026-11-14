@@ -147,3 +147,54 @@ a figura nova substituir a antiga**. Marcar `[x]` ao aplicar.
   remissão passa a ser complementar, não corretiva.
 - [ ] Como na Figura 12, a legenda deixa de precisar traduzir rótulos internos
   (`follow waypoints`, `inspected`, `timeout`, `safe`, `retreated`) e encolhe bastante.
+
+---
+
+# APLICADO em 14/11/2026
+
+Todas as pendências acima foram executadas, exceto as marcadas abaixo como remanescentes.
+
+**Figuras convertidas e substituídas (12):** achatadas sobre branco, margens mortas
+cortadas, 300 dpi, via a skill `png-to-pdf`. Todas as chamadas `\includegraphics` do
+Capítulo 2 passaram de `.jpg`/`.png` para `.pdf`; `architecture` e `stay_alert_fsm` são
+chamadas sem extensão e já recebem o PDF novo.
+
+**Fontes das legendas corrigidas (10):** "O próprio autor" → "Elaborada pelo autor",
+com atribuição a terceiros onde a figura adapta esquema citado (Costa e Santos; Sutton
+e Barto; Mnih et al.; Muzy; Kortenkamp e Brugali; Macenski e documentação do ROS 2;
+Siegwart e Murphy; Durrant-Whyte e Thrun). Os quatro `\cite` dentro de `\legend`
+viraram `\citeonline`.
+
+**Correções de texto acopladas às figuras:**
+- §2.1.3 — enumeração do filtro de Kalman inteiramente reescrita: a ordem passou a ser
+  o ciclo de duas fases; o item que dizia que a medição "não está explicitamente
+  rotulada" saiu; e o item que listava "Ciclo Recursivo do Filtro de Kalman" como se
+  fosse uma etapa foi substituído por um fecho que declara que o filtro **é** o ciclo.
+- §2.4.1 — a frase que chama a figura passa a dizer que ela compara os **três**
+  paradigmas de fluxo de controle, e explica que a arquitetura baseada em componentes
+  está em outro eixo; acrescentou-se a ligação com o Capítulo 4.
+- §2.4.2 — a frase que dizia que a figura mostra "a arquitetura proposta na documentação
+  oficial" foi corrigida, e o parágrafo que afirmava que "a comunicação entre nós é
+  gerenciada pelo ROS Master" passou a distinguir descoberta de tráfego de dados.
+- §4.1 e §4.5 — as duas legendas deixaram de ser glossários de tradução. A de §4.5
+  perdeu a frase "o campo puxa em direção à atração e empurra para longe da repulsão",
+  que contradizia §4.2, e a ressalva sobre a terceira saída de `AVOID` deixou de ser
+  corretiva, por a figura agora trazer as três.
+- §6.1 e `.bib` — artigo atualizado de "aceito" para "publicado em acesso antecipado".
+
+**Verificação:** 178 páginas, erros=0, zero citações indefinidas, zero referências
+indefinidas, nenhum estouro de linha novo (os cinco maiores são os pré-existentes).
+
+## REMANESCENTE
+
+- [ ] **DOI do artigo** — marcado como `PENDENTE` em `MirandaNeto2026TwoLayer`. O IEEE
+  Xplore não entrega conteúdo a cliente automatizado; colar da página do artigo.
+- [ ] **Figura 1 (`fig_contextualizacao`)** — não substituída. Há um
+  `fig_contextualizacao.jpeg` em `figuras_novo/`, mas é **fotografia real** de um
+  quadrúpede em subestação da Eletrobras Eletronorte, com marca de terceiro visível.
+  A legenda atual declara que a figura é ilustrativa e **não** registro fotográfico,
+  o que deixaria de ser verdade. Exige decisão sobre autoria da foto e permissão de
+  uso da marca antes de entrar.
+- [ ] **Figuras 14, 15 e 16** (`world_map`, `traj_overlay`, `box_panel`) — intocadas por
+  serem saída de script, não ilustração conceitual. Regeneráveis pelos scripts
+  listados em §5.9.2.
