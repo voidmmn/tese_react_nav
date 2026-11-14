@@ -250,12 +250,40 @@ Três contagens \emph{não} entram nesse censo, para que não sejam confundidas 
 execuções da matriz:
 
 \begin{enumerate}
-    \item \textbf{Baterias anteriores descartadas.} Os \textit{logs} registram $479$
-    lançamentos ao todo, contra as $320$ execuções analisadas. O excedente são baterias
-    anteriores substituídas --- uma bateria contaminada por nó órfão entre execuções, um
-    bloco interrompido pela metade e um ensaio de regressão para o portão de reúso ---,
-    preservadas em diretórios separados em vez de apagadas. Uma execução descartada não
-    é uma execução da matriz, e nenhuma delas entra em qualquer tabela de resultados.
+%% Recontado em 14/11/2026. O numero anterior, 479, nao fechava com os
+%% registros: 479 = 320 + 101 + 55 + 3, isto e, a contagem alcancou apenas tres dos
+%% quinze diretorios de descarte. A contagem correta e 595, e a descricao nomeava tres
+%% conjuntos descartados quando ha quinze. Era preciso reconciliar por bateria,
+%% motivo e criterio; ela e agora gerada por script e acompanha o pacote.
+    \item \textbf{Baterias anteriores descartadas.} Os \textit{logs} registram $595$
+    lançamentos ao todo, contra as $320$ execuções analisadas: $275$ lançamentos
+    excedentes, distribuídos por quinze diretórios preservados em vez de apagados. Eles
+    são de quatro naturezas distintas, e a distinção importa:
+
+    \begin{itemize}
+        \item \textbf{Estado anterior arquivado pelo próprio executor} ($189$
+        lançamentos, quatro diretórios). Os \textit{scripts} de bateria movem o
+        conteúdo de \texttt{results/} para um diretório \texttt{\_pre\_*} antes de
+        iniciar uma bateria nova. Não são baterias fracassadas: são o estado anterior,
+        substituído pela bateria seguinte.
+        \item \textbf{Baterias descartadas por causa identificada} ($75$ lançamentos,
+        quatro diretórios): uma contaminada por nó órfão entre execuções --- o defeito
+        de limpeza corrigido no executor ---, um bloco interrompido antes de fechar as
+        repetições, uma bateria noturna parcial e uma abortada.
+        \item \textbf{Ensaios de fumaça e de instrumento} ($11$ lançamentos, seis
+        diretórios): verificações de uma ou duas execuções, incluindo o ensaio de
+        regressão do portão de reúso. Nunca foram execuções da matriz.
+        \item \textbf{Bateria noturna de 01/09/2026}: substituída, e com os
+        \textit{logs} de lançamento não preservados --- restam os CSVs. É a única
+        lacuna de registro entre os descartes, e fica declarada como tal.
+    \end{itemize}
+
+    A reconciliação completa --- diretório por diretório e rótulo por rótulo, com
+    lançamentos, CSVs, origem e critério de exclusão --- é gerada por
+    \texttt{gerar\_reconciliacao.py} em \texttt{reconciliacao\_lancamentos.csv}, e
+    acompanha o pacote de reprodutibilidade. Nenhum diretório fica sem classificação.
+    Uma execução descartada não é uma execução da matriz, e nenhuma delas entra em
+    qualquer tabela de resultados.
 
     \item \textbf{Controles reutilizados.} Onde um bloco posterior se compara a um
     controle já executado, o controle é \emph{reutilizado}, não reexecutado: reusar um
@@ -612,7 +640,22 @@ execução nas baterias seguintes.
 A segunda: \textbf{a reexecução não reproduz os mesmos números}. Conforme a
 Seção~\ref{sec:res-ameacas}, fora das duas configurações de ruído não há aleatorização
 planejada, e a variabilidade entre execuções vem da não-determinação da simulação e do
-\textit{middleware}. Reexecutar a matriz produz uma amostra nova da mesma distribuição,
-não uma cópia da existente. O que é reproduzível por construção é a \emph{análise}:
+\textit{middleware}. %% Corrigido em 14/11/2026: a frase afirmava "amostra nova da MESMA
+%% DISTRIBUICAO". Com a guarda do decaimento comparando instantes de relogio de parede
+%% (Secao do defeito temporal), a dinamica efetiva do campo depende de hardware, carga
+%% e escalonamento -- de sorte que outra maquina pode nao amostrar a mesma
+%% distribuicao. A formulacao segura nomeia as condicoes em vez de pressupo-las iguais.
+Reexecutar a matriz produz resultados \emph{novos}, não uma cópia da existente --- e
+não se pode afirmar que venham da mesma distribuição. A razão é o defeito temporal
+documentado na Seção~\ref{sec:prop-relogios}: enquanto a guarda do decaimento compara
+instantes de relógio de \emph{parede}, o período de decaimento efetivamente realizado
+depende de hardware, carga da máquina e escalonamento do sistema operacional. Uma
+reexecução em outra máquina, ou na mesma sob carga diferente, pode portanto exercitar
+uma dinâmica de campo distinta. Até que essa dependência seja controlada, a formulação
+correta é: a reexecução produz novos resultados sob condições que precisam ser
+especificadas e comparadas --- e as condições da bateria desta tese estão registradas
+no manifesto.
+
+O que é reproduzível por construção é a \emph{análise}:
 dados os mesmos CSVs, todo número relatado é regenerado pelos \textit{scripts} acima,
 bit a bit.
