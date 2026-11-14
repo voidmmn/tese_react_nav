@@ -41,7 +41,8 @@ for f in launch_*.log metrics_*.csv; do
 done
 for f in audit_trail.csv CHECKSUMS.sha256 manifesto_execucoes.csv \
          familia_confirmatoria.csv qdriven_exploratorio.csv \
-         reconciliacao_lancamentos.csv resumo_experimentos.csv; do
+         reconciliacao_lancamentos.csv resumo_experimentos.csv \
+         auditoria_bibliografica.md; do
   [ -f "$f" ] && cp "$f" "$P/resultados/"
 done
 cp tabelas/* "$P/resultados/" 2>/dev/null || true
