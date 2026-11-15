@@ -50,7 +50,7 @@ cp tabelas/* "$P/resultados/" 2>/dev/null || true
 # --- verificacao direcionada de verificacao do decaimento -----------------------------------
 for f in launch_CMw_* launch_CMs_* launch_E3w_* launch_E3s_* launch_HEUw_* launch_HEUs_* \
          metrics_CMw_* metrics_CMs_* metrics_E3w_* metrics_E3s_* metrics_HEUw_* metrics_HEUs_* \
-         verificacao_r201.log; do
+         verificacao_r201.log verificacao_decaimento_sim.log; do
   [ -e "$f" ] && cp "$f" "$P/verificacao_decaimento/" 2>/dev/null || true
 done
 
