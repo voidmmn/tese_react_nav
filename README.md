@@ -69,10 +69,16 @@ python3 ../src/tese_nav/scripts/analise_estatistica.py .
 # 4) família Q-driven: 24 testes (3 cenários x 8 desfechos)
 python3 ../src/tese_nav/scripts/analise_qdriven.py .
 
-# 5) reconciliação dos 685 lançamentos registrados
-python3 ../src/tese_nav/scripts/gerar_reconciliacao.py . > reconciliacao_lancamentos.csv
-#    grava também reconciliacao_lancamentos_individual.csv, uma linha por lançamento
+# 5) reconciliação dos 685 lançamentos: LEIA os artefatos, não os regenere
+column -s, -t reconciliacao_lancamentos.csv            # agregado por rótulo
+wc -l reconciliacao_lancamentos_individual.csv         # 687 = 685 + lacuna + cabeçalho
 ```
+
+O passo 5 é leitura, não execução, e por um motivo que o próprio *script* agora
+impõe: as dezesseis baterias descartadas somam ~297 MB e **não** são versionadas, de
+modo que num clone `gerar_reconciliacao.py` só veria os 380 lançamentos da raiz.
+Rodado fora da máquina onde a bateria correu, ele **falha** e aponta para estes dois
+arquivos, em vez de sobrescrevê-los com um censo truncado de 380.
 
 Os três analisadores **falham com erro** se o pacote estiver incompleto, em vez de
 produzir tabela vazia ou censo inflado. Um pacote que passa é um pacote completo.

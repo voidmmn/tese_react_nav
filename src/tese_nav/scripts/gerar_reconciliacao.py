@@ -64,6 +64,27 @@ SEM_LOGS_PRESERVADOS = {'_noturna_20260901'}
 
 def main():
     res = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser('~/tese_ws/results')
+
+    # Portao das baterias descartadas (15/11/2026). As dezesseis baterias de
+    # results/_* somam ~297 MB e NAO sao versionadas; so existem na maquina onde a
+    # bateria rodou. Rodado num clone, este script enxergava apenas a raiz, reportava
+    # 380 lancamentos no lugar dos 685 declarados e SOBRESCREVIA o inventario
+    # individual publicado com uma versao truncada. O inventario e um artefato
+    # entregue, nao um subproduto: num clone ele deve ser lido, nao regenerado.
+    presentes = [d for d in MAPA if os.path.isdir(os.path.join(res, d))]
+    if len(presentes) != len(MAPA):
+        faltam = sorted(set(MAPA) - set(presentes))
+        sys.exit(
+            'ERRO: %d das %d baterias descartadas nao estao em %s (faltam: %s%s).\n'
+            'Elas somam cerca de 297 MB e nao sao versionadas, de modo que num clone '
+            'o censo de 685 lancamentos NAO e regeneravel: sairiam apenas os 380 da '
+            'raiz. Leia os artefatos publicados em vez de recria-los:\n'
+            '  reconciliacao_lancamentos.csv             agregado por rotulo\n'
+            '  reconciliacao_lancamentos_individual.csv  685 lancamentos, um por linha\n'
+            'Nada foi sobrescrito.'
+            % (len(faltam), len(MAPA), res, ', '.join(faltam[:4]),
+               ' ...' if len(faltam) > 4 else ''))
+
     w = csv.writer(sys.stdout)
     w.writerow(['bateria', 'conjunto', 'rotulo', 'lancamentos', 'csvs',
                 'origem', 'criterio_de_exclusao'])
