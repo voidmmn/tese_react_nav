@@ -1,6 +1,10 @@
+%% Revisao estilistica em 15/11/2026. Reescritos a abertura e o fechamento. O
+%% fecho anterior oferecia "base solida" para inspecoes "eficientes e
+%% seguras"; ele agora nomeia a diferenca entre o campo potencial classico e o
+%% campo proposto, que nao soma magnitudes mas impoe precedencia categorica.
 \section{Navegação Reativa em Robótica Móvel}
 
-A navegação é uma capacidade fundamental para robôs móveis autônomos, permitindo que se desloquem de forma segura e eficiente em ambientes diversos. Esta seção apresenta os principais paradigmas de navegação robótica, com ênfase na navegação reativa, particularmente relevante para aplicações em ambientes dinâmicos e não estruturados como subestações elétricas.
+Deliberar sobre um mapa e reagir a uma leitura instantânea são duas respostas incompatíveis ao mesmo problema, e a escolha entre elas define o que um robô consegue fazer quando o ambiente muda durante a missão. Esta seção percorre os dois paradigmas e suas combinações híbridas, com ênfase na navegação reativa por campos potenciais, de onde parte o mecanismo proposto no Capítulo~\ref{cap:proposta}.
 
 \subsection{Paradigmas de Navegação Robótica}
 A \autoref{fig:paradigmas_navegacao} mostra como a navegação robótica pode ser classificada em diferentes paradigmas, cada um com abordagens distintas para o problema de deslocamento autônomo \cite{Siegwart2011, Murphy2000}.
@@ -156,7 +160,7 @@ O método de Campos Potenciais tem sido aplicado com sucesso em diversas áreas 
     \item Sistemas multi-robôs para coordenação de enxames
 \end{itemize}
 
-Em aplicações de inspeção de subestações elétricas, a navegação reativa baseada em campos potenciais oferece vantagens significativas devido à sua capacidade de responder rapidamente a obstáculos imprevistos e adaptar-se a ambientes dinâmicos \cite{Lactec2022, Iberdrola2022}.
+Em aplicações de inspeção de subestações elétricas, a navegação reativa por campos potenciais responde a obstáculos imprevistos sem replanejar a rota inteira \cite{Lactec2022, Iberdrola2022}.
 
 \subsection{SLAM (Simultaneous Localization and Mapping)}
 
@@ -292,4 +296,4 @@ A navegação reativa em robótica móvel, especialmente para aplicações em su
     \item \textbf{Integração com Digital Twins}: Utilização de modelos digitais detalhados das subestações para melhorar o planejamento e execução da navegação.
 \end{itemize}
 
-A navegação reativa em robótica móvel, especialmente quando integrada com técnicas de SLAM e modelos 3D, oferece uma base sólida para o desenvolvimento de sistemas robóticos autônomos capazes de realizar inspeções eficientes e seguras em subestações elétricas, contribuindo para a manutenção preventiva e a confiabilidade do sistema elétrico.
+O campo potencial clássico é o ponto de partida formal do mecanismo proposto no Capítulo~\ref{cap:proposta}, com uma diferença que a Seção~\ref{sec:prop-campo} torna explícita. O campo formulado ali não soma magnitudes de atração e de repulsão: ele impõe precedência categórica da segurança sobre a inspeção, de modo que um perigo fraco domina uma atração saliente.

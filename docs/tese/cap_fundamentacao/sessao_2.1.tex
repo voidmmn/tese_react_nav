@@ -1,7 +1,13 @@
+%% Revisao estilistica em 15/11/2026. Reescritos a abertura (truismo mais
+%% metadiscurso "Esta secao apresenta os conceitos essenciais"), o "aspecto
+%% crucial" e o paragrafo de fechamento, que repetia o tema com adjetivos
+%% elogiosos sem acrescentar conteudo. O fecho agora delimita: nenhuma tecnica
+%% de fusao desta secao e implementada na tese, e a secao existe para fixar o
+%% que se entende por evento sensorial.
 \section{Fusão Sensorial Heterogênea}
 \label{sec:fund-fusao}
 
-A fusão sensorial heterogênea representa um campo fundamental na robótica autônoma, particularmente em ambientes complexos como subestações elétricas. Esta seção apresenta os conceitos essenciais, técnicas e desafios relacionados à integração de dados provenientes de múltiplos sensores de naturezas distintas para obtenção de uma percepção ambiental mais robusta e confiável.
+Nenhuma modalidade sensorial isolada cobre as condições de uma subestação: a câmera perde o alvo sob reflexo metálico, o \ac{LiDAR} não distingue um transformador quente de um frio, o microfone não localiza o que ouve. Esta seção percorre as técnicas que combinam modalidades distintas e os limites de cada uma, para fixar o que este trabalho entende por evento sensorial.
 
 \subsection{Conceitos Fundamentais de Fusão Sensorial}
 
@@ -180,7 +186,7 @@ A fusão sensorial em subestações elétricas enfrenta desafios específicos de
 \begin{itemize}
     \item \textbf{Interferência em Sensores Eletrônicos}: Campos eletromagnéticos podem induzir ruídos e distorções em sensores eletrônicos, afetando a qualidade dos dados. Sensores magnéticos, inerciais e de comunicação sem fio são particularmente suscetíveis.
     
-    \item \textbf{Variabilidade Temporal da Interferência}: A intensidade e distribuição espacial da interferência eletromagnética pode variar significativamente ao longo do tempo, exigindo sistemas de fusão sensorial adaptativos.
+    \item \textbf{Variabilidade Temporal da Interferência}: A intensidade e a distribuição espacial da interferência eletromagnética variam ao longo do tempo, de modo que um conjunto fixo de pesos entre sensores não se sustenta por toda a missão.
     
     \item \textbf{Heterogeneidade da Interferência}: Diferentes sensores são afetados de maneiras distintas pela interferência eletromagnética, o que deve ser considerado na estratégia de fusão.
 \end{itemize}
@@ -189,7 +195,7 @@ Técnicas de mitigação incluem blindagem eletromagnética, filtragem digital e
 
 \subsection{Modelos de Pesos e Bias para Relevância Sensorial}
 
-Um aspecto crucial da fusão sensorial heterogênea é a atribuição de pesos relativos a cada sensor, refletindo sua confiabilidade, relevância e qualidade momentânea dos dados \cite{Neto2021FiltrosRadarLidar, Schneider2018FusaoSensores}.
+A ponderação relativa entre sensores determina o resultado da fusão, e precisa refletir a confiabilidade, a relevância e a qualidade momentânea de cada leitura \cite{Neto2021FiltrosRadarLidar, Schneider2018FusaoSensores}.
 
 \subsubsection{Ponderação Baseada em Covariância}
 
@@ -231,4 +237,4 @@ A fusão sensorial heterogênea é particularmente relevante para robôs de insp
     \item \textbf{Inspeção Visual Avançada}: Combinação de diferentes modalidades de imagem (visual, térmica, \ac{UV}) para detecção de anomalias visuais como corrosão, danos físicos ou vazamentos.
 \end{itemize}
 
-A integração eficaz destes sensores heterogêneos através de técnicas de fusão adequadas é fundamental para o desenvolvimento de sistemas robóticos autônomos capazes de realizar inspeções confiáveis e eficientes em subestações elétricas, superando os desafios impostos por este ambiente complexo.
+Nenhuma das técnicas de fusão descritas acima é implementada nesta tese. Elas delimitam o que se entende por evento sensorial na Seção~\ref{sec:prop-sensoriamento}, onde a detecção entra no sistema já classificada por modalidade e intensidade, e o objeto de estudo passa a ser a decisão que vem depois dela.

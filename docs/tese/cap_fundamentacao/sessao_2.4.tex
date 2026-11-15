@@ -1,10 +1,15 @@
+%% Revisao estilistica em 15/11/2026. Reescritos a abertura e o fechamento. O
+%% fecho anterior elogiava o ROS como "ecossistema maduro"; ele agora encerra
+%% no determinismo de temporizacao, que e o ponto desta secao com consequencia
+%% no restante do trabalho: um temporizador em tempo simulado chamando codigo
+%% que consulta o relogio de parede, conforme a Secao de relogios do Cap. 4.
 \section{Sistemas Robóticos e ROS/ROS2}
 
-Os sistemas robóticos modernos representam uma integração complexa de hardware, software e algoritmos, exigindo arquiteturas especializadas para gerenciar essa complexidade. Esta seção apresenta os fundamentos dos sistemas robóticos, com ênfase no Robot Operating System (ROS) e sua evolução para o ROS2, plataformas de middleware que se tornaram padrão de facto no desenvolvimento de aplicações robóticas avançadas.
+Um robô autônomo coordena dezenas de processos que leem sensores, estimam estado e comandam atuadores em taxas distintas, e é o \textit{middleware} que define como esses processos trocam dados e como o tempo é contado entre eles. Esta seção trata do \ac{ROS} e de sua segunda versão, sobre os quais a implementação avaliada nesta tese foi construída.
 
 \subsection{Arquitetura de Sistemas Robóticos}
 
-Um sistema robótico pode ser definido como um conjunto integrado de componentes de hardware e software que permitem a um robô perceber o ambiente, processar informações e executar ações \cite{Siegwart2011}. A arquitetura de software desses sistemas evoluiu significativamente nas últimas décadas, passando de abordagens monolíticas para arquiteturas modulares e distribuídas \cite{Kortenkamp2016}.
+Um sistema robótico pode ser definido como um conjunto integrado de componentes de hardware e software que permitem a um robô perceber o ambiente, processar informações e executar ações \cite{Siegwart2011}. A arquitetura de software desses sistemas passou, ao longo das últimas décadas, de abordagens monolíticas para arquiteturas modulares e distribuídas \cite{Kortenkamp2016}.
 
 \subsubsection{Componentes Fundamentais}
 
@@ -245,4 +250,4 @@ Esforços estão em andamento para certificar componentes do ROS2 para uso em si
 
 A integração do ROS/ROS2 com frameworks de aprendizado de máquina e serviços de computação em nuvem está expandindo as capacidades dos sistemas robóticos, permitindo o desenvolvimento de robôs mais inteligentes e conectados \cite{Macenski2022, ROS2Design2024}.
 
-O ROS/ROS2 representa um ecossistema maduro e em constante evolução para o desenvolvimento de sistemas robóticos, oferecendo ferramentas e abstrações que facilitam a criação de aplicações robóticas complexas e modulares, fundamentais para o desenvolvimento de frameworks para inspeção autônoma em subestações elétricas.
+O determinismo de temporização é o ponto desta seção que reaparece no restante do trabalho. Um temporizador \ac{ROS} pode correr em tempo simulado enquanto o código que ele chama consulta o relógio de parede, e nada na interface sinaliza a divergência; a Seção~\ref{sec:prop-relogios} descreve a consequência disso na implementação aqui avaliada.

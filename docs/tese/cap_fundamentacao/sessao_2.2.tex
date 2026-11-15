@@ -1,7 +1,12 @@
+%% Revisao estilistica em 15/11/2026. Reescritos a abertura e o paragrafo de
+%% fechamento. O fecho anterior afirmava o "potencial do aprendizado por
+%% reforco como componente fundamental" da proposta -- promessa da
+%% qualificacao que a avaliacao nao sustenta. Ele agora declara o contrario,
+%% que a camada principal arbitra por limiar deterministico, e diz por que.
 \section{Aprendizado por Reforço}
 \label{sec:fund-rl}
 
-O Aprendizado por Reforço (\textit{Reinforcement Learning} - RL) representa um paradigma fundamental de aprendizado de máquina que se distingue por sua abordagem baseada em interações com o ambiente e feedback através de recompensas. Esta seção apresenta os conceitos essenciais, algoritmos e aplicações do aprendizado por reforço relevantes para sistemas robóticos autônomos em ambientes complexos como subestações elétricas. 
+O Aprendizado por Reforço (\textit{Reinforcement Learning}, RL) aprende uma política por interação com o ambiente, sem exemplos rotulados de ação correta. Esta seção percorre seus elementos formais, os algoritmos relevantes para controle robótico e as razões pelas quais a camada principal desta tese não adota uma política aprendida. 
 
 \subsection{Fundamentos do Aprendizado por Reforço}
 
@@ -161,7 +166,7 @@ O PPO é um algoritmo de política que busca melhorar a estabilidade do treiname
 
 \subsection{Aplicações em Robótica Autônoma}
 
-O aprendizado por reforço tem encontrado aplicações significativas em robótica autônoma, especialmente em tarefas que envolvem percepção, navegação e manipulação em ambientes complexos \cite{Kober2013}.
+O aprendizado por reforço tem sido aplicado em robótica autônoma sobretudo em percepção, navegação e manipulação \cite{Kober2013}.
 
 \subsubsection{Navegação Autônoma}
 
@@ -265,7 +270,7 @@ A integração de aprendizado por reforço com planejamento simbólico permite l
 
 \subsection{Aplicações Específicas em Subestações Elétricas}
 
-O aprendizado por reforço oferece soluções promissoras para desafios específicos encontrados na inspeção autônoma de subestações elétricas \cite{Ou2024SensorFusionDRL, Wei2024Advancements}:
+A literatura aponta quatro usos do aprendizado por reforço na inspeção autônoma de subestações \cite{Ou2024SensorFusionDRL, Wei2024Advancements}:
 
 \begin{itemize}
     \item \textbf{Navegação em Ambientes com Interferência Eletromagnética}: Aprender políticas robustas que se adaptam à presença de interferência eletromagnética variável.
@@ -277,4 +282,4 @@ O aprendizado por reforço oferece soluções promissoras para desafios específ
     \item \textbf{Adaptação a Condições Ambientais Variáveis}: Ajustar estratégias de inspeção com base em condições como iluminação, clima e níveis de interferência.
 \end{itemize}
 
-Estas aplicações demonstram o potencial do aprendizado por reforço como componente fundamental de um framework para navegação robótica reativa inteligente em subestações elétricas, permitindo que robôs autônomos tomem decisões adaptativas em resposta a estímulos ambientais complexos.
+A camada principal desta tese não usa política aprendida. O arbítrio entre inspecionar e se afastar é resolvido por limiar determinístico (Capítulo~\ref{cap:proposta}), escolha que decorre de duas das limitações expostas acima, a eficiência de amostra e a opacidade da política treinada; a tabela \textit{Q} comparece no trabalho como linha de base comparativa (Seção~\ref{sec:setup-qdriven}).
