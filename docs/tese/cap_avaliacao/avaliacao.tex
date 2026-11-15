@@ -298,12 +298,29 @@ execuções da matriz:
         lacuna de registro entre os descartes, e fica declarada como tal.
     \end{itemize}
 
-    A reconciliação completa --- diretório por diretório e rótulo por rótulo, com
-    lançamentos, CSVs, origem e critério de exclusão --- é gerada por
-    \texttt{gerar\_reconciliacao.py} em \texttt{reconciliacao\_lancamentos.csv}, e
-    acompanha o pacote de reprodutibilidade. Nenhum diretório fica sem classificação.
-    Uma execução descartada não é uma execução da matriz, e nenhuma delas entra em
-    qualquer tabela de resultados.
+    A reconciliação acompanha o pacote de reprodutibilidade em dois níveis, ambos
+    gerados por \texttt{gerar\_reconciliacao.py}. O agregado, em
+    \texttt{reconciliacao\_lancamentos.csv}, traz diretório por diretório e rótulo
+    por rótulo, com lançamentos, CSVs, origem e critério de exclusão. O
+    \emph{inventário individual}, em
+    \texttt{reconciliacao\_lancamentos\_individual.csv}, traz uma linha por log de
+    lançamento: os $685$ nominados um a um, porque uma contagem agregada não permite
+    conferir \emph{qual} execução foi descartada e por quê. A lacuna do lote de
+    $01/09/2026$ aparece ali como linha própria, declarando que seus \textit{logs}
+    não foram preservados, em vez de ser preenchida por estimativa a partir da
+    contagem de CSVs. Nenhum diretório fica sem classificação. Uma execução
+    descartada não é uma execução da matriz, e nenhuma delas entra em qualquer tabela
+    de resultados.
+
+%% Acrescentado em 15/11/2026. As dezesseis baterias descartadas somam ~297 MB e
+%% nao sao versionadas. O script que gera o inventario passa a FALHAR quando rodado
+%% onde elas nao existem, em vez de reescrever o inventario publicado com os 380
+%% lancamentos da raiz -- quem fosse conferir o censo destruia a evidencia dele.
+    As dezesseis baterias descartadas não são versionadas, por volume: somam cerca de
+    $297$~MB. O inventário individual é, por isso, um artefato \emph{entregue} e não
+    um subproduto a recriar, e o \textit{script} que o gera interrompe-se com erro
+    quando executado onde esses diretórios não existem, em vez de sobrescrevê-lo com
+    um censo truncado.
 
     \item \textbf{Controles reutilizados.} Onde um bloco posterior se compara a um
     controle já executado, o controle é \emph{reutilizado}, não reexecutado: reusar um
