@@ -4,11 +4,35 @@ install/
 log/
 
 # --- Dados gerados pelos experimentos ---
-results/
+# ATENCAO (15/11/2026): a regra era `results/`, que ignorava o diretorio inteiro. Os 290
+# CSVs versionados entraram ANTES dela e permaneceram rastreados; todo arquivo criado
+# depois ficou de fora EM SILENCIO. A auditoria da rodada 3 encontrou o efeito disso: o
+# clone publicado tinha 290 CSVs onde a tese declara 320, faltando os 30 de QDRVa/c/d,
+# os 60 da verificacao do decaimento e todos os logs. Um `git status` limpo nao
+# significava pacote completo.
+#
+# A regra agora ignora o CONTEUDO de results/ e reabre, uma por uma, as excecoes que
+# compoem o pacote de reproducao descrito na Secao 5.8. As dezesseis baterias
+# descartadas (results/_*, cerca de 297 MB) seguem ignoradas por `results/*`.
+results/*
+!results/metrics_*.csv
+!results/*.log
+!results/*.sha256
+!results/manifesto_*.csv
+!results/reconciliacao*.csv
+!results/audit_trail.csv
+!results/familia_confirmatoria.csv
+!results/qdriven_exploratorio.csv
 
 # --- Logs e saídas transitórias ---
 *.log
 saida.txt
+
+# Reabertura dos logs de experimento. Em git o ULTIMO padrao que casa vence, de modo que
+# `*.log` acima anulava o `!results/*.log` declarado antes dele -- foi por isso que os
+# 389 logs continuaram ausentes do pacote mesmo com a excecao ja escrita. A negacao
+# precisa vir DEPOIS da regra que ela excetua.
+!results/*.log
 
 # --- Documentos (descomente p/ versionar; ficam de fora por padrão) ---
 *.pdf
