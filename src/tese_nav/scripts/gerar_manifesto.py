@@ -120,6 +120,19 @@ def ler_metricas(caminho):
 def main(results, conjunto='historico'):
     arquivo_saida, descricao = CONJUNTOS[conjunto]
     runs, brutos = ler_logs(results)
+
+    # Portao dos logs (15/11/2026). O DESFECHO de cada execucao (concluida x
+    # interrompida pelo limite) sai dos logs de bateria, nao dos CSVs. Sem eles este
+    # script preenchia 'nao_casado' e contava toda execucao valida como concluida:
+    # num clone sem logs o censo saia 320/311/311/0 em vez de 320/311/302/9, numero
+    # DIFERENTE do declarado na tese, e sem nenhum aviso. A censura nao pode ser
+    # reconstruida pela simples ausencia de registro de conclusao.
+    if not runs:
+        sys.exit('ERRO: nenhum log de bateria legivel em %s.\n'
+                 'O desfecho e a censura de cada execucao saem dos logs, nao dos CSVs. '
+                 'Sem eles o censo NAO e regeneravel: o total de concluidas sairia '
+                 'inflado e as censuradas sairiam em zero. Nenhum manifesto foi '
+                 'escrito.' % results)
     linhas = []
     descartados = 0
     for f in sorted(glob.glob(os.path.join(results, 'metrics_*.csv'))):
@@ -173,6 +186,11 @@ def main(results, conjunto='historico'):
         c['validas' if r['validade'] == 'valida' else 'imoveis'] += 1
         if r['duracao_censurada'] == 'sim':
             c['censuradas'] += 1
+    nao_casadas = sum(1 for r in linhas if r['desfecho'] == 'nao_casado')
+    if nao_casadas:
+        print(f'AVISO: {nao_casadas} execucoes sem lancamento correspondente nos logs; '
+              f'o desfecho delas fica "nao_casado" e o censo NAO reproduz o publicado.',
+              file=sys.stderr)
     print(f'conjunto: {conjunto} -- {descricao}')
     print(f'manifesto: {saida}')
     print(f'arquivos de metricas do outro conjunto, ignorados: {descartados}')
