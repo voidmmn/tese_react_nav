@@ -602,11 +602,18 @@ Capítulo~\ref{cap:resultados}.
 %% manifesto e o script que regenera cada tabela.
 \subsection{Qual Versão Corresponde a Esta Tese}
 
+%% Corrigido em 15/11/2026: a redacao prometia "notas de lancamento" que registram o
+%% commit. A etiqueta e anotada e resolve para o commit por construcao, mas nao existe
+%% release com notas no servico de hospedagem -- quem fosse conferir nao acharia. Passa
+%% a nomear o comando que resolve a etiqueta, que e o que de fato existe e nao depende
+%% de recurso do servico.
 A versão do repositório correspondente a esta tese é identificada pela etiqueta de
-versão \texttt{tese-defesa-v1}, cujas notas de lançamento registram o identificador de
-\textit{commit} exato. Quem for conferir deve usar essa etiqueta, e não o ramo
-principal, que continua a receber trabalho posterior --- o estado corrente do ramo
-principal \emph{não} é o estado avaliado aqui.
+versão \texttt{tese-defesa-v1}. Trata-se de etiqueta anotada, de modo que ela resolve
+para um \textit{commit} único, recuperável por
+\texttt{git rev-parse tese-defesa-v1\textasciicircum\{commit\}} --- não é preciso confiar em
+anotação à parte, nem em recurso do serviço de hospedagem. Quem for conferir deve usar
+essa etiqueta, e não o ramo principal, que continua a receber trabalho posterior --- o
+estado corrente do ramo principal \emph{não} é o estado avaliado aqui.
 
 A integridade dos dados é conferível sem depender do histórico de versionamento: o
 arquivo \texttt{results/CHECKSUMS.sha256} traz a soma SHA-256 de cada um dos $320$
