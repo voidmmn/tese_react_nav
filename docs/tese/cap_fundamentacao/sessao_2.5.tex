@@ -280,9 +280,26 @@ bidimensional, coerente com um robô que se desloca sobre o plano do pátio.
 A navegação híbrida da Subseção~\ref{sec:fund-navhibrida} ganhou, em implementações
 recentes, uma divisão de trabalho estabilizada: um \emph{planejador global} calcula uma
 rota sobre o mapa, e um \emph{controlador local} produz os comandos que a seguem,
-desviando do que o mapa não previa \cite{Macenski2022}. A camada deliberativa desta tese
-emite metas ao primeiro; o segundo é que de fato move o robô, e por isso merece ser
-nomeado aqui.
+desviando do que o mapa não previa \cite{Macenski2020Marathon}. A camada deliberativa
+desta tese emite metas ao primeiro; o segundo é que de fato move o robô, e por isso
+merece ser nomeado aqui.
+
+%% Citacao corrigida e paragrafo acrescentado em 15/11/2026. A afirmacao sobre a divisao
+%% planejador global / controlador local estava atribuida a Macenski2022, que e o artigo
+%% de DESIGN do ROS 2 (Science Robotics) e nao descreve o Nav2. Passa a
+%% Macenski2020Marathon, que e o artigo do Nav2 e descreve o bt_navigator.
+%% O paragrafo seguinte e novo: a arvore de comportamento tinha ZERO mencoes em toda a
+%% tese, embora seja o mecanismo de arbitracao da propria pilha reaproveitada aqui.
+Essa divisão de trabalho é orquestrada, no Nav2, por uma \emph{árvore de comportamento}:
+uma estrutura em que nós de composição percorrem filhos em ordem de prioridade e nós de
+condição decidem, a cada tique, se a execução prossegue ou cede lugar a um comportamento
+de recuperação \cite{Colledanchise2018BT, Macenski2020Marathon}. A árvore tornou-se o
+mecanismo predominante de arbitragem em robótica na última década, por compor
+modularmente e permitir inserir ou remover um comportamento sem reescrever os demais
+\cite{Iovino2022BTSurvey}; levantamento das aplicações robóticas de código aberto que a
+adotam confirma esse predomínio na prática, e não apenas na literatura de método
+\cite{Ghzouli2020BTAction}. É o vizinho direto da camada reativa proposta nesta tese, e a
+Seção~\ref{sec:rev-proximos} confronta as duas diretamente.
 
 \begin{figure}[htb]
     \centering

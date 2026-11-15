@@ -80,7 +80,21 @@ tratado o evento. O que esse desacoplamento preserva é concreto e verificável:
 Nav2 permanece o único produtor de \texttt{/cmd\_vel}, e portanto o planejamento
 global, a checagem de colisão contra o mapa de custos e a geração de trajetória
 continuam inteiramente a cargo da pilha de navegação. A camada reativa altera
-\emph{qual} meta é perseguida e \emph{quando}, nunca os comandos de velocidade. Não
+\emph{qual} meta é perseguida e \emph{quando}, nunca os comandos de velocidade.
+
+%% Paragrafo acrescentado em 15/11/2026. A preempcao por FORA, pelo cliente de acao, em
+%% vez de um no na arvore de comportamento do bt_navigator, estava implementada e nao
+%% justificada em lugar nenhum -- e e a primeira pergunta de quem conhece a pilha. A
+%% razao e metodologica e esta confrontada na Secao 3.6.
+A preempção é feita \emph{por fora} da pilha, pelo cliente de ação
+\texttt{NavigateToPose}: o supervisor emite e cancela metas pela mesma interface que
+qualquer cliente do Nav2 usaria, e a árvore de comportamento do \texttt{bt\_navigator}
+não é modificada. Haveria a alternativa de inserir na própria árvore um nó de condição
+que consultasse o canal de risco, caminho que a Seção~\ref{sec:rev-proximos} confronta
+diretamente; a opção por não seguir esse caminho é metodológica, e não de conveniência:
+árvore intocada significa navegação idêntica sob todas as configurações comparadas no
+Capítulo~\ref{cap:avaliacao}, de modo que o que varia entre dois grupos é o supervisor,
+e não a pilha que executa as suas metas. Não
 se alega, com isso, qualquer garantia formal de evitação de colisão, de
 \textit{liveness} ou de otimalidade: o Nav2/MPPI não as oferece, e trocar a meta em
 tempo de execução não as criaria. A propriedade reivindicada é de arquitetura ---

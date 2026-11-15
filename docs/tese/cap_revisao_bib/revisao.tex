@@ -413,8 +413,8 @@ As três áreas revisadas acima situam o contexto, mas os trabalhos \emph{mais p
 desta tese não são os que percebem melhor nem os que aprendem políticas: são os que
 decidem \emph{quando deixar de prosseguir e reagir}. Essa é a função de um supervisor de
 missão, e ela tem uma linhagem própria --- das arquiteturas comportamentais e híbridas
-clássicas às arquiteturas aprendidas hierárquicas ---, com a qual a proposta deste
-trabalho precisa ser confrontada diretamente.
+clássicas às árvores de comportamento e às arquiteturas aprendidas hierárquicas ---, com
+a qual a proposta deste trabalho precisa ser confrontada diretamente.
 
 A \autoref{tab:rev-proximos} organiza esse confronto por quatro atributos que são
 exatamente os que esta tese manipula experimentalmente: como o conflito entre reagir e
@@ -509,6 +509,22 @@ Não aplicável &
 Sim &
 Demonstração em plataforma\\
 \hline
+%% Linha acrescentada em 15/11/2026. A linhagem da tabela saltava de Saphira (1997)
+%% direto para politicas aprendidas, omitindo o que virou padrao nos anos 2010-2020 --
+%% e que e o mecanismo de arbitragem do PROPRIO Nav2 reaproveitado aqui. Era a omissao
+%% mais exposta do capitulo. O estatuto da terceira coluna segue a disciplina de quatro
+%% estatutos fixada em 14/11: a arvore TEM estado (blackboard, nos com memoria,
+%% decoradores de tempo), e o que nao tem e decaimento, de modo que a celula diz
+%% "outro mecanismo" e o nomeia, em vez de dizer "nao possui".
+\citeonline{Colledanchise2018BT}; \citeonline{Macenski2020Marathon} --- árvores de
+comportamento &
+Ordem de prioridade entre filhos de um nó de composição; nós de condição acionam
+recuperação &
+Outro mecanismo: \textit{blackboard}, nós com memória e decoradores de tempo, sem
+decaimento do sinal &
+Sim: a árvore orquestra planejador e controlador &
+Demonstração do sistema\\
+\hline
 \textbf{Esta tese} &
 Precedência \emph{categórica} de segurança, e não disputa de magnitude &
 Memória de canal com limiar e decaimento &
@@ -531,6 +547,35 @@ contraste contra a heurística genérica isola. Terceira: em nenhuma das classes
 atribuição de efeito \emph{entre} mecanismos de supervisão é o objeto do estudo; é o
 que esta tese toma como objeto, com o custo de abstrair a percepção para conseguir
 fazê-lo.
+
+%% Leitura acrescentada em 15/11/2026, junto com a linha das arvores de comportamento.
+%% A escolha de preemptar o Nav2 POR FORA, pelo cliente de acao NavigateToPose, em vez
+%% de inserir um no na arvore do bt_navigator, estava implementada e nao declarada --
+%% e e a pergunta que qualquer leitor familiarizado com a pilha faria primeiro. A
+%% justificativa e boa e passa a constar: a arvore intocada e o que mantem o
+%% controlador compartilhado entre as configuracoes ablacionadas.
+Quarta, e a mais próxima de todas. A árvore de comportamento do \texttt{bt\_navigator}
+já oferece, dentro da pilha aqui reaproveitada, um lugar natural para a decisão de
+interromper: bastaria um nó de condição consultando o canal de risco. Esta tese não
+seguiu esse caminho, e a razão é metodológica. O supervisor preempta o Nav2 \emph{por
+fora}, pelo cliente de ação \texttt{NavigateToPose}, de modo que a árvore permanece
+exatamente a mesma em todas as configurações comparadas --- inclusive nas que removem um
+mecanismo de supervisão. É isso que torna o controlador verdadeiramente compartilhado e a
+ablação interpretável: o que varia entre dois grupos é o supervisor, e não a navegação
+sob ele. Um nó inserido na árvore acoplaria as duas coisas, e cada ablação passaria a
+comparar também árvores distintas. O preço dessa escolha é que o mecanismo de
+interrupção fica fora da estrutura que a comunidade da pilha inspeciona e versiona, e
+esse é um custo de engenharia que se registra aqui.
+
+Há ainda um vizinho conceitual do lado do aprendizado, que não disputa a implementação
+mas nomeia o problema. O arcabouço de \emph{opções} de \citeonline{Sutton1999Options}
+trata comportamentos temporalmente extensos como objetos com condição de início e
+condição de término, e admite término por interrupção quando o valor de prosseguir cai
+abaixo do de reconsiderar. O limiar de ativação e a memória com decaimento desta tese
+cumprem, de forma determinística e fixada em projeto, o papel que ali é aprendido: o de
+decidir quando uma tarefa em curso cede lugar a outra. A diferença é de estatuto, não de
+função --- e é por ser fixada em projeto que a regra admite ablação, que uma condição de
+término aprendida não admitiria sem reconduzir o treinamento.
 
 \section{Conclusão e Implicações para o Framework Proposto}
 
