@@ -1,3 +1,8 @@
+%% Listas convertidas em prosa em 15/11/2026: 11 de 11. A conversao obrigou a ler
+%% cada lista item a item e com isso corrigiu um erro introduzido na passagem
+%% estilistica de 15/11 pela manha: o texto dizia "quatro limitacoes" onde a lista
+%% tinha SEIS. Sao seis, agrupadas por natureza (tres do inspetor humano, duas do
+%% acesso, uma da periodicidade).
 %% Revisao estilistica em 15/11/2026. Reescritos a abertura e o fechamento, e
 %% retirados os adjetivos de rendimento ("vantagens significativas",
 %% "abrangente"). O fecho anterior afirmava "potencial para superar as
@@ -28,23 +33,22 @@ Subestações elétricas são instalações que contêm equipamentos para transm
 
 \subsubsection{Classificação e Componentes Principais}
 
-As subestações podem ser classificadas segundo diversos critérios \cite{Mamede2017}:
+As subestações podem ser classificadas segundo diversos critérios \cite{Mamede2017}.
+Quanto à função, dividem-se em elevadoras, abaixadoras, seccionadoras e de manobra.
+Quanto ao nível de tensão, em baixa (até $1$~kV), média ($1$ a $36{,}2$~kV), alta
+($36{,}2$ a $230$~kV), extra-alta (acima de $230$~kV) e ultra-alta (acima de $800$~kV).
+E quanto ao tipo de instalação, em convencionais, abrigadas, blindadas, subterrâneas e
+móveis. A instalação simulada nesta tese corresponde a uma subestação convencional de
+alta tensão, a céu aberto, que é o caso em que a ronda terrestre faz sentido.
 
-\begin{itemize}
-    \item \textbf{Quanto à função}: Elevadoras, abaixadoras, seccionadoras e de manobra.
-    \item \textbf{Quanto ao nível de tensão}: Baixa tensão (até 1 kV), média tensão (1-36,2 kV), alta tensão (36,2-230 kV), extra-alta tensão (acima de 230 kV) e ultra-alta tensão (acima de 800 kV).
-    \item \textbf{Quanto ao tipo de instalação}: Convencionais, abrigadas, blindadas, subterrâneas e móveis.
-\end{itemize}
-
-Os principais componentes de uma subestação incluem \cite{Frontin2013}:
-
-\begin{itemize}
-    \item \textbf{Transformadores de potência}: Responsáveis pela transformação dos níveis de tensão.
-    \item \textbf{Equipamentos de manobra}: Disjuntores e chaves seccionadoras.
-    \item \textbf{Transformadores de instrumentação}: TCs e TPs para medição e proteção.
-    \item \textbf{Equipamentos de proteção}: Para-raios, relés e sistemas de aterramento.
-    \item \textbf{Sistemas de controle e supervisão}: SCADA e dispositivos eletrônicos inteligentes (IEDs).
-\end{itemize}
+Entre os componentes principais de uma subestação \cite{Frontin2013} estão os
+transformadores de potência, que realizam a transformação dos níveis de tensão; os
+equipamentos de manobra, disjuntores e chaves seccionadoras; os transformadores de
+instrumentação, TCs e TPs para medição e proteção; os equipamentos de proteção,
+para-raios, relés e sistemas de aterramento; e os sistemas de controle e supervisão,
+SCADA e dispositivos eletrônicos inteligentes (IEDs). Os dois primeiros grupos concentram
+as anomalias que a inspeção térmica e acústica procura, e é a eles que correspondem os
+alvos do mundo simulado.
 
 O arranjo de barramentos define a configuração física e elétrica da subestação, impactando sua confiabilidade, flexibilidade operativa e custo. Os principais arranjos incluem barra simples, barra principal e transferência, barra dupla, disjuntor e meio, e configuração em anel \cite{Frontin2013}.
 
@@ -62,32 +66,29 @@ A inspeção periódica é o que sustenta a confiabilidade de uma subestação e
 
 \subsubsection{Principais Métodos}
 
-Os métodos tradicionais de inspeção incluem:
-
-\begin{itemize}
-    \item \textbf{Inspeção Visual}: Observação direta dos equipamentos para identificar vazamentos, danos físicos, conexões soltas, trincas em isoladores e outros problemas visíveis \cite{Inovarum2017}.
-    
-    \item \textbf{Ensaios Elétricos}: Medições de resistência de isolamento, resistência de contato, relação de transformação, fator de potência e testes funcionais de proteção \cite{Conprove2019}.
-    
-    \item \textbf{Análises Físico-Químicas}: Avaliação de propriedades do óleo isolante, análise de gases dissolvidos e compostos furânicos para equipamentos como transformadores e disjuntores \cite{Inovarum2017}.
-    
-    \item \textbf{Termografia}: Identificação de pontos de aquecimento anormal através de câmeras termográficas, indicativos de problemas como maus contatos ou sobrecargas \cite{Pixforce2024}.
-    
-    \item \textbf{Medição de Descargas Parciais}: Detecção de falhas incipientes em isolação elétrica através de métodos acústicos, elétricos ou UHF \cite{Frontin2013}.
-\end{itemize}
+Os métodos tradicionais de inspeção cobrem grandezas de naturezas distintas. A
+\emph{inspeção visual} observa diretamente os equipamentos em busca de vazamentos, danos
+físicos, conexões soltas e trincas em isoladores \cite{Inovarum2017}. Os \emph{ensaios
+elétricos} medem resistência de isolamento e de contato, relação de transformação, fator
+de potência e o funcionamento da proteção \cite{Conprove2019}. As \emph{análises
+físico-químicas} avaliam o óleo isolante, os gases nele dissolvidos e os compostos
+furânicos \cite{Inovarum2017}. A \emph{termografia} identifica aquecimento anormal por
+câmera termográfica, indício de mau contato ou de sobrecarga \cite{Pixforce2024}. E a
+\emph{medição de descargas parciais} detecta falha incipiente de isolação por via
+acústica, elétrica ou UHF \cite{Frontin2013}. Os dois últimos são os que esta tese modela
+como evento sensorial, porque são os que um robô em movimento consegue amostrar sem
+contato.
 
 \subsubsection{Limitações dos Métodos Tradicionais}
 
-Os métodos tradicionais apresentam quatro limitações de natureza operacional \cite{GlobalGrowthInsights2024}:
-
-\begin{itemize}
-    \item \textbf{Exposição a riscos}: Os técnicos estão expostos a riscos elétricos, mecânicos e ambientais.
-    \item \textbf{Necessidade de desligamento}: Muitos ensaios requerem o desligamento dos equipamentos.
-    \item \textbf{Subjetividade}: A interpretação dos resultados pode variar conforme a experiência do inspetor.
-    \item \textbf{Periodicidade limitada}: As inspeções são realizadas em intervalos predefinidos.
-    \item \textbf{Custo elevado}: Inspeções manuais requerem mão de obra especializada.
-    \item \textbf{Acesso limitado}: Alguns componentes são de difícil acesso para inspeção manual.
-\end{itemize}
+Os métodos tradicionais apresentam seis limitações, que não são da técnica de medição mas
+do modo de empregá-la \cite{GlobalGrowthInsights2024}. Três são do inspetor humano: a
+exposição a riscos elétricos, mecânicos e ambientais; a subjetividade, porque a
+interpretação do resultado varia com a experiência de quem inspeciona; e o custo da mão
+de obra especializada. Duas são do acesso: muitos ensaios exigem o desligamento do
+equipamento, e alguns componentes são de difícil alcance manual. A sexta é a que motiva
+este trabalho: a periodicidade é predefinida, de sorte que o que ocorre entre duas
+inspeções não é observado.
 
 \subsection{Métodos Avançados e Automatizados de Inspeção}
 
@@ -101,15 +102,11 @@ Sistemas de monitoramento integrados combinam diversos sensores e técnicas de a
 
 \subsubsection{Inspeção por Drones}
 
-O uso de drones para inspeção de subestações altera o alcance e o custo da coleta \cite{Pixforce2023}:
-
-\begin{itemize}
-    \item Acesso a áreas de difícil alcance
-    \item Redução da exposição de técnicos a riscos
-    \item Inspeção rápida de grandes áreas
-    \item Utilização de múltiplos sensores (visuais, térmicos, UV, LiDAR)
-    \item Documentação visual detalhada
-\end{itemize}
+O uso de drones para inspeção de subestações altera o alcance e o custo da coleta
+\cite{Pixforce2023}: alcança áreas de difícil acesso, reduz a exposição de técnicos a
+riscos, cobre grandes áreas em pouco tempo, embarca múltiplos sensores, visuais,
+térmicos, UV e LiDAR, e produz documentação visual detalhada. O que o drone não resolve é
+a permanência, porque a autonomia de voo limita o tempo sobre o alvo.
 
 \subsubsection{Processamento Avançado de Dados}
 
@@ -121,67 +118,57 @@ A utilização de robôs para inspeção de subestações representa uma evoluç
 
 \subsubsection{Tipos de Robôs e Sensores}
 
-Diferentes tipos de robôs têm sido desenvolvidos para inspeção de subestações \cite{GlobalGrowthInsights2024}:
+Diferentes tipos de robôs têm sido desenvolvidos para inspeção de subestações
+\cite{GlobalGrowthInsights2024}, e a diferença entre eles é de acesso. Os terrestres, com
+rodas, esteiras ou locomoção híbrida, percorrem o pátio. Os aéreos, drones com proteção
+contra interferência eletromagnética, alcançam o que está alto. Os escaladores sobem
+estruturas verticais, e os de linha viva operam sobre condutores energizados. Esta tese
+trata do primeiro caso, o robô terrestre em ronda, que é o único em que a decisão de
+deixar a rota tem o sentido estudado aqui.
 
-\begin{itemize}
-    \item \textbf{Robôs terrestres}: Com rodas, esteiras ou sistemas híbridos de locomoção.
-    \item \textbf{Robôs aéreos}: Drones especializados com proteções contra interferência eletromagnética.
-    \item \textbf{Robôs escaladores}: Capazes de escalar estruturas verticais.
-    \item \textbf{Robôs para linhas energizadas}: Projetados para operar em linhas de transmissão energizadas.
-\end{itemize}
-
-Os robôs de inspeção são equipados com diversos sensores \cite{Lactec2022, Iberdrola2022}:
-
-\begin{itemize}
-    \item \textbf{Sistemas de visão}: Câmeras RGB, termográficas, UV, estereoscópicas e 360°.
-    \item \textbf{Sensores de distância}: LiDAR, ultrassônicos e infravermelhos.
-    \item \textbf{Sensores acústicos}: Para detecção de sons anormais, como descargas parciais.
-    \item \textbf{Sensores de campo eletromagnético}: Para medição de campos elétricos e magnéticos.
-    \item \textbf{Sensores inerciais e de posicionamento}: IMU, GPS/GNSS, RTK e sistemas indoor.
-\end{itemize}
+Os robôs de inspeção são equipados com sensores de cinco naturezas
+\cite{Lactec2022, Iberdrola2022}: sistemas de visão, com câmeras RGB, termográficas, UV,
+estereoscópicas e $360^\circ$; sensores de distância, LiDAR, ultrassônicos e
+infravermelhos; sensores acústicos, para sons anormais como os de descarga parcial;
+sensores de campo eletromagnético, para medir campos elétricos e magnéticos; e sensores
+inerciais e de posicionamento, IMU, GPS/GNSS, RTK e sistemas internos. As modalidades
+térmica e acústica são as que, nesta tese, originam eventos de interesse.
 
 \subsubsection{Sistemas de Navegação e Processamento de Dados}
 
-Os sistemas de navegação e controle permitem que os robôs se desloquem de forma segura e eficiente no ambiente da subestação \cite{Lactec2022, Eletrobras2024}, utilizando:
-
-\begin{itemize}
-    \item \textbf{Navegação autônoma}: SLAM, planejamento de trajetória e desvio de obstáculos.
-    \item \textbf{Controle remoto}: Teleoperação e operação supervisionada.
-    \item \textbf{Sistemas de comunicação}: Redes sem fio e comunicação redundante.
-\end{itemize}
+Os sistemas de navegação e controle permitem que os robôs se desloquem de forma segura e
+eficiente no ambiente da subestação \cite{Lactec2022, Eletrobras2024} por três vias que
+coexistem: a navegação autônoma, com SLAM, planejamento de trajetória e desvio de
+obstáculos; o controle remoto, por teleoperação ou operação supervisionada; e os sistemas
+de comunicação, em redes sem fio e com redundância. O grau de autonomia efetivo de uma
+instalação está no quanto a primeira via dispensa a segunda.
 
 O processamento dos dados coletados pelos robôs pode ocorrer de forma embarcada (no próprio robô) ou em servidores centrais, utilizando técnicas como visão computacional, aprendizado de máquina e processamento de sinais para identificação de anomalias \cite{Iberdrola2022, Lactec2022}.
 
 \subsection{Casos de Sucesso e Tendências}
 
-Diversos projetos de robótica para inspeção de subestações têm sido implementados com sucesso \cite{Lactec2022, Iberdrola2022}, como:
+Diversos projetos de robótica para inspeção de subestações têm sido implementados
+\cite{Lactec2022, Iberdrola2022}, entre eles o \textbf{LACBOT}, robô terrestre autônomo
+desenvolvido pelo Lactec no Brasil; o \textbf{Antecursor I}, robô terrestre da Iberdrola
+na Espanha; e o \textbf{Pix Flight}, sistema de inspeção por drones desenvolvido no
+Brasil.
 
-\begin{itemize}
-    \item \textbf{LACBOT}: Robô terrestre autônomo desenvolvido pelo Lactec no Brasil.
-    \item \textbf{Antecursor I}: Robô terrestre desenvolvido pela Iberdrola na Espanha.
-    \item \textbf{Pix Flight}: Sistema de inspeção baseado em drones desenvolvido no Brasil.
-\end{itemize}
-
-As principais tendências na área incluem \cite{GlobalGrowthInsights2024, Wei2024Advancements}:
-
-\begin{itemize}
-    \item Maior autonomia dos sistemas robóticos
-    \item Utilização de múltiplos robôs cooperativos
-    \item Implementação de algoritmos de inteligência artificial mais sofisticados
-    \item Integração com modelos digitais (digital twins)
-    \item Evolução para robôs capazes de realizar intervenções simples
-    \item Implementação de sistemas de recarga autônoma
-\end{itemize}
+As tendências relatadas na área \cite{GlobalGrowthInsights2024, Wei2024Advancements}
+apontam para mais autonomia, para o emprego de múltiplos robôs cooperativos, para
+algoritmos de inteligência artificial mais sofisticados, para a integração com modelos
+digitais, para robôs capazes de intervenções simples e para a recarga autônoma. A
+primeira dessas tendências pressupõe resolvida uma questão que ela apenas desloca: a de
+que o robô decide por si quando sair da rota, e com que critério.
 
 \subsection{Impactos na Manutenção e Operação}
 
-Os benefícios atribuídos à adoção de sistemas robóticos de inspeção, nos estudos de caso e nos relatórios de mercado consultados, distribuem-se em quatro grupos \cite{Wei2024Advancements, GlobalGrowthInsights2024}:
-
-\begin{itemize}
-    \item \textbf{Evolução para manutenção preditiva}: Intervenções baseadas no estado real dos equipamentos e previsão de falhas.
-    \item \textbf{Aumento da confiabilidade}: Detecção precoce de anomalias, redução de falhas inesperadas e extensão da vida útil dos equipamentos.
-    \item \textbf{Benefícios econômicos}: Redução de custos operacionais e de perdas por interrupção, descontado o investimento inicial.
-    \item \textbf{Segurança do trabalho}: Redução da exposição de trabalhadores a riscos elétricos, trabalho em altura e condições adversas.
-\end{itemize}
+Os benefícios atribuídos à adoção de sistemas robóticos de inspeção, nos estudos de caso
+e nos relatórios de mercado consultados, distribuem-se em quatro grupos
+\cite{Wei2024Advancements, GlobalGrowthInsights2024}: a evolução para manutenção
+preditiva, com intervenção baseada no estado real do equipamento e na previsão de falha;
+o aumento de confiabilidade, por detecção precoce de anomalia, menos falhas inesperadas e
+mais vida útil; os benefícios econômicos, em custo operacional e em perda por
+interrupção, descontado o investimento inicial; e a segurança do trabalho, por menos
+exposição a risco elétrico, a trabalho em altura e a condição adversa.
 
 Os ganhos listados são relatados pelos fornecedores e pelos estudos de caso citados, em instalações, períodos e metodologias de medição distintos. Esta tese não os verifica nem os assume: o que ela avalia é uma lógica de decisão em ambiente simulado, conforme a delimitação da Seção~\ref{sec:prop-nao-abordado}.

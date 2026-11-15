@@ -1,3 +1,4 @@
+%% Listas convertidas em prosa em 15/11/2026: 14 de 14.
 %% Revisao estilistica em 15/11/2026. Reescritos a abertura e o fechamento. O
 %% fecho anterior oferecia "base solida" para inspecoes "eficientes e
 %% seguras"; ele agora nomeia a diferenca entre o campo potencial classico e o
@@ -30,37 +31,32 @@ A \autoref{fig:paradigmas_navegacao} mostra como a navegação robótica pode se
 
 \subsubsection{Navegação Deliberativa}
 
-A navegação deliberativa segue o paradigma Sense-Plan-Act (SPA), onde o robô percebe o ambiente, constrói um modelo interno, planeja uma trajetória completa e então a executa \cite{Murphy2000}. Suas principais características incluem:
-
-\begin{itemize}
-    \item Representação explícita do ambiente através de mapas detalhados
-    \item Planejamento global de trajetórias completas
-    \item Busca por soluções ótimas segundo critérios específicos
-    \item Maior complexidade computacional
-    \item Sensibilidade a incertezas e discrepâncias no modelo do ambiente
-\end{itemize}
+A navegação deliberativa segue o paradigma \textit{Sense-Plan-Act}, em que o robô
+percebe o ambiente, constrói um modelo interno, planeja uma trajetória completa e só
+então a executa \cite{Murphy2000}. Dela decorrem uma representação explícita do ambiente
+em mapas detalhados, o planejamento global de trajetórias inteiras e a busca de solução
+ótima segundo um critério declarado. O preço são a complexidade computacional e a
+sensibilidade a incerteza: o plano vale o quanto vale o modelo que o gerou, e um modelo
+discrepante produz um plano inexecutável sem que nada no plano o denuncie.
 
 \subsubsection{Navegação Reativa}
 
-Em contraste, a navegação reativa baseia-se no paradigma Sense-Act, eliminando a fase explícita de planejamento \cite{Brooks1986, Arkin1998}. O robô reage diretamente aos estímulos sensoriais, sem construir um modelo completo do ambiente. Suas características incluem:
-
-\begin{itemize}
-    \item Ausência de representação explícita do ambiente
-    \item Decisões baseadas apenas na percepção imediata
-    \item Baixa complexidade computacional
-    \item Robustez a incertezas e mudanças no ambiente
-    \item Possibilidade de soluções subótimas ou mínimos locais
-\end{itemize}
+Em contraste, a navegação reativa baseia-se no paradigma \textit{Sense-Act} e elimina a
+fase explícita de planejamento \cite{Brooks1986, Arkin1998}. O robô responde diretamente
+ao estímulo sensorial, sem representação explícita do ambiente e sobre a percepção
+imediata apenas, o que lhe dá baixo custo computacional e tolerância a mudança e a
+incerteza, já que não há modelo a ficar obsoleto. Em troca, a solução pode ser subótima
+ou travar num mínimo local, porque decidir sem horizonte é decidir sem saber para onde a
+decisão leva.
 
 \subsubsection{Navegação Híbrida}
 
-A navegação híbrida combina elementos das abordagens deliberativa e reativa \cite{Murphy2000, Arkin1998}, tipicamente organizados em camadas:
-
-\begin{itemize}
-    \item Camada deliberativa para planejamento global e raciocínio de alto nível
-    \item Camada reativa para respostas rápidas a eventos imprevistos
-    \item Camada intermediária para coordenação entre as demais
-\end{itemize}
+A navegação híbrida combina elementos das abordagens deliberativa e reativa
+\cite{Murphy2000, Arkin1998}, tipicamente em três camadas: uma deliberativa, para
+planejamento global e raciocínio de alto nível; uma reativa, para resposta rápida a
+evento imprevisto; e uma intermediária, que coordena as outras duas. É essa terceira
+camada que concentra a dificuldade de projeto, porque é nela que se decide quem tem a
+palavra final quando as duas discordam.
 
 Exemplos incluem a arquitetura 3T \cite{Bonasso1997}, AuRA \cite{Arkin1987} e Saphira \cite{Konolige1997}.
 
@@ -70,27 +66,24 @@ A navegação baseada em comportamentos é uma abordagem reativa que organiza o 
 
 \subsubsection{Arquitetura de Subsunção}
 
-A Arquitetura de Subsunção, proposta por Rodney Brooks \cite{Brooks1986}, organiza os comportamentos em camadas hierárquicas, onde comportamentos de nível superior podem suprimir ou inibir comportamentos de nível inferior. Suas características incluem:
-
-\begin{itemize}
-    \item Decomposição vertical em níveis de competência
-    \item Incrementalidade na construção do sistema
-    \item Mecanismos de supressão e inibição para coordenação
-    \item Ausência de representação central do ambiente
-\end{itemize}
+A Arquitetura de Subsunção, proposta por Rodney Brooks \cite{Brooks1986}, organiza os
+comportamentos em camadas hierárquicas, nas quais as de nível superior podem suprimir ou
+inibir as inferiores. A decomposição é vertical, por níveis de competência, e permite
+construir o sistema incrementalmente, acrescentando uma camada sem reescrever as
+anteriores; a coordenação se dá pelos próprios mecanismos de supressão e inibição, e não
+há representação central do ambiente. A precedência categórica de segurança formulada no
+Capítulo~\ref{cap:proposta} é, em essência, uma supressão nesse sentido.
 
 Uma implementação típica inclui comportamentos como evitar obstáculos (nível básico), vagar, explorar, construir mapas e identificar objetos (níveis superiores) \cite{Brooks1986}.
 
 \subsubsection{Esquemas Motores}
 
-A abordagem de Esquemas Motores, proposta por Ronald Arkin \cite{Arkin1989}, utiliza fusão de comportamentos através de soma vetorial. Suas características incluem:
-
-\begin{itemize}
-    \item Representação vetorial de cada comportamento
-    \item Fusão por soma ponderada dos vetores
-    \item Pesos adaptativos para os comportamentos
-    \item Paralelismo na contribuição dos comportamentos
-\end{itemize}
+A abordagem de Esquemas Motores, proposta por Ronald Arkin \cite{Arkin1989}, funde
+comportamentos por soma vetorial. Cada comportamento é representado como um vetor, todos
+contribuem em paralelo, e o resultado é a soma ponderada deles, com pesos que podem ser
+adaptativos. É precisamente esse mecanismo de soma que o campo desta tese \emph{não}
+adota, e a Seção~\ref{sec:prop-campo} explica por quê: numa soma, um risco de magnitude
+baixa co-localizado com uma atração saliente é vencido por ela.
 
 A equação básica para a fusão de comportamentos é:
 
@@ -138,27 +131,22 @@ onde $\eta$ é um fator de escala, $\rho(q)$ é a distância ao obstáculo mais 
 
 \subsubsection{Limitações e Extensões}
 
-Apesar de sua simplicidade e eficiência computacional, o método de Campos Potenciais apresenta algumas limitações \cite{Koren1991, Siegwart2011}:
-
-\begin{itemize}
-    \item Mínimos locais que podem "aprisionar" o robô
-    \item Oscilações em passagens estreitas
-    \item Dificuldades quando o objetivo está próximo a obstáculos
-    \item Falta de consideração da dinâmica do robô
-\end{itemize}
+Apesar de sua simplicidade e eficiência computacional, o método de Campos Potenciais
+apresenta limitações conhecidas \cite{Koren1991, Siegwart2011}: mínimos locais capazes de
+aprisionar o robô, oscilação em passagens estreitas, dificuldade quando o objetivo está
+próximo de um obstáculo, e ausência de qualquer consideração sobre a dinâmica do robô. A
+primeira é a mais citada e a que mais depende da geometria do ambiente; a última é a que
+mais depende do controlador que executa o campo.
 
 Diversas extensões foram propostas para superar estas limitações, incluindo Campos Potenciais Harmônicos \cite{Connolly1990}, combinação com navegação em grafo \cite{Barraquand1992}, e abordagens evolutivas \cite{Vadakkepat2000}.
 
 \subsubsection{Aplicações em Robótica Móvel}
 
-O método de Campos Potenciais tem sido aplicado com sucesso em diversas áreas \cite{Siegwart2011, Arkin1998}:
-
-\begin{itemize}
-    \item Robôs móveis terrestres para navegação em ambientes internos e externos
-    \item Veículos aéreos não tripulados para navegação 3D
-    \item Robôs manipuladores para planejamento de movimento
-    \item Sistemas multi-robôs para coordenação de enxames
-\end{itemize}
+O método de Campos Potenciais tem sido aplicado em domínios de dimensionalidade distinta
+\cite{Siegwart2011, Arkin1998}: robôs móveis terrestres em ambientes internos e externos,
+veículos aéreos não tripulados em navegação tridimensional, manipuladores em planejamento
+de movimento e sistemas multirrobô em coordenação de enxames. O caso tratado nesta tese é
+o primeiro, e em duas dimensões, porque o robô percorre o pátio sobre o plano.
 
 Em aplicações de inspeção de subestações elétricas, a navegação reativa por campos potenciais responde a obstáculos imprevistos sem replanejar a rota inteira \cite{Lactec2022, Iberdrola2022}.
 
@@ -195,29 +183,27 @@ onde $x_{1:t}$ são os estados do robô, $m$ é o mapa do ambiente, $z_{1:t}$ s�
 
 \subsubsection{Principais Abordagens}
 
-Diversas abordagens foram desenvolvidas para resolver o problema do SLAM \cite{Durrant2006, Thrun2005, Cadena2016}:
-
-\begin{itemize}
-    \item \textbf{SLAM Baseado em Filtros}: Utiliza técnicas como EKF-SLAM (Extended Kalman Filter) \cite{Smith1990}, UKF-SLAM (Unscented Kalman Filter) \cite{Julier2004} e FastSLAM (filtros de partículas) \cite{Montemerlo2002}.
-    
-    \item \textbf{SLAM Baseado em Otimização}: Formula o problema como minimização de erro, incluindo Graph-SLAM \cite{Grisetti2010} e Pose Graph Optimization.
-    
-    \item \textbf{SLAM Visual}: Utiliza câmeras como principal sensor, incluindo MonoSLAM \cite{Davison2007}, Stereo SLAM \cite{Paz2008} e Visual-Inertial SLAM \cite{Mourikis2007}.
-    
-    \item \textbf{SLAM Baseado em LiDAR}: Utiliza sensores laser, incluindo Hector SLAM \cite{Kohlbrecher2011}, Cartographer \cite{Hess2016} e LOAM \cite{Zhang2014}.
-\end{itemize}
+As abordagens desenvolvidas para resolver o problema do SLAM
+\cite{Durrant2006, Thrun2005, Cadena2016} distinguem-se pelo instrumento matemático e
+pelo sensor de que partem. O SLAM \emph{baseado em filtros} recorre a EKF-SLAM
+\cite{Smith1990}, UKF-SLAM \cite{Julier2004} e FastSLAM, com filtros de partículas
+\cite{Montemerlo2002}. O \emph{baseado em otimização} formula o problema como
+minimização de erro, em Graph-SLAM \cite{Grisetti2010} e em otimização de grafo de poses.
+O \emph{visual} toma a câmera como sensor principal, em MonoSLAM \cite{Davison2007},
+Stereo SLAM \cite{Paz2008} e Visual-Inertial SLAM \cite{Mourikis2007}. E o \emph{baseado
+em LiDAR} usa o laser, em Hector SLAM \cite{Kohlbrecher2011}, Cartographer
+\cite{Hess2016} e LOAM \cite{Zhang2014}.
 
 \subsubsection{Representações de Mapas}
 
-Diferentes representações de mapas são utilizadas em SLAM \cite{Thrun2005, Cadena2016}:
-
-\begin{itemize}
-    \item Mapas de Ocupação em Grade (discretização do espaço em células) \cite{Elfes1989}
-    \item Mapas de Características (pontos, linhas ou cantos distintos) \cite{Smith1990}
-    \item Mapas Topológicos (grafo de locais e conexões) \cite{Kuipers1991}
-    \item Mapas Semânticos (com informações sobre objetos e regiões) \cite{Kostavelis2015}
-    \item Mapas 3D (nuvens de pontos, malhas ou octrees) \cite{Hornung2013}
-\end{itemize}
+As representações de mapa usadas em SLAM \cite{Thrun2005, Cadena2016} diferem no que
+escolhem preservar. Os mapas de ocupação em grade discretizam o espaço em células
+\cite{Elfes1989} e os de características retêm apenas pontos, linhas ou cantos distintos
+\cite{Smith1990}. Os topológicos abandonam a métrica e guardam um grafo de locais e
+conexões \cite{Kuipers1991}, enquanto os semânticos acrescentam o que cada objeto ou
+região \emph{é} \cite{Kostavelis2015}. Os mapas 3D, em nuvens de pontos, malhas ou
+\textit{octrees}, preservam a terceira dimensão \cite{Hornung2013}. Esta tese opera sobre
+o primeiro tipo, uma grade de ocupação estática.
 
 O fechamento de loop (reconhecer quando o robô retorna a um local visitado) é o que corrige a deriva acumulada na odometria: detectado o reencontro, mapa e trajetória estimada são reajustados \cite{Durrant2006, Cadena2016}.
 
@@ -227,46 +213,33 @@ A integração de modelos 3D em sistemas de navegação robótica representa uma
 
 \subsubsection{Representações 3D para Navegação}
 
-Diversas representações 3D são utilizadas para navegação robótica \cite{Hornung2013, Rusu2011}:
-
-\begin{itemize}
-    \item \textbf{Nuvens de Pontos}: Conjuntos de pontos 3D obtidos de sensores como LiDAR ou câmeras de profundidade.
-    
-    \item \textbf{Octrees}: Estruturas hierárquicas que dividem o espaço 3D recursivamente, como o OctoMap \cite{Hornung2013}.
-    
-    \item \textbf{Malhas Poligonais}: Representações de superfícies através de polígonos conectados.
-    
-    \item \textbf{Mapas de Elevação}: Representações 2.5D que armazenam a altura do terreno para cada posição (x,y).
-\end{itemize}
+As representações 3D usadas em navegação robótica \cite{Hornung2013, Rusu2011} variam no
+compromisso entre fidelidade e custo de consulta. As \emph{nuvens de pontos} são
+conjuntos de pontos obtidos de LiDAR ou de câmera de profundidade, fiéis e caras de
+percorrer. As \emph{octrees} dividem o espaço recursivamente, como no OctoMap
+\cite{Hornung2013}, trocando resolução uniforme por consulta rápida. As \emph{malhas
+poligonais} descrevem superfícies por polígonos conectados, e os \emph{mapas de
+elevação}, representações 2,5D, guardam apenas a altura do terreno para cada posição
+$(x,y)$, o que basta quando o robô anda no chão e não sob estruturas.
 
 \subsubsection{Aquisição e Processamento de Dados 3D}
 
-A aquisição de dados 3D para navegação pode ser realizada através de \cite{Rusu2011, Hornung2013}:
-
-\begin{itemize}
-    \item Sensores LiDAR 3D ou 2D com movimento
-    \item Câmeras RGB-D (como Kinect ou RealSense)
-    \item Sistemas de visão estéreo
-    \item Fotogrametria e Structure from Motion
-\end{itemize}
-
-O processamento destes dados envolve técnicas como registro de nuvens de pontos, filtragem, segmentação, detecção de características e reconstrução de superfícies \cite{Rusu2011}.
+A aquisição de dados 3D para navegação pode ser feita por sensores LiDAR 3D, ou LiDAR 2D
+em movimento, por câmeras RGB-D, por visão estéreo e por fotogrametria e
+\textit{Structure from Motion} \cite{Rusu2011, Hornung2013}. O processamento envolve
+registro de nuvens de pontos, filtragem, segmentação, detecção de características e
+reconstrução de superfícies \cite{Rusu2011}.
 
 \subsubsection{Aplicações em Subestações Elétricas}
 
-A integração de modelos 3D em navegação robótica para inspeção de subestações elétricas oferece diversas vantagens \cite{Lactec2022, Iberdrola2022}:
-
-\begin{itemize}
-    \item \textbf{Planejamento de Trajetória 3D}: Permite considerar a estrutura vertical das subestações, incluindo equipamentos elevados e obstáculos em diferentes alturas.
-    
-    \item \textbf{Localização Precisa}: Melhora a precisão da localização do robô através da correspondência com modelos 3D detalhados.
-    
-    \item \textbf{Detecção de Mudanças}: Permite identificar alterações na estrutura da subestação através da comparação com modelos de referência.
-    
-    \item \textbf{Inspeção Baseada em Modelos}: Facilita a inspeção direcionada de componentes específicos, utilizando o modelo 3D como referência.
-    
-    \item \textbf{Visualização e Análise}: Melhora a visualização e análise dos dados de inspeção no contexto do modelo 3D da subestação.
-\end{itemize}
+A integração de modelos 3D em navegação robótica para inspeção de subestações elétricas
+é relatada com cinco finalidades \cite{Lactec2022, Iberdrola2022}. Duas são de navegação:
+o planejamento de trajetória tridimensional, que considera a estrutura vertical da
+instalação e os obstáculos em alturas distintas, e a localização, que ganha precisão por
+correspondência com o modelo detalhado. Duas são de inspeção: a detecção de mudança, por
+comparação com um modelo de referência, e a inspeção dirigida a componentes específicos,
+com o modelo servindo de índice. A quinta é de apresentação, situando os dados de
+inspeção no contexto geométrico da subestação.
 
 \subsection{Desafios e Tendências}
 
@@ -274,26 +247,23 @@ A navegação reativa em robótica móvel, especialmente para aplicações em su
 
 \subsubsection{Desafios Atuais}
 
-\begin{itemize}
-    \item \textbf{Robustez a Interferência Eletromagnética}: Garantir o funcionamento adequado dos sensores e algoritmos de navegação em ambientes com forte interferência eletromagnética.
-    
-    \item \textbf{Navegação em Ambientes Complexos}: Lidar com a complexidade estrutural das subestações, incluindo equipamentos de diferentes formas e tamanhos, cabos, estruturas elevadas, etc.
-    
-    \item \textbf{Adaptação a Condições Variáveis}: Adaptar-se a mudanças nas condições ambientais, como iluminação, clima e configuração da subestação.
-    
-    \item \textbf{Segurança}: Garantir a navegação segura em ambientes de alta tensão, evitando colisões com equipamentos críticos e mantendo distâncias de segurança.
-\end{itemize}
+Quatro desafios são recorrentes nessa literatura. A robustez à interferência
+eletromagnética exige que sensores e algoritmos de navegação continuem funcionando sob
+campo intenso. A navegação em ambiente complexo enfrenta equipamentos de formas e
+tamanhos variados, cabos e estruturas elevadas. A adaptação a condições variáveis
+responde a mudança de iluminação, de clima e da própria configuração da subestação. E a
+segurança exige evitar colisão com equipamento crítico e manter distância de afastamento,
+que é o desafio sobre o qual esta tese produz medida.
 
 \subsubsection{Tendências Emergentes}
 
-\begin{itemize}
-    \item \textbf{Navegação Semântica}: Incorporação de informações semânticas no processo de navegação, permitindo decisões baseadas no significado e função dos objetos no ambiente.
-    
-    \item \textbf{Aprendizado de Navegação}: Utilização de técnicas de aprendizado de máquina para melhorar o desempenho da navegação através da experiência.
-    
-    \item \textbf{Navegação Colaborativa}: Coordenação entre múltiplos robôs para inspeção e navegação mais eficientes.
-    
-    \item \textbf{Integração com Digital Twins}: Utilização de modelos digitais detalhados das subestações para melhorar o planejamento e execução da navegação.
-\end{itemize}
+Quatro tendências emergentes acompanham esses desafios. A navegação \emph{semântica}
+incorpora o significado e a função dos objetos à decisão, em vez de tratá-los como
+geometria indiferenciada. O \emph{aprendizado} de navegação busca melhorar o desempenho
+pela experiência acumulada. A navegação \emph{colaborativa} coordena múltiplos robôs. E a
+integração com \textit{digital twins} usa modelos digitais detalhados da instalação para
+planejar e executar a ronda. A primeira é a mais próxima do que se faz aqui, com a
+diferença de que a semântica, nesta tese, entra pela identidade da modalidade que gerou o
+evento, e não por classificação visual do objeto.
 
 O campo potencial clássico é o ponto de partida formal do mecanismo proposto no Capítulo~\ref{cap:proposta}, com uma diferença que a Seção~\ref{sec:prop-campo} torna explícita. O campo formulado ali não soma magnitudes de atração e de repulsão: ele impõe precedência categórica da segurança sobre a inspeção, de modo que um perigo fraco domina uma atração saliente.

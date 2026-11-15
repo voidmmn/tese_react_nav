@@ -1,3 +1,7 @@
+%% Listas convertidas em prosa em 15/11/2026: 5 de 5. A lista dos paradigmas
+%% arquiteturais foi dividida em dois paragrafos porque o proprio texto de abertura
+%% dizia que a arquitetura baseada em componentes "nao figura na comparacao" por
+%% estar em outro eixo -- distincao que a lista unica apagava.
 %% Revisao estilistica em 15/11/2026. Reescritos a abertura e o fechamento. O
 %% fecho anterior elogiava o ROS como "ecossistema maduro"; ele agora encerra
 %% no determinismo de temporizacao, que e o ponto desta secao com consequencia
@@ -13,29 +17,31 @@ Um sistema robótico pode ser definido como um conjunto integrado de componentes
 
 \subsubsection{Componentes Fundamentais}
 
-Os sistemas robóticos típicos são compostos por vários subsistemas interconectados \cite{Siegwart2011, Kortenkamp2016}:
-
-\begin{itemize}
-    \item \textbf{Sistema de Percepção}: Responsável pela aquisição e processamento de dados sensoriais.
-    \item \textbf{Sistema de Controle}: Responsável pelo planejamento e execução de ações.
-    \item \textbf{Sistema de Atuação}: Responsável pela interação física com o ambiente.
-    \item \textbf{Sistema de Comunicação}: Responsável pela troca de informações entre os diversos componentes.
-    \item \textbf{Sistema de Energia}: Responsável pelo fornecimento e gerenciamento de energia.
-\end{itemize}
+Os sistemas robóticos típicos são compostos por subsistemas interconectados
+\cite{Siegwart2011, Kortenkamp2016}: o de percepção, que adquire e processa dados
+sensoriais; o de controle, que planeja e executa ações; o de atuação, que interage
+fisicamente com o ambiente; o de comunicação, que faz circular informação entre os
+demais; e o de energia, que fornece e gerencia a potência disponível. O que esta tese
+estuda está inteiramente no segundo, e supõe os outros quatro resolvidos.
 
 \subsubsection{Paradigmas Arquiteturais}
 
-A \autoref{fig:arquiteturas_roboticas} compara os três paradigmas de \emph{fluxo de controle} propostos para organizar e integrar os componentes de software \cite{Kortenkamp2016, Brugali2009ComponentI} --- deliberativo, reativo e híbrido ---, mostrando como percepção, planejamento e atuação se conectam em cada um. A arquitetura baseada em componentes, descrita por último nesta lista, situa-se em outro eixo: não é uma forma de encadear percepção e ação, mas de organizar o software em módulos reutilizáveis, e por isso não figura na comparação:
+A \autoref{fig:arquiteturas_roboticas} compara os três paradigmas de \emph{fluxo de
+controle} propostos para organizar e integrar os componentes de software
+\cite{Kortenkamp2016, Brugali2009ComponentI}, mostrando como percepção, planejamento e
+atuação se conectam em cada um. A arquitetura \emph{deliberativa} segue o paradigma
+\textit{Sense-Plan-Act}, adequado a ambientes estruturados e tarefas bem definidas, e
+paga por isso o preço de replanejar quando o ambiente muda. A \emph{reativa} compõe
+comportamentos simples que mapeiam percepção diretamente em ação \cite{Brooks1986},
+respondendo rápido e sem representação global do que a cerca. A \emph{híbrida} combina as
+duas, tipicamente em camadas, e é a família a que pertence a proposta do
+Capítulo~\ref{cap:proposta}.
 
-\begin{itemize}
-    \item \textbf{Arquitetura Deliberativa}: Baseada no paradigma Sense-Plan-Act (SPA), adequada para ambientes estruturados e tarefas bem definidas.
-
-    \item \textbf{Arquitetura Reativa}: Baseada em comportamentos simples que mapeiam diretamente percepções em ações, permitindo respostas rápidas a mudanças no ambiente \cite{Brooks1986}.
-
-    \item \textbf{Arquitetura Híbrida}: Combina elementos das arquiteturas deliberativa e reativa, tipicamente organizados em camadas.
-
-    \item \textbf{Arquitetura Baseada em Componentes}: Organiza o sistema em componentes modulares e reutilizáveis com interfaces bem definidas, fundamentando o ROS \cite{Brugali2009ComponentI}.
-\end{itemize}
+Fora desse eixo está a arquitetura \emph{baseada em componentes}, que organiza o sistema
+em módulos reutilizáveis com interfaces bem definidas e fundamenta o ROS
+\cite{Brugali2009ComponentI}. Ela não é uma forma de encadear percepção e ação, e por
+isso não figura na comparação da figura: é ortogonal às outras três, e um sistema
+deliberativo, reativo ou híbrido pode ser construído sobre ela indiferentemente.
 
 Os principais desafios arquiteturais incluem heterogeneidade de componentes, distribuição, concorrência, requisitos de tempo real, robustez, escalabilidade e reutilização de código \cite{Kortenkamp2016, Brugali2009ComponentI}.
 
@@ -82,16 +88,15 @@ Os principais objetivos do ROS incluem abstração de hardware, computação dis
 
 Apesar do sucesso do ROS, limitações em seu design original levaram ao desenvolvimento do ROS2, uma reimplementação completa que visa abordar essas limitações e adaptar-se às novas tendências em robótica \cite{Macenski2022}.
 
-As principais motivações para o desenvolvimento do ROS2 incluem \cite{Macenski2022, ROS2Design2024}:
-
-\begin{itemize}
-    \item Suporte a sistemas de tempo real
-    \item Mecanismos de segurança (autenticação, autorização, criptografia)
-    \item Otimização para sistemas embarcados com recursos limitados
-    \item Robustez em redes não ideais
-    \item Confiabilidade para aplicações industriais
-    \item Suporte nativo para coordenação de múltiplos robôs
-\end{itemize}
+As motivações declaradas para o desenvolvimento do ROS2
+\cite{Macenski2022, ROS2Design2024} dividem-se entre garantias que o ROS original não
+dava e contextos que ele não atendia. Do primeiro grupo são o suporte a tempo real, os
+mecanismos de segurança de autenticação, autorização e criptografia, a robustez em redes
+não ideais e a confiabilidade exigida por aplicação industrial. Do segundo, a otimização
+para sistemas embarcados de recurso limitado e o suporte nativo à coordenação de
+múltiplos robôs. A primeira dessas garantias é a que importa ao Capítulo~\ref{cap:proposta},
+e a Seção~\ref{sec:prop-relogios} mostra que tê-la disponível não equivale a tê-la
+usada corretamente.
 
 \subsection{Arquitetura e Componentes do ROS/ROS2}
 
@@ -179,13 +184,11 @@ A simulação é essencial no desenvolvimento de sistemas robóticos, permitindo
 
 \subsubsection{Simuladores Integrados}
 
-O ROS/ROS2 integra-se com diversos simuladores \cite{Joseph2018, Macenski2022}:
-
-\begin{itemize}
-    \item \textbf{Gazebo}: Simulador de física 3D desenvolvido especificamente para robótica, oferecendo simulação de física, sensores, ambientes personalizáveis e extensibilidade via plugins.
-
-    \item \textbf{Outros simuladores}: Webots, CoppeliaSim (V-REP), CARLA (para veículos autônomos) e Isaac Sim (NVIDIA) também oferecem integração com ROS/ROS2.
-\end{itemize}
+O ROS/ROS2 integra-se com diversos simuladores \cite{Joseph2018, Macenski2022}. O
+\textbf{Gazebo} foi desenvolvido especificamente para robótica e oferece simulação de
+física, de sensores, ambientes personalizáveis e extensibilidade por \textit{plugins}; é
+o usado nesta tese. Webots, CoppeliaSim (V-REP), CARLA, voltado a veículos autônomos, e
+Isaac Sim, da NVIDIA, também se integram ao ROS/ROS2.
 
 \subsubsection{Ferramentas de Simulação e Teste}
 
@@ -207,16 +210,15 @@ O ROS/ROS2 suporta principalmente C++ e Python, com suporte limitado para outras
 
 \subsubsection{Ferramentas de Desenvolvimento}
 
-O ROS/ROS2 oferece diversas ferramentas para facilitar o desenvolvimento \cite{Joseph2018, Macenski2022}:
-
-\begin{itemize}
-    \item \textbf{roslaunch/launch}: Para iniciar e configurar sistemas complexos.
-    \item \textbf{rosbag/ros2 bag}: Para gravar e reproduzir dados.
-    \item \textbf{rostopic/ros2 topic}: Para inspecionar e manipular tópicos.
-    \item \textbf{rosservice/ros2 service}: Para interagir com serviços.
-    \item \textbf{rosparam/ros2 param}: Para gerenciar parâmetros.
-    \item \textbf{tf/tf2}: Para gerenciar transformações entre sistemas de coordenadas.
-\end{itemize}
+O ROS/ROS2 oferece diversas ferramentas para facilitar o desenvolvimento
+\cite{Joseph2018, Macenski2022}, cada uma correspondendo a um dos conceitos da sua
+arquitetura: \texttt{roslaunch}/\texttt{launch} inicia e configura sistemas compostos de
+vários nós; \texttt{rosbag}/\texttt{ros2 bag} grava e reproduz tráfego; \texttt{rostopic}
+e \texttt{rosservice}, com seus equivalentes \texttt{ros2}, inspecionam e manipulam
+tópicos e serviços; \texttt{rosparam}/\texttt{ros2 param} gerencia parâmetros; e
+\texttt{tf}/\texttt{tf2} mantém as transformações entre sistemas de coordenadas. A
+primeira e a última são as de que a bateria desta tese depende diretamente, uma para
+compor cada execução e outra para situar robô, alvo e risco num mesmo referencial.
 
 \subsection{Aplicações e Casos de Uso}
 

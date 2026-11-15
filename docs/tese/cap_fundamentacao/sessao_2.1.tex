@@ -1,3 +1,6 @@
+%% Listas convertidas em prosa em 15/11/2026: 3 de 3. O enumerate do ciclo do
+%% filtro de Kalman foi MANTIDO -- e procedimento sequencial com realimentacao, nao
+%% lista "Termo: explicacao".
 %% Revisao estilistica em 15/11/2026. Reescritos a abertura (truismo mais
 %% metadiscurso "Esta secao apresenta os conceitos essenciais"), o "aspecto
 %% crucial" e o paragrafo de fechamento, que repetia o tema com adjetivos
@@ -18,16 +21,19 @@ Em sistemas robóticos autônomos, a fusão sensorial busca superar as limitaç�
 A heterogeneidade na fusão sensorial refere-se à integração de dados provenientes de sensores de naturezas fundamentalmente distintas, como sensores visuais (câmeras \ac{RGB}), térmicos (câmeras termográficas), acústicos (microfones), de distância (\ac{LiDAR}, ultrassom), inerciais (\ac{IMU}) e químicos (sensores de gás) \cite{Alatise2020Review}. Esta abordagem multimodal permite uma percepção mais completa do ambiente, explorando as complementaridades entre diferentes modalidades sensoriais.
 
 \subsection{Níveis de Fusão Sensorial}
-A fusão sensorial pode ser realizada em diferentes níveis de abstração \cite{Costa2018ImplementacaoFusao, Santos2023FusaoSensorial}:
-
-\begin{itemize}
-    \item Z Fusão (Fusão de Baixo Nível – Nível de Dados): A fusão é realizada diretamente sobre os sinais recebidos (por exemplo: intensidade de luz, distância, temperatura). Exemplo: fusão direta de nuvens de pontos de múltiplos LiDARs ou imagens RGB + térmicas.
-    
-    \item F Fusão (Fusão de Médio Nível – Nível de Características): F representa as features ou características extraídas dos dados sensoriais (por exemplo: bordas, objetos detectados, velocidades). A fusão ocorre após algum pré-processamento que extrai informações relevantes dos dados brutos. Exemplo: fusão de vetores de características extraídas de imagens e sinais de radar.
-
-    \item D Fusão (Fusão de Alto Nível – Nível de Decisão): D representa as decisões ou classificações tomadas por cada sensor de forma independente. A fusão acontece após cada sensor já ter processado e interpretado seus dados. Exemplo: um sensor classifica "obstáculo", outro "livre", e a fusão decide com base na confiança de cada um.
-
-\end{itemize}
+A fusão sensorial pode ser realizada em diferentes níveis de abstração
+\cite{Costa2018ImplementacaoFusao, Santos2023FusaoSensorial}, e o nível escolhido decide
+o que se pode recuperar adiante, porque informação descartada no pré-processamento não
+volta. Na \emph{fusão Z}, de baixo nível, a combinação ocorre diretamente sobre os sinais
+recebidos, como intensidade de luz, distância ou temperatura: é o caso de nuvens de
+pontos de múltiplos \ac{LiDAR} combinadas entre si, ou de imagens \ac{RGB} com imagens
+térmicas. Na \emph{fusão F}, de nível médio, o que se combina são características já
+extraídas por algum pré-processamento, como bordas, objetos detectados e velocidades, de
+sorte que a fusão opera sobre vetores de características de imagem e de radar, e não
+sobre as amostras brutas. Na \emph{fusão D}, de alto nível, cada sensor processa e
+interpreta seus próprios dados antes da combinação, que passa a ser entre decisões: um
+sensor classifica ``obstáculo'' e outro ``livre'', e a fusão resolve o conflito pela
+confiança atribuída a cada um.
 
 \begin{figure}[h]
     \centering
@@ -181,17 +187,16 @@ Onde $X_i$ representa os dados do sensor $i$, $f_i$ é a rede neural específica
 
 \subsection{Desafios da Fusão em Ambientes com Interferência Eletromagnética}
 
-A fusão sensorial em subestações elétricas enfrenta desafios específicos devido à presença de campos eletromagnéticos intensos \cite{He2007EMCSubstation, Yan2024CombinedNav}:
-
-\begin{itemize}
-    \item \textbf{Interferência em Sensores Eletrônicos}: Campos eletromagnéticos podem induzir ruídos e distorções em sensores eletrônicos, afetando a qualidade dos dados. Sensores magnéticos, inerciais e de comunicação sem fio são particularmente suscetíveis.
-    
-    \item \textbf{Variabilidade Temporal da Interferência}: A intensidade e a distribuição espacial da interferência eletromagnética variam ao longo do tempo, de modo que um conjunto fixo de pesos entre sensores não se sustenta por toda a missão.
-    
-    \item \textbf{Heterogeneidade da Interferência}: Diferentes sensores são afetados de maneiras distintas pela interferência eletromagnética, o que deve ser considerado na estratégia de fusão.
-\end{itemize}
-
-Técnicas de mitigação incluem blindagem eletromagnética, filtragem digital e algoritmos de detecção e compensação de interferência \cite{Yan2024CombinedNav}.
+A fusão sensorial em subestações elétricas enfrenta desafios específicos devido à
+presença de campos eletromagnéticos intensos \cite{He2007EMCSubstation, Yan2024CombinedNav}.
+O campo induz ruído e distorção nos próprios sensores eletrônicos, e os magnéticos, os
+inerciais e os de comunicação sem fio são os mais suscetíveis. A intensidade e a
+distribuição espacial dessa interferência variam ao longo do tempo, de modo que um
+conjunto fixo de pesos entre sensores não se sustenta por toda a missão. E a degradação
+não é uniforme: cada modalidade é afetada de maneira distinta, o que transfere o problema
+da filtragem de um sinal para a estratégia de fusão, que precisa decidir qual leitura
+desacreditar e quando. Técnicas de mitigação incluem blindagem eletromagnética, filtragem
+digital e algoritmos de detecção e compensação de interferência \cite{Yan2024CombinedNav}.
 
 \subsection{Modelos de Pesos e Bias para Relevância Sensorial}
 
@@ -225,16 +230,16 @@ Onde $w_i(t)$ é o peso do sensor $i$ no instante $t$, $w_i^{base}$ é o peso ba
 
 \subsection{Aplicações em Robótica Móvel para Inspeção}
 
-A fusão sensorial heterogênea é particularmente relevante para robôs de inspeção em subestações elétricas, onde diferentes tipos de sensores são necessários para detectar diversos tipos de anomalias \cite{Lactec2022, Iberdrola2022}:
-
-\begin{itemize}
-    \item \textbf{Detecção de Pontos Quentes}: Fusão de imagens térmicas com visuais para identificação precisa de componentes superaquecidos.
-    
-    \item \textbf{Detecção de Descargas Parciais}: Combinação de sensores acústicos, \ac{UV} e \ac{RF} para localização de descargas parciais.
-    
-    \item \textbf{Navegação Robusta}: Fusão de \ac{LiDAR}, câmeras e \ac{IMU} para navegação precisa mesmo em condições de interferência eletromagnética.
-    
-    \item \textbf{Inspeção Visual Avançada}: Combinação de diferentes modalidades de imagem (visual, térmica, \ac{UV}) para detecção de anomalias visuais como corrosão, danos físicos ou vazamentos.
-\end{itemize}
+A fusão sensorial heterogênea é particularmente relevante para robôs de inspeção em
+subestações elétricas, onde diferentes tipos de sensores são necessários para detectar
+diversos tipos de anomalias \cite{Lactec2022, Iberdrola2022}. A detecção de pontos
+quentes combina imagem térmica com imagem visual, porque a térmica localiza o excesso de
+temperatura e a visual identifica em qual componente ele está. A de descargas parciais
+combina sensores acústicos, \ac{UV} e \ac{RF}, nenhum dos quais localiza a descarga
+isoladamente. A navegação sob interferência eletromagnética recorre a \ac{LiDAR}, câmeras
+e \ac{IMU} em conjunto, pela mesma razão que motiva a ponderação adaptativa da subseção
+anterior. E a inspeção visual de corrosão, dano físico e vazamento combina as modalidades
+visual, térmica e \ac{UV}, que expõem defeitos de naturezas diferentes na mesma
+superfície.
 
 Nenhuma das técnicas de fusão descritas acima é implementada nesta tese. Elas delimitam o que se entende por evento sensorial na Seção~\ref{sec:prop-sensoriamento}, onde a detecção entra no sistema já classificada por modalidade e intensidade, e o objeto de estudo passa a ser a decisão que vem depois dela.
