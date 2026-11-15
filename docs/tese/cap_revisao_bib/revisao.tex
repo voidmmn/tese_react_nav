@@ -55,7 +55,7 @@ mas tomando como entrada a cena visual e o alvo desejado em vez de distâncias.
 
 \subsection{Abordagens Sim-to-Real para Navegação Autônoma}
 
-Um dos maiores desafios na aplicação de \ac{DRL} em robótica no mundo real é o \textit{reality gap} – a discrepância entre o ambiente simulado onde o agente é treinado e o ambiente real onde será implantado. \citeonline{Tobin2017} introduziram o \textit{Domain Randomization}, que varia deliberadamente os parâmetros da simulação durante o treinamento, tornando a política robusta o suficiente para operar no domínio real.
+Política treinada apenas em simulação degrada-se no robô físico por efeito do \textit{reality gap}, a discrepância entre a dinâmica modelada no simulador e o comportamento dos sensores e atuadores em operação. \citeonline{Tobin2017} introduziram o \textit{Domain Randomization}, que varia deliberadamente os parâmetros da simulação durante o treinamento, tornando a política robusta o suficiente para operar no domínio real.
 
 \citeonline{Peng2018} expandiram esta abordagem com o conceito de \textit{Dynamics Randomization}, focando especificamente na variabilidade dos parâmetros físicos. \citeonline{Sadeghi2017} demonstraram navegação visual sem necessidade de dados reais durante o treinamento, utilizando apenas ambientes simulados com randomização visual extensiva.
 %% Frase removida em 13/11/2026 (auditoria bibliografica): atribuia a um trabalho
@@ -228,7 +228,7 @@ Para a detecção de descargas parciais, \citeonline{Monzon2025PartialDischarge}
 
 \subsection{Modelos Adaptativos de Ponderação Sensorial}
 
-Um aspecto crítico da fusão sensorial em ambientes dinâmicos como subestações elétricas é a atribuição adaptativa de pesos a diferentes sensores com base em sua confiabilidade momentânea. A revisão de \citeonline{Alatise2020Review} sobre desafios de robôs móveis autônomos e métodos de fusão sensorial situa esse problema entre os que permanecem abertos.
+Em ambiente sujeito a interferência variável, peso fixo degrada a estimativa sempre que uma modalidade perde confiabilidade: a fusão precisa reponderar cada sensor conforme a qualidade momentânea da sua leitura. A revisão de \citeonline{Alatise2020Review} sobre desafios de robôs móveis autônomos e métodos de fusão sensorial situa esse problema entre os que permanecem abertos.
 
 %% Reescrito em 13/11/2026 (auditoria bibliografica): a primeira referencia nao foi
 %% localizada em nenhuma base; a segunda e uma dissertacao sobre SLAM 3D com filtro de
@@ -361,7 +361,12 @@ A escalabilidade para complexos de subestação permanece limitada pela área de
 
 A resposta a falha sensorial e a evento imprevisto é afirmada com mais frequência do que medida. Poucos dos sistemas revisados relatam o que ocorre quando uma modalidade cai ou quando um obstáculo não previsto entra na rota, e quase nenhum separa a contribuição do mecanismo de detecção da do mecanismo de recuperação.
 
-Finalmente, a validação e certificação de sistemas autônomos para aplicações críticas como inspeção de infraestrutura elétrica representa um desafio tanto técnico quanto regulatório. O desenvolvimento de metodologias rigorosas para teste e validação, combinado com avanços em interpretabilidade e verificação formal de sistemas baseados em aprendizado, será essencial para a adoção ampla destas tecnologias na indústria.
+%% Reescrito em 15/11/2026. O paragrafo anterior era o unico da secao que nao nomeava
+%% lacuna alguma: fechava em "sera essencial para a adocao ampla", que e previsao sobre
+%% a industria e nao achado sobre a literatura, e era tambem o unico sem citacao. A
+%% versao atual nomeia a exigencia que a avaliacao por desempenho medio nao atende e
+%% liga essa restricao a escolha de projeto desta tese.
+Por fim, a certificação operacional em instalação energizada impõe uma exigência que a avaliação por desempenho médio não atende: declarar limite de garantia e condição de falha. Política aprendida fim a fim oferece pouca transparência sobre quando a reação de segurança cede lugar à tarefa, e sem protocolo de verificação formal não se demonstra conformidade normativa. É dessa restrição que decorre a opção desta tese por uma regra de precedência categórica de segurança explícita, cujo efeito e cujo custo podem ser auditados em separado.
 
 %% Secao criada em 13/11/2026. A revisao discutia as tres areas em paralelo, mas em
 %% nenhum ponto confrontava esta tese com os trabalhos que estao de fato mais perto

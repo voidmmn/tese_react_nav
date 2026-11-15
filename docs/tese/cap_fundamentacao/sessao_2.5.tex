@@ -131,12 +131,15 @@ onde $\eta$ é um fator de escala, $\rho(q)$ é a distância ao obstáculo mais 
 
 \subsubsection{Limitações e Extensões}
 
-Apesar de sua simplicidade e eficiência computacional, o método de Campos Potenciais
-apresenta limitações conhecidas \cite{Koren1991, Siegwart2011}: mínimos locais capazes de
-aprisionar o robô, oscilação em passagens estreitas, dificuldade quando o objetivo está
-próximo de um obstáculo, e ausência de qualquer consideração sobre a dinâmica do robô. A
-primeira é a mais citada e a que mais depende da geometria do ambiente; a última é a que
-mais depende do controlador que executa o campo.
+O cálculo do gradiente é local, o que torna o método barato e também cego ao que está
+além da vizinhança imediata. Daí vêm as duas primeiras de quatro limitações conhecidas
+\cite{Koren1991, Siegwart2011}: mínimos locais capazes de aprisionar o robô e oscilação em
+passagens estreitas. As outras duas são da formulação, e não do alcance do cálculo:
+havendo obstáculo junto ao objetivo, a repulsão pode superar a atração e o objetivo deixa
+de ser alcançável; e o campo prescreve direção, não trajetória, de sorte que não considera
+restrição cinemática nem dinâmica do veículo. A primeira limitação é a mais citada e a que
+mais depende da geometria do ambiente; a última é a que mais depende do controlador que
+executa o campo.
 
 Diversas extensões foram propostas para superar estas limitações, incluindo Campos Potenciais Harmônicos \cite{Connolly1990}, combinação com navegação em grafo \cite{Barraquand1992}, e abordagens evolutivas \cite{Vadakkepat2000}.
 
