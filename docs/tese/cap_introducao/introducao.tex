@@ -51,7 +51,7 @@ limitação acopla percepção e reação em sistemas que percebem, decidem e se
 mesmo tempo, e relata o desempenho \emph{agregado} do conjunto. Daí decorre o problema
 desta tese, que é de atribuição e não de desempenho: quando uma arquitetura desse tipo
 inspeciona mais e se afasta mais de um risco do que uma ronda fixa, não se sabe
-\emph{qual} de seus mecanismos produziu cada efeito --- e a comparação contra a ronda
+\emph{qual} de seus mecanismos produziu cada efeito, e a comparação contra a ronda
 fixa não ajuda a descobrir, porque a ronda fixa não dispõe de mecanismo algum para
 deixar a rota e perde por construção.
 
@@ -67,7 +67,7 @@ Formula-se, assim, a pergunta central:
 
 \begin{quote}
 Em uma arquitetura de inspeção que acopla o que o robô percebe à forma como ele reage,
-\emph{qual mecanismo responde por qual efeito, e a que custo} --- quando cada mecanismo
+\emph{qual mecanismo responde por qual efeito, e a que custo}: quando cada mecanismo
 é trocado ou removido isoladamente, mantidos o mesmo controlador de navegação, o mesmo
 cenário e o mesmo protocolo de medida?
 \end{quote}
@@ -150,7 +150,7 @@ Projetar, implementar e avaliar uma arquitetura de navegação deliberativo-reat
 duas camadas para inspeção de subestações elétricas, na qual uma patrulha
 deliberativa de sensoriamento ativo conduz os sensores pelo sítio e uma camada
 reativa converte a saliência sensorial em um campo de atração/repulsão que aciona,
-por limiar, a aproximação de anomalias e o afastamento de riscos --- atribuindo
+por limiar, a aproximação de anomalias e o afastamento de riscos, atribuindo
 experimentalmente a cada mecanismo o efeito que ele de fato produz.
 
 \subsection{Objetivos Específicos}
@@ -233,12 +233,11 @@ proposta.
     \cite{Macenski2022}. \emph{Modificação:} projeção persistente do risco detectado
     como zona de exclusão no mapa de custos global, acoplada à preempção reativa, para
     tratar riscos que bloqueiam a própria rota de patrulha
-    (Seção~\ref{sec:prop-keepout}). \emph{Evidência:} ablação em três braços --- com
+    (Seção~\ref{sec:prop-keepout}). \emph{Evidência:} ablação em três braços: com
     zona e sem supervisor, com ambos, e sem zona (Seção~\ref{sec:res-ablacao}).
     \emph{Conhecimento novo:} sobre um risco estático na rota, o afastamento é
     atribuível à zona de exclusão deliberativa e não à ponderação reativa; e sem ela o
-    recuo reativo sozinho não resolveu o risco dentro do orçamento de execução concedido
-    --- nenhuma execução concluiu a missão. \emph{Limitação:} o resultado vale para o
+    recuo reativo sozinho não resolveu o risco dentro do orçamento de execução concedido: nenhuma execução concluiu a missão. \emph{Limitação:} o resultado vale para o
     cenário de risco estático sobre a rota e para as configurações estudadas; ausência
     de benefício adicional detectado não demonstra equivalência geral de componentes.
 
@@ -266,14 +265,14 @@ proposta.
 %% convidava a ler a familia como prospectiva. A sec. 6.1.2 ja declara que o conjunto
 %% de DESFECHOS foi fixado depois das execucoes; a introducao passa a dize-lo tambem.
     comparação primária de $15$ testes, cuja \emph{regra} de multiplicidade precedeu as
-    execuções mas cujo \emph{conjunto de desfechos} foi fixado depois delas --- razão
+    execuções mas cujo \emph{conjunto de desfechos} foi fixado depois delas: razão
     pela qual a família é descrita como primária com desfechos especificados
     retrospectivamente, e não como confirmatória
     (Seções~\ref{sec:setup-censo} e~\ref{sec:res-familias}).
     \emph{Conhecimento novo:} o ganho sobre uma ronda fixa não é informativo sobre
     mecanismo; o contraste informativo é contra a mesma arquitetura com um fator
     trocado. \emph{Limitação:} um único \textit{layout} e uma única distribuição de
-    eventos por cenário --- o que as repetições estabelecem é repetibilidade naquelas
+    eventos por cenário: o que as repetições estabelecem é repetibilidade naquelas
     condições, não validade externa.
 
     \item \textbf{Custo medido da precedência de segurança.} \emph{Herdado:} a prática
@@ -289,13 +288,12 @@ proposta.
     elegibilidade e da geometria do cenário, e não é uma constante da arquitetura; a
     \emph{duração} da supressão depende ainda do relógio do decaimento, e o recuo que a
     abre não dispara sob o período especificado
-    (Seção~\ref{sec:res-relogio-consistente}) --- o que se repete nas duas
+    (Seção~\ref{sec:res-relogio-consistente}): o que se repete nas duas
     implementações é a inspeção perdida, não o mecanismo.
 
     \item \textbf{Resultado negativo: o critério de seleção não teve efeito
     detectável.} \emph{Herdado:} a ponderação de alvos por saliência.
-    \emph{Modificação:} variante que difere \emph{apenas} na regra de seleção ---
-    o alvo mais próximo em lugar do mais saliente (Seção~\ref{sec:res-heu}).
+    \emph{Modificação:} variante que difere \emph{apenas} na regra de seleção: o alvo mais próximo em lugar do mais saliente (Seção~\ref{sec:res-heu}).
 %% Corrigido em 14/11/2026: esta contribuicao invocava equivalencia por TOST.
 %% Os unicos TOST da tese comparam a ablacao eta=0 as calibracoes de eta (duracao) e
 %% N2 ao metodo (inspecoes) -- nenhum deles e o contraste metodo contra HEU-sel. A
@@ -324,8 +322,7 @@ proposta.
     cenários por oito desfechos --- com correção interna de multiplicidade. \emph{Conhecimento novo:} nas implementações
     comparadas, a linha de base tabular de controle de movimento apresentou tempo em
     investigação maior nos três cenários, com separação completa, e nenhuma diferença
-    detectada de completude de inspeção; nas demais métricas o resultado é misto ---
-    menor duração mediana e menor percurso em \texttt{default} e \texttt{conflict},
+    detectada de completude de inspeção; nas demais métricas o resultado é misto: menor duração mediana e menor percurso em \texttt{default} e \texttt{conflict},
     maior afastamento mínimo, pior em \texttt{adverse}. \emph{Limitação:} a comparação
     é entre as duas implementações efetivamente testadas --- a política atua em
     velocidade e foi treinada em simulador cinemático, enquanto o método envia metas ao
@@ -363,7 +360,7 @@ Cabe dizer quais resultados, e com que consequências.
     \item \textbf{O ganho de segurança não vem da ponderação reativa.} Uma patrulha
     fixa portando a mesma zona de exclusão disparada por detecção, e sem qualquer
     supervisor reativo, alcançou afastamento mínimo mediano de $1{,}73$~m, contra
-    $1{,}71$~m da ablação que retém a inspeção reativa --- sem diferença
+    $1{,}71$~m da ablação que retém a inspeção reativa: sem diferença
     estatisticamente detectável ($p_{\mathrm{Holm}}=0{,}4194$). O que a camada
     reativa acrescenta sobre a patrulha fixa são as inspeções ($3$ contra $0$ de
     $3$), não o afastamento. Um \textit{framework} organizado em torno da modulação
@@ -375,8 +372,7 @@ Cabe dizer quais resultados, e com que consequências.
     consequência, uma varredura sobre $\eta$ não mede sensibilidade comportamental,
     e nenhum experimento conduzido atribuiu efeito observável à atualização. Treinar
     uma política sobre essa tabela exigiria política de exploração, mapeamento de
-    ação para velocidade e comparação contra \textit{Q-learning} tabular comum ---
-    um estudo próprio, e não um módulo a mais. Esse estudo foi posteriormente
+    ação para velocidade e comparação contra \textit{Q-learning} tabular comum: um estudo próprio, e não um módulo a mais. Esse estudo foi posteriormente
     conduzido em sua forma executada e é relatado na Seção~\ref{sec:res-qdriven}:
     uma política tabular aprendida, selecionando a ação executada, não altera a
     completude de inspeção nem a segurança, e custa tempo na subtarefa reativa.

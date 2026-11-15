@@ -15,7 +15,7 @@ resolver e o que deliberadamente deixa de fora.
 
 Robôs de inspeção de subestações tipicamente seguem uma patrulha fixa, sem adaptar o
 percurso ao que percebem. Um controlador puramente reativo, no extremo oposto,
-responde apenas a estímulos já dentro do alcance sensorial --- e, portanto, nada
+responde apenas a estímulos já dentro do alcance sensorial: e, portanto, nada
 garante que os sensores cheguem aonde os eventos ocorrem. A arquitetura proposta faz
 a ponte entre esses dois regimes.
 
@@ -48,8 +48,7 @@ O sistema separa a inspeção em duas camadas cooperantes
 (Figura~\ref{fig:prop-arquitetura}).
 
 Uma camada \emph{deliberativa} executa a patrulha de inspeção: visita uma sequência
-de \textit{waypoints} ao redor dos equipamentos usando uma pilha de navegação padrão
---- Nav2 com controlador \textit{Model Predictive Path Integral} (MPPI). Interpreta-se
+de \textit{waypoints} ao redor dos equipamentos usando uma pilha de navegação padrão: Nav2 com controlador \textit{Model Predictive Path Integral} (MPPI). Interpreta-se
 essa camada como \emph{sensoriamento ativo}: já que um agente puramente reativo só
 responde a estímulos dentro do alcance, é necessário um mecanismo \emph{anterior} que
 leve os sensores até onde os eventos possam ocorrer. A patrulha provê exatamente esse
@@ -61,7 +60,7 @@ posicionamento.
 O termo é usado no sentido fraco e deve ser lido assim: a rota é \emph{predefinida} e
 o que a camada faz é levar o sensor a onde o evento pode estar. Não há otimização de
 ganho de informação, nem seleção de pontos de vista por utilidade esperada, nem
-atualização de crença sobre onde um evento estaria --- nada do que a literatura de
+atualização de crença sobre onde um evento estaria: nada do que a literatura de
 percepção ativa entende por planejamento de sensoriamento. Uma ronda predefinida com
 reação a eventos não demonstra, por si, estratégia nova de percepção ativa, e esta
 tese não a reivindica.
@@ -105,7 +104,7 @@ $\;\rightarrow\;$ Nav2/MPPI $\;\rightarrow\;$ \texttt{/cmd\_vel}.
 
 A atualização de valor da Seção~\ref{sec:prop-atualizacao} \emph{não} pertence a esse
 caminho. Ela observa o mesmo campo e a mesma transição de estado, atualiza uma tabela e
-publica o resíduo para registro --- e nada do que ela calcula retorna ao supervisor, à
+publica o resíduo para registro, e nada do que ela calcula retorna ao supervisor, à
 seleção de metas ou ao controlador. Tudo o que se mede como comportamento nesta tese é
 produzido pela cadeia acima; tudo o que se mede sobre a tabela é produzido fora dela.
 Em consequência, a estabilidade do comportamento sob variações de $\eta$, relatada no
@@ -159,7 +158,7 @@ direção do movimento é determinada pela geometria da meta emitida
 espacial, no sentido de \citeonline{Barraquand1992} e dos métodos que
 \citeonline{Koren1991} analisam, é objeto diferente: define-se sobre o espaço, e o
 movimento é o gradiente descendente desse campo. As propriedades matemáticas de um não
-se transferem ao outro --- em particular, nem as armadilhas de mínimo local nem os
+se transferem ao outro: em particular, nem as armadilhas de mínimo local nem os
 resultados de completude dos métodos de campo potencial se aplicam a $\Phi_t$, e nem
 as garantias que esses métodos oferecem. A analogia é mantida porque é esclarecedora
 quanto à \emph{intuição} de atrair e repelir; ela não é herança de propriedades. Ele é
@@ -324,7 +323,7 @@ convém não confundi-las:
 \end{itemize}
 
 A escolha de $3{,}3$~m é, portanto, justificada por construção, e não pelo resultado
-que produz --- ponto que importa porque a Seção~\ref{sec:res-inspecao} reavalia os
+que produz: ponto que importa porque a Seção~\ref{sec:res-inspecao} reavalia os
 mesmos registros com um limiar de $4{,}0$~m e mostra que a taxa creditada é sensível a
 ele. Essa reavaliação é retrospectiva e serve para separar sensibilidade da métrica de
 degradação física da aproximação; não é o critério adotado.
@@ -425,7 +424,7 @@ Tabela~\ref{tab:prop-transicoes}.}
 \caption{Camada reativa \textsc{Stay Alert} (por ciclo de controle)}
 \label{alg:stayalert}
 \begin{algorithmic}[1]
-\STATE \textbf{entrada:} campo $\Phi$; evento selecionado $e^\star$ --- o mais
+\STATE \textbf{entrada:} campo $\Phi$; evento selecionado $e^\star$: o mais
        saliente entre os publicados no alcance ou, se o supervisor já tem pose e
        identidade retidas de um alvo comprometido, esse alvo, ainda que não esteja
        sendo publicado; limiares $\theta_{\text{in}},\theta_{\text{out}}$;
@@ -565,7 +564,7 @@ e a tolerância de razão entre $0{,}015$ e $0{,}04$, o período fica entre $1{,
 $1{,}74$~s. O preço da restrição é alto --- $65\%$ dos pares são excluídos, a maioria na
 cauda de baixa magnitude e na fase de reobservação ---, e é esse preço que torna o
 restante interpretável.}. Isso é visível nos \textit{logs},
-em que $\Phi$ repete o mesmo valor em disparos consecutivos de $1$~s antes de cair --- a
+em que $\Phi$ repete o mesmo valor em disparos consecutivos de $1$~s antes de cair: a
 sequência $0{,}015$; $0{,}015$; $0{,}013$; $0{,}011$; $0{,}011$; $0{,}009$; $0{,}009$ é
 um trecho literal de uma execução.
 
@@ -581,8 +580,8 @@ na configuração CM fica em torno de $1{,}61$~s.
 
 O mesmo estimador aplicado braço a braço dá períodos entre $1{,}57$ e $1{,}70$~s em
 nove configurações, com faixas por execução largamente sobrepostas, e a contagem direta
-confirma a semelhança com margem bem mais estreita --- $1{,}57$, $1{,}57$ e $1{,}60$~s
-em três braços. A distorção é, portanto, de magnitude semelhante em todos eles --- o que era de esperar, já que o campo
+confirma a semelhança com margem bem mais estreita: $1{,}57$, $1{,}57$ e $1{,}60$~s
+em três braços. A distorção é, portanto, de magnitude semelhante em todos eles, o que era de esperar, já que o campo
 é o mesmo código. \textbf{Disso não se segue, porém, que o defeito não confunda
 contraste algum}, e a tese não o afirma. Distorção igual na \emph{dinâmica do campo} não
 é influência igual sobre a \emph{decisão}: o método e a variante de seleção disparam
@@ -615,7 +614,7 @@ pode ter sido produzido um ou mais ciclos antes.
 Três entrelaçamentos decorrem disso e são admitidos pelo projeto. Uma observação pode
 chegar entre a leitura do campo e a avaliação das guardas, caso em que ela só pesa no
 ciclo seguinte. O supervisor pode disparar sobre uma pose retida cujo evento já não
-está sendo publicado --- é o redisparo descrito na Seção~\ref{sec:prop-ciclo-alvo}. E o
+está sendo publicado: é o redisparo descrito na Seção~\ref{sec:prop-ciclo-alvo}. E o
 decaimento pode ocorrer entre a saída de um episódio e a reavaliação da guarda, o que
 decide se um alvo falho volta a disparar. Nenhum desses entrelaçamentos é uma condição
 de corrida nociva: o campo é escalar e monótono entre observações, e o supervisor toma
@@ -652,7 +651,7 @@ Em cada ciclo, na ordem lógica:
 \subsection{Vínculo entre Valor Retido e Identidade do Evento}
 
 Os acumuladores retêm \emph{magnitude}, não identidade: $h$ e $a$ são escalares. A
-identidade vem por um canal separado --- o gerador de eventos publica, a $2$~Hz, a
+identidade vem por um canal separado: o gerador de eventos publica, a $2$~Hz, a
 identidade do evento de atração selecionado (o mais saliente não comprometido, ou o
 mais próximo no contraste de seleção) junto com a pose de inspeção correspondente, e a
 pose de recuo do risco mais próximo. O supervisor \emph{retém} a última pose e a última
@@ -662,7 +661,7 @@ Daí decorrem duas propriedades que precisam ser conhecidas:
 
 \begin{itemize}
     \item o canal pode reter uma intensidade de um evento que, no passo corrente, já não
-    é o publicado --- a magnitude sobrevive à observação que a produziu, por construção
+    é o publicado: a magnitude sobrevive à observação que a produziu, por construção
     (Seção~\ref{sec:prop-campo}); e
     \item a pose e a identidade usadas na transição são as \emph{últimas recebidas}, não
     necessariamente contemporâneas do valor que armou a guarda. No modo de disparo por
@@ -716,7 +715,7 @@ para a leitura dos resultados é qual transição devolve o alvo ao conjunto ele
 permanecem comprometidos, de modo que \emph{não existe regra projetada} de nova
 tentativa. Isso não equivale a dizer que um alvo falho não volta a ser investigado: o
 supervisor retém a pose e a identidade, e pode redisparar sobre elas enquanto o valor
-no canal de atração não tiver decaído abaixo de $\theta_{\text{in}}$ --- redisparo que
+no canal de atração não tiver decaído abaixo de $\theta_{\text{in}}$: redisparo que
 é consequência de temporização, não de política de recuperação, e que o parágrafo após
 a tabela descreve com os casos observados.
 
@@ -756,7 +755,7 @@ no canal $a$ e a pose latchada no supervisor. Se o episódio falho termina antes
 próximo período de decaimento reduzir esse valor abaixo de $\theta_{\text{in}}$, a
 guarda de \textsc{Patrol} dispara de novo no ciclo seguinte, sobre a mesma pose e a
 mesma identidade. Foi exatamente o que ocorreu em duas das três execuções com falha de
-navegação, e o que não ocorreu na terceira --- onde um passo de decaimento caiu entre a
+navegação, e o que não ocorreu na terceira: onde um passo de decaimento caiu entre a
 saída e a reavaliação. Não é recuperação por projeto: é coincidência de temporização, e
 é assim que deve ser lido.
 
@@ -764,7 +763,7 @@ saída e a reavaliação. Não é recuperação por projeto: é coincidência de
 
 A entrega de um risco à zona de exclusão suprime sua publicação \textbf{na fonte}: o
 gerador de eventos deixa de publicar aquele risco, de modo que nenhuma observação nova
-alcança o canal reativo. Não é supressão no consumo, e não é zeramento do canal --- o
+alcança o canal reativo. Não é supressão no consumo, e não é zeramento do canal: o
 valor já armazenado em $h$ permanece e decai.
 
 Continuam conhecendo o risco, no mesmo instante:
@@ -772,7 +771,7 @@ Continuam conhecendo o risco, no mesmo instante:
 \begin{itemize}
     \item o \textit{costmap} global, pela nuvem da zona de exclusão, que segue sendo
     publicada a $2$~Hz com a posição \emph{percebida} travada na primeira detecção, até
-    o fim da missão --- o planejador continua contornando a marca;
+    o fim da missão: o planejador continua contornando a marca;
     \item o coletor de métricas, que mede a distância ao risco pela posição
     \emph{verdadeira} via árvore de transformadas, independentemente de $\Phi$.
 \end{itemize}
@@ -918,7 +917,7 @@ robô está no alcance. Como a zona de exclusão está desabilitada nesse cenár
 entrega e a reobservação renova o canal: a supressão da atração dura, medida nos
 registros, cerca de $70$~s, e uma de quatro inspeções é abandonada em todas as
 execuções (Seção~\ref{sec:res-custo-precedencia}). É o preço da precedência, exibido
-pelo mecanismo que o produz --- com a ressalva de que a \emph{duração} aqui citada
+pelo mecanismo que o produz: com a ressalva de que a \emph{duração} aqui citada
 pertence ao relógio efetivamente executado e encurta sob o período especificado,
 enquanto a inspeção abandonada persiste nos dois casos
 (Seção~\ref{sec:res-relogio-consistente}).
@@ -960,7 +959,7 @@ governado pelos limiares sobre o campo bruto $\Phi$ e pela máquina de estados d
 Algoritmo~\ref{alg:stayalert}, e o movimento provém das metas enviadas ao Nav2/MPPI.
 Em consequência, a varredura sobre $\eta$ relatada na literatura associada a este
 trabalho constitui análise \emph{numérica da tabela de valor}, e não demonstração de
-robustez comportamental --- e é assim que ela é apresentada.
+robustez comportamental, e é assim que ela é apresentada.
 
 %% Acrescentado em 12/11/2026. O estatuto teorico do termo aditivo precisa estar
 %% declarado aqui, onde a equacao aparece, e nao so na conclusao: e a primeira coisa
@@ -977,7 +976,7 @@ ademais, representável como uma componente adicional de recompensa, à maneira 
 outras abordagens que acoplam campos potenciais a aprendizado
 \cite{zhang2023apf}: não há, portanto, novidade a reivindicar sobre o aumento de
 recompensa no plano formal, e a contribuição desta tese não se localiza aí. Daí
-também decorre a escolha de vocabulário mantida em todo o documento --- relata-se
+também decorre a escolha de vocabulário mantida em todo o documento: relata-se
 \emph{estabilidade dos incrementos} nas simulações avaliadas, e não convergência.
 
 Registra-se a formulação aqui como \emph{nota de projeto}, isto é, como caminho
@@ -988,5 +987,5 @@ levado a funcionar em um braço separado: a Seção~\ref{sec:res-qdriven} relata
 $\Phi$, \emph{seleciona} a ação executada, medido contra o método nos três
 cenários. O Capítulo~\ref{cap:resultados} relata o resíduo completo
 $|\alpha\delta+\eta\Phi|$ como evidência de que os incrementos permanecem limitados
-nas simulações avaliadas --- o que atesta estabilidade dos incrementos, e não
+nas simulações avaliadas, o que atesta estabilidade dos incrementos, e não
 convergência, e muito menos que a atualização governe o comportamento.

@@ -233,7 +233,7 @@ execução, e o manifesto registra a semente de cada uma.
 %% planejada em toda a matriz, o que nao e o caso.
 Convém ser exato quanto ao que a semente controla: ela alimenta \emph{apenas} o gerador
 de ruído de percepção. Em $30$ dos $32$ pares o ruído está desligado e a semente,
-portanto, não altera nada --- nessas repetições não há aleatorização planejada, e a
+portanto, não altera nada: nessas repetições não há aleatorização planejada, e a
 variabilidade observada provém da não-determinação da simulação e do
 \textit{middleware}. Somente nas duas configurações de ruído a semente produz
 realizações distintas. A Seção~\ref{sec:res-ameacas} discute o que isso permite
@@ -286,13 +286,13 @@ execuções da matriz:
         um diretório): a primeira tentativa de executar a verificação do decaimento sob
         relógio simulado. A guarda que autoriza o decaimento nascia com uma referência
         de relógio de parede e passou a ser comparada com o tempo simulado, que começa
-        perto de zero, de modo que ela \emph{nunca} disparava --- nenhuma aplicação do
+        perto de zero, de modo que ela \emph{nunca} disparava: nenhuma aplicação do
         fator em qualquer das trinta execuções, que no entanto correram até o fim sem
         erro aparente. São descarte de instrumento, não resultado desfavorável, e foi o
         contador de aplicações, acrescentado ao campo, que as denunciou. A bateria foi
         relançada somente após um ensaio de uma execução confirmar a contagem esperada.
         \item \textbf{Bateria noturna de 01/09/2026}: substituída, e com os
-        \textit{logs} de lançamento não preservados --- restam os CSVs. É a única
+        \textit{logs} de lançamento não preservados: restam os CSVs. É a única
         lacuna de registro entre os descartes, e fica declarada como tal.
     \end{itemize}
 
@@ -328,7 +328,7 @@ Registram-se, por execução:
     encerrou um episódio como bem-sucedido \emph{e} que o avaliador, consultando a
     posição verdadeira do alvo, o encontrou dentro da distância de confirmação. Não
     mede diagnóstico de equipamento, qualidade de imagem ou de áudio, orientação do
-    sensor no instante da medida, nem aquisição útil de dado algum --- nada disso é
+    sensor no instante da medida, nem aquisição útil de dado algum: nada disso é
     simulado. Tampouco verifica a persistência da proximidade ao longo de toda a
     permanência: a confirmação é pontual, no instante do evento de encerramento.
 
@@ -349,7 +349,7 @@ Registram-se, por execução:
     $\tau_t = d_t / v_t$, em que $d_t$ é a distância corrente ao risco e
     $v_t = (d_{t-1}-d_t)/(t-t_{-1})$ é a velocidade radial de aproximação estimada por
     diferença finita entre duas amostras consecutivas de odometria. O domínio é
-    restrito: a razão só é \emph{definida} quando $v_t > 10^{-3}$~m/s --- isto é,
+    restrito: a razão só é \emph{definida} quando $v_t > 10^{-3}$~m/s, isto é,
     quando o robô se aproxima. Amostras com velocidade radial nula ou de afastamento
     não produzem valor e não entram no mínimo; se nenhuma amostra da execução for
     definida, a métrica é registrada como indefinida, e não como valor grande. Não é
@@ -392,7 +392,7 @@ Registram-se, por execução:
     caminho até o encerramento da ronda.
 
     \item[Tempo de investigação] Tempo \emph{total} por execução passado em
-    \textsc{Investigate}, e não média por episódio --- de modo que uma configuração
+    \textsc{Investigate}, e não média por episódio, de modo que uma configuração
     que nunca investiga contribui com um $0$ bem definido, em vez de média
     indefinida.
 
@@ -427,7 +427,7 @@ Capítulo~\ref{cap:resultados} opera. Amostras temporais dentro de uma execuçã
 tempo mínimo até a colisão são de \emph{missão inteira}, incluindo o período anterior à
 ativação do risco: o coletor não reinicia essas métricas na ativação. A auditoria por
 episódio preserva o instante de ativação, o que permite verificar \emph{a posteriori}
-onde o mínimo foi atingido --- e o mínimo de distância ocorre após a ativação em todas
+onde o mínimo foi atingido, e o mínimo de distância ocorre após a ativação em todas
 as execuções dinâmicas válidas. Isso não se estende ao mínimo da razão de tempo até a
 colisão, que pode carregar valor anterior à ativação, de modo que essa diferença é
 relatada estritamente como margem de missão inteira, e não como efeito pós-ativação
@@ -500,11 +500,11 @@ caso de anomalia e subtraído no caso de risco ---, mais penalidade de passo de
 $-0{,}05$. Terminação com $+20$ ao alcançar a distância de parada de treino
 ($1{,}8$~m) para anomalia, $+20$ ao atingir $6{,}0$~m de afastamento para risco e
 $-20$ ao entrar em $0{,}5$~m de um risco. É \emph{reward augmentation}: $\Phi$ aparece
-uma única vez, na recompensa, e não como termo externo à atualização --- a diferença
+uma única vez, na recompensa, e não como termo externo à atualização: a diferença
 em relação à formulação passiva da Seção~\ref{sec:prop-atualizacao}.
 
 \textbf{Término de episódio.} Alcance do alvo, afastamento seguro, entrada na região de
-colisão, ou $120$ passos de $0{,}2$~s --- isto é, $24$~s de horizonte.
+colisão, ou $120$ passos de $0{,}2$~s, isto é, $24$~s de horizonte.
 
 \subsection{Treinamento}
 
@@ -540,7 +540,7 @@ Verificação de sanidade & política gulosa no próprio simulador de treino\\
 \end{table}
 
 Registre-se o que \emph{não} foi feito, porque importa para julgar o contraste: não há
-divisão treino/ajuste/avaliação em sentido estrito --- a única avaliação interna é uma
+divisão treino/ajuste/avaliação em sentido estrito: a única avaliação interna é uma
 verificação de sanidade da política gulosa no \emph{mesmo} simulador cinemático, com
 semente distinta, e não há critério de seleção de modelo nem busca de
 hiperparâmetros. A tabela obtida ao fim dos $40\,000$ episódios é a que roda no Gazebo.
@@ -561,7 +561,7 @@ delimitam o que o contraste sustenta:
 
 \begin{enumerate}
     \item \textbf{A camada de eventos não é a mesma.} O método consome eventos pelo
-    canal publicado --- posição \emph{percebida}, sujeita a ruído quando configurado,
+    canal publicado: posição \emph{percebida}, sujeita a ruído quando configurado,
     intensidade ponderada por modalidade, limiar e memória. O nó \textsc{Q-driven} lê a
     configuração do cenário diretamente e seleciona o evento \emph{mais próximo} por
     posição \emph{verdadeira}, disparando por detecção bruta dentro do raio sensorial,
@@ -580,7 +580,7 @@ delimitam o que o contraste sustenta:
 \end{enumerate}
 
 Por isso o contraste é lido, no Capítulo~\ref{cap:resultados}, como comparação entre
-\emph{as duas implementações efetivamente testadas} --- e não como comparação entre
+\emph{as duas implementações efetivamente testadas}, e não como comparação entre
 paradigmas de decisão com todo o restante mantido igual. A heurística genérica sobre o
 \emph{mesmo} controlador (Seção~\ref{sec:res-heu}) é o contraste apropriado para essa
 inferência mais forte.
@@ -610,15 +610,15 @@ Capítulo~\ref{cap:resultados}.
 A versão do repositório correspondente a esta tese é identificada pela etiqueta de
 versão \texttt{tese-defesa-v1}. Trata-se de etiqueta anotada, de modo que ela resolve
 para um \textit{commit} único, recuperável por
-\texttt{git rev-parse tese-defesa-v1\textasciicircum\{commit\}} --- não é preciso confiar em
+\texttt{git rev-parse tese-defesa-v1\textasciicircum\{commit\}}: não é preciso confiar em
 anotação à parte, nem em recurso do serviço de hospedagem. Quem for conferir deve usar
-essa etiqueta, e não o ramo principal, que continua a receber trabalho posterior --- o
+essa etiqueta, e não o ramo principal, que continua a receber trabalho posterior: o
 estado corrente do ramo principal \emph{não} é o estado avaliado aqui.
 
 A integridade dos dados é conferível sem depender do histórico de versionamento: o
 arquivo \texttt{results/CHECKSUMS.sha256} traz a soma SHA-256 de cada um dos $320$
 arquivos CSV por execução, mais a trilha de auditoria por episódio, a tabela da família
-de comparação primária e o manifesto --- $323$ registros ao todo, verificáveis em um
+de comparação primária e o manifesto: $323$ registros ao todo, verificáveis em um
 comando. Dois arquivos corrompidos ou substituídos não passam nessa verificação, e é
 esse o teste que torna os números desta tese conferíveis em vez de aceitos por
 confiança.
@@ -656,7 +656,7 @@ Duas limitações são declaradas em vez de contornadas.
 
 A primeira: \textbf{o manifesto não registra o identificador de \textit{commit} de cada
 execução}, porque o \textit{script} de bateria não o gravava no momento em que as
-baterias rodaram. Isso não é recuperável retroativamente --- inferir o
+baterias rodaram. Isso não é recuperável retroativamente: inferir o
 \textit{commit} pela data seria conjetura apresentada como registro. A identificação
 disponível é, portanto, por etiqueta de versão e por soma de verificação dos
 resultados, e o \textit{script} de bateria passa a gravar o \textit{commit} por
@@ -670,7 +670,7 @@ planejada, e a variabilidade entre execuções vem da não-determinação da sim
 %% (Secao do defeito temporal), a dinamica efetiva do campo depende de hardware, carga
 %% e escalonamento -- de sorte que outra maquina pode nao amostrar a mesma
 %% distribuicao. A formulacao segura nomeia as condicoes em vez de pressupo-las iguais.
-Reexecutar a matriz produz resultados \emph{novos}, não uma cópia da existente --- e
+Reexecutar a matriz produz resultados \emph{novos}, não uma cópia da existente, e
 não se pode afirmar que venham da mesma distribuição. A razão é o defeito temporal
 documentado na Seção~\ref{sec:prop-relogios}: enquanto a guarda do decaimento compara
 instantes de relógio de \emph{parede}, o período de decaimento efetivamente realizado
@@ -678,7 +678,7 @@ depende de hardware, carga da máquina e escalonamento do sistema operacional. U
 reexecução em outra máquina, ou na mesma sob carga diferente, pode portanto exercitar
 uma dinâmica de campo distinta. Até que essa dependência seja controlada, a formulação
 correta é: a reexecução produz novos resultados sob condições que precisam ser
-especificadas e comparadas --- e as condições da bateria desta tese estão registradas
+especificadas e comparadas, e as condições da bateria desta tese estão registradas
 no manifesto.
 
 O que é reproduzível por construção é a \emph{análise}:

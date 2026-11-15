@@ -117,7 +117,7 @@ Para cada etapa temos:
 
     \item \textbf{Medição do sensor.} Chega uma nova observação dos sensores (\ac{IMU}, GPS, \ac{LiDAR}, entre outros), que alimenta a etapa de correção. Ao contrário do estado previsto, ela é informação externa ao modelo.
 
-    \item \textbf{Correção (atualização de medição).} Compara-se a medição com o estado previsto. Da comparação resulta o ganho de Kalman, que pondera quanto o filtro deve confiar na medição atual em relação à previsão. O resultado é o \emph{estado estimado}, melhor estimativa corrente das variáveis de estado --- posição, velocidade e demais.
+    \item \textbf{Correção (atualização de medição).} Compara-se a medição com o estado previsto. Da comparação resulta o ganho de Kalman, que pondera quanto o filtro deve confiar na medição atual em relação à previsão. O resultado é o \emph{estado estimado}, melhor estimativa corrente das variáveis de estado: posição, velocidade e demais.
 
     \item \textbf{Realimentação.} O estado estimado retorna à predição, que projeta o instante seguinte, e o ciclo recomeça. Note-se que o filtro \emph{é} esse ciclo: predição e correção alternam-se indefinidamente, e não existe uma etapa separada à qual caiba o nome de filtro de Kalman.
 \end{enumerate}

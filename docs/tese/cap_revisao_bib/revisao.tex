@@ -6,11 +6,11 @@
 \chapter{Revisão Crítica da Literatura}
 \label{cap:revisao}
 
-A automação industrial tem testemunhado avanços exponenciais nas últimas décadas, impulsionada pela necessidade de aumentar a eficiência, a segurança e a produtividade em diversos setores. Nesse cenário, os \ac{VTA}, também chamados por \ac{RMT} ou mesmo \ac{UGV} emergem como ferramentas promissoras, particularmente em ambientes complexos e perigosos, como subestações elétricas. A capacidade de um \ac{UGV} navegar autonomamente nesses ambientes é de suma importância, permitindo a execução de tarefas de inspeção de forma mais eficiente, segura e com menor custo operacional.
+A inspeção de subestações elétricas é tarefa predominantemente humana em ambiente energizado, e é desse fato que decorre o interesse por automatizá-la: há limite de segurança para a aproximação a equipamento sob tensão, os eventos de interesse são esparsos ao longo de rotas fixadas por norma, e o custo por inspeção é alto. Os \ac{VTA}, também chamados \ac{RMT} ou \ac{UGV}, são a plataforma em que essa automação tem sido tentada, e a navegação autônoma é a função de que as demais dependem.
 
 Esta revisão analisa criticamente o estado da arte na integração de Aprendizado por Reforço, Visão Computacional e Fusão de Sensores para navegação autônoma de \ac{UGV} em ambientes industriais desafiadores, com ênfase no contexto de subestações elétricas, no período entre 2015 e 2025.
 
-É uma \emph{revisão crítica}, e não uma revisão sistemática: não se executou protocolo prospectivo com bases, consultas, datas de busca, critérios de inclusão e exclusão, número de registros recuperados e processo de seleção documentado. A seleção foi feita por amostragem orientada ao problema --- trabalhos recuperados em busca temática nas três áreas e, dentro delas, os que (i) tratam navegação ou inspeção robótica autônoma, (ii) são citáveis por identificador verificável e (iii) sustentam ou contradizem alguma afirmação feita nesta tese. O alcance dessa seleção é, portanto, limitado: ela não autoriza alegação de cobertura exaustiva da literatura, e as lacunas apontadas adiante devem ser lidas como lacunas \emph{nesta amostra}, não como ausências demonstradas no campo.
+É uma \emph{revisão crítica}, e não uma revisão sistemática: não se executou protocolo prospectivo com bases, consultas, datas de busca, critérios de inclusão e exclusão, número de registros recuperados e processo de seleção documentado. A seleção foi feita por amostragem orientada ao problema: trabalhos recuperados em busca temática nas três áreas e, dentro delas, os que (i) tratam navegação ou inspeção robótica autônoma, (ii) são citáveis por identificador verificável e (iii) sustentam ou contradizem alguma afirmação feita nesta tese. O alcance dessa seleção é, portanto, limitado: ela não autoriza alegação de cobertura exaustiva da literatura, e as lacunas apontadas adiante devem ser lidas como lacunas \emph{nesta amostra}, não como ausências demonstradas no campo.
 
 Os trabalhos citados ao longo do capítulo foram conferidos individualmente por identificador (DOI ou endereço resolvível) quanto a autoria, título, veículo e ano, e as afirmações atribuídas a cada um foram confrontadas com o conteúdo do trabalho.
 
@@ -49,7 +49,7 @@ Estudos comparativos realizados por \cite{Hwangbo2019} e \citeonline{Loquercio20
 
 \subsection{Aprendizado por Reforço Seguro para Ambientes Industriais}
 
-A segurança é uma preocupação primordial na navegação autônoma em ambientes industriais como subestações elétricas. \citeonline{Garciaetal2015} apresentaram uma revisão abrangente de métodos de \ac{RL} Seguro, categorizando-os em abordagens baseadas em modificação da função de recompensa, modificação do processo de exploração, e modificação do critério de otimização.
+A segurança é uma preocupação primordial na navegação autônoma em ambientes industriais como subestações elétricas. \citeonline{Garciaetal2015} levantaram os métodos de \ac{RL} Seguro e os organizaram em três famílias, conforme o que cada uma modifica: a função de recompensa, o processo de exploração ou o critério de otimização.
 
 \citeonline{Achiam2017} introduziram o \ac{CPO}, um algoritmo que garante restrições de segurança durante o processo de otimização da política. \citeonline{Chow2018} expandiram esta abordagem com o conceito de \ac{CMDP}, onde o objetivo é maximizar a recompensa enquanto se satisfaz restrições de custo. %% Corrigido em 14/11/2026: a frase atribuia a Thananjeyan2021 funcoes de barreira e
 %% garantia de invariancia em conjunto seguro, e situava o trabalho em navegacao
@@ -61,7 +61,7 @@ A segurança é uma preocupação primordial na navegação autônoma em ambient
 \citeonline{Thananjeyan2021} seguiram outro caminho: em vez de restringir a
 otimização, aprenderam um crítico de segurança a partir de violações observadas e o
 usaram para alternar entre uma política de tarefa e uma política de recuperação quando
-o risco estimado cresce. A salvaguarda é, portanto, aprendida e probabilística --- não
+o risco estimado cresce. A salvaguarda é, portanto, aprendida e probabilística: não
 oferece a garantia de invariância que uma função de barreira persegue.
 
 Uma abordagem particularmente promissora para ambientes como subestações elétricas foi proposta por \citeonline{Brunke2022}, combinando \ac{RL} com controladores de segurança baseados em modelo que podem intervir quando a política aprendida propõe ações potencialmente perigosas. Esta abordagem híbrida permite explorar os benefícios do aprendizado adaptativo enquanto mantém garantias formais de segurança.
@@ -140,7 +140,7 @@ Para ambientes industriais específicos como subestações, \citeonline{Liu2016V
 
 \subsection{Detecção e Reconhecimento de Anomalias Visuais}
 
-Além da navegação, a visão computacional desempenha um papel crucial na detecção e reconhecimento de anomalias durante inspeções autônomas. \citeonline{Ullah2020DefectDetection} aplicaram aprendizado profundo à detecção de defeitos em equipamentos elétricos de alta tensão a partir de imagens, tarefa que é o análogo perceptivo do evento que esta tese abstrai.
+Chegar ao equipamento é condição da inspeção, não a inspeção: reconhecer a anomalia é problema de visão computacional. \citeonline{Ullah2020DefectDetection} aplicaram aprendizado profundo à detecção de defeitos em equipamentos elétricos de alta tensão a partir de imagens, tarefa que é o análogo perceptivo do evento que esta tese abstrai.
 
 Uma tendência significativa tem sido o desenvolvimento de sistemas que requerem menos dados rotulados para treinamento, essencial para aplicações industriais onde dados de anomalias são escassos. \citeonline{Bergmann2020} publicaram o conjunto de dados MVTec AD, concebido para detecção não supervisionada de anomalias industriais a partir de exemplos normais, e \citeonline{Ruff2021} organizam, em revisão unificadora, as famílias de métodos rasos e profundos de detecção de anomalias.
 
@@ -199,7 +199,7 @@ Para subestações elétricas especificamente, \citeonline{Yan2024CombinedNav} d
 
 \subsection{Fusão Sensorial para Detecção e Classificação de Anomalias}
 
-Além da navegação, a fusão sensorial desempenha um papel crucial na detecção e classificação de anomalias durante inspeções autônomas. No plano da estimação, \citeonline{Neto2021FiltrosRadarLidar} compararam filtro de partículas e filtro de Kalman estendido sobre dados de RADAR e LIDAR, exemplo da camada de fusão que precede qualquer decisão de inspeção.
+A fusão sensorial entra em dois pontos distintos da inspeção autônoma, e convém separá-los: antes da decisão, compondo a estimativa de posição; depois dela, compondo a evidência de anomalia. No plano da estimação, \citeonline{Neto2021FiltrosRadarLidar} compararam filtro de partículas e filtro de Kalman estendido sobre dados de RADAR e LIDAR, exemplo da camada de fusão que precede qualquer decisão de inspeção.
 
 Para a detecção de descargas parciais, \citeonline{Monzon2025PartialDischarge} combinaram métodos elétricos e ópticos com detecção por rede neural, caso em que a fusão de modalidades é a condição para observar o fenômeno.
 
@@ -363,7 +363,7 @@ trabalho precisa ser confrontada diretamente.
 A \autoref{tab:rev-proximos} organiza esse confronto por quatro atributos que são
 exatamente os que esta tese manipula experimentalmente: como o conflito entre reagir e
 prosseguir é resolvido; se o sinal que motivou a reação é retido em um
-\emph{acumulador com decaimento} --- e não apenas se há alguma forma de estado
+\emph{acumulador com decaimento}, e não apenas se há alguma forma de estado
 temporal, que quase toda arquitetura tem; se uma camada deliberativa madura é reaproveitada em vez de substituída; e se o
 efeito de cada mecanismo de supervisão é atribuído experimentalmente, em vez de
 reportado no agregado.
@@ -464,13 +464,13 @@ Sim, por ablação sobre controlador compartilhado\\
 \end{table}
 
 Três leituras decorrem da tabela. Primeira: a precedência categórica não é novidade
-isolada --- a prioridade fixa entre camadas está em \citeonline{Brooks1986} e o
+isolada: a prioridade fixa entre camadas está em \citeonline{Brooks1986} e o
 sequenciador de \citeonline{Bonasso1997} cumpre papel análogo. O que não se encontra
 nessa linhagem é a \emph{medida do preço} dessa prioridade: quantas inspeções legítimas
 ela recusa e quanto tempo de missão ela consome. Segunda: a persistência temporal
 explícita do sinal de perigo, por limiar e decaimento sobre um canal dedicado,
 distingue a proposta tanto da soma vetorial instantânea dos campos potenciais quanto da
-arbitragem comportamental sem memória declarada --- e é precisamente o fator que o
+arbitragem comportamental sem memória declarada, e é precisamente o fator que o
 contraste contra a heurística genérica isola. Terceira: em nenhuma das classes acima a
 atribuição de efeito \emph{entre} mecanismos de supervisão é o objeto do estudo; é o
 que esta tese toma como objeto, com o custo de abstrair a percepção para conseguir
