@@ -60,7 +60,7 @@ def ler_logs(results):
             if m and data:
                 h, mi, s, rotulo, rep = m.groups()
                 cen = re.search(r'scen=(\S+)', linha)
-                # revisao interna: o commit so existe nas baterias rodadas a partir de
+                # o commit so existe nas baterias rodadas a partir de
                 # 13/11/2026; nas anteriores o campo fica vazio, e vazio e o
                 # registro honesto -- nao se infere commit por data.
                 com = re.search(r'commit=(\S+)', linha)
@@ -137,12 +137,12 @@ def main(results):
         if r['duracao_censurada'] == 'sim':
             c['censuradas'] += 1
     print(f'manifesto: {saida}')
-    print(f"pares configuracao-cenario : {len(set(r['config'] for r in linhas))}")
-    print(f"execucoes tentadas         : {c['tentadas']}")
-    print(f"execucoes validas          : {c['validas']}")
-    print(f"  concluiram a missao      : {c['validas'] - c['censuradas']}")
+    print(f"pares configuracao-cenario: {len(set(r['config'] for r in linhas))}")
+    print(f"execucoes tentadas: {c['tentadas']}")
+    print(f"execucoes validas: {c['validas']}")
+    print(f"  concluiram a missao: {c['validas'] - c['censuradas']}")
     print(f"  interrompidas pelo limite: {c['censuradas']}")
-    print(f"execucoes imoveis          : {c['imoveis']}")
+    print(f"execucoes imoveis: {c['imoveis']}")
     print(f"lancamentos registrados nos logs de bateria: {brutos}"
           f"  ({len(runs)} datados; o excedente sobre as tentadas sao baterias"
           f" anteriores descartadas)")

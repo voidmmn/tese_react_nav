@@ -45,7 +45,7 @@ def generate_launch_description():
 
     sim = {'use_sim_time': ParameterValue(use_sim_time, value_type=bool)}
     eta_p = {'eta': ParameterValue(eta, value_type=float)}
-    # verificacao do decaimento (14/11/2026): relogio da guarda de decaimento ('wall' historico | 'sim')
+    # Verificacao do decaimento (14/11/2026): relogio da guarda de decaimento ('wall' historico | 'sim')
     clk_p = {'decay_clock': ParameterValue(
         LaunchConfiguration('decay_clock'), value_type=str)}
     scen_p = {'scenario': scenario}

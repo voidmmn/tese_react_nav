@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ===========================================================================
-# verificacao do decaimento — verificacao direcionada do decaimento temporal (14/11/2026)
+# Verificacao direcionada do decaimento temporal (14/11/2026)
 #
 # Esta verificacao resolve duas pendencias: (i) medida validada do periodo de decaimento
 # realizado, contando aplicacoes de lambda DIRETAMENTE e nao quedas de |Phi|, e
@@ -17,15 +17,15 @@
 # do defeito e diferencial e os contrastes que dependem da persistencia precisam
 # ser condicionados.
 #
-# Uso: bash rodar_verificacao_r201.sh [REPS]
+# Uso: bash rodar_verificacao_decaimento.sh [REPS]
 # ===========================================================================
 set -o pipefail
 REPS=${1:-10}
 MAX_RUN_S=420
 RUNNER="$HOME/tese_ws/src/tese_nav/scripts/rodar_experimentos.sh"
-LOG="$HOME/tese_ws/results/verificacao_r201.log"
+LOG="$HOME/tese_ws/results/verificacao_decaimento.log"
 
-echo "=== verificacao do decaimento: verificacao direcionada | REPS=$REPS | inicio $(date) ===" | tee "$LOG"
+echo "=== Verificacao do decaimento | REPS=$REPS | inicio $(date) ===" | tee "$LOG"
 
 for clk in wall sim; do
   suf=$([ "$clk" = wall ] && echo w || echo s)
@@ -36,4 +36,4 @@ HEU$suf 0.5 true default stay_alert false true 0.0 0.0 nearest range"
   EXPERIMENTS="$MATRIX" DECAY_CLOCK="$clk" bash "$RUNNER" "$REPS" "$MAX_RUN_S" 2>&1 | tee -a "$LOG"
 done
 
-echo "=== verificacao do decaimento: fim $(date) ===" | tee -a "$LOG"
+echo "=== Verificacao do decaimento: fim $(date) ===" | tee -a "$LOG"

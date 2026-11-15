@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""revisao interna: reconcilia TODOS os lancamentos registrados com as execucoes analisadas.
+"""Reconcilia TODOS os lancamentos registrados com as execucoes analisadas.
 
 Para que o censo de execucoes se sustente, os lancamentos e as tentativas incluidas
-reconciliaveis por identificacao de bateria, motivo de exclusao e criterio. Este
+precisam ser reconciliaveis por identificacao de bateria, motivo de exclusao e criterio. Este
 script nao infere nada: conta o que existe no sistema de arquivos e classifica
 cada diretorio por um mapa DECLARADO abaixo. O que nao casa com o mapa sai como
 'nao classificado', nunca com um motivo inventado.
@@ -28,7 +28,7 @@ MAPA = {
  '_noturna_20260901': ('bateria noturna de 01/09/2026', 'substituida; logs nao preservados'),
  '_gate_reuso_20261013': ('ensaio de regressao do portao de reuso', 'ensaio de instrumento, nao da matriz'),
  '_decaimento_sim_invalido_20261114': (
-   'verificacao verificacao do decaimento sob relogio simulado, primeira tentativa',
+   'verificacao do decaimento sob relogio simulado, primeira tentativa',
    'descartada: a referencia do decaimento nascia do relogio de parede e nao era '
    'resemeada ao receber tempo simulado, de modo que lambda nunca foi aplicado '
    '(lam=0/423). Defeito do instrumento, nao resultado'),
@@ -39,7 +39,7 @@ MAPA = {
  '_smoke_kof_20261013': ('ensaio de fumaca', 'ensaio de fumaca, nao da matriz'),
 }
 
-# Rotulos da verificacao direcionada de verificacao do decaimento (14/11/2026): ficam na raiz mas NAO
+# Rotulos da verificacao direcionada do decaimento (14/11/2026): ficam na raiz mas NAO
 # pertencem a matriz das 320. Declarados separadamente.
 R201 = re.compile(r'^(CM|E3|HEU)[ws]$')
 
@@ -67,7 +67,7 @@ def main():
         for lab in sorted(set(logs) | set(csvs)):
             if d == '.':
                 if R201.match(lab):
-                    conj, org, crit = ('verificacao verificacao do decaimento',
+                    conj, org, crit = ('verificacao do decaimento',
                                        'verificacao direcionada do decaimento (14/11/2026)',
                                        'nao pertence a matriz das 320; conjunto proprio')
                 else:

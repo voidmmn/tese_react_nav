@@ -255,10 +255,19 @@ execuções da matriz:
 %% quinze diretorios de descarte. A contagem correta e 595, e a descricao nomeava tres
 %% conjuntos descartados quando ha quinze. Era preciso reconciliar por bateria,
 %% motivo e criterio; ela e agora gerada por script e acompanha o pacote.
-    \item \textbf{Baterias anteriores descartadas.} Os \textit{logs} registram $595$
-    lançamentos ao todo, contra as $320$ execuções analisadas: $275$ lançamentos
-    excedentes, distribuídos por quinze diretórios preservados em vez de apagados. Eles
-    são de quatro naturezas distintas, e a distinção importa:
+%% Recontado em 15/11/2026, depois da verificacao direcionada do decaimento. O censo
+%% anterior fechava em 595 porque foi escrito antes dela. Entram agora as 60 execucoes
+%% da verificacao, que formam conjunto DECLARADO fora da matriz, e as 30 da primeira
+%% tentativa sob relogio simulado, que e descarte com motivo declarado (a guarda nunca
+%% disparava: instrumento defeituoso, nao resultado). O total passa a 685 e os
+%% descartes a dezesseis diretorios em cinco naturezas.
+    \item \textbf{Baterias anteriores descartadas.} Os \textit{logs} registram $685$
+    lançamentos ao todo. Deles, $320$ são as execuções analisadas nos capítulos de
+    resultados e $60$ pertencem à verificação direcionada do decaimento
+    (Seção~\ref{sec:res-verificacao-relogio}), que é conjunto declarado à parte e não
+    entra em tabela alguma da matriz principal. Restam $305$ lançamentos excedentes,
+    distribuídos por dezesseis diretórios preservados em vez de apagados. Eles são de
+    cinco naturezas distintas, e a distinção importa:
 
     \begin{itemize}
         \item \textbf{Estado anterior arquivado pelo próprio executor} ($189$
@@ -273,6 +282,15 @@ execuções da matriz:
         \item \textbf{Ensaios de fumaça e de instrumento} ($11$ lançamentos, seis
         diretórios): verificações de uma ou duas execuções, incluindo o ensaio de
         regressão do portão de reúso. Nunca foram execuções da matriz.
+        \item \textbf{Instrumento defeituoso, descartado por isso} ($30$ lançamentos,
+        um diretório): a primeira tentativa de executar a verificação do decaimento sob
+        relógio simulado. A guarda que autoriza o decaimento nascia com uma referência
+        de relógio de parede e passou a ser comparada com o tempo simulado, que começa
+        perto de zero, de modo que ela \emph{nunca} disparava --- nenhuma aplicação do
+        fator em qualquer das trinta execuções, que no entanto correram até o fim sem
+        erro aparente. São descarte de instrumento, não resultado desfavorável, e foi o
+        contador de aplicações, acrescentado ao campo, que as denunciou. A bateria foi
+        relançada somente após um ensaio de uma execução confirmar a contagem esperada.
         \item \textbf{Bateria noturna de 01/09/2026}: substituída, e com os
         \textit{logs} de lançamento não preservados --- restam os CSVs. É a única
         lacuna de registro entre os descartes, e fica declarada como tal.

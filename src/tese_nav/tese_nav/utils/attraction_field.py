@@ -53,9 +53,9 @@ class AttractionField:
     _haz: float = 0.0            # perigo corrente (magnitude >= 0)
     _last_decay: float = field(default_factory=time.monotonic)
 
-    # --- instrumentacao verificacao do decaimento (14/11/2026) ---------------------------------
+    # --- instrumentacao do decaimento (14/11/2026) ---------------------------------
     # Contar quedas de |Phi| entre amostras NAO conta aplicacoes de lambda:
-    # entre amostras NAO conta aplicacoes de lambda: renovacao por observacao,
+    # renovacao por observacao,
     # maximo, saturacao e troca de canal alteram Phi sem decaimento, e uma
     # renovacao exata mascara um decaimento aplicado. Os contadores abaixo
     # registram a aplicacao DIRETAMENTE, no ponto em que ela ocorre.
@@ -103,7 +103,7 @@ class AttractionField:
         instantes de relogio de PAREDE (`time.monotonic`) enquanto o
         temporizador que chama este metodo corre em tempo SIMULADO. Passar
         `now` permite alimentar a guarda com o mesmo relogio do temporizador,
-        usado na verificacao direcionada de verificacao do decaimento; o padrao fica inalterado
+        usado na verificacao direcionada do decaimento; o padrao fica inalterado
         para nao mexer no comportamento que produziu as 320 execucoes.
         """
         self._n_steps += 1

@@ -20,13 +20,13 @@ TMP="$(mktemp -d)"
 P="$TMP/pacote_reprodutibilidade"
 trap 'rm -rf "$TMP"' EXIT
 
-mkdir -p "$P"/{codigo,resultados,analise,descartes,verificacao do decaimento}
+mkdir -p "$P"/{codigo,resultados,analise,descartes,verificacao_decaimento}
 
 # --- codigo, configuracoes e launch -------------------------------------
 cp -r "$WS/src/tese_nav" "$P/codigo/"
 rm -rf "$P/codigo/tese_nav/scripts/__pycache__"
 for f in rodar_bateria_resub.sh rodar_bateria_blocos.sh run_bateria_noturna.sh \
-         rodar_verificacao_r201.sh; do
+         rodar_verificacao_decaimento.sh; do
   [ -f "$WS/$f" ] && cp "$WS/$f" "$P/codigo/"
 done
 
@@ -47,10 +47,10 @@ for f in audit_trail.csv CHECKSUMS.sha256 manifesto_execucoes.csv \
 done
 cp tabelas/* "$P/resultados/" 2>/dev/null || true
 
-# --- verificacao direcionada de verificacao do decaimento -----------------------------------
+# --- verificacao direcionada do decaimento -----------------------------------
 for f in launch_CMw_* launch_CMs_* launch_E3w_* launch_E3s_* launch_HEUw_* launch_HEUs_* \
          metrics_CMw_* metrics_CMs_* metrics_E3w_* metrics_E3s_* metrics_HEUw_* metrics_HEUs_* \
-         verificacao_r201.log verificacao_decaimento_sim.log; do
+         verificacao_decaimento.log verificacao_decaimento_sim.log; do
   [ -e "$f" ] && cp "$f" "$P/verificacao_decaimento/" 2>/dev/null || true
 done
 
@@ -81,7 +81,7 @@ Gerado em $(date -Iseconds) a partir do *commit* \`$COMMIT\`.
 | Diretorio | Conteudo |
 |---|---|
 | \`codigo/tese_nav/\` | pacote ROS 2 completo: nos, *launch*, configuracoes, *scripts* |
-| \`codigo/rodar_*.sh\` | executores das baterias, incluindo a verificacao de verificacao do decaimento |
+| \`codigo/rodar_*.sh\` | executores das baterias, incluindo a verificacao do decaimento |
 | \`resultados/\` | as **320** execucoes analisadas: um CSV e um log de lancamento por execucao, mais a trilha de auditoria, o manifesto, as somas de verificacao e as tabelas geradas |
 | \`verificacao_decaimento/\` | verificacao direcionada do decaimento temporal: execucoes sob relogio de parede e sob relogio simulado |
 | \`analise/\` | todos os *scripts* de analise; dados os CSVs, regeneram cada numero relatado |

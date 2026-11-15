@@ -86,7 +86,7 @@ class BellmanNode(Node):
         self.residual_pub = self.create_publisher(Float64, '/bellman/update_residual', 10)
         self.dev_pub = self.create_publisher(Int32, '/bellman/route_deviations', 10)
 
-        # verificacao do decaimento (14/11/2026): seletor do relogio da guarda de decaimento.
+        # Verificacao do decaimento (14/11/2026): seletor do relogio da guarda de decaimento.
         # 'wall' = comportamento historico (relogio de parede), que produziu as
         # 320 execucoes; 'sim' = guarda alimentada pelo mesmo relogio do
         # temporizador. O padrao e 'wall' para nao alterar o historico.

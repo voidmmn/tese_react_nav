@@ -62,7 +62,7 @@ def generate_launch_description():
             'enter_threshold': LaunchConfiguration('enter_threshold'),
             'exit_threshold': LaunchConfiguration('exit_threshold'),
             'inspect_confirm_dist': LaunchConfiguration('inspect_confirm_dist'),
-            # verificacao do decaimento (14/11/2026): relogio da guarda de decaimento
+            # Verificacao do decaimento (14/11/2026): relogio da guarda de decaimento
             'decay_clock': LaunchConfiguration('decay_clock'),
         }.items())
 
