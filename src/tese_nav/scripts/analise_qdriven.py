@@ -10,11 +10,14 @@ passiva e dispara por limiar, emitindo METAS a pilha Nav2/MPPI. Mesma patrulha
 por baixo, mesmo protocolo de eventos, mesmos parametros de inspecao
 (standoff 2,0 m; recuo em R+Delta = 6,5 m), mesmos cenarios.
 
-ESCOPO ESTATISTICO -- IMPORTANTE: a familia confirmatoria do estudo esta
-fechada e corrigida por Holm desde a bateria de outubro. Estes contrastes sao
-EXPLORATORIOS e devem ser rotulados como tais onde forem reportados. Para
-transparencia a saida traz o p bruto e, em coluna separada, o p corrigido por
-Holm DENTRO desta familia exploratoria.
+ESCOPO ESTATISTICO -- IMPORTANTE: a familia PRIMARIA do estudo esta fechada e
+corrigida por Holm desde a bateria de outubro. Estes contrastes formam familia
+propria, de 3 cenarios x 8 desfechos = 24 testes, corrigida por Holm DENTRO dela;
+a saida traz o p bruto e, em coluna separada, o p corrigido. O denominador e 24
+mesmo quando parte dos desfechos da constante nula: eles permanecem no
+denominador de Holm, e a Tabela 13 da tese exibe os 15 informativos.
+(Nomenclatura corrigida em 15/11/2026: a tese revisada nao chama a familia dos 15
+de "confirmatoria".)
 
 Reusa os instrumentos de analise_estatistica.py (validade por deslocamento,
 Mann-Whitney com permutacao exata para bracos degenerados, Cliff's delta, IC 95%
@@ -58,9 +61,26 @@ def med(x):
     return float(np.median(x)) if len(x) else float('nan')
 
 
+# Tamanho declarado da familia: 3 cenarios x 8 desfechos. Se a saida nao fechar
+# neste numero, os dados entregues estao incompletos e o script FALHA -- ver abaixo.
+FAMILIA_ESPERADA = len(PARES) * len(METRICAS)
+
+
 def main():
     res = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser('~/tese_ws/results')
     runs = load(res)
+
+    # Portao de completude (15/11/2026). Antes desta guarda, um pacote de dados sem
+    # os bracos QDRV* produzia 'SEM DADOS' em cada linha, uma tabela vazia e
+    # codigo de saida ZERO -- isto e, um pacote incompleto passava por validado.
+    # A auditoria de 15/11/2026 encontrou exatamente esse estado (n=0 nos tres
+    # bracos). Falhar aqui e o comportamento correto.
+    ausentes = [c for _, met, qdr in PARES for c in (met, qdr) if not valid(runs, c)]
+    if ausentes:
+        sys.exit('ERRO: bracos sem execucoes validas em %s: %s.\n'
+                 'A familia Q-driven exige os %d bracos de PARES. Nenhuma tabela foi '
+                 'escrita: uma tabela vazia seria indistinguivel de um resultado nulo.'
+                 % (res, ', '.join(sorted(set(ausentes))), 2 * len(PARES)))
 
     linhas, ps = [], []
     for cenario, cfg_met, cfg_qdr in PARES:
@@ -81,8 +101,15 @@ def main():
             print(f'  {rotulo:38s} metodo={med(x):8.2f}  qdriven={med(y):8.2f}  '
                   f'delta={d:+.2f}  IC95%=[{lo:+.2f},{hi:+.2f}]  p={fmt_p(p)}')
 
+    if len(ps) != FAMILIA_ESPERADA:
+        sys.exit('ERRO: a familia Q-driven fechou em %d testes, e nao nos %d '
+                 'declarados (%d cenarios x %d desfechos). O denominador de Holm '
+                 'citado na tese nao se reproduz com estes dados; nenhuma tabela foi '
+                 'escrita.' % (len(ps), FAMILIA_ESPERADA, len(PARES), len(METRICAS)))
+
     adj = holm(ps)
-    print('\n\n=== TABELA EXPLORATORIA (p corrigido por Holm DENTRO desta familia) ===')
+    print('\n\n=== TABELA Q-DRIVEN (familia de %d testes; Holm DENTRO dela) ==='
+          % FAMILIA_ESPERADA)
     print(f'{"cenario":9s} {"metrica":38s} {"metodo":>9s} {"qdriven":>9s} '
           f'{"delta":>7s} {"IC95%":>20s} {"p":>10s} {"p_Holm":>10s}  procedimento')
     for (cen, rot, mx, my, d, lo, hi, p, proc), pa in zip(linhas, adj):

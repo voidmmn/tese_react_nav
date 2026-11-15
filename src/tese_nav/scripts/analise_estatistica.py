@@ -218,11 +218,19 @@ def procedure(a, b):
 
 
 def write_confirmatory(runs, results_dir):
-    """Tabela auditavel dos 15 testes confirmatorios -> CSV.
+    """Tabela auditavel dos 15 testes da familia PRIMARIA -> CSV.
 
     E a fonte unica de onde as Tabelas 4 e 7 do artigo e os p-valores citados
     no texto devem ser copiados. Antes da correcao de 2026-10-16 esses numeros
     eram calculados avulsos e digitados no .tex; dois deles estavam errados.
+
+    NOMENCLATURA (corrigida em 15/11/2026): a tese revisada NAO chama esta familia
+    de confirmatoria. Ela separa os contrastes definidos antes da bateria dos
+    desfechos escolhidos retrospectivamente, e reserva "primaria" para o conjunto
+    dos 15 testes corrigidos por Holm. O nome do arquivo de saida permanece
+    `familia_confirmatoria.csv` DE PROPOSITO: ele foi publicado e reproduzido byte a
+    byte na auditoria de 15/11/2026 (SHA-256 7036407595...), e renomea-lo quebraria
+    essa reproducao. O rotulo conceitual mudou; o artefato, nao.
     """
     rows = []
     for lab, a, b, mk, pretty in CONFIRMATORY:
@@ -243,7 +251,7 @@ def write_confirmatory(runs, results_dir):
                         f'{r["delta"]:+.4f}', f'{r["cliff"]:+.4f}',
                         f'{r["ci"][0]:+.4f}', f'{r["ci"][1]:+.4f}',
                         procedure(xa, xb), f'{r["p"]:.6g}', f'{h:.6g}'])
-    print(f'Familia confirmatoria ({len(rows)} testes) -> {out}')
+    print(f'Familia primaria ({len(rows)} testes, Holm dentro da familia) -> {out}')
     return rows, hp
 
 
@@ -345,9 +353,9 @@ def main():
 
     write_summary(runs, rd)
 
-    # 1) familia confirmatoria da resubmissao: 3 contrastes x 5 desfechos = 15
+    # 1) familia primaria da resubmissao: 3 contrastes x 5 desfechos = 15
     rows, hp = write_confirmatory(runs, rd)
-    print('\n=== FAMILIA CONFIRMATORIA 46291 (Holm dentro da familia, m=%d) ===' % len(rows))
+    print('\n=== FAMILIA PRIMARIA 46291 (Holm dentro da familia, m=%d) ===' % len(rows))
     print(f'{"pair":<14}{"metric":<26}{"n":>7}{"Δ":>9}{"δ":>7}{"95% CI":>20}'
           f'{"procedure":>28}{"p":>11}{"p_H":>11}')
     for (lab, a, b, mk, pr, r), h in zip(rows, hp):
@@ -382,8 +390,11 @@ def main():
               f'{ci:>20}{fmt_p(r["p"]):>11}')
 
     # 3) EQUIVALÊNCIA por TOST (§12.2): ausência de diferença != equivalência.
-    # Margens declaradas A PRIORI: tempo de missão +/-5 s; anomalias +/-0.5.
-    print('\n=== EQUIVALÊNCIA (TOST; margem declarada a priori) ===')
+    # Margens RETROSPECTIVAS: tempo de missão +/-5 s; anomalias +/-0.5. Corrigido em
+    # 15/11/2026 -- estas margens foram fixadas DEPOIS de ver os dados, e a tese
+    # revisada as declara como tais. Chama-las de "a priori" era a afirmacao que o
+    # texto retirou; o codigo nao podia continuar fazendo-a.
+    print('\n=== EQUIVALÊNCIA (TOST; margem retrospectiva) ===')
     print(f'{"pair":<12}{"metric":<26}{"margem":>8}{"Δ":>9}{"p_TOST":>10}{"equiv?":>8}')
     TOST_PAIRS = [
         ('E0 vs E3', 'E0', 'E3', 'mission_duration_s', 'Mission time [s]', 5.0),

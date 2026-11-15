@@ -23,7 +23,16 @@ Censura: o limite de execucao e de RELOGIO DE PAREDE (600 s). Uma execucao valid
 nao atingiu COMPLETE dentro da janela tem duracao censurada a direita -- o valor
 registrado e o relogio de missao simulado no instante da interrupcao.
 
-Uso:  python3 src/tese_nav/scripts/gerar_manifesto.py [results_dir]
+SELECAO DE CONJUNTO (15/11/2026): results/ guarda DOIS conjuntos na mesma raiz --
+a matriz historica de 320 execucoes (32 rotulos) e a verificacao direcionada do
+decaimento de 60 execucoes (6 rotulos, CMw/CMs/E3w/E3s/HEUw/HEUs, 14/11/2026).
+Percorrer a raiz sem filtrar produzia 380 registros, e nao o manifesto historico de
+320 que a tese declara. O conjunto passa a ser escolhido explicitamente e cada um
+tem manifesto proprio; nao existe mais um modo que os misture por omissao.
+
+Uso:  python3 src/tese_nav/scripts/gerar_manifesto.py [results_dir] [--conjunto X]
+      --conjunto historico    (padrao) 32 rotulos da matriz  -> manifesto_execucoes.csv
+      --conjunto verificacao  6 rotulos do lote de relogio   -> manifesto_verificacao_decaimento.csv
 """
 import csv
 import datetime
@@ -35,6 +44,26 @@ from collections import Counter
 
 VALID_DIST_M = 1.0
 LIMITE_PAREDE_S = 600
+
+# Rotulos da verificacao direcionada do decaimento (14/11/2026). Declarados aqui, nao
+# inferidos: o mesmo conjunto esta em gerar_reconciliacao.py, e os dois precisam
+# concordar. Sufixo w = relogio de parede, s = relogio simulado.
+ROTULOS_VERIFICACAO = frozenset(
+    f'{b}{c}' for b in ('CM', 'E3', 'HEU') for c in ('w', 's'))
+
+CONJUNTOS = {
+    'historico':   ('manifesto_execucoes.csv',
+                    'matriz historica (32 rotulos)'),
+    'verificacao': ('manifesto_verificacao_decaimento.csv',
+                    'verificacao do decaimento (6 rotulos)'),
+}
+
+
+def pertence(rotulo, conjunto):
+    """True se `rotulo` pertence ao conjunto pedido. Sem terceira via: um rotulo
+    esta na verificacao ou na matriz historica."""
+    na_verificacao = rotulo in ROTULOS_VERIFICACAO
+    return na_verificacao if conjunto == 'verificacao' else not na_verificacao
 
 
 def ler_logs(results):
@@ -88,15 +117,20 @@ def ler_metricas(caminho):
     return vals
 
 
-def main(results):
+def main(results, conjunto='historico'):
+    arquivo_saida, descricao = CONJUNTOS[conjunto]
     runs, brutos = ler_logs(results)
     linhas = []
+    descartados = 0
     for f in sorted(glob.glob(os.path.join(results, 'metrics_*.csv'))):
         base = os.path.basename(f)
         m = re.match(r'metrics_(.+)_(\d{8})_(\d{6})\.csv$', base)
         if not m:
             continue
         rotulo, d, t = m.groups()
+        if not pertence(rotulo, conjunto):
+            descartados += 1
+            continue
         quando = datetime.datetime.strptime(d + t, '%Y%m%d%H%M%S')
         vals = ler_metricas(f)
         dist = float(vals.get('distance_traveled_m', '0') or 0)
@@ -123,8 +157,11 @@ def main(results):
             'anomalies_unique': vals.get('anomalies_unique', ''),
             'arquivo_metricas': base,
         })
+    if not linhas:
+        sys.exit(f'ERRO: nenhuma execucao do conjunto "{conjunto}" ({descricao}) foi '
+                 f'encontrada em {results}. O manifesto NAO foi escrito.')
     linhas.sort(key=lambda r: (r['config'], r['inicio']))
-    saida = os.path.join(results, 'manifesto_execucoes.csv')
+    saida = os.path.join(results, arquivo_saida)
     with open(saida, 'w', newline='', encoding='utf-8') as fh:
         w = csv.DictWriter(fh, fieldnames=list(linhas[0].keys()))
         w.writeheader()
@@ -136,7 +173,9 @@ def main(results):
         c['validas' if r['validade'] == 'valida' else 'imoveis'] += 1
         if r['duracao_censurada'] == 'sim':
             c['censuradas'] += 1
+    print(f'conjunto: {conjunto} -- {descricao}')
     print(f'manifesto: {saida}')
+    print(f'arquivos de metricas do outro conjunto, ignorados: {descartados}')
     print(f"pares configuracao-cenario: {len(set(r['config'] for r in linhas))}")
     print(f"execucoes tentadas: {c['tentadas']}")
     print(f"execucoes validas: {c['validas']}")
@@ -149,5 +188,13 @@ def main(results):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1] if len(sys.argv) > 1 else
-         os.path.join(os.path.dirname(__file__), '..', '..', '..', 'results'))
+    argv = sys.argv[1:]
+    conj = 'historico'
+    if '--conjunto' in argv:
+        i = argv.index('--conjunto')
+        if i + 1 >= len(argv) or argv[i + 1] not in CONJUNTOS:
+            sys.exit('uso: --conjunto {' + '|'.join(CONJUNTOS) + '}')
+        conj = argv[i + 1]
+        del argv[i:i + 2]
+    main(argv[0] if argv else
+         os.path.join(os.path.dirname(__file__), '..', '..', '..', 'results'), conj)
