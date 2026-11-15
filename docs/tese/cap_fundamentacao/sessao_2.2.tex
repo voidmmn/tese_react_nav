@@ -197,7 +197,25 @@ um termo dessa forma se cancela ao longo de qualquer trajetória fechada, de sor
 nenhum ciclo acumula recompensa artificial, e o que ele altera é a velocidade do
 aprendizado, não o seu destino.
 
-A distinção importa porque fixa o ônus da prova. Um termo aditivo que \emph{não} assuma a
+\begin{figure}[htb]
+    \centering
+%% Figura gerada por src/tese_nav/scripts/gerar_figs_fundamentacao.py em
+%% 15/11/2026. A versao feita em ferramenta de ilustracao nao pode ser usada: os
+%% rotulos matematicos saiam rasterizados com franja de cor e um deles trazia
+%% Phi(s) onde cabia Phi(s').
+    \includegraphics[width=0.95\textwidth]{figuras/fig_shaping.pdf}
+    \caption{As duas situações da moldagem de recompensa. À esquerda, o termo tem a
+    forma potencial da Equação~\eqref{eq:fund-shaping}: percorrido um ciclo fechado, as
+    parcelas se cancelam, nenhum ciclo acumula recompensa artificial e a política ótima
+    é preservada. À direita, um termo aditivo que depende do tempo não goza dessa
+    propriedade, e o efeito sobre a política precisa ser demonstrado caso a caso. O
+    campo formulado nesta tese é do segundo tipo.}
+    \legend{Fonte: Elaborada pelo autor com base em \citeonline{ng1999}.}
+    \label{fig:fund-shaping}
+\end{figure}
+
+A distinção importa porque fixa o ônus da prova, e a
+\autoref{fig:fund-shaping} contrasta os dois casos. Um termo aditivo que \emph{não} assuma a
 forma da Equação~\eqref{eq:fund-shaping} --- por ser variante no tempo, por depender de
 evento observado ou por somar-se diretamente ao valor em vez de entrar como diferença de
 potencial --- não herda garantia alguma, e qualquer afirmação sobre a política resultante

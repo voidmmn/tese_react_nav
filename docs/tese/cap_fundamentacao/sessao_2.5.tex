@@ -284,8 +284,29 @@ desviando do que o mapa não previa \cite{Macenski2022}. A camada deliberativa d
 emite metas ao primeiro; o segundo é que de fato move o robô, e por isso merece ser
 nomeado aqui.
 
+\begin{figure}[htb]
+    \centering
+%% Figura gerada por src/tese_nav/scripts/gerar_figs_fundamentacao.py em
+%% 15/11/2026. O custo de cada trajetoria e CALCULADO pelo script (penalidade de
+%% proximidade do obstaculo mais penalidade de desvio da rota) e a cor sai do
+%% custo, de sorte que a figura nao pode contradizer o texto sem que a conta mude
+%% junto. A versao feita em ferramenta de ilustracao trazia as trajetorias de
+%% BAIXO custo passando mais perto do obstaculo, o inverso do que o metodo faz.
+    \includegraphics[width=\textwidth]{figuras/fig_mppi.pdf}
+    \caption{Um ciclo do controlador \ac{MPPI}. A rota do planejador global foi traçada
+    sobre o mapa estático e passa rente a um obstáculo que não estava nele. O
+    controlador sorteia sequências de comando, simula a trajetória de cada uma e lhes
+    atribui custo por proximidade do obstáculo e por desvio da rota; o comando aplicado
+    é a média das trajetórias ponderada exponencialmente pelo custo, de sorte que as
+    baratas dominam a combinação sem que nenhuma seja escolhida isoladamente. O
+    horizonte é finito: ao fim do ciclo tudo é descartado e o cálculo recomeça do estado
+    corrente.}
+    \legend{Fonte: Elaborada pelo autor com base em \citeonline{Williams2017MPPI}.}
+    \label{fig:fund-mppi}
+\end{figure}
+
 O controlador usado é do tipo \emph{preditivo por integral de caminho}, \ac{MPPI}
-\cite{Williams2017MPPI}. Em cada ciclo ele sorteia um grande número de sequências de
+\cite{Williams2017MPPI}, esquematizado na \autoref{fig:fund-mppi}. Em cada ciclo ele sorteia um grande número de sequências de
 comando, simula para cada uma a trajetória que o modelo do robô produziria, atribui a cada
 trajetória um custo que combina aderência à rota, proximidade de obstáculo e esforço de
 controle, e devolve a média das sequências ponderada exponencialmente pelo custo
