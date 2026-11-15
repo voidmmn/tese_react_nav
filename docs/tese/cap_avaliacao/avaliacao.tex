@@ -242,8 +242,10 @@ generalizar.
 As nove execuções imóveis distribuem-se por oito configurações --- APF, HEUc, HEUd,
 HYSoff, KOb, N2 e RHM com uma cada, DHa com duas ---, de modo que nenhuma configuração
 fica com menos de oito execuções válidas. As nove execuções interrompidas pelo limite
-são \emph{todas} da configuração KOb, que não encerra a missão por construção, conforme
-se analisa na Seção~\ref{sec:res-ablacao}; em todas as demais configurações, toda
+são \emph{todas} da configuração KOb, que não concluiu a missão em nenhuma delas dentro
+do orçamento observado, conforme se analisa na Seção~\ref{sec:res-ablacao}. O
+experimento demonstra não conclusão nesse orçamento; ele não demonstra impossibilidade de
+conclusão para qualquer duração. em todas as demais configurações, toda
 execução válida atingiu \texttt{COMPLETE}.
 
 Três contagens \emph{não} entram nesse censo, para que não sejam confundidas com
@@ -615,13 +617,27 @@ anotação à parte, nem em recurso do serviço de hospedagem. Quem for conferir
 essa etiqueta, e não o ramo principal, que continua a receber trabalho posterior: o
 estado corrente do ramo principal \emph{não} é o estado avaliado aqui.
 
-A integridade dos dados é conferível sem depender do histórico de versionamento: o
-arquivo \texttt{results/CHECKSUMS.sha256} traz a soma SHA-256 de cada um dos $320$
-arquivos CSV por execução, mais a trilha de auditoria por episódio, a tabela da família
-de comparação primária e o manifesto: $323$ registros ao todo, verificáveis em um
-comando. Dois arquivos corrompidos ou substituídos não passam nessa verificação, e é
-esse o teste que torna os números desta tese conferíveis em vez de aceitos por
-confiança.
+A integridade dos dados é conferível sem depender do histórico de versionamento, e as
+duas baterias têm cobertura separada. O arquivo \texttt{results/CHECKSUMS.sha256} traz a
+soma SHA-256 de cada um dos $320$ arquivos CSV da matriz histórica, mais a trilha de
+auditoria por episódio, a tabela da família de comparação primária e o manifesto:
+$323$ registros, que devem fechar em $323/323$. O arquivo
+\texttt{results/CHECKSUMS\_verificacao\_decaimento.sha256} cobre, à parte, os $60$ CSVs
+da verificação do relógio e o seu manifesto próprio: $61$ registros. Um arquivo
+corrompido, substituído ou ausente não passa nessas verificações, e é esse o teste que
+torna os números desta tese conferíveis em vez de aceitos por confiança.
+
+%% Acrescentado em 15/11/2026. Os dois conjuntos convivem na mesma raiz
+%% results/ e precisam ser distinguiveis por quem recebe o pacote, sem depender de
+%% saber de cor quais rotulos pertencem a qual bateria.
+Os dois conjuntos convivem no mesmo diretório e se distinguem pelo rótulo da
+configuração. Os seis rótulos \texttt{CMw}, \texttt{CMs}, \texttt{E3w}, \texttt{E3s},
+\texttt{HEUw} e \texttt{HEUs} são da verificação do relógio e \emph{não} pertencem à
+matriz das $320$; os trinta e dois restantes são a matriz. A separação está declarada
+nos dois \textit{scripts} que percorrem o diretório, e não deixada ao leitor: o
+seletor \texttt{-{}-conjunto} de \texttt{gerar\_manifesto.py} decide qual conjunto é
+censado, e \texttt{gerar\_reconciliacao.py} classifica os seis rótulos em conjunto
+próprio.
 
 \subsection{O Que Regenera Cada Tabela}
 
@@ -629,11 +645,15 @@ Nenhuma tabela de resultado foi digitada à mão a partir de leitura de saída. 
 correspondência é a seguinte:
 
 \begin{itemize}
-    \item \texttt{gerar\_manifesto.py} reconstrói
+    \item \texttt{gerar\_manifesto.py -{}-conjunto historico} reconstrói
     \texttt{results/manifesto\_execucoes.csv} --- um registro por execução, com
     configuração, cenário, semente, bateria, desfecho, validade, motivo de exclusão,
     duração, indicador de censura, distância percorrida, anomalias e arquivo de origem
-    --- de onde saem todos os totais do censo (Tabela~\ref{tab:setup-censo});
+    --- de onde saem todos os totais do censo (Tabela~\ref{tab:setup-censo}). O
+    conjunto é obrigatório na leitura dos totais e não tem modo que misture as duas
+    baterias: \texttt{-{}-conjunto historico} fecha em $320$ registros e ignora os $60$
+    da verificação, e \texttt{-{}-conjunto verificacao} fecha em $60$ e grava
+    \texttt{manifesto\_verificacao\_decaimento.csv};
     \item \texttt{analise\_estatistica.py} produz os testes, tamanhos de efeito,
     intervalos \textit{bootstrap} e correções de Holm do
     Capítulo~\ref{cap:resultados}, gravando \texttt{familia\_confirmatoria.csv};
@@ -647,7 +667,9 @@ correspondência é a seguinte:
     distribuição; \texttt{gerar\_mapa.py} produz o mapa do mundo simulado;
     \item \texttt{train\_qdriven.py} treina e serializa a tabela de valor do
     \textit{baseline} (Seção~\ref{sec:setup-qdriven}), e \texttt{analise\_qdriven.py}
-    produz os contrastes correspondentes.
+    produz os contrastes correspondentes, interrompendo-se com erro se algum dos seis
+    braços estiver sem execuções válidas ou se a família não fechar nos vinte e quatro
+    testes declarados: um pacote incompleto falha em vez de produzir tabela vazia.
 \end{itemize}
 
 \subsection{O Que Não é Reproduzível e Por Quê}

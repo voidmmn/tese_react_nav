@@ -380,8 +380,9 @@ Onde a zona de exclusão está \emph{desabilitada} --- o que ocorre em todo cen�
 da rota --- não há entrega, o risco continua a ser publicado e a reobservação renova
 $h$. Quanto a renovação prolonga a janela de supressão é questão medida, não postulada,
 e a Seção~\ref{sec:res-custo-precedencia} a responde apenas em parte: ao período
-realizado da Tabela~\ref{tab:prop-taxas} o decaimento sozinho responde por cerca de
-$88\%$ da janela observada, de modo que a renovação pode explicar o resíduo, mas os
+realizado da Tabela~\ref{tab:prop-taxas} o modelo de decaimento puro prevê cerca de
+$88\%$ da janela observada, o que é uma previsão condicionada a um período estimado e
+não uma decomposição causal da janela. A renovação pode explicar o resíduo, mas os
 registros não a isolam de um período mais longo na faixa de baixa magnitude. Registre-se
 ainda que a janela observada é fenômeno do relógio efetivamente executado: sob o período
 especificado ela é mais curta, e na configuração marginal o recuo que a precede não
@@ -499,7 +500,7 @@ começam vazios, e nenhum risco está travado na zona de exclusão nem entregue 
 \centering
 \caption{Taxas dos componentes e relógio que governa cada temporização. Todos os nós
 rodam com \texttt{use\_sim\_time} verdadeiro, de modo que seus temporizadores seguem o
-relógio simulado. A exceção está registrada na última linha e discutida no texto.}
+relógio simulado. A exceção está na linha do decaimento, penúltima da tabela; a última linha registra a variante com a guarda corrigida, usada apenas na verificação direcionada.}
 \label{tab:prop-taxas}
 \footnotesize
 \begin{tabular}{p{0.34\textwidth}p{0.16\textwidth}p{0.40\textwidth}}
@@ -530,7 +531,7 @@ simulado\\
 \end{tabular}
 \end{table}
 
-A última linha merece registro explícito, porque é uma discrepância real entre a
+A linha do decaimento merece registro explícito, porque é uma discrepância real entre a
 especificação e a implementação. O temporizador que \emph{dispara} a avaliação do
 decaimento segue o relógio simulado, mas a condição que \emph{autoriza} a aplicação do
 fator $\lambda$ compara instantes de relógio \emph{de parede}. Como a simulação roda
@@ -616,9 +617,14 @@ chegar entre a leitura do campo e a avaliação das guardas, caso em que ela só
 ciclo seguinte. O supervisor pode disparar sobre uma pose retida cujo evento já não
 está sendo publicado: é o redisparo descrito na Seção~\ref{sec:prop-ciclo-alvo}. E o
 decaimento pode ocorrer entre a saída de um episódio e a reavaliação da guarda, o que
-decide se um alvo falho volta a disparar. Nenhum desses entrelaçamentos é uma condição
-de corrida nociva: o campo é escalar e monótono entre observações, e o supervisor toma
-no máximo uma transição por ciclo.
+decide se um alvo falho volta a disparar. Duas propriedades do projeto limitam o efeito desses entrelaçamentos, e vale dizer o que
+elas cobrem. O campo é escalar e monótono entre observações, de modo que uma leitura
+defasada subestima a magnitude corrente, nunca a inverte de sinal; e o supervisor toma no
+máximo uma transição por ciclo, de modo que duas mensagens chegadas no mesmo intervalo
+não produzem duas transições. Nas execuções analisadas não se observou transição
+inconsistente atribuível a defasagem. As duas propriedades não constituem prova de que
+toda mensagem defasada seja inócua: a verificação foi por inspeção do registro, não por
+análise exaustiva de entrelaçamentos.
 
 Em cada ciclo, na ordem lógica:
 

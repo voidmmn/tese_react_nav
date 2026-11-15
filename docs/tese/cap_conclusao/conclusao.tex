@@ -77,8 +77,12 @@ robô abrir mão de uma de quatro inspeções em $10/10$ execuções, e isso se 
 duas implementações temporais testadas: $20/20$ ao todo. A supressão da atração por
 cerca de $70$~s que acompanha esse custo, e o recuo único que a abre, pertencem ao
 relógio efetivamente executado: sob o período especificado o recuo não dispara
-(§\ref{sec:res-relogio-consistente}). O custo é da precedência; a sua cronometragem é
-da implementação.
+(§\ref{sec:res-relogio-consistente}). O que se repete nas duas implementações é o
+\emph{desfecho}, três de quatro inspeções, e não a sua causa: sob o relógio especificado
+duas das investigações terminaram por aborto de navegação
+(§\ref{sec:res-relogio-consistente}), de modo que a mesma perda não é atribuída ao mesmo
+mecanismo nos dois casos. Resultado repetido entre condições não identifica
+mecanismo.
 
 %% Delimitado em 13/11/2026. A frase anterior afirmava sem condicao que o
 %% distintivo e o canal de risco "e nao a ponderacao por saliencia". A segunda
@@ -213,7 +217,9 @@ este trabalho não testou e, portanto, não exclui.
     endereçaria o excesso de conservadorismo que foi medido. A formulação de valor da
     Seção~\ref{sec:prop-atualizacao} é o substrato natural para isso. A comparação
     contra uma política tabular treinada com recompensa aumentada já foi conduzida
-    (Seção~\ref{sec:res-qdriven}) e não favoreceu o braço aprendido; resta, porém, a
+    (Seção~\ref{sec:res-qdriven}), com piora do braço aprendido no tempo em investigação
+    e na missão adversa e resultados mistos nas demais métricas, sem ordenação global
+    entre os dois; resta, porém, a
     pergunta que ela não responde: uma política treinada no \emph{próprio}
     ambiente de avaliação, com ações mapeadas para o controlador em vez de para a
     velocidade do robô, e com a deferência ao canal de risco como objeto do
@@ -242,9 +248,9 @@ este trabalho não testou e, portanto, não exclui.
     do temporizador; nelas os contrastes centrais sobreviveram e a janela de supressão
     não. Estender essa verificação às demais trocaria a transposição declarada na
     Seção~\ref{sec:res-ameacas} por medida direta. Fica como trabalho futuro, e não
-    como correção pendente, porque reexecutá-las agora substituiria os números do
-    Capítulo~\ref{cap:resultados} por números de um código distinto do descrito no
-    artigo decorrente desta tese.
+    como correção pendente, por delimitação de escopo: uma bateria nova pode coexistir
+    com a histórica, como o lote de verificação já faz, e o que o Capítulo~\ref{cap:resultados}
+    afirma está declarado como sendo da implementação avaliada.
 
     \item \textbf{Separar interrupção de deslocamento.} Uma variante de parada e
     espera --- mesma preempção da investigação, mesmo tratamento do sinal de risco,
@@ -296,10 +302,12 @@ Cenário de risco estático sobre a rota; $8$--$10$ execuções por braço &
 Não demonstra equivalência geral de componentes; não se transfere a risco emergente\\
 \hline
 Sem a zona de exclusão, o recuo reativo sozinho não resolve o risco na rota &
-Nenhuma das dez execuções de KOb concluiu a missão; duração censurada à direita
-($\ge 627$~s); §\ref{sec:res-ablacao} &
+Nenhuma das nove trajetórias válidas de KOb concluiu a missão no orçamento; uma décima
+tentativa permaneceu imóvel e foi excluída; interrupção em $627\pm6$~s;
+§\ref{sec:res-ablacao} &
 Mesmo cenário; orçamento de parede de $600$~s &
-É limite inferior censurado, não tempo de missão medido\\
+$627\pm6$~s são instantes de interrupção, não tempos de conclusão; a duração de conclusão
+é censurada à direita e não tem limiar comum entre trajetórias\\
 \hline
 A camada reativa acrescenta as inspeções que a patrulha com zona de exclusão não faz &
 $3$ de $3$ contra $0$ de $3$; custo de $\approx 31$~s; §\ref{sec:res-ablacao} &
@@ -318,12 +326,14 @@ Cenário de conflito, risco colocalizado com anomalia mais saliente &
 Disparo e persistência variam em conjunto; não são fatores separáveis
 (§\ref{sec:res-ameacas})\\
 \hline
-A precedência categórica custa uma inspeção &
-Uma de quatro inspeções abandonada em $10/10$ sob cada um dos dois relógios
-($20/20$); §\ref{sec:res-custo-precedencia} &
+Em CM, as duas implementações temporais terminaram com $3$ de $4$ inspeções &
+Uma de quatro inspeções abandonada em $10/10$ sob cada relógio ($20/20$);
+§\ref{sec:res-custo-precedencia} &
 Cenário de risco marginalmente elegível, nas duas implementações temporais testadas
 (§\ref{sec:res-relogio-consistente}) &
-Só o custo se repete nas duas; o mecanismo é específico de cada uma\\
+Mecanismos observados e \emph{não} isolados: sob o relógio de parede, supressão da
+atração após o recuo; sob o especificado, aborto de navegação em duas investigações. O
+desfecho se repete; a causa não foi identificada\\
 \hline
 A supressão de $\approx 70$~s e o recuo que a abre são da implementação &
 Janela de $69{,}5$~s e um recuo sob o relógio executado; $0{,}00$ recuos
