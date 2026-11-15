@@ -62,6 +62,12 @@ class AttractionField:
     _n_steps: int = 0            # chamadas a step_decay
     _n_applied: int = 0          # chamadas em que o fator foi de fato aplicado
     _n_obs: int = 0              # leituras aceitas (acima do limiar de modalidade)
+    # Semeadura do relogio externo. `_last_decay` nasce de time.monotonic(), que conta
+    # segundos desde o boot; o tempo SIMULADO comeca perto de zero. Alimentar a guarda
+    # com tempo simulado sem resemear deixa a diferenca negativa para sempre e lambda
+    # nunca e aplicado -- foi o que invalidou as 30 execucoes de 14/11/2026 as 22h.
+    # A semeadura ocorre na primeira chamada que traz `now`, e so nela.
+    _clock_seeded: bool = False
 
     # ------------------------------------------------------------------ #
     def observe(self, modality: str, intensity: float) -> float:
@@ -103,6 +109,11 @@ class AttractionField:
         self._n_steps += 1
         if now is None:
             now = time.monotonic()
+        elif not self._clock_seeded:
+            # primeira chamada com relogio externo: alinha a referencia a ele
+            self._last_decay = now
+            self._clock_seeded = True
+            return self.value
         if now - self._last_decay >= self.decay_period:
             self._n_applied += 1
             self._att *= self.decay

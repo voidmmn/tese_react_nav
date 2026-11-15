@@ -27,6 +27,11 @@ MAPA = {
  '_noite1_abortada_20261013': ('bateria noturna abortada', 'descartada: execucao abortada'),
  '_noturna_20260901': ('bateria noturna de 01/09/2026', 'substituida; logs nao preservados'),
  '_gate_reuso_20261013': ('ensaio de regressao do portao de reuso', 'ensaio de instrumento, nao da matriz'),
+ '_decaimento_sim_invalido_20261114': (
+   'verificacao verificacao do decaimento sob relogio simulado, primeira tentativa',
+   'descartada: a referencia do decaimento nascia do relogio de parede e nao era '
+   'resemeada ao receber tempo simulado, de modo que lambda nunca foi aplicado '
+   '(lam=0/423). Defeito do instrumento, nao resultado'),
  '_smoke_20260901':   ('ensaio de fumaca', 'ensaio de fumaca, nao da matriz'),
  '_smoke_cm_v1_20261013': ('ensaio de fumaca', 'ensaio de fumaca, nao da matriz'),
  '_smoke_cm_v2_20261013': ('ensaio de fumaca', 'ensaio de fumaca, nao da matriz'),

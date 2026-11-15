@@ -998,28 +998,30 @@ A origem dessa duração está no decaimento, mas convém dizer com que precisã
 de $h=0{,}45$, o fator $\lambda=0{,}85$ exige $38$ aplicações para levar o canal abaixo
 de $\varepsilon$. Ao período \emph{nominal} de $1$~s isso daria $38$~s, pouco mais da
 metade da janela medida --- discrepância que convidaria a atribuir ao mecanismo o que é
-do relógio. Ao período \emph{realizado} de cerca de $1{,}65$~s
-(Seção~\ref{sec:prop-relogios}) a previsão sobe a aproximadamente $63$~s, que já é a
-ordem da janela medida.
+do relógio. Ao período \emph{realizado} de cerca de $1{,}61$~s
+--- o valor do estimador corrigido pelo viés aferido contra contagem direta,
+Seção~\ref{sec:res-verificacao-relogio} --- a previsão sobe a aproximadamente $61$~s,
+que já é a ordem da janela medida.
 
-Resta uma diferença de cerca de $7$~s, e ela não é desprezada aqui. Lida pelo avesso, a
-janela de $69{,}5$~s sobre $38$ aplicações implica um período realizado de $1{,}83$~s,
-acima da faixa de $1{,}64$ a $1{,}74$~s que a varredura do estimador produz. Duas
-explicações seguem compatíveis com os registros e eles não as separam: o período
-realizado pode ser mais longo na faixa de magnitude em que a janela transcorre --- a
-restrição do estimador descarta justamente a cauda de baixa magnitude --- ou as
-reobservações podem acrescentar magnitude. Reobservação ocorre: o risco é reobservado
+Resta uma diferença de cerca de $8$~s, e ela não é desprezada aqui: o relógio responde
+por aproximadamente $88\%$ da janela, não pela totalidade dela. Lida pelo avesso, a
+janela de $69{,}5$~s sobre $38$ aplicações implicaria um período de $1{,}83$~s, acima de
+tudo o que se mediu --- a contagem direta dá entre $1{,}57$ e $1{,}60$~s em três
+configurações. Duas explicações seguem compatíveis com os registros, e eles não as
+separam: o período realizado pode ser mais longo na faixa de baixa magnitude em que a
+janela transcorre --- faixa que a restrição do estimador descarta justamente por falta de
+resolução --- ou as reobservações podem acrescentar magnitude. Reobservação ocorre: o risco é reobservado
 dentro da janela, ainda que a contagem de \emph{subidas} de $\Phi$ dentro dela seja
 baixa, em torno de uma a cada duas execuções. O que os registros sustentam, portanto, é
-que a janela é \emph{dominada} pelo decaimento ao período realizado --- o relógio
-responde por algo como $90\%$ dela ---, e não que seja decaimento puro. A atribuição do
+que a janela é \emph{dominada} pelo decaimento ao período realizado, e não que seja
+decaimento puro. A atribuição do
 resíduo é verificada à parte na Seção~\ref{sec:res-verificacao-relogio}.\footnote{O artigo decorrente
 desta tese \cite{MirandaNeto2026TwoLayer} relata a mesma janela medida de $69{,}5$~s e
 a compara com uma previsão derivada ao período \emph{nominal} de $1$~s, concluindo que
 a janela excede o decaimento e que a reobservação a prolonga. A medição do período
 realizado, posterior à aceitação do artigo, mostra que a premissa daquela comparação
 estava errada --- o período não é de $1$~s ---, e com isso o excesso a explicar deixa de
-ser de cerca de $30$~s e passa a ser de cerca de $7$~s. A direção da explicação do
+ser de cerca de $30$~s e passa a ser de cerca de $8$~s. A direção da explicação do
 artigo, que aponta a reobservação, permanece admissível para esse resíduo; o que não se
 sustenta é a sua magnitude. Registra-se também, por honestidade, que uma versão anterior
 desta seção foi ao extremo oposto e afirmou que a janela era decaimento puro: aquela
@@ -1348,16 +1350,55 @@ memória para decidir. Um defeito na memória pesa sobre quem a usa e não pesa 
 ignora. A afirmação de que o defeito não confunde contraste algum foi, por isso,
 retirada da tese.
 
-\subsection{Verificação Direcionada}
+\subsection{Contagem Direta e Aferição do Estimador}
 
-O que os registros existentes não decidem é a atribuição do resíduo da janela de
-supressão (Seção~\ref{sec:res-custo-precedencia}) e a influência diferencial da
-distorção sobre os contrastes. Ambas exigem contar as aplicações de $\lambda$
-\emph{diretamente}, no ponto em que ocorrem, e observar o comportamento sob um relógio
-consistente. O campo foi instrumentado para isso --- passou a contar aplicações, chamadas
-e observações aceitas --- e a guarda recebeu um seletor de relógio, mantendo como padrão
-o comportamento histórico, de modo que as $320$ execuções anteriores seguem
-comparáveis.
+O estimador acima trabalha por inferência sobre uma série publicada, e o quanto se pode
+confiar nele é, por sua vez, uma questão empírica. Para resolvê-la, o campo foi
+instrumentado: passou a contar as aplicações de $\lambda$ \emph{no ponto em que
+ocorrem}, junto com o número de chamadas e de observações aceitas. A guarda recebeu
+também um seletor de relógio, mantendo como padrão o comportamento histórico, de modo
+que as $320$ execuções anteriores seguem comparáveis.
+
+Uma bateria dedicada de trinta execuções --- dez de cada uma de três configurações, com
+rótulos próprios e sem tocar no conjunto histórico --- produziu os dois valores sobre as
+\emph{mesmas} execuções. A Tabela~\ref{tab:res-afericao} os confronta.
+
+\begin{table}[htb]
+\centering
+\caption{Aferição do estimador restrito contra contagem direta das aplicações de
+$\lambda$, sobre as mesmas trinta execuções. CM é o cenário de risco marginal; E3 é o
+método proposto, que dispara sobre o campo; HEU é a heurística de detecção bruta, que
+não consulta a memória para decidir. O estimador superestima o período, sempre, entre
+$2$ e $5\%$.}
+\label{tab:res-afericao}
+\footnotesize
+\begin{tabular}{lrrrr}
+\hline
+\textbf{Configuração} & \textbf{Direto} & \textbf{Estimador} & \textbf{Viés} &
+\textbf{Aplicações (direto)}\\
+\hline
+CM  & $1{,}602$~s & $1{,}647$~s & $+2{,}8\%$ & $62{,}4\%$\\
+E3  & $1{,}566$~s & $1{,}638$~s & $+4{,}6\%$ & $63{,}8\%$\\
+HEU & $1{,}569$~s & $1{,}601$~s & $+2{,}0\%$ & $63{,}7\%$\\
+\hline
+\end{tabular}
+\end{table}
+
+Três leituras decorrem da tabela. Primeiro, \textbf{o estimador é utilizável e seu erro
+é conhecido}: ele superestima o período, sempre na mesma direção, por uma margem de $2$ a
+$5\%$. Segundo, \textbf{a distorção é comum aos três braços com margem estreita} ---
+$1{,}57$, $1{,}57$ e $1{,}60$~s por contagem direta ---, e isso inclui a heurística de
+detecção bruta, que não usa a memória para decidir. A semelhança deixa de ser inferida
+do código compartilhado e passa a ser medida. Terceiro, o estimador aplicado às
+execuções históricas de CM dá $1{,}653$~s e às novas dá $1{,}647$~s, diferença de menos
+de meio por cento: as condições de máquina entre a bateria histórica e a de aferição são
+comparáveis, o que autoriza transportar o viés medido. Corrigido por ele, o período
+realizado na configuração CM histórica fica em torno de $\mathbf{1{,}61}$~\textbf{s}.
+
+É esse o valor que a Seção~\ref{sec:res-custo-precedencia} usa, e com ele a previsão de
+decaimento puro para a janela de supressão é de aproximadamente $61$~s contra os
+$69{,}5$~s medidos --- o relógio responde por cerca de $88\%$ da janela, e restam cerca
+de $8$~s que o decaimento ao período medido não produz.
 
 \section{Ameaças à Validade}
 \label{sec:res-ameacas}
