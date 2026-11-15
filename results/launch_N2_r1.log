@@ -1,0 +1,958 @@
+[INFO] [launch]: All log files can be found below /home/voidmmn/.ros/log/2026-09-09-20-23-35-598408-vega-144175
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [ign-1]: process started with pid [144177]
+[INFO] [robot_state_publisher-2]: process started with pid [144179]
+[INFO] [create-3]: process started with pid [144181]
+[INFO] [parameter_bridge-4]: process started with pid [144183]
+[INFO] [static_transform_publisher-5]: process started with pid [144185]
+[INFO] [fake_scan_publisher-6]: process started with pid [144187]
+[static_transform_publisher-5] [INFO] [1788996215.706220119] [static_transform_publisher_vEZS4065N8THwxcs]: Spinning until stopped - publishing transform
+[static_transform_publisher-5] translation: ('0.000000', '0.000000', '0.000000')
+[static_transform_publisher-5] rotation: ('0.000000', '0.000000', '0.000000', '1.000000')
+[static_transform_publisher-5] from 'base_scan' to 'inspector_bot/base_footprint/lidar'
+[create-3] [INFO] [1788996215.717821988] [ros_gz_sim]: Requesting list of world names.
+[robot_state_publisher-2] [INFO] [1788996215.732453710] [robot_state_publisher]: got segment base_footprint
+[robot_state_publisher-2] [INFO] [1788996215.732571187] [robot_state_publisher]: got segment base_link
+[robot_state_publisher-2] [INFO] [1788996215.732580932] [robot_state_publisher]: got segment base_scan
+[robot_state_publisher-2] [INFO] [1788996215.732584251] [robot_state_publisher]: got segment caster
+[robot_state_publisher-2] [INFO] [1788996215.732587532] [robot_state_publisher]: got segment left_wheel
+[robot_state_publisher-2] [INFO] [1788996215.732590467] [robot_state_publisher]: got segment right_wheel
+[create-3] [INFO] [1788996216.082880314] [ros_gz_sim]: Waiting messages on topic [robot_description].
+[create-3] [INFO] [1788996216.096345232] [ros_gz_sim]: Requested creation of entity.
+[create-3] [INFO] [1788996216.096407977] [ros_gz_sim]: OK creation of entity.
+[INFO] [create-3]: process has finished cleanly [pid 144181]
+[parameter_bridge-4] [INFO] [1788996216.738719928] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/clock (gz.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1788996216.740613593] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/cmd_vel (geometry_msgs/msg/Twist) -> /cmd_vel (gz.msgs.Twist)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1788996216.742415285] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/odom (gz.msgs.Odometry) -> /odom (nav_msgs/msg/Odometry)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1788996216.743995704] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/scan (gz.msgs.LaserScan) -> /scan (sensor_msgs/msg/LaserScan)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1788996216.745396856] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/joint_states (gz.msgs.Model) -> /joint_states (sensor_msgs/msg/JointState)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1788996216.746624933] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/tf (gz.msgs.Pose_V) -> /tf (tf2_msgs/msg/TFMessage)] (Lazy 0)
+[ign-1] [1;33m[Wrn] [SdfEntityCreator.cc:917] [0m[1;33mSensor type LIDAR not supported yet. Try using[0m[1;33ma GPU LIDAR instead.[0m[1;33m[0m
+[INFO] [component_container_isolated-7]: process started with pid [144291]
+[component_container_isolated-7] [INFO] [1788996228.207671129] [nav2_container]: Load Library: /opt/ros/humble/lib/libmap_server_core.so
+[component_container_isolated-7] [INFO] [1788996228.215374179] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_map_server::CostmapFilterInfoServer>
+[component_container_isolated-7] [INFO] [1788996228.215419424] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_map_server::MapSaver>
+[component_container_isolated-7] [INFO] [1788996228.215423807] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_map_server::MapServer>
+[component_container_isolated-7] [INFO] [1788996228.215426619] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_map_server::MapServer>
+[component_container_isolated-7] [INFO] [1788996228.229222275] [map_server]: 
+[component_container_isolated-7] 	map_server lifecycle node launched. 
+[component_container_isolated-7] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-7] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-7] [INFO] [1788996228.229304410] [map_server]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/map_server' in container '/nav2_container'
+[component_container_isolated-7] [INFO] [1788996228.231497364] [nav2_container]: Load Library: /opt/ros/humble/lib/libamcl_core.so
+[component_container_isolated-7] [INFO] [1788996228.233512479] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_amcl::AmclNode>
+[component_container_isolated-7] [INFO] [1788996228.233558426] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_amcl::AmclNode>
+[component_container_isolated-7] [INFO] [1788996228.246381383] [amcl]: 
+[component_container_isolated-7] 	amcl lifecycle node launched. 
+[component_container_isolated-7] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-7] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-7] [INFO] [1788996228.246671195] [amcl]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/amcl' in container '/nav2_container'
+[component_container_isolated-7] [INFO] [1788996228.252343710] [nav2_container]: Load Library: /opt/ros/humble/lib/libnav2_lifecycle_manager_core.so
+[component_container_isolated-7] [INFO] [1788996228.252858065] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container_isolated-7] [INFO] [1788996228.252901452] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container_isolated-7] [INFO] [1788996228.263395631] [lifecycle_manager_localization]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/lifecycle_manager_localization' in container '/nav2_container'
+[component_container_isolated-7] [INFO] [1788996228.266446333] [lifecycle_manager_localization]: [34m[1mCreating and initializing lifecycle service clients[0m[0m
+[component_container_isolated-7] [INFO] [1788996228.270242634] [lifecycle_manager_localization]: [34m[1mStarting managed nodes bringup...[0m[0m
+[component_container_isolated-7] [INFO] [1788996228.270292197] [lifecycle_manager_localization]: [34m[1mConfiguring map_server[0m[0m
+[component_container_isolated-7] [INFO] [1788996228.270461164] [map_server]: Configuring
+[component_container_isolated-7] [INFO] [1788996228.270509256] [map_io]: Loading yaml file: /home/voidmmn/tese_ws/install/tese_nav/share/tese_nav/config/maps/subestacao.yaml
+[component_container_isolated-7] [INFO] [1788996228.270712672] [map_io]: resolution: 0.05
+[component_container_isolated-7] [INFO] [1788996228.270720361] [map_io]: origin[0]: -26
+[component_container_isolated-7] [INFO] [1788996228.270723142] [map_io]: origin[1]: -26
+[component_container_isolated-7] [INFO] [1788996228.270725730] [map_io]: origin[2]: 0
+[component_container_isolated-7] [INFO] [1788996228.270728382] [map_io]: free_thresh: 0.25
+[component_container_isolated-7] [INFO] [1788996228.270730993] [map_io]: occupied_thresh: 0.65
+[component_container_isolated-7] [INFO] [1788996228.270733894] [map_io]: mode: trinary
+[component_container_isolated-7] [INFO] [1788996228.270736901] [map_io]: negate: 0
+[component_container_isolated-7] [INFO] [1788996228.270907889] [map_io]: Loading image_file: /home/voidmmn/tese_ws/install/tese_nav/share/tese_nav/config/maps/subestacao.pgm
+[component_container_isolated-7] [INFO] [1788996228.332413480] [map_io]: Read map /home/voidmmn/tese_ws/install/tese_nav/share/tese_nav/config/maps/subestacao.pgm: 1040 X 1040 map @ 0.05 m/cell
+[component_container_isolated-7] [INFO] [1788996228.336747096] [lifecycle_manager_localization]: [34m[1mConfiguring amcl[0m[0m
+[component_container_isolated-7] [INFO] [1788996228.336931513] [amcl]: Configuring
+[component_container_isolated-7] [INFO] [1788996228.337010091] [amcl]: initTransforms
+[component_container_isolated-7] [INFO] [1788996228.343461548] [amcl]: initPubSub
+[component_container_isolated-7] [INFO] [1788996228.346582966] [amcl]: Subscribed to map topic.
+[component_container_isolated-7] [INFO] [1788996228.349458413] [lifecycle_manager_localization]: [34m[1mActivating map_server[0m[0m
+[component_container_isolated-7] [INFO] [1788996228.349594827] [map_server]: Activating
+[component_container_isolated-7] [INFO] [1788996228.350236992] [map_server]: Creating bond (map_server) to lifecycle manager.
+[component_container_isolated-7] [INFO] [1788996228.350711920] [amcl]: Received a 1040 X 1040 map @ 0.050 m/pix
+[component_container_isolated-7] [INFO] [1788996228.417520126] [nav2_container]: Load Library: /opt/ros/humble/lib/libcontroller_server_core.so
+[component_container_isolated-7] [INFO] [1788996228.418990545] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_controller::ControllerServer>
+[component_container_isolated-7] [INFO] [1788996228.419042228] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_controller::ControllerServer>
+[component_container_isolated-7] [INFO] [1788996228.433117974] [controller_server]: 
+[component_container_isolated-7] 	controller_server lifecycle node launched. 
+[component_container_isolated-7] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-7] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-7] [INFO] [1788996228.434843148] [controller_server]: Creating controller server
+[component_container_isolated-7] [INFO] [1788996228.449929597] [local_costmap.local_costmap]: 
+[component_container_isolated-7] 	local_costmap lifecycle node launched. 
+[component_container_isolated-7] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-7] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-7] [INFO] [1788996228.450238094] [local_costmap.local_costmap]: Creating Costmap
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/controller_server' in container '/nav2_container'
+[component_container_isolated-7] [INFO] [1788996228.453643994] [lifecycle_manager_localization]: Server map_server connected with bond.
+[component_container_isolated-7] [INFO] [1788996228.453688692] [lifecycle_manager_localization]: [34m[1mActivating amcl[0m[0m
+[component_container_isolated-7] [INFO] [1788996228.453823856] [amcl]: Activating
+[component_container_isolated-7] [INFO] [1788996228.453848485] [amcl]: initialPoseReceived
+[component_container_isolated-7] [INFO] [1788996228.453907269] [amcl]: Setting pose (10.592000): -10.000 -10.000 0.000
+[component_container_isolated-7] [INFO] [1788996228.454182811] [amcl]: Creating bond (amcl) to lifecycle manager.
+[component_container_isolated-7] [INFO] [1788996228.455521834] [nav2_container]: Load Library: /opt/ros/humble/lib/libsmoother_server_core.so
+[component_container_isolated-7] [INFO] [1788996228.456503087] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_smoother::SmootherServer>
+[component_container_isolated-7] [INFO] [1788996228.456538716] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_smoother::SmootherServer>
+[component_container_isolated-7] [INFO] [1788996228.472083854] [smoother_server]: 
+[component_container_isolated-7] 	smoother_server lifecycle node launched. 
+[component_container_isolated-7] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-7] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-7] [INFO] [1788996228.472877523] [smoother_server]: Creating smoother server
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/smoother_server' in container '/nav2_container'
+[component_container_isolated-7] [INFO] [1788996228.475019714] [nav2_container]: Load Library: /opt/ros/humble/lib/libplanner_server_core.so
+[component_container_isolated-7] [INFO] [1788996228.475525165] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_planner::PlannerServer>
+[component_container_isolated-7] [INFO] [1788996228.475564015] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_planner::PlannerServer>
+[component_container_isolated-7] [INFO] [1788996228.481242587] [amcl]: createLaserObject
+[component_container_isolated-7] [INFO] [1788996228.490879748] [planner_server]: 
+[component_container_isolated-7] 	planner_server lifecycle node launched. 
+[component_container_isolated-7] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-7] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-7] [INFO] [1788996228.491594511] [planner_server]: Creating
+[component_container_isolated-7] [INFO] [1788996228.509170513] [global_costmap.global_costmap]: 
+[component_container_isolated-7] 	global_costmap lifecycle node launched. 
+[component_container_isolated-7] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-7] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-7] [INFO] [1788996228.509456392] [global_costmap.global_costmap]: Creating Costmap
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/planner_server' in container '/nav2_container'
+[component_container_isolated-7] [INFO] [1788996228.516677184] [nav2_container]: Load Library: /opt/ros/humble/lib/libbehavior_server_core.so
+[component_container_isolated-7] [INFO] [1788996228.519543959] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<behavior_server::BehaviorServer>
+[component_container_isolated-7] [INFO] [1788996228.519611070] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<behavior_server::BehaviorServer>
+[component_container_isolated-7] [INFO] [1788996228.537071699] [behavior_server]: 
+[component_container_isolated-7] 	behavior_server lifecycle node launched. 
+[component_container_isolated-7] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-7] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/behavior_server' in container '/nav2_container'
+[component_container_isolated-7] [INFO] [1788996228.541278285] [nav2_container]: Load Library: /opt/ros/humble/lib/libbt_navigator_core.so
+[component_container_isolated-7] [INFO] [1788996228.542413215] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_bt_navigator::BtNavigator>
+[component_container_isolated-7] [INFO] [1788996228.542471068] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_bt_navigator::BtNavigator>
+[component_container_isolated-7] [INFO] [1788996228.558877448] [lifecycle_manager_localization]: Server amcl connected with bond.
+[component_container_isolated-7] [INFO] [1788996228.558970229] [lifecycle_manager_localization]: [34m[1mManaged nodes are active[0m[0m
+[component_container_isolated-7] [INFO] [1788996228.558986751] [lifecycle_manager_localization]: [34m[1mCreating bond timer...[0m[0m
+[component_container_isolated-7] [INFO] [1788996228.566654532] [bt_navigator]: 
+[component_container_isolated-7] 	bt_navigator lifecycle node launched. 
+[component_container_isolated-7] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-7] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-7] [INFO] [1788996228.566730190] [bt_navigator]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/bt_navigator' in container '/nav2_container'
+[component_container_isolated-7] [INFO] [1788996228.569053910] [nav2_container]: Load Library: /opt/ros/humble/lib/libwaypoint_follower_core.so
+[component_container_isolated-7] [INFO] [1788996228.569831960] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_waypoint_follower::WaypointFollower>
+[component_container_isolated-7] [INFO] [1788996228.569879070] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_waypoint_follower::WaypointFollower>
+[component_container_isolated-7] [INFO] [1788996228.588205775] [waypoint_follower]: 
+[component_container_isolated-7] 	waypoint_follower lifecycle node launched. 
+[component_container_isolated-7] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-7] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-7] [INFO] [1788996228.588536986] [waypoint_follower]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/waypoint_follower' in container '/nav2_container'
+[component_container_isolated-7] [INFO] [1788996228.590905830] [nav2_container]: Load Library: /opt/ros/humble/lib/libvelocity_smoother_core.so
+[component_container_isolated-7] [INFO] [1788996228.591406549] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_velocity_smoother::VelocitySmoother>
+[component_container_isolated-7] [INFO] [1788996228.591445938] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_velocity_smoother::VelocitySmoother>
+[component_container_isolated-7] [INFO] [1788996228.613672743] [velocity_smoother]: 
+[component_container_isolated-7] 	velocity_smoother lifecycle node launched. 
+[component_container_isolated-7] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-7] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/velocity_smoother' in container '/nav2_container'
+[component_container_isolated-7] [INFO] [1788996228.615848568] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container_isolated-7] [INFO] [1788996228.615882228] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container_isolated-7] [INFO] [1788996228.636946488] [lifecycle_manager_navigation]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/lifecycle_manager_navigation' in container '/nav2_container'
+[component_container_isolated-7] [INFO] [1788996228.642445794] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service clients[0m[0m
+[component_container_isolated-7] [INFO] [1788996228.665478193] [lifecycle_manager_navigation]: [34m[1mStarting managed nodes bringup...[0m[0m
+[component_container_isolated-7] [INFO] [1788996228.665535555] [lifecycle_manager_navigation]: [34m[1mConfiguring controller_server[0m[0m
+[component_container_isolated-7] [INFO] [1788996228.665680762] [controller_server]: Configuring controller interface
+[component_container_isolated-7] [INFO] [1788996228.666128199] [controller_server]: getting goal checker plugins..
+[component_container_isolated-7] [INFO] [1788996228.666495979] [controller_server]: Controller frequency set to 20.0000Hz
+[component_container_isolated-7] [INFO] [1788996228.666566714] [local_costmap.local_costmap]: Configuring
+[component_container_isolated-7] [INFO] [1788996228.674207754] [local_costmap.local_costmap]: Using plugin "voxel_layer"
+[component_container_isolated-7] [INFO] [1788996228.679389595] [local_costmap.local_costmap]: Subscribed to Topics: scan
+[component_container_isolated-7] [INFO] [1788996228.697910345] [local_costmap.local_costmap]: Initialized plugin "voxel_layer"
+[component_container_isolated-7] [INFO] [1788996228.697976168] [local_costmap.local_costmap]: Using plugin "inflation_layer"
+[component_container_isolated-7] [INFO] [1788996228.701611189] [local_costmap.local_costmap]: Initialized plugin "inflation_layer"
+[component_container_isolated-7] [INFO] [1788996228.720491113] [controller_server]: Created progress_checker : progress_checker of type nav2_controller::SimpleProgressChecker
+[component_container_isolated-7] [INFO] [1788996228.721609590] [controller_server]: Created goal checker : general_goal_checker of type nav2_controller::SimpleGoalChecker
+[component_container_isolated-7] [INFO] [1788996228.722802248] [controller_server]: Controller Server has general_goal_checker  goal checkers available.
+[component_container_isolated-7] [INFO] [1788996228.723535267] [controller_server]: Created controller : FollowPath of type nav2_mppi_controller::MPPIController
+[component_container_isolated-7] [INFO] [1788996228.735345608] [controller_server]: Controller period is equal to model dt. Control sequence shifting is ON
+[component_container_isolated-7] [INFO] [1788996228.737986886] [controller_server]: ConstraintCritic instantiated with 1 power and 4.000000 weight.
+[component_container_isolated-7] [INFO] [1788996228.738058418] [controller_server]: Critic loaded : mppi::critics::ConstraintCritic
+[component_container_isolated-7] [INFO] [1788996228.742294778] [controller_server]: InflationCostCritic instantiated with 1 power and 300.000000 / 0.015000 weights. Critic will collision check based on circular cost.
+[component_container_isolated-7] [INFO] [1788996228.742404557] [controller_server]: Critic loaded : mppi::critics::CostCritic
+[component_container_isolated-7] [INFO] [1788996228.744369338] [controller_server]: GoalCritic instantiated with 1 power and 5.000000 weight.
+[component_container_isolated-7] [INFO] [1788996228.744485761] [controller_server]: Critic loaded : mppi::critics::GoalCritic
+[component_container_isolated-7] [INFO] [1788996228.748261312] [controller_server]: GoalAngleCritic instantiated with 1 power, 3.000000 weight, and 0.500000 angular threshold.
+[component_container_isolated-7] [INFO] [1788996228.748336027] [controller_server]: Critic loaded : mppi::critics::GoalAngleCritic
+[component_container_isolated-7] [INFO] [1788996228.751269194] [controller_server]: ReferenceTrajectoryCritic instantiated with 1 power and 14.000000 weight
+[component_container_isolated-7] [INFO] [1788996228.751340293] [controller_server]: Critic loaded : mppi::critics::PathAlignCritic
+[component_container_isolated-7] [INFO] [1788996228.753249443] [controller_server]: Critic loaded : mppi::critics::PathFollowCritic
+[component_container_isolated-7] [INFO] [1788996228.755582859] [controller_server]: PathAngleCritic instantiated with 1 power and 2.000000 weight. Reversing allowed.
+[component_container_isolated-7] [INFO] [1788996228.755653337] [controller_server]: Critic loaded : mppi::critics::PathAngleCritic
+[component_container_isolated-7] [INFO] [1788996228.757013609] [controller_server]: PreferForwardCritic instantiated with 1 power and 5.000000 weight.
+[component_container_isolated-7] [INFO] [1788996228.757071037] [controller_server]: Critic loaded : mppi::critics::PreferForwardCritic
+[component_container_isolated-7] [INFO] [1788996228.765085240] [controller_server]: Optimizer reset
+[component_container_isolated-7] [INFO] [1788996228.771437768] [MPPIController]: Configured MPPI Controller: FollowPath
+[component_container_isolated-7] [INFO] [1788996228.771499701] [controller_server]: Controller Server has FollowPath  controllers available.
+[component_container_isolated-7] [INFO] [1788996228.782432654] [lifecycle_manager_navigation]: [34m[1mConfiguring smoother_server[0m[0m
+[component_container_isolated-7] [INFO] [1788996228.782631979] [smoother_server]: Configuring smoother server
+[component_container_isolated-7] [INFO] [1788996228.790133694] [smoother_server]: Created smoother : simple_smoother of type nav2_smoother::SimpleSmoother
+[component_container_isolated-7] [INFO] [1788996228.791788084] [smoother_server]: Smoother Server has simple_smoother  smoothers available.
+[component_container_isolated-7] [INFO] [1788996228.798025754] [lifecycle_manager_navigation]: [34m[1mConfiguring planner_server[0m[0m
+[component_container_isolated-7] [INFO] [1788996228.798229598] [planner_server]: Configuring
+[component_container_isolated-7] [INFO] [1788996228.798262691] [global_costmap.global_costmap]: Configuring
+[component_container_isolated-7] [INFO] [1788996228.804471293] [global_costmap.global_costmap]: Using plugin "static_layer"
+[component_container_isolated-7] [INFO] [1788996228.806590521] [global_costmap.global_costmap]: Subscribing to the map topic (/map) with transient local durability
+[component_container_isolated-7] [INFO] [1788996228.807462605] [global_costmap.global_costmap]: Initialized plugin "static_layer"
+[component_container_isolated-7] [INFO] [1788996228.807498888] [global_costmap.global_costmap]: Using plugin "obstacle_layer"
+[component_container_isolated-7] [INFO] [1788996228.809350077] [global_costmap.global_costmap]: Subscribed to Topics: scan
+[component_container_isolated-7] [INFO] [1788996228.815523479] [global_costmap.global_costmap]: Initialized plugin "obstacle_layer"
+[component_container_isolated-7] [INFO] [1788996228.815576042] [global_costmap.global_costmap]: Using plugin "hazard_layer"
+[component_container_isolated-7] [INFO] [1788996228.817502824] [global_costmap.global_costmap]: Subscribed to Topics: hazard_cloud
+[component_container_isolated-7] [INFO] [1788996228.823313486] [global_costmap.global_costmap]: Initialized plugin "hazard_layer"
+[component_container_isolated-7] [INFO] [1788996228.823363698] [global_costmap.global_costmap]: Using plugin "inflation_layer"
+[component_container_isolated-7] [INFO] [1788996228.825163102] [global_costmap.global_costmap]: Initialized plugin "inflation_layer"
+[component_container_isolated-7] [INFO] [1788996228.833823914] [planner_server]: Created global planner plugin GridBased of type nav2_navfn_planner/NavfnPlanner
+[component_container_isolated-7] [INFO] [1788996228.833877923] [planner_server]: Configuring plugin GridBased of type NavfnPlanner
+[component_container_isolated-7] [INFO] [1788996228.835497763] [planner_server]: Planner Server has GridBased  planners available.
+[component_container_isolated-7] [INFO] [1788996228.846001461] [lifecycle_manager_navigation]: [34m[1mConfiguring behavior_server[0m[0m
+[component_container_isolated-7] [INFO] [1788996228.846203502] [behavior_server]: Configuring
+[component_container_isolated-7] [INFO] [1788996228.853267253] [behavior_server]: Creating behavior plugin spin of type nav2_behaviors/Spin
+[component_container_isolated-7] [INFO] [1788996228.853886121] [behavior_server]: Configuring spin
+[component_container_isolated-7] [INFO] [1788996228.860757889] [behavior_server]: Creating behavior plugin backup of type nav2_behaviors/BackUp
+[component_container_isolated-7] [INFO] [1788996228.861334522] [behavior_server]: Configuring backup
+[component_container_isolated-7] [INFO] [1788996228.868515596] [behavior_server]: Creating behavior plugin drive_on_heading of type nav2_behaviors/DriveOnHeading
+[component_container_isolated-7] [INFO] [1788996228.869172667] [behavior_server]: Configuring drive_on_heading
+[component_container_isolated-7] [INFO] [1788996228.875490429] [behavior_server]: Creating behavior plugin assisted_teleop of type nav2_behaviors/AssistedTeleop
+[component_container_isolated-7] [INFO] [1788996228.876407932] [behavior_server]: Configuring assisted_teleop
+[component_container_isolated-7] [INFO] [1788996228.877953812] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 1040 X 1040 at 0.050000 m/pix
+[component_container_isolated-7] [INFO] [1788996228.887969000] [behavior_server]: Creating behavior plugin wait of type nav2_behaviors/Wait
+[component_container_isolated-7] [INFO] [1788996228.888439015] [behavior_server]: Configuring wait
+[component_container_isolated-7] [INFO] [1788996228.894664880] [lifecycle_manager_navigation]: [34m[1mConfiguring bt_navigator[0m[0m
+[component_container_isolated-7] [INFO] [1788996228.894837147] [bt_navigator]: Configuring
+[component_container_isolated-7] [INFO] [1788996228.986145910] [lifecycle_manager_navigation]: [34m[1mConfiguring waypoint_follower[0m[0m
+[component_container_isolated-7] [INFO] [1788996228.986310409] [waypoint_follower]: Configuring
+[component_container_isolated-7] [INFO] [1788996228.997273583] [waypoint_follower]: Created waypoint_task_executor : wait_at_waypoint of type nav2_waypoint_follower::WaitAtWaypoint
+[component_container_isolated-7] [INFO] [1788996228.998419163] [lifecycle_manager_navigation]: [34m[1mConfiguring velocity_smoother[0m[0m
+[component_container_isolated-7] [INFO] [1788996228.998614664] [velocity_smoother]: Configuring velocity smoother
+[component_container_isolated-7] [INFO] [1788996229.004071920] [lifecycle_manager_navigation]: [34m[1mActivating controller_server[0m[0m
+[component_container_isolated-7] [INFO] [1788996229.004223213] [controller_server]: Activating
+[component_container_isolated-7] [INFO] [1788996229.004249003] [local_costmap.local_costmap]: Activating
+[component_container_isolated-7] [INFO] [1788996229.004259375] [local_costmap.local_costmap]: Checking transform
+[component_container_isolated-7] [INFO] [1788996229.004373639] [local_costmap.local_costmap]: start
+[component_container_isolated-7] [WARN] [1788996229.255299473] [controller_server]: Parameter controller_server.verbose not found
+[component_container_isolated-7] [INFO] [1788996229.259165900] [controller_server]: Optimizer reset
+[component_container_isolated-7] [INFO] [1788996229.259721909] [MPPIController]: Activated MPPI Controller: FollowPath
+[component_container_isolated-7] [INFO] [1788996229.259763059] [controller_server]: Creating bond (controller_server) to lifecycle manager.
+[component_container_isolated-7] [INFO] [1788996229.361515666] [amcl]: Message Filter dropping message: frame 'base_scan' at time 10.500 for reason 'the timestamp on the message is earlier than all the data in the transform cache'
+[component_container_isolated-7] [INFO] [1788996229.364531062] [lifecycle_manager_navigation]: Server controller_server connected with bond.
+[component_container_isolated-7] [INFO] [1788996229.364623533] [lifecycle_manager_navigation]: [34m[1mActivating smoother_server[0m[0m
+[component_container_isolated-7] [INFO] [1788996229.365065454] [smoother_server]: Activating
+[component_container_isolated-7] [INFO] [1788996229.365145666] [smoother_server]: Creating bond (smoother_server) to lifecycle manager.
+[component_container_isolated-7] [INFO] [1788996229.470355350] [lifecycle_manager_navigation]: Server smoother_server connected with bond.
+[component_container_isolated-7] [INFO] [1788996229.470413846] [lifecycle_manager_navigation]: [34m[1mActivating planner_server[0m[0m
+[component_container_isolated-7] [INFO] [1788996229.470646063] [planner_server]: Activating
+[component_container_isolated-7] [INFO] [1788996229.470690063] [global_costmap.global_costmap]: Activating
+[component_container_isolated-7] [INFO] [1788996229.470696369] [global_costmap.global_costmap]: Checking transform
+[component_container_isolated-7] [INFO] [1788996229.470717793] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 11.592000 but the earliest data is at time 12.000000, when looking up transform from frame [base_link] to frame [map]
+[component_container_isolated-7] [INFO] [1788996229.971185434] [global_costmap.global_costmap]: start
+[component_container_isolated-7] [INFO] [1788996231.023457581] [planner_server]: Activating plugin GridBased of type NavfnPlanner
+[component_container_isolated-7] [INFO] [1788996231.025237707] [planner_server]: Creating bond (planner_server) to lifecycle manager.
+[component_container_isolated-7] [INFO] [1788996231.130154281] [lifecycle_manager_navigation]: Server planner_server connected with bond.
+[component_container_isolated-7] [INFO] [1788996231.130242681] [lifecycle_manager_navigation]: [34m[1mActivating behavior_server[0m[0m
+[component_container_isolated-7] [INFO] [1788996231.130506908] [behavior_server]: Activating
+[component_container_isolated-7] [INFO] [1788996231.130521691] [behavior_server]: Activating spin
+[component_container_isolated-7] [INFO] [1788996231.130536695] [behavior_server]: Activating backup
+[component_container_isolated-7] [INFO] [1788996231.130557794] [behavior_server]: Activating drive_on_heading
+[component_container_isolated-7] [INFO] [1788996231.130564213] [behavior_server]: Activating assisted_teleop
+[component_container_isolated-7] [INFO] [1788996231.130570311] [behavior_server]: Activating wait
+[component_container_isolated-7] [INFO] [1788996231.130578321] [behavior_server]: Creating bond (behavior_server) to lifecycle manager.
+[component_container_isolated-7] [INFO] [1788996231.235990837] [lifecycle_manager_navigation]: Server behavior_server connected with bond.
+[component_container_isolated-7] [INFO] [1788996231.236078111] [lifecycle_manager_navigation]: [34m[1mActivating bt_navigator[0m[0m
+[component_container_isolated-7] [INFO] [1788996231.236462362] [bt_navigator]: Activating
+[component_container_isolated-7] [INFO] [1788996231.308483996] [bt_navigator]: Creating bond (bt_navigator) to lifecycle manager.
+[component_container_isolated-7] [INFO] [1788996231.415121387] [lifecycle_manager_navigation]: Server bt_navigator connected with bond.
+[component_container_isolated-7] [INFO] [1788996231.415206820] [lifecycle_manager_navigation]: [34m[1mActivating waypoint_follower[0m[0m
+[component_container_isolated-7] [INFO] [1788996231.415615477] [waypoint_follower]: Activating
+[component_container_isolated-7] [INFO] [1788996231.415666370] [waypoint_follower]: Creating bond (waypoint_follower) to lifecycle manager.
+[component_container_isolated-7] [INFO] [1788996231.522103975] [lifecycle_manager_navigation]: Server waypoint_follower connected with bond.
+[component_container_isolated-7] [INFO] [1788996231.522156562] [lifecycle_manager_navigation]: [34m[1mActivating velocity_smoother[0m[0m
+[component_container_isolated-7] [INFO] [1788996231.522379418] [velocity_smoother]: Activating
+[component_container_isolated-7] [INFO] [1788996231.522416169] [velocity_smoother]: Creating bond (velocity_smoother) to lifecycle manager.
+[component_container_isolated-7] [INFO] [1788996231.629028563] [lifecycle_manager_navigation]: Server velocity_smoother connected with bond.
+[component_container_isolated-7] [INFO] [1788996231.629154627] [lifecycle_manager_navigation]: [34m[1mManaged nodes are active[0m[0m
+[component_container_isolated-7] [INFO] [1788996231.629176971] [lifecycle_manager_navigation]: [34m[1mCreating bond timer...[0m[0m
+[INFO] [bellman_node-8]: process started with pid [144368]
+[INFO] [stay_alert_node-9]: process started with pid [144370]
+[INFO] [mission_node-10]: process started with pid [144372]
+[INFO] [metrics_node-11]: process started with pid [144374]
+[INFO] [anomaly_simulator-12]: process started with pid [144376]
+[bellman_node-8] [INFO] [1788996262.117833503] [bellman_node]: bellman_node iniciado | alpha=0.1 gamma=0.95 eta=0.5 limiar_desvio=0.45
+[metrics_node-11] [INFO] [1788996262.195158122] [metrics_node]: metrics_node gravando em /home/voidmmn/tese_ws/results/metrics_N2_20260909_202422.csv
+[anomaly_simulator-12] [INFO] [1788996262.228244105] [anomaly_simulator]: anomaly_simulator [default]: 3 anomalias + 1 perigos | alcance=5.0m
+[stay_alert_node-9] [INFO] [1788996262.273177430] [stay_alert_node]: stay_alert_node iniciado | enter=0.45 exit=0.25 max_invest=40.0s
+[mission_node-10] [INFO] [1788996262.273954404] [mission_node]: mission_node: 5 waypoints carregados de /home/voidmmn/tese_ws/install/tese_nav/share/tese_nav/config/waypoints.yaml
+[mission_node-10] [INFO] [1788996262.525956690] [mission_node]: -> WP[0] transit_sul (13.0,-8.0)
+[component_container_isolated-7] [INFO] [1788996262.652189483] [bt_navigator]: Begin navigating from current location (-10.00, -10.00) to (13.00, -8.00)
+[component_container_isolated-7] [INFO] [1788996262.693333127] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-7] [WARN] [1788996262.693401426] [controller_server]: No goal checker was specified in parameter 'current_goal_checker'. Server will use only plugin loaded general_goal_checker . This warning will appear once.
+[component_container_isolated-7] [INFO] [1788996262.696265795] [controller_server]: Optimizer reset
+[parameter_bridge-4] [INFO] [1788996262.731690513] [ros_gz_bridge]: Passing message from ROS geometry_msgs/msg/Twist to Gazebo gz.msgs.Twist (showing msg only once per type)
+[component_container_isolated-7] [INFO] [1788996263.743684184] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996264.793667173] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996265.843844075] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996266.893688797] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996267.893671298] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996268.943694100] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996269.993729868] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996271.043874843] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996272.093700479] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996273.093708529] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996274.143719456] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996275.193910696] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996276.243735452] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996277.647290074] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996278.697417732] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996279.697346744] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996280.747296738] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996281.797342330] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996282.847345394] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996283.847325256] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996284.897356139] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996285.947351615] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996286.997299948] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996287.997361658] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996289.047259372] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996290.047316472] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996291.097288560] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996292.097376238] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996293.147360463] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996294.197333356] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996295.197266718] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996296.247291480] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996297.247320607] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996298.297329266] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996299.297231543] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996300.347273384] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996301.347315949] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996302.397284954] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996303.119452615] [bellman_node]: Phi=-0.920 | Q-entries=14 | desvios=1
+[mission_node-10] [INFO] [1788996303.319197651] [mission_node]: Stay Alert ativo: cancelando waypoint atual
+[stay_alert_node-9] [INFO] [1788996303.319747239] [stay_alert_node]: !! AVOID (Phi=-0.920) -> (-1.2,-5.6)
+[component_container_isolated-7] [INFO] [1788996303.326419263] [bt_navigator]: Received goal preemption request
+[component_container_isolated-7] [INFO] [1788996303.326833814] [bt_navigator]: Begin navigating from current location (-0.09, -8.29) to (-1.19, -5.58)
+[mission_node-10] [INFO] [1788996303.327313073] [mission_node]: WP[0] não concluído (status 6); será reenviado
+[component_container_isolated-7] [INFO] [1788996303.447339441] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996304.119217444] [bellman_node]: Phi=-0.782 | Q-entries=14 | desvios=1
+[component_container_isolated-7] [INFO] [1788996304.447327196] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996305.119292924] [bellman_node]: Phi=-0.665 | Q-entries=14 | desvios=1
+[component_container_isolated-7] [INFO] [1788996305.497464120] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996306.119392776] [bellman_node]: Phi=-0.830 | Q-entries=14 | desvios=1
+[component_container_isolated-7] [INFO] [1788996306.497337770] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996307.119099402] [bellman_node]: Phi=-0.830 | Q-entries=14 | desvios=1
+[component_container_isolated-7] [INFO] [1788996307.547327531] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996308.119168540] [bellman_node]: Phi=-0.705 | Q-entries=14 | desvios=1
+[component_container_isolated-7] [INFO] [1788996308.547283721] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996309.119073280] [bellman_node]: Phi=-0.705 | Q-entries=16 | desvios=1
+[component_container_isolated-7] [INFO] [1788996309.597333450] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996311.129893180] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996311.351733257] [bellman_node]: Phi=-0.600 | Q-entries=16 | desvios=1
+[component_container_isolated-7] [INFO] [1788996312.129843924] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996312.352566511] [bellman_node]: Phi=-0.510 | Q-entries=17 | desvios=1
+[component_container_isolated-7] [INFO] [1788996313.179900131] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996313.351747591] [bellman_node]: Phi=-0.510 | Q-entries=17 | desvios=1
+[component_container_isolated-7] [INFO] [1788996314.179772349] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996314.351470198] [bellman_node]: Phi=-0.433 | Q-entries=18 | desvios=1
+[component_container_isolated-7] [INFO] [1788996315.229837354] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996315.352426149] [bellman_node]: Phi=-0.368 | Q-entries=19 | desvios=1
+[component_container_isolated-7] [INFO] [1788996316.229699091] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996316.351534358] [bellman_node]: Phi=-0.368 | Q-entries=19 | desvios=1
+[component_container_isolated-7] [INFO] [1788996316.985575412] [controller_server]: Reached the goal!
+[component_container_isolated-7] [INFO] [1788996317.018805338] [bt_navigator]: Goal succeeded
+[stay_alert_node-9] [INFO] [1788996317.152176012] [stay_alert_node]: << PATROL (motivo=retreated, 12.6s)
+[bellman_node-8] [INFO] [1788996317.352385145] [bellman_node]: Phi=-0.313 | Q-entries=19 | desvios=1
+[mission_node-10] [INFO] [1788996317.352470013] [mission_node]: -> WP[0] transit_sul (13.0,-8.0)
+[component_container_isolated-7] [INFO] [1788996317.353367123] [bt_navigator]: Begin navigating from current location (-1.06, -5.77) to (13.00, -8.00)
+[component_container_isolated-7] [INFO] [1788996317.374324058] [controller_server]: Received a goal, begin computing control effort.
+[bellman_node-8] [INFO] [1788996318.352260546] [bellman_node]: Phi=-0.313 | Q-entries=19 | desvios=1
+[component_container_isolated-7] [INFO] [1788996318.424654765] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996319.351548054] [bellman_node]: Phi=-0.266 | Q-entries=19 | desvios=1
+[component_container_isolated-7] [INFO] [1788996319.474524347] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996320.352047891] [bellman_node]: Phi=-0.226 | Q-entries=19 | desvios=1
+[component_container_isolated-7] [INFO] [1788996320.474587396] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996321.351942435] [bellman_node]: Phi=-0.226 | Q-entries=20 | desvios=1
+[component_container_isolated-7] [INFO] [1788996321.524480906] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996322.352100706] [bellman_node]: Phi=-0.192 | Q-entries=21 | desvios=1
+[component_container_isolated-7] [INFO] [1788996322.524538999] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996323.352150940] [bellman_node]: Phi=-0.192 | Q-entries=21 | desvios=1
+[component_container_isolated-7] [INFO] [1788996323.574544131] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996324.351817802] [bellman_node]: Phi=-0.163 | Q-entries=21 | desvios=1
+[component_container_isolated-7] [INFO] [1788996324.624471483] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996325.351988600] [bellman_node]: Phi=-0.139 | Q-entries=22 | desvios=1
+[component_container_isolated-7] [INFO] [1788996325.624527108] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996326.352089003] [bellman_node]: Phi=-0.139 | Q-entries=22 | desvios=1
+[component_container_isolated-7] [INFO] [1788996326.674575903] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996327.352080584] [bellman_node]: Phi=-0.118 | Q-entries=22 | desvios=1
+[component_container_isolated-7] [INFO] [1788996327.674685673] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996328.351779108] [bellman_node]: Phi=-0.118 | Q-entries=22 | desvios=1
+[component_container_isolated-7] [INFO] [1788996328.724521731] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996329.351924414] [bellman_node]: Phi=-0.100 | Q-entries=23 | desvios=1
+[component_container_isolated-7] [INFO] [1788996329.724483246] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996330.351684511] [bellman_node]: Phi=-0.100 | Q-entries=23 | desvios=1
+[component_container_isolated-7] [INFO] [1788996330.774570379] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996331.351674783] [bellman_node]: Phi=-0.085 | Q-entries=23 | desvios=1
+[component_container_isolated-7] [INFO] [1788996331.774531133] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996332.352034608] [bellman_node]: Phi=-0.072 | Q-entries=23 | desvios=1
+[component_container_isolated-7] [INFO] [1788996332.824529546] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996333.351817927] [bellman_node]: Phi=-0.062 | Q-entries=24 | desvios=1
+[component_container_isolated-7] [INFO] [1788996333.874591676] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996334.351985696] [bellman_node]: Phi=-0.052 | Q-entries=24 | desvios=1
+[component_container_isolated-7] [INFO] [1788996334.874633952] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996335.351932683] [bellman_node]: Phi=-0.052 | Q-entries=24 | desvios=1
+[component_container_isolated-7] [INFO] [1788996335.924688063] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996336.351853202] [bellman_node]: Phi=-0.045 | Q-entries=24 | desvios=1
+[component_container_isolated-7] [INFO] [1788996336.924511436] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996337.352014462] [bellman_node]: Phi=-0.038 | Q-entries=25 | desvios=1
+[component_container_isolated-7] [INFO] [1788996337.974568653] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996338.351827934] [bellman_node]: Phi=-0.038 | Q-entries=25 | desvios=1
+[component_container_isolated-7] [INFO] [1788996338.974546309] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996339.351382928] [bellman_node]: Phi=-0.032 | Q-entries=25 | desvios=1
+[component_container_isolated-7] [INFO] [1788996340.024539431] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996340.351668817] [bellman_node]: Phi=-0.027 | Q-entries=25 | desvios=1
+[component_container_isolated-7] [INFO] [1788996341.024565269] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996341.351637554] [bellman_node]: Phi=-0.027 | Q-entries=26 | desvios=1
+[component_container_isolated-7] [INFO] [1788996342.074637450] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996342.351908990] [bellman_node]: Phi=-0.023 | Q-entries=26 | desvios=1
+[component_container_isolated-7] [INFO] [1788996343.074583537] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996344.645449757] [bellman_node]: Phi=-0.023 | Q-entries=26 | desvios=1
+[component_container_isolated-7] [INFO] [1788996344.668177712] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996345.645978916] [bellman_node]: Phi=-0.020 | Q-entries=26 | desvios=1
+[component_container_isolated-7] [INFO] [1788996345.718107413] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996346.645447178] [bellman_node]: Phi=-0.020 | Q-entries=27 | desvios=1
+[component_container_isolated-7] [INFO] [1788996346.718102279] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996347.646088507] [bellman_node]: Phi=-0.017 | Q-entries=27 | desvios=1
+[component_container_isolated-7] [INFO] [1788996347.768245496] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996348.645569331] [bellman_node]: Phi=-0.017 | Q-entries=27 | desvios=1
+[component_container_isolated-7] [INFO] [1788996348.768039970] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996349.645188069] [bellman_node]: Phi=-0.014 | Q-entries=27 | desvios=1
+[component_container_isolated-7] [INFO] [1788996349.818039070] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996350.645417143] [bellman_node]: Phi=-0.012 | Q-entries=28 | desvios=1
+[component_container_isolated-7] [INFO] [1788996350.818049134] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996351.645357533] [bellman_node]: Phi=-0.010 | Q-entries=28 | desvios=1
+[component_container_isolated-7] [INFO] [1788996351.868003874] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996352.645551315] [bellman_node]: Phi=-0.010 | Q-entries=29 | desvios=1
+[component_container_isolated-7] [INFO] [1788996352.918086071] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996353.645398971] [bellman_node]: Phi=-0.009 | Q-entries=29 | desvios=1
+[component_container_isolated-7] [INFO] [1788996353.917993682] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996354.645135884] [bellman_node]: Phi=-0.009 | Q-entries=30 | desvios=1
+[component_container_isolated-7] [INFO] [1788996354.968023658] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996355.645054719] [bellman_node]: Phi=-0.007 | Q-entries=30 | desvios=1
+[component_container_isolated-7] [INFO] [1788996355.968090990] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996356.645190762] [bellman_node]: Phi=-0.006 | Q-entries=30 | desvios=1
+[component_container_isolated-7] [INFO] [1788996357.018037276] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996357.645565580] [bellman_node]: Phi=-0.005 | Q-entries=30 | desvios=1
+[component_container_isolated-7] [INFO] [1788996358.018002865] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996358.645004691] [bellman_node]: Phi=-0.005 | Q-entries=31 | desvios=1
+[component_container_isolated-7] [INFO] [1788996359.068076681] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996359.645057769] [bellman_node]: Phi=-0.005 | Q-entries=31 | desvios=1
+[component_container_isolated-7] [INFO] [1788996360.118025650] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996360.645579048] [bellman_node]: Phi=-0.004 | Q-entries=31 | desvios=1
+[component_container_isolated-7] [INFO] [1788996361.118082214] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996361.645749226] [bellman_node]: Phi=-0.003 | Q-entries=32 | desvios=1
+[component_container_isolated-7] [INFO] [1788996362.168061837] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996362.645429578] [bellman_node]: Phi=-0.003 | Q-entries=32 | desvios=1
+[component_container_isolated-7] [INFO] [1788996363.168104681] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996363.645243961] [bellman_node]: Phi=-0.003 | Q-entries=32 | desvios=1
+[component_container_isolated-7] [INFO] [1788996364.218043149] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996364.645150954] [bellman_node]: Phi=-0.002 | Q-entries=32 | desvios=1
+[component_container_isolated-7] [INFO] [1788996365.218018994] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996365.645544546] [bellman_node]: Phi=-0.002 | Q-entries=33 | desvios=1
+[component_container_isolated-7] [INFO] [1788996366.268066673] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996366.645499804] [bellman_node]: Phi=-0.002 | Q-entries=33 | desvios=1
+[component_container_isolated-7] [INFO] [1788996367.268034922] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996367.644910721] [bellman_node]: Phi=-0.002 | Q-entries=33 | desvios=1
+[component_container_isolated-7] [INFO] [1788996368.318046859] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996368.645463246] [bellman_node]: Phi=-0.001 | Q-entries=33 | desvios=1
+[component_container_isolated-7] [INFO] [1788996369.318206954] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996369.645435083] [bellman_node]: Phi=-0.001 | Q-entries=34 | desvios=1
+[component_container_isolated-7] [INFO] [1788996370.368058711] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996370.645086127] [bellman_node]: Phi=-0.001 | Q-entries=35 | desvios=1
+[component_container_isolated-7] [INFO] [1788996371.368094644] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996371.645046110] [bellman_node]: Phi=-0.001 | Q-entries=35 | desvios=1
+[component_container_isolated-7] [INFO] [1788996372.418007821] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996372.645121359] [bellman_node]: Phi=-0.001 | Q-entries=35 | desvios=1
+[component_container_isolated-7] [INFO] [1788996373.418041789] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996374.468110929] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996375.518036201] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996376.224768052] [controller_server]: Reached the goal!
+[component_container_isolated-7] [INFO] [1788996376.257333725] [bt_navigator]: Goal succeeded
+[mission_node-10] [INFO] [1788996376.645606886] [mission_node]: -> WP[1] est_transformador (13.0,10.0)
+[component_container_isolated-7] [INFO] [1788996376.646394109] [bt_navigator]: Begin navigating from current location (12.83, -7.86) to (13.00, 10.00)
+[component_container_isolated-7] [INFO] [1788996376.657307070] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-7] [INFO] [1788996378.154508217] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996379.204524957] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996380.254552948] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996381.254519509] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996382.304508484] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996383.354450648] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996384.354502408] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996385.404530998] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996386.404442920] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996387.454518873] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996388.504438655] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996389.504475838] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996390.554438711] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996391.554481605] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996392.604419465] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996393.654503161] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996394.654507113] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996395.704482453] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996396.704453886] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996397.754477717] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996398.804470666] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996399.804433537] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996400.854458462] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996401.854495928] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996402.904437970] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996403.954490987] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996404.954429216] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996406.004441664] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996407.004469608] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996408.054421681] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996409.054478406] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996410.104499463] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996411.639767857] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996412.689826467] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996413.689816368] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996414.739708609] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996415.739702617] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996416.789757000] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996417.839774123] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996418.839720488] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996419.889728916] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996420.889718368] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996421.939701040] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996422.989765907] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996423.989773884] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996425.039715850] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996426.039702800] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996427.089708677] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996428.139721170] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996429.139686850] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996430.189698732] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996431.189715126] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996432.239684404] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996433.127520205] [bellman_node]: Phi=+0.461 | Q-entries=51 | desvios=2
+[component_container_isolated-7] [INFO] [1788996433.289776443] [controller_server]: Passing new path to controller.
+[mission_node-10] [INFO] [1788996433.327555582] [mission_node]: Stay Alert ativo: cancelando waypoint atual
+[anomaly_simulator-12] [INFO] [1788996433.327721778] [anomaly_simulator]: investigate_start alvo=0 (pos_verdadeira=(10.0, 10.0))
+[stay_alert_node-9] [INFO] [1788996433.328225911] [stay_alert_node]: >> INVESTIGATE (Phi=+0.461) -> (11.6,8.1)
+[component_container_isolated-7] [INFO] [1788996433.328781958] [bt_navigator]: Received goal preemption request
+[component_container_isolated-7] [INFO] [1788996433.329055887] [bt_navigator]: Begin navigating from current location (12.85, 6.15) to (11.59, 8.11)
+[mission_node-10] [INFO] [1788996433.329555357] [mission_node]: WP[1] não concluído (status 6); será reenviado
+[bellman_node-8] [INFO] [1788996434.127611815] [bellman_node]: Phi=+0.516 | Q-entries=51 | desvios=2
+[component_container_isolated-7] [INFO] [1788996434.289639685] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996435.127473655] [bellman_node]: Phi=+0.516 | Q-entries=52 | desvios=2
+[component_container_isolated-7] [INFO] [1788996435.289747433] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996436.127775853] [bellman_node]: Phi=+0.439 | Q-entries=52 | desvios=2
+[component_container_isolated-7] [INFO] [1788996436.339712444] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996437.127910897] [bellman_node]: Phi=+0.439 | Q-entries=53 | desvios=2
+[component_container_isolated-7] [INFO] [1788996437.389691823] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996438.127431385] [bellman_node]: Phi=+0.373 | Q-entries=54 | desvios=2
+[component_container_isolated-7] [INFO] [1788996438.389735892] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996439.127682463] [bellman_node]: Phi=+0.317 | Q-entries=54 | desvios=2
+[component_container_isolated-7] [INFO] [1788996439.439754407] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996440.127707659] [bellman_node]: Phi=+0.270 | Q-entries=55 | desvios=2
+[component_container_isolated-7] [INFO] [1788996440.439701501] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996441.127338084] [bellman_node]: Phi=+0.270 | Q-entries=55 | desvios=2
+[component_container_isolated-7] [INFO] [1788996441.489678528] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996441.745692812] [controller_server]: Reached the goal!
+[component_container_isolated-7] [INFO] [1788996441.779135358] [bt_navigator]: Goal succeeded
+[bellman_node-8] [INFO] [1788996442.127479315] [bellman_node]: Phi=+0.229 | Q-entries=55 | desvios=2
+[bellman_node-8] [INFO] [1788996443.127801922] [bellman_node]: Phi=+0.195 | Q-entries=56 | desvios=2
+[bellman_node-8] [INFO] [1788996445.387261616] [bellman_node]: Phi=+0.195 | Q-entries=56 | desvios=2
+[stay_alert_node-9] [INFO] [1788996446.187495400] [stay_alert_node]: << PATROL (motivo=inspected, 11.6s)
+[anomaly_simulator-12] [INFO] [1788996446.187705129] [anomaly_simulator]: anomalia 0 INSPECIONADA (robô a 2.70 m; 1/3)
+[mission_node-10] [INFO] [1788996446.387513856] [mission_node]: -> WP[1] est_transformador (13.0,10.0)
+[bellman_node-8] [INFO] [1788996446.387538173] [bellman_node]: Phi=+0.166 | Q-entries=56 | desvios=2
+[component_container_isolated-7] [INFO] [1788996446.388277476] [bt_navigator]: Begin navigating from current location (11.75, 7.95) to (13.00, 10.00)
+[component_container_isolated-7] [INFO] [1788996446.409309803] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-7] [INFO] [1788996446.411866930] [controller_server]: Optimizer reset
+[bellman_node-8] [INFO] [1788996447.387232077] [bellman_node]: Phi=+0.166 | Q-entries=56 | desvios=2
+[component_container_isolated-7] [INFO] [1788996447.459541203] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996448.386689475] [bellman_node]: Phi=+0.141 | Q-entries=56 | desvios=2
+[component_container_isolated-7] [INFO] [1788996448.509514626] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996449.387095961] [bellman_node]: Phi=+0.120 | Q-entries=56 | desvios=2
+[component_container_isolated-7] [INFO] [1788996449.509485922] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996450.387144045] [bellman_node]: Phi=+0.120 | Q-entries=57 | desvios=2
+[component_container_isolated-7] [INFO] [1788996450.559573133] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996451.387244421] [bellman_node]: Phi=+0.102 | Q-entries=57 | desvios=2
+[component_container_isolated-7] [INFO] [1788996451.559558419] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996452.387013335] [bellman_node]: Phi=+0.102 | Q-entries=57 | desvios=2
+[component_container_isolated-7] [INFO] [1788996452.609517712] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996453.386742811] [bellman_node]: Phi=+0.086 | Q-entries=57 | desvios=2
+[component_container_isolated-7] [INFO] [1788996453.659503106] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996454.386822474] [bellman_node]: Phi=+0.073 | Q-entries=58 | desvios=2
+[component_container_isolated-7] [INFO] [1788996454.659712469] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996455.387257953] [bellman_node]: Phi=+0.062 | Q-entries=59 | desvios=2
+[component_container_isolated-7] [INFO] [1788996455.709660529] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996456.387395887] [bellman_node]: Phi=+0.062 | Q-entries=59 | desvios=2
+[component_container_isolated-7] [INFO] [1788996456.709615374] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996457.386606976] [bellman_node]: Phi=+0.053 | Q-entries=59 | desvios=2
+[component_container_isolated-7] [INFO] [1788996457.759498494] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996458.165553220] [controller_server]: Reached the goal!
+[component_container_isolated-7] [INFO] [1788996458.198638227] [bt_navigator]: Goal succeeded
+[bellman_node-8] [INFO] [1788996458.386914217] [bellman_node]: Phi=+0.045 | Q-entries=59 | desvios=2
+[mission_node-10] [INFO] [1788996458.387090283] [mission_node]: -> WP[2] est_barramento (0.0,11.0)
+[component_container_isolated-7] [INFO] [1788996458.387904384] [bt_navigator]: Begin navigating from current location (12.89, 9.89) to (0.00, 11.00)
+[component_container_isolated-7] [INFO] [1788996458.408879483] [controller_server]: Received a goal, begin computing control effort.
+[bellman_node-8] [INFO] [1788996459.386829375] [bellman_node]: Phi=+0.045 | Q-entries=59 | desvios=2
+[component_container_isolated-7] [INFO] [1788996459.459084430] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996460.387161340] [bellman_node]: Phi=+0.038 | Q-entries=59 | desvios=2
+[component_container_isolated-7] [INFO] [1788996460.509122384] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996461.386782369] [bellman_node]: Phi=+0.038 | Q-entries=59 | desvios=2
+[component_container_isolated-7] [INFO] [1788996461.509044024] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996462.387367642] [bellman_node]: Phi=+0.033 | Q-entries=59 | desvios=2
+[component_container_isolated-7] [INFO] [1788996462.559060188] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996463.386952855] [bellman_node]: Phi=+0.033 | Q-entries=61 | desvios=2
+[component_container_isolated-7] [INFO] [1788996463.559107518] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996464.386722827] [bellman_node]: Phi=+0.028 | Q-entries=61 | desvios=2
+[component_container_isolated-7] [INFO] [1788996464.609102643] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996465.387022058] [bellman_node]: Phi=+0.024 | Q-entries=61 | desvios=2
+[component_container_isolated-7] [INFO] [1788996465.609141680] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996466.386846154] [bellman_node]: Phi=+0.024 | Q-entries=61 | desvios=2
+[component_container_isolated-7] [INFO] [1788996466.659093240] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996467.387384266] [bellman_node]: Phi=+0.020 | Q-entries=61 | desvios=2
+[component_container_isolated-7] [INFO] [1788996467.709083294] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996468.387430869] [bellman_node]: Phi=+0.017 | Q-entries=63 | desvios=2
+[component_container_isolated-7] [INFO] [1788996468.709081502] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996469.387071707] [bellman_node]: Phi=+0.017 | Q-entries=63 | desvios=2
+[component_container_isolated-7] [INFO] [1788996469.759143277] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996470.387277213] [bellman_node]: Phi=+0.014 | Q-entries=63 | desvios=2
+[component_container_isolated-7] [INFO] [1788996470.759071569] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996471.386946392] [bellman_node]: Phi=+0.014 | Q-entries=63 | desvios=2
+[component_container_isolated-7] [INFO] [1788996471.809129918] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996472.386717549] [bellman_node]: Phi=+0.012 | Q-entries=64 | desvios=2
+[component_container_isolated-7] [INFO] [1788996472.859228638] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996473.387316135] [bellman_node]: Phi=+0.010 | Q-entries=64 | desvios=2
+[component_container_isolated-7] [INFO] [1788996473.859101991] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996474.387249483] [bellman_node]: Phi=+0.010 | Q-entries=64 | desvios=2
+[component_container_isolated-7] [INFO] [1788996474.909060219] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996475.387143356] [bellman_node]: Phi=+0.009 | Q-entries=64 | desvios=2
+[component_container_isolated-7] [INFO] [1788996475.909086425] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996476.387531945] [bellman_node]: Phi=+0.008 | Q-entries=65 | desvios=2
+[component_container_isolated-7] [INFO] [1788996476.959099962] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996478.619894785] [bellman_node]: Phi=+0.008 | Q-entries=65 | desvios=2
+[component_container_isolated-7] [INFO] [1788996478.642479850] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996479.620508149] [bellman_node]: Phi=+0.006 | Q-entries=65 | desvios=2
+[component_container_isolated-7] [INFO] [1788996479.692405161] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996480.620550841] [bellman_node]: Phi=+0.005 | Q-entries=65 | desvios=2
+[component_container_isolated-7] [INFO] [1788996480.692502399] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996481.620398523] [bellman_node]: Phi=+0.005 | Q-entries=66 | desvios=2
+[component_container_isolated-7] [INFO] [1788996481.742391350] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996482.620694914] [bellman_node]: Phi=+0.005 | Q-entries=66 | desvios=2
+[component_container_isolated-7] [INFO] [1788996482.742341165] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996483.620480684] [bellman_node]: Phi=+0.005 | Q-entries=66 | desvios=2
+[component_container_isolated-7] [INFO] [1788996483.792455947] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996484.620418467] [bellman_node]: Phi=+0.004 | Q-entries=66 | desvios=2
+[component_container_isolated-7] [INFO] [1788996484.842463815] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996485.620360150] [bellman_node]: Phi=+0.004 | Q-entries=67 | desvios=2
+[component_container_isolated-7] [INFO] [1788996485.842412376] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996486.620344321] [bellman_node]: Phi=+0.003 | Q-entries=67 | desvios=2
+[component_container_isolated-7] [INFO] [1788996486.892358778] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996487.620406052] [bellman_node]: Phi=+0.003 | Q-entries=67 | desvios=2
+[component_container_isolated-7] [INFO] [1788996487.892376769] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996488.620236457] [bellman_node]: Phi=+0.003 | Q-entries=67 | desvios=2
+[component_container_isolated-7] [INFO] [1788996488.942379182] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996489.620580725] [bellman_node]: Phi=+0.002 | Q-entries=68 | desvios=2
+[component_container_isolated-7] [INFO] [1788996489.992337112] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996490.620434025] [bellman_node]: Phi=+0.002 | Q-entries=68 | desvios=2
+[component_container_isolated-7] [INFO] [1788996490.992386636] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996491.620484528] [bellman_node]: Phi=+0.002 | Q-entries=68 | desvios=2
+[component_container_isolated-7] [INFO] [1788996492.042400226] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996492.620329197] [bellman_node]: Phi=+0.002 | Q-entries=68 | desvios=2
+[component_container_isolated-7] [INFO] [1788996493.042433947] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996493.619819230] [bellman_node]: Phi=+0.002 | Q-entries=69 | desvios=2
+[component_container_isolated-7] [INFO] [1788996494.092428340] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996494.620401352] [bellman_node]: Phi=+0.001 | Q-entries=69 | desvios=2
+[component_container_isolated-7] [INFO] [1788996495.142364805] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996495.620119926] [bellman_node]: Phi=+0.001 | Q-entries=69 | desvios=2
+[component_container_isolated-7] [INFO] [1788996496.142495210] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996496.620291322] [bellman_node]: Phi=+0.001 | Q-entries=70 | desvios=2
+[component_container_isolated-7] [INFO] [1788996497.192410234] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996497.620470307] [bellman_node]: Phi=+0.001 | Q-entries=70 | desvios=2
+[component_container_isolated-7] [INFO] [1788996498.192342785] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996498.620448837] [bellman_node]: Phi=+0.490 | Q-entries=71 | desvios=3
+[mission_node-10] [INFO] [1788996498.819832117] [mission_node]: Stay Alert ativo: cancelando waypoint atual
+[anomaly_simulator-12] [INFO] [1788996498.820185131] [anomaly_simulator]: investigate_start alvo=1 (pos_verdadeira=(0.0, 15.0))
+[stay_alert_node-9] [INFO] [1788996498.820566748] [stay_alert_node]: >> INVESTIGATE (Phi=+0.490) -> (1.8,13.4)
+[component_container_isolated-7] [INFO] [1788996498.821471383] [bt_navigator]: Received goal preemption request
+[component_container_isolated-7] [INFO] [1788996498.821778018] [bt_navigator]: Begin navigating from current location (3.88, 11.65) to (1.83, 13.43)
+[mission_node-10] [INFO] [1788996498.822197702] [mission_node]: WP[2] não concluído (status 6); será reenviado
+[component_container_isolated-7] [INFO] [1788996499.242394676] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996499.620691824] [bellman_node]: Phi=+0.416 | Q-entries=71 | desvios=3
+[component_container_isolated-7] [INFO] [1788996500.242327163] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996500.620632848] [bellman_node]: Phi=+0.416 | Q-entries=71 | desvios=3
+[component_container_isolated-7] [INFO] [1788996501.292348989] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996501.620320651] [bellman_node]: Phi=+0.354 | Q-entries=72 | desvios=3
+[component_container_isolated-7] [INFO] [1788996502.342434464] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996502.620408706] [bellman_node]: Phi=+0.301 | Q-entries=72 | desvios=3
+[component_container_isolated-7] [INFO] [1788996503.342376215] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996503.620295352] [bellman_node]: Phi=+0.301 | Q-entries=72 | desvios=3
+[component_container_isolated-7] [INFO] [1788996504.392356602] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996504.620730895] [bellman_node]: Phi=+0.256 | Q-entries=73 | desvios=3
+[component_container_isolated-7] [INFO] [1788996505.392390431] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996505.620644727] [bellman_node]: Phi=+0.256 | Q-entries=73 | desvios=3
+[component_container_isolated-7] [INFO] [1788996506.442422017] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996506.620400612] [bellman_node]: Phi=+0.217 | Q-entries=74 | desvios=3
+[component_container_isolated-7] [INFO] [1788996507.492353314] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996507.620758618] [bellman_node]: Phi=+0.185 | Q-entries=75 | desvios=3
+[component_container_isolated-7] [INFO] [1788996508.492377452] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996508.620146748] [bellman_node]: Phi=+0.185 | Q-entries=75 | desvios=3
+[component_container_isolated-7] [INFO] [1788996508.798478791] [controller_server]: Reached the goal!
+[component_container_isolated-7] [INFO] [1788996508.831579819] [bt_navigator]: Goal succeeded
+[bellman_node-8] [INFO] [1788996509.620620747] [bellman_node]: Phi=+0.157 | Q-entries=75 | desvios=3
+[bellman_node-8] [INFO] [1788996510.620755207] [bellman_node]: Phi=+0.157 | Q-entries=75 | desvios=3
+[bellman_node-8] [INFO] [1788996512.843412489] [bellman_node]: Phi=+0.133 | Q-entries=75 | desvios=3
+[anomaly_simulator-12] [INFO] [1788996513.244164972] [anomaly_simulator]: anomalia 1 INSPECIONADA (robô a 2.64 m; 2/3)
+[stay_alert_node-9] [INFO] [1788996513.244179047] [stay_alert_node]: << PATROL (motivo=inspected, 13.2s)
+[mission_node-10] [INFO] [1788996513.843523459] [mission_node]: -> WP[2] est_barramento (0.0,11.0)
+[bellman_node-8] [INFO] [1788996513.843618659] [bellman_node]: Phi=+0.133 | Q-entries=75 | desvios=3
+[component_container_isolated-7] [INFO] [1788996513.844358595] [bt_navigator]: Begin navigating from current location (2.00, 13.28) to (0.00, 11.00)
+[component_container_isolated-7] [INFO] [1788996513.865342392] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-7] [INFO] [1788996513.867707120] [controller_server]: Optimizer reset
+[bellman_node-8] [INFO] [1788996514.843571251] [bellman_node]: Phi=+0.113 | Q-entries=75 | desvios=3
+[component_container_isolated-7] [INFO] [1788996514.915621913] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996515.843636823] [bellman_node]: Phi=+0.096 | Q-entries=75 | desvios=3
+[component_container_isolated-7] [INFO] [1788996515.915608685] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996516.843071210] [bellman_node]: Phi=+0.096 | Q-entries=75 | desvios=3
+[component_container_isolated-7] [INFO] [1788996516.965608440] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996517.843513708] [bellman_node]: Phi=+0.082 | Q-entries=75 | desvios=3
+[component_container_isolated-7] [INFO] [1788996518.015606770] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996518.843321258] [bellman_node]: Phi=+0.082 | Q-entries=76 | desvios=3
+[component_container_isolated-7] [INFO] [1788996519.015746568] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996519.843304102] [bellman_node]: Phi=+0.070 | Q-entries=77 | desvios=3
+[component_container_isolated-7] [INFO] [1788996520.065615343] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996520.843336522] [bellman_node]: Phi=+0.070 | Q-entries=77 | desvios=3
+[component_container_isolated-7] [INFO] [1788996521.065652906] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996521.843415937] [bellman_node]: Phi=+0.059 | Q-entries=77 | desvios=3
+[component_container_isolated-7] [INFO] [1788996522.115512857] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996522.843566885] [bellman_node]: Phi=+0.050 | Q-entries=77 | desvios=3
+[component_container_isolated-7] [INFO] [1788996523.115781569] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996523.843351491] [bellman_node]: Phi=+0.050 | Q-entries=77 | desvios=3
+[component_container_isolated-7] [INFO] [1788996524.165554865] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996524.843228699] [bellman_node]: Phi=+0.043 | Q-entries=79 | desvios=3
+[component_container_isolated-7] [INFO] [1788996525.165658797] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996525.843740029] [bellman_node]: Phi=+0.036 | Q-entries=79 | desvios=3
+[component_container_isolated-7] [INFO] [1788996526.215855489] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996526.843384623] [bellman_node]: Phi=+0.036 | Q-entries=79 | desvios=3
+[component_container_isolated-7] [INFO] [1788996527.265539402] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996527.843385336] [bellman_node]: Phi=+0.031 | Q-entries=79 | desvios=3
+[component_container_isolated-7] [INFO] [1788996528.265665973] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996528.472000378] [controller_server]: Reached the goal!
+[component_container_isolated-7] [INFO] [1788996528.505349654] [bt_navigator]: Goal succeeded
+[mission_node-10] [INFO] [1788996528.843830881] [mission_node]: -> WP[3] est_disjuntor (-8.0,5.0)
+[bellman_node-8] [INFO] [1788996528.843851364] [bellman_node]: Phi=+0.026 | Q-entries=79 | desvios=3
+[component_container_isolated-7] [INFO] [1788996528.844554311] [bt_navigator]: Begin navigating from current location (0.05, 11.11) to (-8.00, 5.00)
+[component_container_isolated-7] [INFO] [1788996528.865553717] [controller_server]: Received a goal, begin computing control effort.
+[bellman_node-8] [INFO] [1788996529.843723273] [bellman_node]: Phi=+0.022 | Q-entries=79 | desvios=3
+[component_container_isolated-7] [INFO] [1788996529.916051116] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996530.843247928] [bellman_node]: Phi=+0.022 | Q-entries=79 | desvios=3
+[component_container_isolated-7] [INFO] [1788996530.965774034] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996531.843690232] [bellman_node]: Phi=+0.019 | Q-entries=79 | desvios=3
+[component_container_isolated-7] [INFO] [1788996531.965904068] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996532.843906857] [bellman_node]: Phi=+0.016 | Q-entries=79 | desvios=3
+[component_container_isolated-7] [INFO] [1788996533.015826456] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996533.843347689] [bellman_node]: Phi=+0.016 | Q-entries=79 | desvios=3
+[component_container_isolated-7] [INFO] [1788996534.015784276] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996534.843458109] [bellman_node]: Phi=+0.014 | Q-entries=81 | desvios=3
+[component_container_isolated-7] [INFO] [1788996535.065908890] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996535.843061244] [bellman_node]: Phi=+0.014 | Q-entries=81 | desvios=3
+[component_container_isolated-7] [INFO] [1788996536.065877850] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996536.843220234] [bellman_node]: Phi=+0.012 | Q-entries=81 | desvios=3
+[component_container_isolated-7] [INFO] [1788996537.115843854] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996537.843559643] [bellman_node]: Phi=+0.010 | Q-entries=81 | desvios=3
+[component_container_isolated-7] [INFO] [1788996538.115816300] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996538.843532915] [bellman_node]: Phi=+0.010 | Q-entries=82 | desvios=3
+[component_container_isolated-7] [INFO] [1788996539.165887105] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996539.843185470] [bellman_node]: Phi=+0.008 | Q-entries=82 | desvios=3
+[component_container_isolated-7] [INFO] [1788996540.215842157] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996540.843423708] [bellman_node]: Phi=+0.007 | Q-entries=82 | desvios=3
+[component_container_isolated-7] [INFO] [1788996541.215829280] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996541.843517215] [bellman_node]: Phi=+0.376 | Q-entries=84 | desvios=3
+[component_container_isolated-7] [INFO] [1788996542.265784230] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996542.843349197] [bellman_node]: Phi=+0.543 | Q-entries=85 | desvios=4
+[mission_node-10] [INFO] [1788996543.043863435] [mission_node]: Stay Alert ativo: cancelando waypoint atual
+[anomaly_simulator-12] [INFO] [1788996543.043940734] [anomaly_simulator]: investigate_start alvo=2 (pos_verdadeira=(-5.0, 5.0))
+[stay_alert_node-9] [INFO] [1788996543.044221307] [stay_alert_node]: >> INVESTIGATE (Phi=+0.543) -> (-3.7,7.3)
+[component_container_isolated-7] [INFO] [1788996543.044897960] [bt_navigator]: Received goal preemption request
+[component_container_isolated-7] [INFO] [1788996543.045192793] [bt_navigator]: Begin navigating from current location (-2.42, 9.18) to (-3.69, 7.33)
+[mission_node-10] [INFO] [1788996543.046080544] [mission_node]: WP[3] não concluído (status 6); será reenviado
+[component_container_isolated-7] [INFO] [1788996543.265857845] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996543.843451248] [bellman_node]: Phi=+0.511 | Q-entries=86 | desvios=4
+[component_container_isolated-7] [INFO] [1788996544.315843679] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996545.553993550] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996546.032014802] [bellman_node]: Phi=+0.434 | Q-entries=86 | desvios=4
+[component_container_isolated-7] [INFO] [1788996546.604000065] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996547.031820076] [bellman_node]: Phi=+0.369 | Q-entries=87 | desvios=4
+[component_container_isolated-7] [INFO] [1788996547.604221208] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996548.032064881] [bellman_node]: Phi=+0.314 | Q-entries=88 | desvios=4
+[component_container_isolated-7] [INFO] [1788996548.653961144] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996549.031525060] [bellman_node]: Phi=+0.314 | Q-entries=88 | desvios=4
+[component_container_isolated-7] [INFO] [1788996549.653973520] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996550.031672599] [bellman_node]: Phi=+0.267 | Q-entries=88 | desvios=4
+[component_container_isolated-7] [INFO] [1788996550.704169686] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996551.031843288] [bellman_node]: Phi=+0.227 | Q-entries=88 | desvios=4
+[component_container_isolated-7] [INFO] [1788996551.753968037] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996551.960662283] [controller_server]: Reached the goal!
+[component_container_isolated-7] [INFO] [1788996551.993440209] [bt_navigator]: Goal succeeded
+[bellman_node-8] [INFO] [1788996552.031636785] [bellman_node]: Phi=+0.227 | Q-entries=90 | desvios=4
+[bellman_node-8] [INFO] [1788996553.031255640] [bellman_node]: Phi=+0.193 | Q-entries=90 | desvios=4
+[bellman_node-8] [INFO] [1788996554.031632343] [bellman_node]: Phi=+0.164 | Q-entries=90 | desvios=4
+[stay_alert_node-9] [INFO] [1788996555.031552382] [stay_alert_node]: << PATROL (motivo=inspected, 10.8s)
+[bellman_node-8] [INFO] [1788996555.031730181] [bellman_node]: Phi=+0.139 | Q-entries=90 | desvios=4
+[anomaly_simulator-12] [INFO] [1788996555.032263882] [anomaly_simulator]: anomalia 2 INSPECIONADA (robô a 2.90 m; 3/3)
+[mission_node-10] [INFO] [1788996556.031478279] [mission_node]: -> WP[3] est_disjuntor (-8.0,5.0)
+[bellman_node-8] [INFO] [1788996556.031736411] [bellman_node]: Phi=+0.118 | Q-entries=90 | desvios=4
+[component_container_isolated-7] [INFO] [1788996556.032371665] [bt_navigator]: Begin navigating from current location (-3.56, 7.52) to (-8.00, 5.00)
+[component_container_isolated-7] [INFO] [1788996556.053228159] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-7] [INFO] [1788996556.055541362] [controller_server]: Optimizer reset
+[bellman_node-8] [INFO] [1788996557.031538835] [bellman_node]: Phi=+0.118 | Q-entries=91 | desvios=4
+[component_container_isolated-7] [INFO] [1788996557.103482972] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996558.031710790] [bellman_node]: Phi=+0.101 | Q-entries=91 | desvios=4
+[component_container_isolated-7] [INFO] [1788996558.153439434] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996559.031622515] [bellman_node]: Phi=+0.101 | Q-entries=91 | desvios=4
+[component_container_isolated-7] [INFO] [1788996559.153489076] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996560.031726776] [bellman_node]: Phi=+0.085 | Q-entries=91 | desvios=4
+[component_container_isolated-7] [INFO] [1788996560.203524865] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996561.031715236] [bellman_node]: Phi=+0.073 | Q-entries=92 | desvios=4
+[component_container_isolated-7] [INFO] [1788996561.203430556] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996562.031497721] [bellman_node]: Phi=+0.073 | Q-entries=92 | desvios=4
+[component_container_isolated-7] [INFO] [1788996562.253478425] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996563.031596376] [bellman_node]: Phi=+0.062 | Q-entries=92 | desvios=4
+[component_container_isolated-7] [INFO] [1788996563.303489150] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996564.031541717] [bellman_node]: Phi=+0.062 | Q-entries=92 | desvios=4
+[component_container_isolated-7] [INFO] [1788996564.303509424] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996565.031762084] [bellman_node]: Phi=+0.053 | Q-entries=93 | desvios=4
+[component_container_isolated-7] [INFO] [1788996565.353413679] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996566.031568296] [bellman_node]: Phi=+0.053 | Q-entries=94 | desvios=4
+[component_container_isolated-7] [INFO] [1788996566.353530873] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996567.031515910] [bellman_node]: Phi=+0.045 | Q-entries=94 | desvios=4
+[component_container_isolated-7] [INFO] [1788996567.403481142] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996568.031301168] [bellman_node]: Phi=+0.045 | Q-entries=94 | desvios=4
+[component_container_isolated-7] [INFO] [1788996568.403452271] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996569.031915943] [bellman_node]: Phi=+0.038 | Q-entries=94 | desvios=4
+[component_container_isolated-7] [INFO] [1788996569.453493006] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996570.032004341] [bellman_node]: Phi=+0.038 | Q-entries=95 | desvios=4
+[component_container_isolated-7] [INFO] [1788996570.453452112] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996571.031414148] [bellman_node]: Phi=+0.032 | Q-entries=95 | desvios=4
+[component_container_isolated-7] [INFO] [1788996571.503538093] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996572.031826292] [bellman_node]: Phi=+0.027 | Q-entries=95 | desvios=4
+[component_container_isolated-7] [INFO] [1788996572.503503111] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996573.031988843] [bellman_node]: Phi=+0.023 | Q-entries=96 | desvios=4
+[component_container_isolated-7] [INFO] [1788996573.553506940] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996574.031993684] [bellman_node]: Phi=+0.023 | Q-entries=97 | desvios=4
+[component_container_isolated-7] [INFO] [1788996574.553521070] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996575.031761446] [bellman_node]: Phi=+0.020 | Q-entries=97 | desvios=4
+[component_container_isolated-7] [INFO] [1788996575.603497650] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996576.031284306] [bellman_node]: Phi=+0.020 | Q-entries=97 | desvios=4
+[component_container_isolated-7] [INFO] [1788996576.603477543] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996577.031891080] [bellman_node]: Phi=+0.017 | Q-entries=97 | desvios=4
+[component_container_isolated-7] [INFO] [1788996577.653542775] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996577.660146509] [controller_server]: Reached the goal!
+[component_container_isolated-7] [INFO] [1788996577.702769622] [bt_navigator]: Goal succeeded
+[mission_node-10] [INFO] [1788996579.241349817] [mission_node]: -> WP[4] retorno (-10.0,-10.0)
+[bellman_node-8] [INFO] [1788996579.241417843] [bellman_node]: Phi=+0.014 | Q-entries=97 | desvios=4
+[component_container_isolated-7] [INFO] [1788996579.242081849] [bt_navigator]: Begin navigating from current location (-7.91, 5.05) to (-10.00, -10.00)
+[component_container_isolated-7] [INFO] [1788996579.263258739] [controller_server]: Received a goal, begin computing control effort.
+[bellman_node-8] [INFO] [1788996580.240394815] [bellman_node]: Phi=+0.014 | Q-entries=97 | desvios=4
+[component_container_isolated-7] [INFO] [1788996580.313662743] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996581.240267222] [bellman_node]: Phi=+0.012 | Q-entries=97 | desvios=4
+[component_container_isolated-7] [INFO] [1788996581.363536917] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996582.241036997] [bellman_node]: Phi=+0.010 | Q-entries=97 | desvios=4
+[component_container_isolated-7] [INFO] [1788996582.363529548] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996583.240920226] [bellman_node]: Phi=+0.010 | Q-entries=98 | desvios=4
+[component_container_isolated-7] [INFO] [1788996583.413483380] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996584.241003113] [bellman_node]: Phi=+0.009 | Q-entries=98 | desvios=4
+[component_container_isolated-7] [INFO] [1788996584.413758209] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996585.240732803] [bellman_node]: Phi=+0.009 | Q-entries=98 | desvios=4
+[component_container_isolated-7] [INFO] [1788996585.463531753] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996586.240964759] [bellman_node]: Phi=+0.007 | Q-entries=98 | desvios=4
+[component_container_isolated-7] [INFO] [1788996586.463517309] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996587.240703099] [bellman_node]: Phi=+0.007 | Q-entries=99 | desvios=4
+[component_container_isolated-7] [INFO] [1788996587.513652724] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996588.240946074] [bellman_node]: Phi=+0.006 | Q-entries=99 | desvios=4
+[component_container_isolated-7] [INFO] [1788996588.563526301] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996589.240679257] [bellman_node]: Phi=+0.006 | Q-entries=99 | desvios=4
+[component_container_isolated-7] [INFO] [1788996589.563523580] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996590.240705967] [bellman_node]: Phi=+0.005 | Q-entries=99 | desvios=4
+[component_container_isolated-7] [INFO] [1788996590.613684685] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996591.240844659] [bellman_node]: Phi=+0.005 | Q-entries=100 | desvios=4
+[component_container_isolated-7] [INFO] [1788996591.613464144] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996592.240816545] [bellman_node]: Phi=+0.004 | Q-entries=100 | desvios=4
+[component_container_isolated-7] [INFO] [1788996592.663620786] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996593.240798647] [bellman_node]: Phi=+0.004 | Q-entries=100 | desvios=4
+[component_container_isolated-7] [INFO] [1788996593.713773684] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996594.240629982] [bellman_node]: Phi=+0.003 | Q-entries=100 | desvios=4
+[component_container_isolated-7] [INFO] [1788996594.713770334] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996595.240431402] [bellman_node]: Phi=+0.003 | Q-entries=101 | desvios=4
+[component_container_isolated-7] [INFO] [1788996595.763572571] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996596.240884081] [bellman_node]: Phi=+0.003 | Q-entries=101 | desvios=4
+[component_container_isolated-7] [INFO] [1788996596.763546519] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996597.241094398] [bellman_node]: Phi=+0.002 | Q-entries=101 | desvios=4
+[component_container_isolated-7] [INFO] [1788996597.813820160] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996598.241010899] [bellman_node]: Phi=+0.002 | Q-entries=101 | desvios=4
+[component_container_isolated-7] [INFO] [1788996598.863529914] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996599.240782498] [bellman_node]: Phi=+0.002 | Q-entries=102 | desvios=4
+[component_container_isolated-7] [INFO] [1788996599.863517590] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996600.240303176] [bellman_node]: Phi=+0.002 | Q-entries=102 | desvios=4
+[component_container_isolated-7] [INFO] [1788996600.913496637] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996601.241204758] [bellman_node]: Phi=+0.001 | Q-entries=102 | desvios=4
+[component_container_isolated-7] [INFO] [1788996601.913474742] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996602.240962237] [bellman_node]: Phi=+0.001 | Q-entries=103 | desvios=4
+[component_container_isolated-7] [INFO] [1788996602.963504687] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996603.240883161] [bellman_node]: Phi=+0.001 | Q-entries=103 | desvios=4
+[component_container_isolated-7] [INFO] [1788996604.013777543] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996604.240388773] [bellman_node]: Phi=+0.001 | Q-entries=103 | desvios=4
+[component_container_isolated-7] [INFO] [1788996605.013800674] [controller_server]: Passing new path to controller.
+[bellman_node-8] [INFO] [1788996605.240791598] [bellman_node]: Phi=+0.001 | Q-entries=103 | desvios=4
+[component_container_isolated-7] [INFO] [1788996606.063535562] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996607.063523616] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996608.113582768] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996609.163536303] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996610.163562906] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996611.213795395] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996612.438413747] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996613.488358681] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996614.488628497] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996615.538707298] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996616.538367652] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996617.588622787] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996618.588446343] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996619.638350438] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996620.638331726] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996621.688514285] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996622.738351009] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996623.738371471] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996624.788581680] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996625.788335109] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996626.838339556] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996627.838327134] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996628.888361338] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996629.938355239] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996630.938346137] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996631.988543296] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996632.988566230] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996634.038369483] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996635.038374263] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996636.088644405] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996637.138364363] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996638.138418861] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996639.138348339] [controller_server]: Passing new path to controller.
+[component_container_isolated-7] [INFO] [1788996639.844669178] [controller_server]: Reached the goal!
+[component_container_isolated-7] [INFO] [1788996639.877616646] [bt_navigator]: Goal succeeded
+[metrics_node-11] [INFO] [1788996640.415884152] [metrics_node]: Missão COMPLETA — métricas finais gravadas.
