@@ -7,6 +7,12 @@ script nao infere nada: conta o que existe no sistema de arquivos e classifica
 cada diretorio por um mapa DECLARADO abaixo. O que nao casa com o mapa sai como
 'nao classificado', nunca com um motivo inventado.
 
+INVENTARIO INDIVIDUAL (15/11/2026): a auditoria da rodada 3 observou que um resumo
+agregado de contagens nao substitui o inventario de cada lancamento. O script passa a
+emitir TAMBEM `reconciliacao_lancamentos_individual.csv`, com uma linha por log de
+lancamento encontrado, e a declarar explicitamente a lacuna dos lotes cujos logs nao
+foram preservados -- que nao sao inferidos nem preenchidos por estimativa.
+
 Uso: python3 gerar_reconciliacao.py [results_dir] > reconciliacao.csv
 """
 import os, re, sys, csv, collections
@@ -50,12 +56,19 @@ def rotulo(nome):
     if m: return m.group(1), ''
     return None, None
 
+# Lotes cujos logs de lancamento NAO foram preservados. Declarado, nao inferido: para
+# estes o inventario individual nao existe e a linha correspondente diz isso, em vez de
+# sumir do arquivo ou de ser preenchida por estimativa a partir da contagem de CSVs.
+SEM_LOGS_PRESERVADOS = {'_noturna_20260901'}
+
+
 def main():
     res = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser('~/tese_ws/results')
     w = csv.writer(sys.stdout)
     w.writerow(['bateria', 'conjunto', 'rotulo', 'lancamentos', 'csvs',
                 'origem', 'criterio_de_exclusao'])
     resumo = collections.Counter()
+    individual = []
 
     for d in ['.'] + sorted(x for x in os.listdir(res) if os.path.isdir(os.path.join(res, x))):
         base = os.path.join(res, d)
@@ -64,6 +77,12 @@ def main():
             lab, _ = rotulo(f)
             if lab is None: continue
             (logs if f.startswith('launch_') else csvs)[lab] += 1
+        # inventario individual: uma linha por log de lancamento deste diretorio
+        for f in sorted(os.listdir(base)):
+            m = re.match(r'launch_(.+?)_r(\d+)\.log$', f)
+            if m:
+                individual.append((d if d != '.' else '(raiz)', m.group(1),
+                                   m.group(2), f))
         for lab in sorted(set(logs) | set(csvs)):
             if d == '.':
                 if R201.match(lab):
@@ -78,6 +97,36 @@ def main():
             w.writerow([d if d != '.' else '(raiz)', conj, lab,
                         logs[lab], csvs[lab], org, crit])
             resumo[conj] += logs[lab]
+
+    # grava o inventario individual ao lado do agregado
+    saida = os.path.join(res, 'reconciliacao_lancamentos_individual.csv')
+    with open(saida, 'w', newline='', encoding='utf-8') as fh:
+        wi = csv.writer(fh)
+        wi.writerow(['bateria', 'conjunto', 'rotulo', 'repeticao',
+                     'log_de_lancamento', 'origem', 'criterio_de_exclusao'])
+        for bat, lab, rep, f in individual:
+            if bat == '(raiz)':
+                if R201.match(lab):
+                    conj, org, crit = ('verificacao do decaimento',
+                                       'verificacao direcionada do decaimento (14/11/2026)',
+                                       'nao pertence a matriz das 320; conjunto proprio')
+                else:
+                    conj, org, crit = ('analisado', 'bateria final', '---')
+            else:
+                conj = 'excluido'
+                org, crit = MAPA.get(bat, ('NAO CLASSIFICADO', 'NAO CLASSIFICADO'))
+            wi.writerow([bat, conj, lab, rep, f, org, crit])
+        # lacunas declaradas: lotes sem logs preservados
+        for bat in sorted(SEM_LOGS_PRESERVADOS):
+            org, crit = MAPA.get(bat, ('NAO CLASSIFICADO', 'NAO CLASSIFICADO'))
+            wi.writerow([bat, 'excluido', '(indisponivel)', '(indisponivel)',
+                         'LOGS NAO PRESERVADOS: inventario individual inexistente '
+                         'para este lote', org, crit])
+    print(f'inventario individual: {saida} ({len(individual)} lancamentos)',
+          file=sys.stderr)
+    for bat in sorted(SEM_LOGS_PRESERVADOS):
+        print(f'  lacuna declarada: {bat} nao tem logs preservados; seus lancamentos '
+              f'nao entram no inventario individual', file=sys.stderr)
 
     print('', file=sys.stderr)
     for k, v in sorted(resumo.items()):

@@ -1,9 +1,80 @@
-# Proveniência da bateria (Access-2026-33687)
+# Proveniência dos dados
 
-Manifesto de coleta dos 160 CSVs de métricas do pacote, para fixar qual versão de
+> **Escopo deste arquivo (corrigido em 15/11/2026).** Ele descrevia apenas o pacote
+> de **160 CSVs do artigo** (Access-2026-33687) e falava de um `CHECKSUMS.sha256`
+> com 160 registros. Esse arquivo hoje tem **323** e cobre a matriz da **tese**, que
+> é maior. Quem chegasse aqui procurando a proveniência da tese encontrava a do
+> artigo e um total que não fecha. As duas passam a estar separadas abaixo.
+
+---
+
+## Parte I — Pacote da tese (defesa de 2026-12-10)
+
+Identifique o estado auditado pela **etiqueta anotada**, não pelo ramo:
+
+```bash
+git rev-parse tese-defesa-v1^{commit}
+```
+
+### Os dois conjuntos
+
+| Conjunto | Rótulos | Lançamentos | Manifesto | Somas |
+|---|---|---:|---|---|
+| Matriz histórica | 32 | 320 | `manifesto_execucoes.csv` | `CHECKSUMS.sha256` (323/323) |
+| Verificação do relógio | `CM`/`E3`/`HEU` × `w`/`s` | 60 | `manifesto_verificacao_decaimento.csv` | `CHECKSUMS_verificacao_decaimento.sha256` (61/61) |
+
+A verificação do relógio é de **2026-11-14** e **não** pertence à matriz das 320. O
+sufixo `w` indica relógio de parede e `s` relógio simulado. Os dois conjuntos
+convivem em `results/`; o seletor `--conjunto` de `gerar_manifesto.py` decide qual é
+censado e não existe modo que os misture por omissão.
+
+### Censo e lançamentos
+
+| Grandeza | Valor |
+|---|---:|
+| Lançamentos registrados ao todo | 685 |
+| ├─ analisados (matriz) | 320 |
+| ├─ verificação do relógio | 60 |
+| └─ excluídos (16 baterias) | 305 |
+| Execuções válidas da matriz | 311 |
+| Concluíram a missão | 302 |
+| Censuradas à direita (todas KOb) | 9 |
+| Imóveis, excluídas da análise comportamental | 9 |
+
+O inventário **individual** dos 685 está em
+`reconciliacao_lancamentos_individual.csv`, uma linha por log de lançamento, com
+bateria de origem e critério de exclusão. O agregado por rótulo está em
+`reconciliacao_lancamentos.csv`. Os dois saem de `gerar_reconciliacao.py`.
+
+**Lacuna declarada:** o lote `_noturna_20260901` não teve os logs preservados. Seus
+lançamentos não entram no inventário individual, e a linha correspondente diz isso
+em vez de ser preenchida por estimativa a partir da contagem de CSVs.
+
+### Lacuna de commit por execução
+
+O manifesto registra o *commit* de cada execução **apenas** nas baterias rodadas a
+partir de 2026-11-13; o executor não gravava esse campo antes disso. Nas anteriores
+o campo fica **vazio**, que é o registro honesto: não se infere *commit* por data.
+
+### Defeito de temporização declarado
+
+A guarda que autoriza a aplicação do fator de decaimento compara instantes de
+**relógio de parede**, enquanto o temporizador que a chama corre em **tempo
+simulado**. O período realizado fica em 1,57–1,60 s onde a especificação diz 1 s. O
+padrão do parâmetro `decay_clock` permanece `wall` **de propósito**, para que as 320
+execuções sigam comparáveis entre si e com o artigo. O lote de verificação mede o
+efeito disso; a Seção 6.13 da tese declara qual conclusão depende dele.
+
+---
+
+## Parte II — Pacote do artigo (Access-2026-33687), histórico
+
+Manifesto de coleta dos 160 CSVs de métricas **do artigo**, para fixar qual versão de
 código produziu cada lote e distinguir dados reaproveitados de dados recoletados.
 A tag `v1.0-resubmission` é móvel entre rodadas; **este manifesto fixa a
-correspondência por commit**, que a tag sozinha não garante.
+correspondência por commit**, que a tag sozinha não garante. Os 160 são um
+**subconjunto** da matriz de 320 da tese; as somas de verificação citadas nesta
+parte são as do pacote do artigo, não as de `CHECKSUMS.sha256` como ele está hoje.
 
 ## Commits por rodada
 
@@ -17,7 +88,8 @@ correspondência por commit**, que a tag sozinha não garante.
 A tag `v1.0-resubmission` é móvel; identifique o pacote pelo **commit** (a linha
 "atual" acima), não apenas pela tag.
 
-Os hashes SHA-256 dos 160 CSVs estão em [`CHECKSUMS.sha256`](CHECKSUMS.sha256).
+Os hashes SHA-256 estão em [`CHECKSUMS.sha256`](CHECKSUMS.sha256), que hoje cobre os
+323 registros da tese (os 160 do artigo estão entre eles).
 
 ## Lotes de coleta
 
