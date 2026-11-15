@@ -48,7 +48,7 @@ O sistema separa a inspeção em duas camadas cooperantes
 (Figura~\ref{fig:prop-arquitetura}).
 
 Uma camada \emph{deliberativa} executa a patrulha de inspeção: visita uma sequência
-de \textit{waypoints} ao redor dos equipamentos usando uma pilha de navegação padrão: Nav2 com controlador \textit{Model Predictive Path Integral} (MPPI). Interpreta-se
+de \textit{waypoints} ao redor dos equipamentos usando uma pilha de navegação padrão: Nav2 com controlador \textit{Model Predictive Path Integral} (MPPI), descrito na Seção~\ref{sec:fund-nav2}. Interpreta-se
 essa camada como \emph{sensoriamento ativo}: já que um agente puramente reativo só
 responde a estímulos dentro do alcance, é necessário um mecanismo \emph{anterior} que
 leve os sensores até onde os eventos possam ocorrer. A patrulha provê exatamente esse
@@ -265,7 +265,8 @@ cenário de conflito da Seção~\ref{sec:res-conflito}.
 \section{A Camada Reativa \textsc{Stay Alert}}
 \label{sec:prop-stayalert}
 
-A camada \textsc{Stay Alert} é uma máquina de estados finitos com três modos:
+A camada \textsc{Stay Alert} é uma máquina de estados finitos, no sentido fixado na
+Subseção~\ref{sec:fund-fsm}, com três modos:
 \textsc{Patrol}, \textsc{Investigate} (atração) e \textsc{Avoid} (repulsão),
 sumarizados no Algoritmo~\ref{alg:stayalert} e na Figura~\ref{fig:prop-fsm}.
 
@@ -495,6 +496,13 @@ começam vazios, e nenhum risco está travado na zona de exclusão nem entregue 
 
 \subsection{Taxas e Relógios}
 \label{sec:prop-relogios}
+
+%% Referencia inversa acrescentada em 15/11/2026: a distincao entre a base de tempo do
+%% agendamento e a do codigo agendado passou a ser fundamentada na Secao 2.4.6, e o
+%% leitor que chega aqui precisa poder ir ate ela.
+A distinção entre a base de tempo que dispara um temporizador e a que o código disparado
+consulta foi fixada na Seção~\ref{sec:fund-relogios}; é dela que depende a leitura desta
+subseção.
 
 \begin{table}[htb]
 \centering
@@ -970,9 +978,12 @@ robustez comportamental, e é assim que ela é apresentada.
 %% Acrescentado em 12/11/2026. O estatuto teorico do termo aditivo precisa estar
 %% declarado aqui, onde a equacao aparece, e nao so na conclusao: e a primeira coisa
 %% que um leitor de aprendizado por reforco verifica.
+%% Referencia inversa acrescentada em 15/11/2026: a garantia que se renuncia aqui passou
+%% a ser introduzida na fundamentacao, e o leitor precisa poder ir ate ela.
 Cabe ser igualmente inequívoco quanto ao estatuto \emph{teórico} do termo aditivo. O
 campo $\Phi$ \emph{não} está formulado como termo potencial no sentido de
-\citeonline{ng1999}, isto é, não assume a forma
+\citeonline{ng1999}, cuja condição de invariância de política foi enunciada na
+Seção~\ref{sec:fund-shaping}; isto é, não assume a forma
 $F(s,a,s')=\gamma\,\Phi(s')-\Phi(s)$ exigida para que a transformação preserve a
 política ótima. O campo é aditivo, variante no tempo, sujeito a decaimento e
 dependente dos eventos observados, de modo que \emph{nenhuma garantia de invariância

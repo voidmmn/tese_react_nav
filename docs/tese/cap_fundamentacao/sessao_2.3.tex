@@ -29,7 +29,10 @@ A subestação transforma, distribui e controla a energia elétrica, e uma falha
     \label{fig:subestacao_tipica}
 \end{figure}
 
-Subestações elétricas são instalações que contêm equipamentos para transmissão e distribuição de energia elétrica, além de equipamentos de proteção, medição e controle \cite{Muzy2012}. Elas desempenham funções essenciais no sistema elétrico, incluindo transformação de tensão, seccionamento de linhas, compensação de reativos e interligação de sistemas \cite{Kindermann2012}.
+%% Corrigido em 15/11/2026: a \autoref da figura estava ausente. O rotulo
+%% fig:subestacao_tipica nunca era citado no texto -- era a unica figura da tese nessa
+%% condicao, de sorte que a figura flutuava sem ancoragem no argumento.
+Subestações elétricas são instalações que contêm equipamentos para transmissão e distribuição de energia elétrica, além de equipamentos de proteção, medição e controle \cite{Muzy2012}. Elas desempenham funções essenciais no sistema elétrico, incluindo transformação de tensão, seccionamento de linhas, compensação de reativos e interligação de sistemas \cite{Kindermann2012}. A \autoref{fig:subestacao_tipica} situa esses equipamentos num diagrama unifilar: é nos vãos de transformação e de manobra que se concentram as anomalias que a inspeção térmica e acústica procura, e é a eles que correspondem os alvos do mundo simulado no Capítulo~\ref{cap:avaliacao}.
 
 \subsubsection{Classificação e Componentes Principais}
 
@@ -52,13 +55,28 @@ alvos do mundo simulado.
 
 O arranjo de barramentos define a configuração física e elétrica da subestação, impactando sua confiabilidade, flexibilidade operativa e custo. Os principais arranjos incluem barra simples, barra principal e transferência, barra dupla, disjuntor e meio, e configuração em anel \cite{Frontin2013}.
 
+%% Comprimida em 15/11/2026, de 108 para cerca de 85 palavras, e com funcao trocada.
+%% A subsecao listava normas que nenhum capitulo posterior invoca -- NBR e IEC tem zero
+%% ocorrencias nos Capitulos 4 a 7. Em vez de corta-la, que num doutorado do PPGEELT
+%% deixaria o quadro normativo ausente, ela passa a prevenir a leitura errada que a
+%% propria Secao 5.5 combate: o limiar de 2 m da avaliacao e DIAGNOSTICO, nao requisito
+%% de norma, e nenhuma distancia normativa e invocada para justifica-lo.
 \subsection{Normas Técnicas e Regulamentação}
 
-As subestações elétricas são regidas por um conjunto específico de normas técnicas e regulamentações que visam garantir a segurança, confiabilidade e padronização das instalações \cite{ABNT2021}. No Brasil, destacam-se as normas ABNT NBR 14039 (média tensão), NBR 5410 (baixa tensão) e NBR 5419 (proteção contra descargas atmosféricas).
+A operação de subestações é regida por normas que fixam requisitos de segurança e de
+padronização da instalação: no Brasil, a ABNT NBR 14039 para média tensão, a NBR 5410
+para baixa tensão e a NBR 5419 para proteção contra descargas atmosféricas
+\cite{ABNT2021}; no plano internacional, a série IEC 61936-1, 62271, 60076 e 61850 para
+instalações de alta tensão, manobra, transformadores e comunicação. O setor é regulado
+pela ANEEL, e os Procedimentos de Rede do ONS estabelecem requisitos mínimos para as
+instalações \cite{ONS2020}.
 
-Internacionalmente, as normas IEC 61936-1, IEC 62271, IEC 60076 e IEC 61850 estabelecem padrões para instalações de alta tensão, equipamentos de manobra, transformadores e comunicação em subestações, respectivamente \cite{ABNT2021}.
-
-O setor elétrico brasileiro é regulado pela ANEEL (regulação e fiscalização), ONS (operação do sistema), EPE (planejamento) e CCEE (comercialização), com os Procedimentos de Rede do ONS estabelecendo requisitos mínimos para subestações \cite{ONS2020}.
+Esse arcabouço delimita o ambiente em que o robô opera, mas não fornece os limiares
+usados neste trabalho, e a distinção precisa ficar registrada desde já: as faixas de
+afastamento empregadas no Capítulo~\ref{cap:avaliacao} são limiares \emph{diagnósticos},
+adotados para medir exposição, e não requisitos normativos. Nenhuma distância prescrita
+por norma é invocada para justificá-los, e transitar abaixo de uma delas não constitui,
+nos termos desta tese, violação de requisito.
 
 \subsection{Métodos Tradicionais de Inspeção}
 

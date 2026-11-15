@@ -95,6 +95,7 @@ O algoritmo atualiza iterativamente a estimativa da função $Q$ usando a seguin
 
 \begin{equation}
 Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha [r_{t+1} + \gamma \max_{a} Q(s_{t+1}, a) - Q(s_t, a_t)]
+\label{eq:fund-qlearning}
 \end{equation}
 
 Onde:
@@ -104,6 +105,27 @@ Onde:
     \item $\gamma$ é o fator de desconto.
     \item $\max_{a} Q(s_{t+1}, a)$ é o valor máximo estimado para o próximo estado $s_{t+1}$.
 \end{itemize}
+
+%% Acrescentado em 15/11/2026. O capitulo ensinava a regra de atualizacao sem nomear a
+%% equacao de Bellman, e a Secao 4.6 fala da "equacao de Bellman" e rotula sua equacao
+%% como eq:prop-bellman. "Bellman" ocorria ZERO vezes em todo o Capitulo 2 e 3 vezes
+%% nos capitulos posteriores: o leitor encontrava o nome depois do uso.
+A expressão entre colchetes na Equação~\eqref{eq:fund-qlearning} é o \emph{erro de
+diferença temporal}: a discrepância entre o valor estimado para o par corrente e a
+estimativa revista à luz da recompensa observada e do melhor valor disponível no estado
+seguinte. A regra desloca a estimativa na direção dessa discrepância, numa fração
+$\alpha$ dela. O ponto fixo dessa iteração é a \emph{equação de Bellman} de otimalidade,
+\begin{equation}
+Q^*(s,a) = \mathbb{E}\!\left[\, r + \gamma \max_{a'} Q^*(s',a') \,\right],
+\label{eq:fund-bellman}
+\end{equation}
+que caracteriza a função valor ótima por uma condição de consistência: o valor de um par
+estado-ação é a recompensa imediata esperada mais o valor descontado do melhor que se pode
+fazer em seguida. Não é uma regra de cálculo, e sim a identidade que a solução satisfaz; o
+Q-Learning é um dos procedimentos que convergem para ela. Essa distinção entre a
+\emph{identidade} e o \emph{procedimento} será retomada no
+Capítulo~\ref{cap:proposta}, onde se discute o que significa acrescentar um termo à
+atualização sem alterar a identidade que ela persegue.
 
 Uma característica importante do Q-Learning é o dilema exploração-explotação: o agente precisa balancear entre explorar novas ações (para descobrir melhores estratégias) e explotar o conhecimento atual (para maximizar recompensas). A estratégia $\epsilon$-greedy é comumente utilizada, onde com probabilidade $\epsilon$, escolhe-se uma ação aleatória (exploração); caso contrário, escolhe-se a ação com maior valor Q (explotação).
 
@@ -123,52 +145,65 @@ A principal diferença entre Q-Learning e SARSA é que o Q-Learning é um algori
 
 O Double Q-Learning foi proposto para mitigar o problema de superestimação presente no Q-Learning tradicional \cite{Hasselt2010}. O algoritmo mantém duas funções valor, $Q_A$ e $Q_B$, e utiliza uma para selecionar ações e outra para avaliá-las, reduzindo o viés de superestimação.
 
-\subsection{Deep Reinforcement Learning}
+%% Secao COMPRIMIDA e ACRESCIDA em 15/11/2026. Antes: 317 palavras sobre DQN e
+%% algoritmos de politica, com figura propria, e NADA sobre moldagem de recompensa.
+%% O desequilibrio era mensuravel: "DQN" ocorria 6 vezes aqui e zero nos Capitulos 4
+%% a 7, enquanto `shaping' e `invariancia de politica' ocorriam ZERO aqui e 3 vezes na
+%% Secao 4.7, onde esta tese declara que seu campo NAO tem a forma potencial de Ng. O
+%% leitor precisava ja saber o que e essa garantia para entender o que estava sendo
+%% renunciado. O DQN foi mantido em forma curta porque o Capitulo 3 depende dele (13
+%% ocorrencias de DRL/DQN la), mas a figura fig_dqn saiu: ela detalhava rede alvo e
+%% buffer de repeticao, que nenhum capitulo posterior usa.
+\subsection{Aprendizado por Reforço Profundo}
 
-O Deep Reinforcement Learning (DRL) combina técnicas de aprendizado profundo com aprendizado por reforço, permitindo lidar com espaços de estados e ações de alta dimensionalidade, como os encontrados em aplicações robóticas reais \cite{Arulkumaran2017DeepRL}.
+O aprendizado por reforço profundo substitui a tabela de valor por um aproximador
+paramétrico, o que o torna aplicável a espaços de estado de alta dimensão onde a tabela
+seria intratável \cite{Arulkumaran2017DeepRL}. A \textit{Deep Q-Network} aprende
+$Q(s,a;\theta)$ com uma rede neural em lugar de uma entrada por par estado-ação
+\cite{Mnih2015}, e as duas técnicas que a tornaram treinável atacam a mesma dificuldade,
+a correlação entre amostras consecutivas: a repetição de experiências treina a rede com
+mini-lotes sorteados de um \textit{buffer} de transições, quebrando a ordem temporal, e a
+rede alvo mantém uma segunda cópia de parâmetros atualizada apenas periodicamente, de
+sorte que o alvo da regressão não se desloca a cada passo junto com a rede que o persegue.
+Uma segunda família aprende a política diretamente, em vez de derivá-la de uma função
+valor \cite{Sutton1999}: os métodos \textit{actor-critic} acoplam um aprendiz de política
+a um de valor \cite{Konda1999}, e o \ac{PPO} limita a magnitude de cada atualização para
+estabilizar o treino \cite{Schulman2017}. Nenhuma dessas famílias é empregada nesta tese,
+que opera com tabela de valor discreta; elas aparecem aqui porque a literatura revisada no
+Capítulo~\ref{cap:revisao} é majoritariamente construída sobre elas.
 
-\subsubsection{Deep Q-Network (DQN)}
+\subsection{Moldagem de Recompensa e Invariância de Política}
+\label{sec:fund-shaping}
 
-A Deep Q-Network (DQN) é uma extensão do Q-Learning que utiliza redes neurais profundas para aproximar a função Q \cite{Mnih2015}. Em vez de manter uma tabela Q para cada par estado-ação, a DQN aprende uma função $Q(s, a; \theta)$ parametrizada por $\theta$, onde $\theta$ são os pesos da rede neural. A \autoref{fig:dqn} ilustra a arquitetura de uma Deep Q-Network (DQN).
+Recompensa esparsa torna o aprendizado lento: se o sinal só chega ao alcançar o objetivo,
+o agente precisa encontrá-lo por exploração antes de ter o que aprender. A \emph{moldagem
+de recompensa} acrescenta à recompensa original $r$ um termo $F$ que oferece sinal
+intermediário, de modo que o agente aprende sobre a soma $r+F$ em vez de sobre $r$. O
+expediente é antigo e eficaz, mas introduz um risco que lhe é próprio: um termo mal
+escolhido pode deslocar a política ótima, premiando um comportamento que acumula $F$ sem
+cumprir a tarefa --- o caso extremo é o agente que circula indefinidamente entre estados
+de alto $F$ em vez de terminar.
 
-\begin{figure}[h]
-    \centering
-%% Figura refeita em 14/11/2026. A versao anterior tinha erros de arquitetura: um
-%% gargalo de um unico neuronio entre a camada oculta e as saidas; o buffer de
-%% repeticao desenhado como entrada da rede, em paralelo com o estado, quando ele e a
-%% fonte dos mini-lotes; a rede alvo recebendo seta de um valor Q em vez de uma copia
-%% dos pesos; e duas saidas rotuladas com o MESMO indice (Q_a, Q_a, Q_n). A ordem de
-%% \legend e \caption tambem estava invertida em relacao a todas as outras figuras.
-%% Ampliada para a largura total do texto: a 0,8 o menor rotulo ficava com 1,38 mm de
-%% altura de caixa alta (~6,9 pt equivalentes), abaixo do piso de legibilidade.
-    \includegraphics[width=\textwidth]{figuras/fig_dqn.pdf}
-    \caption{Arquitetura de uma \textit{Deep Q-Network} (DQN), com as duas inovações
-    discutidas a seguir: a repetição de experiências, que fornece os mini-lotes de
-    treino, e a rede alvo, que recebe periodicamente uma cópia dos pesos da rede
-    \textit{online} e participa do cálculo da perda de diferença temporal.}
-    \legend{Fonte: Elaborada pelo autor com base em \citeonline{Mnih2015}.}
-    \label{fig:dqn}
-\end{figure}
+\citeonline{ng1999} delimitaram exatamente quando esse risco não existe. O resultado é que
+$F$ preserva a política ótima para \emph{qualquer} recompensa original se e somente se
+tiver a forma \emph{potencial}
+\begin{equation}
+F(s,a,s') = \gamma\,\Phi(s') - \Phi(s),
+\label{eq:fund-shaping}
+\end{equation}
+isto é, se for a diferença descontada de uma função $\Phi$ sobre estados. A propriedade
+tem nome: \emph{invariância de política} sob transformação de recompensa. A intuição é que
+um termo dessa forma se cancela ao longo de qualquer trajetória fechada, de sorte que
+nenhum ciclo acumula recompensa artificial, e o que ele altera é a velocidade do
+aprendizado, não o seu destino.
 
-As duas inovações que tornaram a DQN treinável atacam a mesma dificuldade, a correlação
-entre amostras consecutivas. O \emph{experience replay} armazena transições
-$(s_t, a_t, r_{t+1}, s_{t+1})$ em um \textit{buffer} e treina a rede com mini-lotes
-amostrados aleatoriamente dele, quebrando a ordem temporal; a \emph{rede alvo} mantém uma
-segunda cópia de parâmetros $\theta^-$, atualizada apenas periodicamente, de modo que o
-alvo da regressão não se mova a cada passo junto com a rede que o persegue.
-
-\subsubsection{Algoritmos de Política}
-
-Enquanto o Q-Learning e suas variantes aprendem funções valor e derivam políticas implicitamente, os algoritmos de política aprendem diretamente a política $\pi_{\theta}(a|s)$ parametrizada por $\theta$ \cite{Sutton1999}.
-
-\paragraph{Actor-Critic}
-
-Os métodos Actor-Critic combinam aprendizado de política (actor) com aprendizado de valor (critic) \cite{Konda1999}. O actor atualiza a política $\pi_{\theta}(a|s)$ na direção sugerida pelo critic, que aprende a função valor $V_{\phi}(s)$ ou $Q_{\phi}(s, a)$.
-
-\paragraph{Proximal Policy Optimization (PPO)}
-
-O PPO é um algoritmo de política que busca melhorar a estabilidade do treinamento, limitando a magnitude das atualizações de política \cite{Schulman2017}. O PPO tem se mostrado eficaz em uma variedade de tarefas de controle robótico devido à sua estabilidade e eficiência computacional.
-
+A distinção importa porque fixa o ônus da prova. Um termo aditivo que \emph{não} assuma a
+forma da Equação~\eqref{eq:fund-shaping} --- por ser variante no tempo, por depender de
+evento observado ou por somar-se diretamente ao valor em vez de entrar como diferença de
+potencial --- não herda garantia alguma, e qualquer afirmação sobre a política resultante
+precisa ser demonstrada caso a caso. A Seção~\ref{sec:prop-atualizacao} retoma esse
+ponto para declarar o estatuto do campo formulado nesta tese, que é precisamente um termo
+dessa segunda espécie.
 \subsection{Aplicações em Robótica Autônoma}
 
 O aprendizado por reforço tem sido aplicado em robótica autônoma sobretudo em percepção, navegação e manipulação \cite{Kober2013}.

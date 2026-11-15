@@ -50,6 +50,7 @@ ou travar num mínimo local, porque decidir sem horizonte é decidir sem saber p
 decisão leva.
 
 \subsubsection{Navegação Híbrida}
+\label{sec:fund-navhibrida}
 
 A navegação híbrida combina elementos das abordagens deliberativa e reativa
 \cite{Murphy2000, Arkin1998}, tipicamente em três camadas: uma deliberativa, para
@@ -92,6 +93,32 @@ A equação básica para a fusão de comportamentos é:
 \end{equation}
 
 onde $\vec{v}$ é o vetor resultante, $\vec{v_i}$ é o vetor gerado pelo comportamento $i$, $w_i$ é o peso associado ao comportamento $i$, e $n$ é o número total de comportamentos \cite{Arkin1998}.
+
+%% Subsubsecao NOVA em 15/11/2026. O supervisor avaliado nesta tese E uma maquina de
+%% estados finitos (6 ocorrencias do termo nos Capitulos 4 a 7) e o capitulo nao tinha
+%% onde o leitor aprendesse o que isso significa. Subsuncao e vizinha, nao a mesma
+%% coisa: numa, a precedencia e por camada permanente; na outra, por estado corrente.
+\subsubsection{Arbitragem por Máquina de Estados}
+\label{sec:fund-fsm}
+
+Tanto a subsunção quanto os esquemas motores arbitram entre comportamentos que estão
+\emph{todos} ativos: a primeira por supressão de camada, os segundos por soma de vetores.
+Uma terceira forma de arbitragem admite apenas um comportamento por vez e torna explícito
+o que faz a troca. Uma \emph{máquina de estados finitos} é definida por um conjunto finito
+de estados, um estado inicial e uma relação de transição que diz, para cada estado e cada
+condição observada, qual o próximo estado. Aplicada ao controle de um robô, cada estado
+corresponde a um regime de comportamento --- percorrer a rota, investigar um alvo,
+afastar-se de um risco --- e cada transição a uma condição de guarda avaliada sobre a
+percepção corrente.
+
+A diferença em relação à subsunção não é de potência expressiva, mas de onde reside a
+precedência. Na subsunção, a camada superior suprime a inferior sempre, e a prioridade
+está embutida na topologia das conexões; numa máquina de estados, a prioridade é
+reavaliada a cada transição e fica legível na própria relação, de sorte que se pode dizer
+exatamente sob que condição o robô deixa de inspecionar e passa a se afastar. É essa
+legibilidade que a torna adequada ao que se quer medir nesta tese, e o supervisor
+apresentado no Capítulo~\ref{cap:proposta} é construído como uma máquina de estados cujas
+guardas consultam o campo escalar da seção anterior.
 
 \subsection{Campos Potenciais e Navegação Reativa}
 
@@ -153,12 +180,48 @@ o primeiro, e em duas dimensões, porque o robô percorre o pátio sobre o plano
 
 Em aplicações de inspeção de subestações elétricas, a navegação reativa por campos potenciais responde a obstáculos imprevistos sem replanejar a rota inteira \cite{Lactec2022, Iberdrola2022}.
 
-\subsection{SLAM (Simultaneous Localization and Mapping)}
+%% Reescrito em 15/11/2026, e esta e a correcao de cobertura mais consequente do
+%% capitulo. O descasamento era mensuravel: esta secao dedicava 315 palavras a SLAM
+%% (18 ocorrencias aqui, ZERO nos Capitulos 4 a 7) e nenhuma a localizacao em mapa
+%% conhecido, que e o que a tese de fato usa -- o AMCL aparecia 2 vezes nos capitulos
+%% posteriores e nenhuma na fundamentacao. O referencial fundamentava a tecnica NAO
+%% usada e omitia a usada. Agora a localizacao em mapa dado vem primeiro, e o SLAM
+%% fica como contraste, comprimido mas preservado porque o Capitulo 1 o cita 4 vezes
+%% e o Capitulo 3 duas. Removida com o corte a subsecao de Integracao de Modelos 3D
+%% (251 palavras, zero ocorrencias em qualquer outro capitulo); sai da bibliografia a
+%% chave Rusu2011, que so existia ali.
+\subsection{Localização em Mapa Conhecido}
+\label{sec:fund-localizacao}
 
-O SLAM é um problema fundamental em robótica móvel que consiste em construir um mapa do ambiente desconhecido enquanto simultaneamente se localiza neste mapa \cite{Durrant2006, Thrun2005}.
+Quando o mapa do ambiente é dado, localizar-se nele é um problema de estimação de uma só
+quantidade: a pose do robô. A \emph{localização de Monte Carlo} representa a crença sobre
+essa pose por um conjunto de partículas, cada uma uma hipótese de pose com um peso
+associado \cite{Thrun2005}. A cada ciclo, as partículas são deslocadas conforme o modelo
+de movimento e o comando executado, repesadas pela verossimilhança da leitura sensorial
+observada sob cada hipótese, e reamostradas em proporção ao peso, de sorte que a nuvem se
+concentra onde o mapa explica a medida. A variante \emph{adaptativa} ajusta o número de
+partículas ao grau de concentração da nuvem, gastando amostras onde há ambiguidade e
+poupando-as quando a pose está determinada; é a forma implementada no \ac{AMCL} da pilha
+\ac{ROS} 2 \cite{Macenski2022}, que é a configuração adotada nesta tese.
 
-\subsubsection{O Problema do SLAM}
-Os principais desafios do SLAM incluem incertezas na odometria e nas medições, associação de dados, alta dimensionalidade do espaço de estados e ambiguidade perceptual \cite{Durrant2006, Thrun2005}. A \autoref{fig:problema_slam} mostra uma visão geral do uso do SLAM na navegação.
+%% Ressalva acrescentada em 15/11/2026, no mesmo dia em que a subsecao foi escrita: a
+%% primeira versao dizia que a localizacao de Monte Carlo "e a usada nesta tese", o que
+%% superafirma. A Secao 5.2 declara que a transformada map->odom e mantida fixa nos
+%% experimentos, de sorte que o AMCL esta configurado mas nao e exercitado como
+%% estimador. Fundamentar a tecnica e correto; atribuir a ela um papel que a avaliacao
+%% nao lhe da, nao.
+Cabe, porém, uma ressalva que a Seção~\ref{sec:setup-ambiente} detalha: nos experimentos
+relatados neste trabalho a transformada entre o referencial do mapa e o da odometria é
+mantida fixa, de modo que a pose do robô é exata e a deriva de localização não é
+modelada. O \ac{AMCL} está configurado na pilha, mas não é exercitado como estimador, e
+nenhum resultado desta tese depende da sua acurácia. O que se descreveu acima importa,
+então, por fixar a \emph{premissa} sob a qual a camada deliberativa opera --- mapa dado e
+fiel ---, e não por ser um componente avaliado.
+
+A premissa que isso exige é a de que o mapa seja fiel e estático. Ela se sustenta no caso
+tratado aqui: uma subestação é instalação de geometria fixa, levantada uma vez, e o que
+muda nela entre duas rondas não é a planta, mas o estado dos equipamentos. A
+\autoref{fig:problema_slam} torna visível o que essa premissa dispensa.
 
 \begin{figure}[h]
     \centering
@@ -167,83 +230,72 @@ Os principais desafios do SLAM incluem incertezas na odometria e nas medições,
 %% dificuldade inteira do SLAM. Equiparava ainda "comandos de controle" e "odometria"
 %% num unico rotulo, sendo que u sao os comandos e a odometria e a medida do
 %% deslocamento resultante, com incerteza propria.
+%% Legenda reescrita em 15/11/2026: a figura passou a ilustrar, por contraste, a
+%% circularidade que a localizacao em mapa dado NAO enfrenta.
     \includegraphics[width=0.8\textwidth]{figuras/fig_problema_slam.pdf}
-    \caption{O problema do SLAM: localizar exige o mapa e mapear exige a pose, de modo
-    que as duas estimativas são mutuamente dependentes e precisam ser resolvidas
-    simultaneamente, a partir das observações $z$ e dos comandos de controle $u$.}
+    \caption{A circularidade do \ac{SLAM}: localizar exige o mapa e mapear exige a pose,
+    de modo que as duas estimativas são mutuamente dependentes e precisam ser resolvidas
+    simultaneamente, a partir das observações $z$ e dos comandos $u$. Dar o mapa de
+    antemão, como se faz nesta tese, rompe o laço e reduz o problema ao ramo da
+    localização.}
     \legend{Fonte: Adaptado de \citeonline{Durrant2006} e \citeonline{Thrun2005}.}
     \label{fig:problema_slam}
 \end{figure}
 
-O problema do SLAM pode ser formulado probabilisticamente como a estimação da distribuição de probabilidade conjunta \cite{Durrant2006, Thrun2005}:
+\subsection{SLAM, e Por Que Não Aqui}
 
-\begin{equation}
-p(x_{1:t}, m | z_{1:t}, u_{1:t}, x_0)
-\end{equation}
+O \ac{SLAM} resolve o caso em que o mapa \emph{não} é dado: construí-lo e localizar-se
+nele ao mesmo tempo \cite{Durrant2006, Thrun2005}. Formalmente, estima-se a distribuição
+conjunta $p(x_{1:t}, m \mid z_{1:t}, u_{1:t}, x_0)$ sobre a trajetória $x_{1:t}$ e o mapa
+$m$, e a dificuldade está na dependência mútua dos dois, agravada por incerteza de
+odometria, associação de dados e ambiguidade perceptual. As abordagens dividem-se pelo
+instrumento e pelo sensor de que partem \cite{Cadena2016}: filtros, em EKF-SLAM
+\cite{Smith1990}, UKF-SLAM \cite{Julier2004} e FastSLAM \cite{Montemerlo2002}; otimização,
+em Graph-SLAM \cite{Grisetti2010}; visão, em MonoSLAM \cite{Davison2007} e Visual-Inertial
+SLAM \cite{Mourikis2007}; e laser, em Hector SLAM \cite{Kohlbrecher2011}, Cartographer
+\cite{Hess2016} e LOAM \cite{Zhang2014}. O fechamento de laço, que reconhece o retorno a
+um local já visitado, é o mecanismo que corrige a deriva acumulada \cite{Durrant2006}.
 
-onde $x_{1:t}$ são os estados do robô, $m$ é o mapa do ambiente, $z_{1:t}$ são as observações sensoriais, $u_{1:t}$ são os comandos de controle, e $x_0$ é o estado inicial.
+Nada disso é empregado nesta tese, e a razão é de escopo, não de preferência: com mapa
+dado, o \ac{SLAM} resolveria um problema que não se tem, e introduziria uma fonte de
+variação --- a qualidade do mapa construído em cada execução --- justamente onde a
+comparação entre configurações exige que o ambiente seja idêntico. A escolha de mapa
+estático é, nesse sentido, condição do desenho experimental do
+Capítulo~\ref{cap:avaliacao}.
 
+Das representações de mapa disponíveis \cite{Thrun2005, Cadena2016} --- grade de ocupação,
+que discretiza o espaço em células \cite{Elfes1989}; de características, que retém pontos
+ou cantos distintos \cite{Smith1990}; topológica, que abandona a métrica em favor de um
+grafo de locais \cite{Kuipers1991}; semântica, que acrescenta o que cada região
+\emph{é} \cite{Kostavelis2015}; e tridimensional, em nuvens de pontos ou
+\textit{octrees} \cite{Hornung2013} --- esta tese usa a primeira, uma grade de ocupação
+bidimensional, coerente com um robô que se desloca sobre o plano do pátio.
 
-\subsubsection{Principais Abordagens}
+\subsection{Planejamento Global e Controle Preditivo}
+\label{sec:fund-nav2}
 
-As abordagens desenvolvidas para resolver o problema do SLAM
-\cite{Durrant2006, Thrun2005, Cadena2016} distinguem-se pelo instrumento matemático e
-pelo sensor de que partem. O SLAM \emph{baseado em filtros} recorre a EKF-SLAM
-\cite{Smith1990}, UKF-SLAM \cite{Julier2004} e FastSLAM, com filtros de partículas
-\cite{Montemerlo2002}. O \emph{baseado em otimização} formula o problema como
-minimização de erro, em Graph-SLAM \cite{Grisetti2010} e em otimização de grafo de poses.
-O \emph{visual} toma a câmera como sensor principal, em MonoSLAM \cite{Davison2007},
-Stereo SLAM \cite{Paz2008} e Visual-Inertial SLAM \cite{Mourikis2007}. E o \emph{baseado
-em LiDAR} usa o laser, em Hector SLAM \cite{Kohlbrecher2011}, Cartographer
-\cite{Hess2016} e LOAM \cite{Zhang2014}.
+%% Subsecao NOVA em 15/11/2026. O MPPI aparecia 14 vezes nos Capitulos 4 e 5 e ZERO na
+%% fundamentacao: o controlador que executa todo movimento avaliado na tese nao tinha
+%% onde ser aprendido, e sua referencia (Williams2017MPPI) nao existia na bibliografia.
+A navegação híbrida da Subseção~\ref{sec:fund-navhibrida} ganhou, em implementações
+recentes, uma divisão de trabalho estabilizada: um \emph{planejador global} calcula uma
+rota sobre o mapa, e um \emph{controlador local} produz os comandos que a seguem,
+desviando do que o mapa não previa \cite{Macenski2022}. A camada deliberativa desta tese
+emite metas ao primeiro; o segundo é que de fato move o robô, e por isso merece ser
+nomeado aqui.
 
-\subsubsection{Representações de Mapas}
-
-As representações de mapa usadas em SLAM \cite{Thrun2005, Cadena2016} diferem no que
-escolhem preservar. Os mapas de ocupação em grade discretizam o espaço em células
-\cite{Elfes1989} e os de características retêm apenas pontos, linhas ou cantos distintos
-\cite{Smith1990}. Os topológicos abandonam a métrica e guardam um grafo de locais e
-conexões \cite{Kuipers1991}, enquanto os semânticos acrescentam o que cada objeto ou
-região \emph{é} \cite{Kostavelis2015}. Os mapas 3D, em nuvens de pontos, malhas ou
-\textit{octrees}, preservam a terceira dimensão \cite{Hornung2013}. Esta tese opera sobre
-o primeiro tipo, uma grade de ocupação estática.
-
-O fechamento de loop (reconhecer quando o robô retorna a um local visitado) é o que corrige a deriva acumulada na odometria: detectado o reencontro, mapa e trajetória estimada são reajustados \cite{Durrant2006, Cadena2016}.
-
-\subsection{Integração de Modelos 3D em Navegação}
-
-A integração de modelos 3D em sistemas de navegação robótica representa uma tendência importante, especialmente para aplicações em ambientes complexos como subestações elétricas \cite{Hornung2013, Rusu2011}.
-
-\subsubsection{Representações 3D para Navegação}
-
-As representações 3D usadas em navegação robótica \cite{Hornung2013, Rusu2011} variam no
-compromisso entre fidelidade e custo de consulta. As \emph{nuvens de pontos} são
-conjuntos de pontos obtidos de LiDAR ou de câmera de profundidade, fiéis e caras de
-percorrer. As \emph{octrees} dividem o espaço recursivamente, como no OctoMap
-\cite{Hornung2013}, trocando resolução uniforme por consulta rápida. As \emph{malhas
-poligonais} descrevem superfícies por polígonos conectados, e os \emph{mapas de
-elevação}, representações 2,5D, guardam apenas a altura do terreno para cada posição
-$(x,y)$, o que basta quando o robô anda no chão e não sob estruturas.
-
-\subsubsection{Aquisição e Processamento de Dados 3D}
-
-A aquisição de dados 3D para navegação pode ser feita por sensores LiDAR 3D, ou LiDAR 2D
-em movimento, por câmeras RGB-D, por visão estéreo e por fotogrametria e
-\textit{Structure from Motion} \cite{Rusu2011, Hornung2013}. O processamento envolve
-registro de nuvens de pontos, filtragem, segmentação, detecção de características e
-reconstrução de superfícies \cite{Rusu2011}.
-
-\subsubsection{Aplicações em Subestações Elétricas}
-
-A integração de modelos 3D em navegação robótica para inspeção de subestações elétricas
-é relatada com cinco finalidades \cite{Lactec2022, Iberdrola2022}. Duas são de navegação:
-o planejamento de trajetória tridimensional, que considera a estrutura vertical da
-instalação e os obstáculos em alturas distintas, e a localização, que ganha precisão por
-correspondência com o modelo detalhado. Duas são de inspeção: a detecção de mudança, por
-comparação com um modelo de referência, e a inspeção dirigida a componentes específicos,
-com o modelo servindo de índice. A quinta é de apresentação, situando os dados de
-inspeção no contexto geométrico da subestação.
-
+O controlador usado é do tipo \emph{preditivo por integral de caminho}, \ac{MPPI}
+\cite{Williams2017MPPI}. Em cada ciclo ele sorteia um grande número de sequências de
+comando, simula para cada uma a trajetória que o modelo do robô produziria, atribui a cada
+trajetória um custo que combina aderência à rota, proximidade de obstáculo e esforço de
+controle, e devolve a média das sequências ponderada exponencialmente pelo custo
+--- de sorte que trajetórias baratas dominam a combinação sem que nenhuma seja escolhida
+isoladamente. Duas propriedades dele importam ao que se avalia adiante. A primeira é que o
+controlador não exige que o custo seja diferenciável, o que permite incluir termos
+descontínuos como colisão. A segunda é que ele opera sobre um \emph{horizonte finito}: a
+cada ciclo descarta o que planejou e replaneja do estado corrente, e é essa reconsideração
+contínua que torna possível preemptar a rota em curso --- o mecanismo de que a
+Seção~\ref{sec:prop-stayalert} se vale.
 \subsection{Desafios e Tendências}
 
 A navegação reativa em robótica móvel, especialmente para aplicações em subestações elétricas, enfrenta diversos desafios e apresenta tendências emergentes \cite{Cadena2016, Lactec2022, Iberdrola2022}.

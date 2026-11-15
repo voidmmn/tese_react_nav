@@ -160,24 +160,6 @@ No ROS original, cada nó é tipicamente um processo independente \cite{Quigley2
 
 Os executores em ROS2 gerenciam a execução de callbacks associados a tópicos, serviços, ações e timers, com diferentes tipos disponíveis (SingleThreadedExecutor, MultiThreadedExecutor, StaticSingleThreadedExecutor) para diferentes necessidades \cite{Macenski2022, ROS2Design2024}.
 
-\subsection{Integração de Sensores e Atuadores}
-
-O ROS/ROS2 oferece diversas ferramentas e bibliotecas para facilitar a integração de sensores e atuadores \cite{Joseph2018, Macenski2022}.
-
-\subsubsection{Interfaces de Hardware}
-
-O ecossistema ROS/ROS2 inclui drivers para uma ampla variedade de sensores (câmeras, LiDAR, IMUs, etc.) e atuadores (motores, manipuladores, plataformas móveis) \cite{Joseph2018, Macenski2022}. Estes drivers encapsulam os detalhes de comunicação com o hardware e fornecem interfaces padronizadas.
-
-O ROS2 introduz o Hardware Abstraction Layer (HAL) como parte do framework ros2\_control, que fornece uma interface unificada para diferentes tipos de hardware \cite{Macenski2022}, separando a implementação do controle da interface específica do hardware.
-
-\subsubsection{Processamento e Fusão Sensorial}
-
-O ROS/ROS2 integra-se com bibliotecas como OpenCV para visão computacional e Point Cloud Library (PCL) para processamento de nuvens de pontos \cite{Joseph2018, Macenski2022}. Pacotes como robot\_localization implementam filtros de Kalman para fusão de dados de múltiplos sensores \cite{Joseph2018, Macenski2022}.
-
-\subsubsection{Controle de Atuadores}
-
-Para controle de atuadores, o ROS/ROS2 oferece frameworks como ros\_control/ros2\_control para controle de baixo nível, MoveIt para manipuladores, e Navigation Stack/Nav2 para robôs móveis \cite{Joseph2018, Macenski2022}.
-
 \subsection{Simulação e Validação}
 
 A simulação é essencial no desenvolvimento de sistemas robóticos, permitindo testar algoritmos em ambientes virtuais antes da implementação em hardware real \cite{Siegwart2011}.
@@ -194,62 +176,33 @@ Isaac Sim, da NVIDIA, também se integram ao ROS/ROS2.
 
 O ROS/ROS2 oferece ferramentas como URDF/XACRO para descrição de robôs, RViz para visualização 3D, e rqt para interfaces gráficas \cite{Joseph2018, Macenski2022}. Para validação, integra-se com frameworks de teste unitário (GTest, pytest) e oferece ferramentas para testes de integração e integração contínua \cite{Joseph2018, Macenski2022}.
 
-\subsection{Desenvolvimento de Aplicações}
+%% Subsecao NOVA em 15/11/2026, construida em torno do paragrafo que antes era a cauda
+%% orfa de "Tendencias e Desenvolvimentos Futuros". O determinismo de temporizacao e a
+%% unica materia desta secao que reaparece nos capitulos posteriores (15 ocorrencias de
+%% tempo simulado / relogio de parede neles, contra 2 aqui), e e a fundamentacao do
+%% defeito relatado na Secao 6.13. Merecia subsecao, nao um paragrafo pendurado no fim.
+%% Removidas no mesmo passo as subsecoes de Integracao de Sensores e Atuadores,
+%% Desenvolvimento de Aplicacoes, Aplicacoes e Casos de Uso e Tendencias: zero
+%% ocorrencias de catkin, ament_cmake, setuptools, rosbag, rostopic, rosparam, tf,
+%% manipulador, micro-ROS e computacao em nuvem em QUALQUER outro capitulo da tese.
+\subsection{Tempo Simulado e Determinismo de Temporização}
+\label{sec:fund-relogios}
 
-O desenvolvimento de aplicações robóticas com ROS/ROS2 segue práticas e padrões específicos \cite{Joseph2018, Macenski2022}.
+Em simulação, o \ac{ROS}~2 permite que todos os nós compartilhem uma base de tempo
+publicada pelo simulador, em vez do relógio do sistema operacional. Habilitado o
+parâmetro correspondente, os temporizadores de cada nó passam a ser disparados por esse
+tempo \emph{simulado}, de sorte que uma pausa do simulador pausa também o agendamento, e
+uma simulação que corra mais devagar ou mais depressa que o tempo real não altera o
+intervalo \emph{percebido} entre dois disparos \cite{Macenski2022}. É essa propriedade que
+torna um experimento em simulação repetível, independentemente da carga da máquina em que
+roda.
 
-\subsubsection{Organização de Código}
-
-O código ROS/ROS2 é organizado em pacotes, que são unidades modulares contendo nós, bibliotecas, conjuntos de dados, arquivos de configuração e documentação \cite{Joseph2018}. Os pacotes são agrupados em metapacotes para distribuição e instalação conjunta.
-
-O ROS utiliza o sistema de build catkin, enquanto o ROS2 utiliza o ament\_cmake (para C++) e setuptools (para Python) \cite{Macenski2022}.
-
-\subsubsection{Linguagens de Programação}
-
-O ROS/ROS2 suporta principalmente C++ e Python, com suporte limitado para outras linguagens \cite{Joseph2018, Macenski2022}. C++ é geralmente preferido para componentes críticos de desempenho, enquanto Python é utilizado para prototipagem rápida e integração com bibliotecas de aprendizado de máquina.
-
-\subsubsection{Ferramentas de Desenvolvimento}
-
-O ROS/ROS2 oferece diversas ferramentas para facilitar o desenvolvimento
-\cite{Joseph2018, Macenski2022}, cada uma correspondendo a um dos conceitos da sua
-arquitetura: \texttt{roslaunch}/\texttt{launch} inicia e configura sistemas compostos de
-vários nós; \texttt{rosbag}/\texttt{ros2 bag} grava e reproduz tráfego; \texttt{rostopic}
-e \texttt{rosservice}, com seus equivalentes \texttt{ros2}, inspecionam e manipulam
-tópicos e serviços; \texttt{rosparam}/\texttt{ros2 param} gerencia parâmetros; e
-\texttt{tf}/\texttt{tf2} mantém as transformações entre sistemas de coordenadas. A
-primeira e a última são as de que a bateria desta tese depende diretamente, uma para
-compor cada execução e outra para situar robô, alvo e risco num mesmo referencial.
-
-\subsection{Aplicações e Casos de Uso}
-
-O ROS/ROS2 é utilizado em uma ampla variedade de aplicações robóticas \cite{Joseph2018, Macenski2022}.
-
-\subsubsection{Robôs Móveis}
-
-Para robôs móveis, o ROS/ROS2 oferece ferramentas para navegação autônoma, mapeamento, localização e planejamento de trajetória \cite{Joseph2018, Macenski2022}. Exemplos incluem robôs de serviço, AGVs (Automated Guided Vehicles), robôs de inspeção e veículos autônomos.
-
-\subsubsection{Manipuladores}
-
-Para manipuladores, o ROS/ROS2 oferece ferramentas para cinemática, planejamento de movimento, controle de força e interação com objetos \cite{Joseph2018, Macenski2022}. Exemplos incluem braços robóticos industriais, manipuladores colaborativos e mãos robóticas.
-
-\subsubsection{Sistemas Industriais}
-
-O ROS-Industrial é uma extensão do ROS focada em aplicações industriais, oferecendo drivers para equipamentos industriais, interfaces com sistemas de automação e ferramentas para integração com processos de manufatura \cite{Joseph2018, Macenski2022}.
-
-\subsection{Tendências e Desenvolvimentos Futuros}
-
-O ecossistema ROS/ROS2 continua evoluindo para atender às necessidades emergentes da robótica \cite{Macenski2022, ROS2Design2024}.
-
-\subsubsection{Micro-ROS}
-
-Micro-ROS é uma adaptação do ROS2 para microcontroladores e sistemas embarcados com recursos limitados, permitindo a integração de dispositivos de baixo custo e baixo consumo energético em ecossistemas ROS2 \cite{Macenski2022}.
-
-\subsubsection{Sistemas Críticos}
-
-Esforços estão em andamento para certificar componentes do ROS2 para uso em sistemas críticos de segurança, como veículos autônomos e robôs médicos \cite{Macenski2022, ROS2Design2024}.
-
-\subsubsection{Integração com IA e Computação em Nuvem}
-
-A integração do ROS/ROS2 com frameworks de aprendizado de máquina e serviços de computação em nuvem está expandindo as capacidades dos sistemas robóticos, permitindo o desenvolvimento de robôs mais inteligentes e conectados \cite{Macenski2022, ROS2Design2024}.
-
-O determinismo de temporização é o ponto desta seção que reaparece no restante do trabalho. Um temporizador \ac{ROS} pode correr em tempo simulado enquanto o código que ele chama consulta o relógio de parede, e nada na interface sinaliza a divergência; a Seção~\ref{sec:prop-relogios} descreve a consequência disso na implementação aqui avaliada.
+A propriedade, porém, vale para o mecanismo de agendamento, não para o código agendado.
+Um temporizador pode ser disparado em tempo simulado enquanto a função que ele chama
+consulta, internamente, o relógio de parede do processo --- e nada na interface sinaliza a
+divergência, porque as duas leituras têm o mesmo tipo e a mesma aparência. Se essa função
+compara dois instantes para decidir se um intervalo transcorreu, ela passa a medir numa
+base de tempo e a ser chamada em outra, e o intervalo efetivo deixa de ser o
+especificado. A Seção~\ref{sec:prop-relogios} descreve a ocorrência desse padrão na
+implementação avaliada neste trabalho, e a Seção~\ref{sec:res-verificacao-relogio} mede a sua
+consequência sobre os desfechos.
