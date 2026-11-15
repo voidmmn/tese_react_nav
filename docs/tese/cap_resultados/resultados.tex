@@ -512,7 +512,28 @@ assim que o risco sai momentaneamente do alcance, e a inspeção acaba por se co
 perda de \emph{persistência temporal} no canal de risco, e não como ausência de regra
 de precedência; apresenta-se essa como a leitura mais consistente com os
 \textit{logs}, e não como fator isolado: separar a fonte do disparo da persistência
-exigiria uma variante adicional que não foi executada.
+exigiria uma variante adicional, que a Seção~\ref{sec:res-relogio-consistente} executa
+em parte.
+
+%% Acrescentado em 15/11/2026. A versao anterior encerrava dizendo que a
+%% variante nao havia sido executada. A bateria de relogios e essa variante, ainda que
+%% parcial: encurta a persistencia mantendo fixa a fonte do disparo, dentro do mesmo
+%% cenario `default', e o efeito aparece no braco que dispara sobre o campo e nao
+%% aparece no que dispara por deteccao bruta. Nao fecha a decomposicao do efeito em
+%% `conflict', e isso esta dito.
+Cabe registrar aqui o que essa variante parcial acrescenta. A manipulação do relógio do
+decaimento altera a \emph{persistência} do campo --- o período passa de cerca de
+$1{,}57$ para $1{,}016$~s --- sem tocar na fonte do disparo nem no cenário. Aplicada ao
+braço que dispara sobre o campo, ela encurta o tempo em investigação com separação
+completa ($35{,}00$ para $29{,}54$~s, $\delta=-1{,}00$) e não move mais nenhum desfecho;
+aplicada ao braço que dispara por detecção bruta, no mesmo cenário, não move desfecho
+algum ($|\delta|\leq0{,}40$ em todos). A persistência, portanto, não é inerte, e o seu
+efeito é condicionado ao modo de disparo que a consulta --- o que é a leitura proposta
+acima, agora apoiada numa manipulação e não apenas nos \textit{logs}. Duas ressalvas
+mantêm a alegação no seu tamanho: a manipulação \emph{encurta} a persistência em vez de
+removê-la, e foi executada no cenário \texttt{default}, não no de conflito. Ela sustenta
+que a persistência importa onde é consultada; não quantifica que fração do efeito no
+cenário de conflito lhe pertence.
 
 %% Secao escrita em 13/11/2026, a partir da bateria qdriven de 12/11/2026
 %% (QDRVd/QDRVc/QDRVa, 10 execucoes cada, 30/30 COMPLETE, zero timeouts).
@@ -1041,6 +1062,38 @@ não são comparáveis: em CONF a anomalia preterida é colocalizada com o risco
 \emph{deve} ser recusada, ao passo que em CM ela é alvo legítimo a $4{,}3$~m de
 distância. A mesma contagem é comportamento correto em um cenário e falha no outro.
 
+%% Delimitacao escrita em 15/11/2026, depois de reexecutar CM/E3/HEU com a
+%% guarda do decaimento alimentada pelo relogio de simulacao. Em CM os recuos caem de
+%% 1,00 para 0,00 em dez execucoes (delta = -1,00): o fenomeno descrito acima e da
+%% implementacao avaliada, nao da precedencia categorica. O custo de uma inspecao,
+%% esse sim, persiste sob os dois relogios. Nada aqui foi reescrito para salvar a
+%% conclusao: o mecanismo foi delimitado e o que sobrevive dele esta dito abaixo.
+\paragraph{Delimitação: o mecanismo é da implementação, o custo não é.}
+Esta subseção descreve um encadeamento que depende do período com que a memória
+decai, e esse período não é o especificado (Seção~\ref{sec:res-verificacao-relogio}).
+Cabe então separar o que sobrevive à correção do que não sobrevive. Com a guarda do
+decaimento alimentada pelo relógio da simulação, CM foi reexecutada dez vezes: o recuo
+\textbf{deixa de disparar por completo} --- $0{,}00$ recuos contra $1{,}00$ sob o
+relógio de parede, $\delta=-1{,}00$ ---, o afastamento mínimo cai de $4{,}01$ para
+$3{,}71$~m e os desvios de rota de $5{,}3$ para $3{,}0$. Ao período especificado o canal
+de risco de um perigo de intensidade mínima atravessa a faixa entre o limiar de recuo e
+$\varepsilon$ depressa demais para que o supervisor arme a guarda. Logo: o recuo único
+no pico, a janela de $69{,}5$~s e a aritmética das $38$ aplicações são \emph{fenômenos
+da implementação avaliada}, e não consequências da precedência categórica em si. Não se
+sustenta, a partir deles, qualquer afirmação sobre o que a precedência faria num sistema
+cujo decaimento cumprisse a especificação.
+
+O que sobrevive é o custo. Sob os dois relógios o robô encerra a missão de CM tendo
+inspecionado $3$ das $4$ anomalias em \emph{todas} as vinte execuções, abrindo mão da
+mais saliente. A via muda: sem recuo, a anomalia passa a ser detectada em duas das dez
+execuções, nas quais a investigação termina em aborto de navegação, e nas outras oito
+não chega a ser comprometida. O decaimento mais rápido encurta os dois canais, o de
+risco e o de atração, e esse encadeamento não foi isolado --- afirma-se a persistência do
+custo, que é medida, e não a sua causa sob o relógio corrigido, que não é. A conclusão
+defensável, portanto, é mais estreita do que a desta subseção quando escrita: um risco
+marginalmente elegível custa uma inspeção nas duas implementações testadas, e o
+mecanismo pelo qual custa é específico de cada uma.
+
 \subsection{Sensibilidade Local ao Limiar de Elegibilidade do Risco}
 \label{sec:res-sens-limiar}
 
@@ -1400,6 +1453,91 @@ decaimento puro para a janela de supressão é de aproximadamente $61$~s contra 
 $69{,}5$~s medidos --- o relógio responde por cerca de $88\%$ da janela, e restam cerca
 de $8$~s que o decaimento ao período medido não produz.
 
+\subsection{O Comportamento sob o Relógio Especificado}
+\label{sec:res-relogio-consistente}
+
+Resta a pergunta que importa para as conclusões: o que mudaria se a memória decaísse no
+período \emph{especificado}? A guarda foi alimentada com o mesmo relógio do temporizador
+e as três configurações foram reexecutadas, dez vezes cada. O período realizado passou a
+$1{,}016$~s nos três braços --- $98{,}4\%$ dos disparos aplicam o fator ---, de sorte que
+a especificação passa a ser cumprida.
+
+A Tabela~\ref{tab:res-relogio} traz o efeito do relógio \emph{dentro} de cada
+configuração. A leitura decisiva está na comparação entre as linhas.
+
+\begin{table}[htb]
+\centering
+\caption{Efeito de corrigir o relógio do decaimento, dentro de cada configuração
+($n=10$ por célula, $\delta$ de Cliff de parede para simulado; $|\delta|=1$ é separação
+completa). E3 é o método, que dispara sobre o campo; HEU é a heurística de detecção
+bruta, que não consulta a memória para decidir; CM é o cenário de risco marginalmente
+elegível. Valores em média\,$\pm$\,desvio padrão.}
+\label{tab:res-relogio}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llrrr}
+\hline
+\textbf{Config.} & \textbf{Desfecho} & \textbf{Parede} & \textbf{Simulado} &
+$\bm{\delta}$\\
+\hline
+\textsc{Heu} & Anomalias inspecionadas   & $3{,}00\pm0{,}00$ & $3{,}00\pm0{,}00$ & $0{,}00$\\
+             & Tempo em investigação [s] & $41{,}14\pm0{,}19$ & $41{,}22\pm0{,}20$ & $+0{,}32$\\
+             & Afastamento mínimo [m]    & $4{,}90\pm0{,}03$ & $4{,}91\pm0{,}02$ & $+0{,}26$\\
+             & Recuos                    & $2{,}00\pm0{,}00$ & $2{,}00\pm0{,}00$ & $0{,}00$\\
+\hline
+E3           & Anomalias inspecionadas   & $3{,}00\pm0{,}00$ & $3{,}00\pm0{,}00$ & $0{,}00$\\
+             & Tempo em investigação [s] & $35{,}00\pm1{,}05$ & $29{,}54\pm0{,}59$ & $\bm{-1{,}00}$\\
+             & Afastamento mínimo [m]    & $4{,}86\pm0{,}02$ & $4{,}85\pm0{,}04$ & $-0{,}36$\\
+             & Recuos                    & $1{,}00\pm0{,}00$ & $1{,}00\pm0{,}00$ & $0{,}00$\\
+\hline
+CM           & Anomalias inspecionadas   & $3{,}00\pm0{,}00$ & $3{,}00\pm0{,}00$ & $0{,}00$\\
+             & Tempo em investigação [s] & $34{,}58\pm1{,}28$ & $29{,}06\pm0{,}31$ & $\bm{-1{,}00}$\\
+             & Afastamento mínimo [m]    & $4{,}01\pm0{,}07$ & $3{,}71\pm0{,}00$ & $\bm{-1{,}00}$\\
+             & Recuos                    & $1{,}00\pm0{,}00$ & $\bm{0{,}00\pm0{,}00}$ & $\bm{-1{,}00}$\\
+             & Desvios de rota           & $5{,}30\pm0{,}67$ & $3{,}00\pm0{,}00$ & $\bm{-1{,}00}$\\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{A heurística é insensível ao relógio.} Nenhum de seus desfechos atinge separação:
+o tempo em investigação vai de $41{,}14$ a $41{,}22$~s, o afastamento mínimo de $4{,}90$
+a $4{,}91$~m, e os recuos não mudam. É o que se espera de um braço que dispara por
+detecção bruta --- a memória existe no campo, mas não entra na sua decisão. Serve aqui de
+controle, e o controle se comporta.
+
+\textbf{O método é sensível, e em um desfecho só.} O tempo em investigação cai de
+$35{,}00$ para $29{,}54$~s com separação completa: a memória mais curta encerra os
+episódios de aproximação mais cedo. Completude, recuos, afastamento mínimo e desvios de
+rota \emph{não} mudam. Fica assim demonstrado, e não deduzido, que a influência do
+defeito é \textbf{diferencial} --- pesa sobre quem usa a memória para decidir e não pesa
+sobre quem a ignora.
+
+\textbf{Os contrastes centrais sobrevivem.} Sob o relógio especificado o método continua
+mais rápido na subtarefa reativa que a heurística ($29{,}54$ contra $41{,}22$~s,
+$\delta=+1{,}00$), continua recuando menos ($1$ contra $2$, $\delta=+1{,}00$) e continua
+sem diferença de completude ($\delta=0$). A vantagem de tempo, que é justamente a que
+depende da persistência, \emph{cresce} de $6{,}1$ para $11{,}7$~s. A conclusão não
+depende do defeito, e corrigi-lo a reforça.
+
+\textbf{Uma conclusão, porém, não sobrevive.} Na configuração de risco marginalmente
+elegível o recuo \emph{deixa de disparar} sob o relógio especificado --- $0{,}00$ recuos
+em dez execuções, contra $1{,}00$ em dez sob o relógio de parede. Com a memória decaindo
+no período especificado, o canal de risco de um perigo de intensidade mínima cai abaixo
+do limiar de entrada antes que o supervisor arme a guarda. A janela de supressão de
+$70$~s e o recuo que a precede são, portanto, fenômenos da implementação avaliada, e não
+consequências da precedência categórica em si. A Seção~\ref{sec:res-custo-precedencia}
+foi delimitada de acordo.
+
+Dois registros finais, para que o resultado não seja lido como mais do que é. O custo de
+uma inspeção \emph{persiste} em CM sob os dois relógios --- três das quatro anomalias em
+todas as vinte execuções ---, mas por caminho diferente: sem recuo, a anomalia saliente
+passa a ser detectada em duas das dez execuções, nas quais a investigação falha por
+aborto de navegação, e nas outras oito não chega a ser comprometida, com os desvios de
+rota caindo de $5{,}3$ para $3{,}0$. O decaimento mais rápido encurta os dois canais, não
+apenas o de risco, e esse encadeamento não foi isolado. E estas trinta execuções são
+posteriores às $320$: não substituem nenhuma delas, e o que sustentam é a comparação
+entre relógios sob as mesmas configurações.
+
 \section{Ameaças à Validade}
 \label{sec:res-ameacas}
 
@@ -1436,16 +1574,45 @@ conflito não estabelece a precedência sob toda geometria de conflito.
 %% Acrescentados em 13/11/2026: os dois limites mais consequentes
 %% faltavam nesta lista -- a nao separacao entre disparo e persistencia, que o texto
 %% ja ressalvava localmente, e o que de fato varia entre repeticoes.
-\paragraph*{Disparo e persistência não foram separados.} O contraste contra a
-heurística genérica troca, \emph{ao mesmo tempo}, a fonte do disparo (campo com limiar
-contra detecção bruta) e a existência de persistência temporal no canal de risco. Os
-dois fatores variam em conjunto em todas as configurações executadas, de sorte que
-nenhum resultado desta tese atribui efeito a um deles isoladamente. Os \textit{logs} de
-episódio são compatíveis com uma explicação ligada à persistência, e é assim que ela é
-oferecida --- leitura apoiada pelos rastros, e não fator demonstrado de forma
-independente. Separá-los exige o desenho fatorial nomeado na
-Seção~\ref{sec:conc-futuro}. Vale o mesmo para a comparação de risco emergente, em que
-habilitar o recuo reativo habilita o conjunto inteiro de ações de preempção e recuo.
+%% Reescrito em 15/11/2026. A versao de 13/11 dizia que NENHUM resultado desta
+%% tese atribui efeito a um dos dois fatores isoladamente. Depois da bateria de
+%% relogios isso deixou de ser verdade: encurtar a persistencia com a fonte do disparo
+%% fixa produz efeito no braco que dispara sobre o campo e nao produz no que dispara
+%% por deteccao bruta. A ameaca permanece, mas no seu tamanho novo -- a decomposicao do
+%% efeito em `conflict' continua em aberto.
+\paragraph*{Disparo e persistência foram separados apenas em parte.} O contraste contra
+a heurística genérica troca, \emph{ao mesmo tempo}, a fonte do disparo (campo com
+limiar contra detecção bruta) e a existência de persistência temporal no canal de risco.
+Nos $32$ pares configuração--cenário os dois fatores variam em conjunto, e nenhum deles,
+isoladamente, responde pelo efeito medido ali. A manipulação do relógio do decaimento
+(Seção~\ref{sec:res-relogio-consistente}) abre uma fresta nesse bloco: ela varia a
+persistência \emph{mantendo fixa} a fonte do disparo e o cenário, e mostra que a
+persistência tem efeito onde é consultada e não tem onde não é. Isso estabelece que a
+persistência não é inerte; \textbf{não} estabelece que fração do efeito no cenário de
+conflito lhe cabe, porque a manipulação encurta a persistência em vez de removê-la e foi
+executada no cenário \texttt{default}. A decomposição completa continua a exigir o
+desenho fatorial nomeado na Seção~\ref{sec:conc-futuro}. Vale a ressalva integral para a
+comparação de risco emergente, em que habilitar o recuo reativo habilita o conjunto
+inteiro de ações de preempção e recuo, e nada ali foi separado.
+
+%% Acrescentado em 15/11/2026. Esta e a ameaca que o defeito do relogio cria e
+%% que nao existia na lista: as 320 execucoes analisadas rodaram todas sob o periodo
+%% realizado, e so tres configuracoes foram reexecutadas sob o especificado.
+\paragraph*{O relógio do decaimento, nas execuções não reexecutadas.} As $320$ execuções
+analisadas nos capítulos anteriores rodaram todas com a guarda do decaimento comparando
+instantes de relógio de parede, de modo que o período realizado foi de cerca de
+$1{,}6$~s onde a especificação pede $1$~s
+(Seções~\ref{sec:prop-relogios} e~\ref{sec:res-verificacao-relogio}). Três
+configurações foram reexecutadas sob o relógio especificado e os contrastes centrais
+sobreviveram --- um deles com efeito maior ---, enquanto a janela de supressão e o recuo
+que a abre não sobreviveram. As demais \emph{não} foram reexecutadas. Onde uma conclusão
+desta tese depende de quanto tempo a memória persiste, portanto, ela é afirmada da
+implementação avaliada, e a verificação que autoriza transportá-la ao sistema
+especificado existe para três configurações, não para as trinta e duas. Não se reexecutou
+a matriz inteira por decisão declarada: isso substituiria todos os números do
+Capítulo~\ref{cap:resultados} por números de um código distinto do que o artigo
+decorrente desta tese descreve, trocando uma divergência localizada e declarada por
+divergência geral.
 
 \paragraph*{O que varia entre repetições.} Esta é a delimitação mais importante para
 ler os $n$ desta tese, e ela é mais estreita do que ``dez repetições'' sugere. Cada

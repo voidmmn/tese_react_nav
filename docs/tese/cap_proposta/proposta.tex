@@ -379,14 +379,20 @@ percorrido.
 
 Onde a zona de exclusão está \emph{desabilitada} --- o que ocorre em todo cenário fora
 da rota --- não há entrega, o risco continua a ser publicado e a reobservação renova
-$h$. A janela de supressão medida na Seção~\ref{sec:res-custo-precedencia} mostra,
-porém, que essa renovação não prolonga a janela: ela se concentra enquanto o robô ainda
-está perto do risco, e a duração total corresponde à do decaimento sozinho ao período
-realizado da Tabela~\ref{tab:prop-taxas}.
-%% Corrigido em 13/11/2026: a redacao anterior afirmava que a janela medida era mais
-%% longa do que o decaimento sozinho produziria. A afirmacao vinha de comparar a janela
-%% com a previsao ao periodo NOMINAL de 1 s. Ao periodo realizado de 1,87 s a previsao
-%% coincide com a medida, de modo que a reobservacao nao responde pela duracao.
+$h$. Quanto a renovação prolonga a janela de supressão é questão medida, não postulada,
+e a Seção~\ref{sec:res-custo-precedencia} a responde apenas em parte: ao período
+realizado da Tabela~\ref{tab:prop-taxas} o decaimento sozinho responde por cerca de
+$88\%$ da janela observada, de modo que a renovação pode explicar o resíduo, mas os
+registros não a isolam de um período mais longo na faixa de baixa magnitude. Registre-se
+ainda que a janela observada é fenômeno do relógio efetivamente executado: sob o período
+especificado ela é mais curta, e na configuração marginal o recuo que a precede não
+dispara (Seção~\ref{sec:res-relogio-consistente}).
+%% Reescrito em 15/11/2026. Esta passagem foi corrigida duas vezes e as duas
+%% versoes anteriores erravam por excesso de confianca em sentidos opostos. A de 13/11
+%% dizia que a duracao total "corresponde a do decaimento sozinho" ao periodo de
+%% 1,87 s -- periodo que veio de um estimador invalido. A contagem direta da 1,61 s, o
+%% decaimento responde por ~88% e nao pela totalidade, e o residuo nao e atribuido com
+%% confianca. Ver Secao~\ref{sec:res-verificacao-relogio}.
 
 %% Ampliada em 13/11/2026 e refeita em portugues em 14/11/2026. Duas
 %% correcoes de conteudo acompanharam a traducao. (i) O painel ampliado descrevia o
@@ -515,7 +521,12 @@ Controlador MPPI do Nav2 & $20$~Hz & simulado\\
 Permanência $t_{\text{dwell}}$, orçamento $t_{\max}$, refratário $t_{\text{ref}}$ &
 $3$~s, $15$--$40$~s, $8$~s & simulado\\
 \hline
-Período de decaimento $T_d$ dos acumuladores & $1$~s nominal & \textbf{de parede}\\
+Período de decaimento $T_d$ dos acumuladores & $1$~s nominal;
+$1{,}57$--$1{,}60$~s realizado & \textbf{de parede}\\
+\hline
+\quad o mesmo, com a guarda alimentada pelo relógio do temporizador
+(Seção~\ref{sec:res-relogio-consistente}) & $1$~s nominal; $1{,}016$~s realizado &
+simulado\\
 \hline
 \end{tabular}
 \end{table}
@@ -907,7 +918,10 @@ robô está no alcance. Como a zona de exclusão está desabilitada nesse cenár
 entrega e a reobservação renova o canal: a supressão da atração dura, medida nos
 registros, cerca de $70$~s, e uma de quatro inspeções é abandonada em todas as
 execuções (Seção~\ref{sec:res-custo-precedencia}). É o preço da precedência, exibido
-pelo mecanismo que o produz.
+pelo mecanismo que o produz --- com a ressalva de que a \emph{duração} aqui citada
+pertence ao relógio efetivamente executado e encurta sob o período especificado,
+enquanto a inspeção abandonada persiste nos dois casos
+(Seção~\ref{sec:res-relogio-consistente}).
 
 \section{Sensoriamento Ativo e Abstração de Eventos}
 \label{sec:prop-sensoriamento}

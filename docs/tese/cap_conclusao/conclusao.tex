@@ -55,16 +55,30 @@ $105$~s.
 
 Essa troca \emph{não} remove a precedência categórica --- a heurística ainda
 preempta, três vezes por execução ---, mas altera conjuntamente o sinal de decisão e
-sua persistência temporal, de modo que os dois não são separáveis com as
-configurações executadas. Os \textit{logs} de episódio são consistentes com uma
-explicação ligada à persistência, oferecida aqui como a leitura mais plausível, e não
-como fator isolado.
+sua persistência temporal, de modo que os dois não são separáveis com as $32$
+configurações da matriz principal. Os \textit{logs} de episódio são consistentes com
+uma explicação ligada à persistência, e uma verificação posterior a sustenta em parte:
+encurtar o período de decaimento \emph{mantendo fixa} a fonte do disparo encurta o
+tempo em investigação com separação completa no braço que dispara sobre o campo, e não
+move desfecho algum no braço que dispara por detecção bruta
+(§\ref{sec:res-relogio-consistente}). A persistência, portanto, não é inerte onde é
+consultada. Que fração do efeito no cenário de conflito lhe cabe permanece sem medida,
+porque essa verificação encurta a persistência em vez de removê-la e correu no cenário
+\texttt{default}.
 
 \subsection{A Precedência Tem Custo Medido}
 
-Essa precedência carrega um custo que foi medido: um risco marginalmente elegível
-suprime a atração por cerca de $70$~s e abre mão de uma de quatro inspeções em
-$10/10$ execuções.
+%% Delimitado em 15/11/2026. A frase anterior juntava num so enunciado a
+%% janela de ~70 s e a inspecao perdida. Sob o relogio especificado a inspecao perdida
+%% persiste (10/10 tambem) e a janela nao: o recuo que a abre deixa de disparar. Os
+%% dois fatos foram separados porque tem estatutos diferentes.
+Essa precedência carrega um custo que foi medido: um risco marginalmente elegível faz o
+robô abrir mão de uma de quatro inspeções em $10/10$ execuções, e isso se repete nas
+duas implementações temporais testadas --- $20/20$ ao todo. A supressão da atração por
+cerca de $70$~s que acompanha esse custo, e o recuo único que a abre, pertencem ao
+relógio efetivamente executado: sob o período especificado o recuo não dispara
+(§\ref{sec:res-relogio-consistente}). O custo é da precedência; a sua cronometragem é
+da implementação.
 
 %% Delimitado em 13/11/2026. A frase anterior afirmava sem condicao que o
 %% distintivo e o canal de risco "e nao a ponderacao por saliencia". A segunda
@@ -144,6 +158,18 @@ geometria de mapa permanecem não modelados. O cenário adverso é uma única
 configuração densa e a varredura de ruído cobre dois níveis, de sorte que nenhum dos
 dois sustenta alegação geral de escalabilidade.
 
+%% Acrescentado em 15/11/2026: a limitacao de implementacao mais consequente
+%% faltava nesta lista, que so trazia limitacoes de modelagem.
+Uma limitação de \emph{implementação} acompanha essas de modelagem, e é declarada com
+o mesmo peso. A guarda que autoriza o decaimento dos acumuladores compara instantes de
+relógio de parede enquanto os temporizadores seguem o relógio simulado, de modo que o
+período realizado nas $320$ execuções analisadas foi de cerca de $1{,}6$~s onde a
+especificação pede $1$~s (Seção~\ref{sec:prop-relogios}). Toda conclusão que dependa de
+\emph{quanto tempo} a memória persiste é, portanto, afirmada da implementação avaliada.
+Três configurações foram reexecutadas sob o relógio especificado para medir o alcance
+dessa dependência (Seção~\ref{sec:res-relogio-consistente}); as outras vinte e nove
+não.
+
 %% Acrescentado em 13/11/2026: o que as repeticoes licenciam.
 As dez repetições por configuração estabelecem \emph{repetibilidade} daquele arranjo
 sob a não-determinação do simulador, e não mais do que isso: fora das duas
@@ -197,11 +223,28 @@ este trabalho não testou e, portanto, não exclui.
     %% onde hoje so ha o conjunto de intervencoes. Ficam nomeados aqui para que o
     %% limite das atribuicoes dos Capitulos~\ref{cap:resultados} e~\ref{cap:conclusao}
     %% tenha o experimento correspondente identificado.
+%% Reescrito em 15/11/2026: o item dava o desenho como integralmente
+    %% ausente. A bateria de relogios executou a sua primeira metade -- variar a
+    %% persistencia com o disparo fixo. O que falta e a outra metade e a replicacao no
+    %% cenario de conflito.
     \item \textbf{Separar disparo de persistência.} Um desenho que varie
     independentemente a fonte do disparo e a extensão temporal da memória, mantendo
-    constantes a seleção, a prioridade e o controlador, permitiria isolar o fator que
-    hoje só se pode atribuir ao par. É o experimento que a
-    Seção~\ref{sec:res-ameacas} identifica como ausente.
+    constantes a seleção, a prioridade e o controlador, isolaria o fator que a matriz
+    principal só atribui ao par. Metade desse desenho já correu: variar a persistência
+    com o disparo fixo mostra efeito no braço que consulta o campo e nenhum no que
+    dispara por detecção bruta (Seção~\ref{sec:res-relogio-consistente}). Faltam a
+    outra metade --- variar a fonte do disparo com a persistência fixa --- e a
+    replicação no cenário de conflito, onde o efeito a decompor foi medido.
+
+%% Acrescentado em 15/11/2026.
+    \item \textbf{Reexecutar a matriz sob o relógio especificado.} Três das $32$
+    configurações foram verificadas com a guarda do decaimento alimentada pelo relógio
+    do temporizador; nelas os contrastes centrais sobreviveram e a janela de supressão
+    não. Estender essa verificação às demais trocaria a transposição declarada na
+    Seção~\ref{sec:res-ameacas} por medida direta. Fica como trabalho futuro, e não
+    como correção pendente, porque reexecutá-las agora substituiria os números do
+    Capítulo~\ref{cap:resultados} por números de um código distinto do descrito no
+    artigo decorrente desta tese.
 
     \item \textbf{Separar interrupção de deslocamento.} Uma variante de parada e
     espera --- mesma preempção da investigação, mesmo tratamento do sinal de risco,
@@ -275,14 +318,18 @@ Cenário de conflito, risco colocalizado com anomalia mais saliente &
 Disparo e persistência variam em conjunto; não são fatores separáveis
 (§\ref{sec:res-ameacas})\\
 \hline
-A precedência categórica tem custo &
-Supressão de $\approx 70$~s e uma de quatro inspeções abandonada em $10/10$;
-§\ref{sec:res-custo-precedencia} &
-Cenário de risco marginalmente elegível; \emph{e} a implementação temporal
-efetivamente executada, cujo período de decaimento realizado difere do especificado
-(§\ref{sec:prop-relogios}) &
-A duração depende do limiar de elegibilidade, da geometria \emph{e} do relógio do
-decaimento; sob período especificado a janela seria mais curta\\
+A precedência categórica custa uma inspeção &
+Uma de quatro inspeções abandonada em $10/10$ sob cada um dos dois relógios
+($20/20$); §\ref{sec:res-custo-precedencia} &
+Cenário de risco marginalmente elegível, nas duas implementações temporais testadas
+(§\ref{sec:res-relogio-consistente}) &
+Só o custo se repete nas duas; o mecanismo é específico de cada uma\\
+\hline
+A supressão de $\approx 70$~s e o recuo que a abre são da implementação &
+Janela de $69{,}5$~s e um recuo sob o relógio executado; $0{,}00$ recuos
+($\delta=-1{,}00$) sob o especificado; §\ref{sec:res-relogio-consistente} &
+Configuração marginal, $10$ execuções por relógio &
+Afirmação sobre o código avaliado, \emph{não} sobre a precedência categórica em si\\
 \hline
 A preempção e o recuo compram margem contra risco emergente &
 DHa supera DHb em $0{,}33$~m e $0{,}51$~s, com separação completa ($|\delta|=1$) no
