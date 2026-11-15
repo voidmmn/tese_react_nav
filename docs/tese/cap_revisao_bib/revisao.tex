@@ -20,7 +20,12 @@
 %% processo de selecao documentados -- e chamar-se sistematico prometia um metodo que
 %% nao foi realizado. Passa a declarar o que de fato e: revisao critica, com o critério
 %% de selecao explicitado abaixo e com o alcance da selecao reconhecido.
-\chapter{Revisão Crítica da Literatura}
+%% Titulo alterado em 15/11/2026. Era "Revisao Critica da Literatura" -- o unico
+%% titulo da tese que afirmava uma QUALIDADE em vez de nomear o conteudo, ao lado de
+%% "Fundamentacao Teorica", "Avaliacao Experimental", "Resultados e Discussao" e
+%% "Conclusao". Criticidade e coisa que o leitor julga. As quatro subsecoes chamadas
+%% "Analise Critica e Desafios Futuros" passaram a nomear o que de fato discutem.
+\chapter{Revisão da Literatura}
 \label{cap:revisao}
 
 A inspeção de subestações elétricas é tarefa predominantemente humana em ambiente energizado, e é desse fato que decorre o interesse por automatizá-la: há limite de segurança para a aproximação a equipamento sob tensão, os eventos de interesse são esparsos ao longo de rotas fixadas por norma, e o custo por inspeção é alto. Os \ac{VTA}, também chamados \ac{RMT} ou \ac{UGV}, são a plataforma em que essa automação tem sido tentada, e a navegação autônoma é a função de que as demais dependem.
@@ -64,6 +69,18 @@ Política treinada apenas em simulação degrada-se no robô físico por efeito 
 
 Estudos comparativos realizados por \cite{Hwangbo2019} e \citeonline{Loquercio2021} demonstraram que abordagens Sim-to-Real bem projetadas podem atingir desempenho comparável ou superior a métodos treinados diretamente no mundo real, com fração do custo e tempo de desenvolvimento.
 
+%% Ligacao acrescentada em 15/11/2026. Esta subsecao quase foi removida por nao ter
+%% ocorrencia nos Capitulos 4 a 7 -- criterio que estava errado aqui: ela e o que
+%% posiciona a limitacao de escopo mais importante da tese, declarada na Secao 7.3
+%% ("a avaliacao e em simulacao"). O criterio certo nao e se o tema reaparece, e sim
+%% se alguma afirmacao do trabalho depende dele.
+Esta frente é a que situa o limite de escopo desta tese. A avaliação do
+Capítulo~\ref{cap:avaliacao} é inteiramente simulada e nenhuma transferência para
+\textit{hardware} foi tentada, de sorte que o que aqui se mede é a lógica de decisão da
+arquitetura, e não o seu desempenho em pátio. A literatura acima descreve o que separa
+uma coisa da outra, e é contra ela que a Seção~\ref{sec:conc-escopo} delimita o alcance
+dos resultados.
+
 \subsection{Aprendizado por Reforço Seguro para Ambientes Industriais}
 
 A segurança é uma preocupação primordial na navegação autônoma em ambientes industriais como subestações elétricas. \citeonline{Garciaetal2015} levantaram os métodos de \ac{RL} Seguro e os organizaram em três famílias, conforme o que cada uma modifica: a função de recompensa, o processo de exploração ou o critério de otimização.
@@ -83,6 +100,18 @@ oferece a garantia de invariância que uma função de barreira persegue.
 
 Para ambientes com requisito de segurança explícito, \citeonline{Brunke2022} combinam \ac{RL} com controladores de segurança baseados em modelo que podem intervir quando a política aprendida propõe ações potencialmente perigosas. Esta abordagem híbrida permite explorar os benefícios do aprendizado adaptativo enquanto mantém garantias formais de segurança.
 
+%% Ligacao acrescentada em 15/11/2026, pela mesma razao da subsecao anterior: e o que
+%% da sentido a frase da Secao 7.2 -- "esses sao os limites da evidencia de seguranca,
+%% e nao uma garantia de seguranca".
+A distinção entre essas vias importa ao que esta tese pode e não pode afirmar. A
+precedência categórica de segurança do Capítulo~\ref{cap:proposta} é regra de projeto,
+verificável por inspeção do código, e não garantia probabilística aprendida nem
+invariância demonstrada por função de barreira. O que o
+Capítulo~\ref{cap:resultados} apresenta é evidência empírica sobre o comportamento dessa
+regra num conjunto de execuções, com os seus intervalos declarados --- e é precisamente
+por existirem as garantias formais descritas acima que convém dizer que não se
+reivindica nenhuma delas.
+
 \subsection{Aplicações Específicas em Subestações Elétricas}
 
 A aplicação de \ac{DRL} para navegação de \ac{UGV} em subestações elétricas apresenta desafios particulares devido à interferência eletromagnética, obstáculos metálicos e requisitos rigorosos de segurança. O ambiente eletromagnético da instalação é, por si, objeto de estudo e de indexação própria na literatura de compatibilidade eletromagnética de subestações \cite{He2007EMCSubstation}, e o estado da pesquisa e do desenvolvimento em robôs de inspeção para esse ambiente foi recentemente revisado por \citeonline{Wei2024Advancements}.
@@ -96,7 +125,7 @@ A aplicação de \ac{DRL} para navegação de \ac{UGV} em subestações elétric
 
 Estudos de caso conduzidos por \cite{Lactec2022} e \cite{Iberdrola2022} em subestações reais demonstraram a viabilidade prática destas abordagens, e relatam ganho de eficiência e de cobertura de inspeção sobre os métodos tradicionais, sem decompor esse ganho por mecanismo.
 
-\subsection{Análise Crítica e Desafios Futuros}
+\subsection{Limites do Aprendizado por Reforço neste Domínio}
 
 A escalabilidade é o limite mais visível desta linha de trabalho. A maioria dos estudos revisados opera em áreas pequenas ou simplificadas, e adaptar a política a uma mudança de \textit{layout} ou de condição operacional exigiria aprendizado continuado, que nenhum dos trabalhos aqui examinados sustenta em operação.
 
@@ -114,142 +143,76 @@ Para o recorte desta tese, a consequência é de projeto. A opacidade da políti
 %% (iii) nao correspondia ao texto, que elenca interpretabilidade e nao "desafios de
 %% recompensa". Nao era referenciada em lugar nenhum. O arquivo permanece em figuras/.
 
+%% Secao COMPRIMIDA em 15/11/2026, de 832 para cerca de 300 palavras. Era o eixo mais
+%% pesado do capitulo (19%) e a tese usa visao UMA vez nos Capitulos 4 a 7. Mantido o
+%% que tem consequencia: o reconhecimento de anomalia, porque os eventos desta tese SAO
+%% anomalias, e o obstaculo de dominio. Removido o bloco de navegacao e localizacao
+%% visual, que a Secao 2.5.4 agora cobre pelo lado da localizacao em mapa dado, e
+%% reduzida a linhagem de arquiteturas de rede, que nao reaparece em lugar nenhum.
 \section{Visão Computacional para Navegação Autônoma}
 
-A visão computacional entrega a um \ac{UGV} o tipo de informação que o \ac{LiDAR} não fornece, a identidade semântica do que está à frente, e não apenas sua geometria. Esta seção analisa criticamente os avanços recentes nesta área, com foco em aplicações para navegação em ambientes industriais complexos como subestações elétricas.
+A visão computacional entrega a um \ac{UGV} o tipo de informação que o \ac{LiDAR} não
+fornece, a identidade semântica do que está à frente, e não apenas a sua geometria. A
+linhagem de arquiteturas que a sustenta foi reorganizada pelo custo computacional
+embarcado, das \ac{CNN} residuais \cite{He2016} aos \textit{Transformers} de visão
+\cite{Carion2020, Liu2021SwinTransformer}, que superam as primeiras em \textit{benchmarks}
+de percepção ao preço de mais computação.
 
-\subsection{Evolução das Arquiteturas de Redes Neurais para Percepção Visual}
+Para a inspeção, porém, o problema decisivo não é chegar ao equipamento, e sim reconhecer
+a anomalia uma vez diante dele. Essa frente concentra o trabalho mais próximo desta tese,
+ainda que por contraste: detecção de defeito em superfície industrial
+\cite{Ullah2020DefectDetection}, detecção de anomalia com pouca ou nenhuma rotulagem
+\cite{Bergmann2020}, fusão de imagem infravermelha e visível para equipamentos de
+subestação \cite{Chi2024LMDFusion} e detectores leves para alvos de pequena extensão, nos
+quais a taxa de detecções perdidas é alta \cite{Wang2024SmallTargets}.
 
-O custo computacional embarcado é o que reorganizou esta linha de trabalho. As \ac{CNN} de primeira geração, AlexNet e VGG, cederam lugar a ResNet \cite{He2016} e MobileNet \cite{Howard2017}, cujo ganho principal não está na acurácia, mas na acurácia por operação, o que decide se a rede roda no robô ou fora dele.
+Dois obstáculos separam o resultado de \textit{benchmark} do desempenho em pátio. O
+primeiro é a degradação sob reflexo metálico e variação extrema de iluminação, condições
+correntes numa subestação a céu aberto e às quais a segmentação semântica é sensível
+\cite{Pfeuffer2019, Cai2025AttentionSeg}. O segundo é estrutural: a anomalia que se quer
+detectar é rara no equipamento que se quer inspecionar, de sorte que dados rotulados de
+falha escasseiam por definição.
 
-A segmentação semântica respondeu a uma demanda distinta, a de classificar cada pixel em vez de localizar caixas, com U-Net \cite{Ronneberger2015}, PSPNet \cite{Zhao2017} e DeepLabv3+ \cite{Chen2018}. Estas redes permitem a classificação pixel a pixel de imagens, facilitando a identificação precisa de obstáculos, áreas navegáveis e objetos de interesse. \citeonline{Milioto2019} demonstraram a aplicação eficaz destas arquiteturas para segmentação semântica em tempo real em robôs móveis, utilizando técnicas de otimização específicas para plataformas embarcadas.
-
-Os Transformers de visão, DETR \cite{Carion2020} e Swin Transformer \cite{Liu2021SwinTransformer}, superam as \ac{CNN} em vários \textit{benchmarks} de percepção, ao preço de um orçamento de memória que a plataforma embarcada precisa comportar.
-%% Removido em 13/11/2026: a frase atribuia a Ramakrishnan, Al-Halah e Grauman uma
-%% aplicacao de Transformers a navegacao visual. O trabalho (Occupancy Anticipation,
-%% ECCV 2020) nao usa Transformers; ele antecipa ocupacao fora do campo de visao.
-%% A alegacao sobre Transformers aplicados a navegacao nao tinha fonte nesta amostra.
-
-\subsection{Técnicas de Percepção Visual Robusta para Ambientes Industriais}
-
-Ambientes industriais como subestações elétricas apresentam desafios específicos para sistemas de visão computacional, incluindo condições variáveis de iluminação, reflexos em superfícies metálicas e oclusões parciais. \citeonline{Valada2017} trataram a compreensão semântica multiespectral de ambientes florestais por fusão multimodal, combinando canais visíveis e infravermelho próximo; o ganho relatado sob iluminação desfavorável é o que torna esse tipo de abordagem atraente para pátios externos, ainda que o domínio avaliado não seja o de subestações.
-
-%% Reescrito em 13/11/2026 (auditoria bibliografica). A frase anterior atribuia a
-%% este trabalho tecnicas de polarizacao para reflexos metalicos, que nao sao o seu
-%% objeto (segmentacao semantica sob clima adverso por fusao de dados de sensores),
-%% e o segundo trabalho citado nao foi localizado em nenhuma base.
-\citeonline{Pfeuffer2019} abordaram a degradação da segmentação semântica sob condições atmosféricas adversas por meio da fusão de dados de sensores, estratégia cujo princípio --- compensar a falha de uma modalidade com a redundância de outra --- é o mesmo invocado para reflexos e oclusões em pátios metálicos.
-
-%% Reescrito em 13/11/2026 (auditoria bibliografica). As duas referencias anteriores
-%% deste paragrafo nao foram localizadas no Crossref nem no OpenAlex e foram
-%% retiradas; uma delas carregava, no proprio arquivo .bib, uma mensagem de
-%% truncamento de processamento. A alegacao de atencao visual aplicada a inspecao de
-%% subestacao passou a apoiar-se em trabalho verificado.
-Na direção da percepção especializada para esse domínio, \citeonline{Cai2025AttentionSeg} propuseram segmentação semântica com mecanismos de atenção voltada à navegação de robôs de inspeção de subestações, indicando que o ganho buscado está menos em arquiteturas de uso geral e mais na especialização ao cenário.
-
-\subsection{Navegação Visual e Localização Baseada em Visão}
-
-A navegação guiada primariamente por imagem dispensa o mapa métrico prévio, e é nesse ponto que o período analisado concentra seus resultados. \citeonline{Zhu2017} demonstraram navegação baseada em alvos visuais utilizando \ac{DRL}, onde o robô aprende a navegar até um alvo especificado por uma imagem. \citeonline{Gupta2017} expandiram esta abordagem com um sistema que constrói mapas cognitivos do ambiente a partir de observações visuais, permitindo planejamento de trajetória em ambientes previamente inexplorados.
-
-A localização por visão atende ao caso em que o GPS é indisponível ou impreciso, situação corrente no interior de uma subestação. \citeonline{Sarlin2019} introduziram o HF-Net, uma arquitetura eficiente para localização visual que combina detecção de pontos-chave e descrição global, permitindo localização precisa com baixo custo computacional. \citeonline{Toft2020} demonstraram localização robusta em condições variáveis de iluminação e clima, utilizando técnicas de adaptação de domínio e representações invariantes a condições ambientais.
-
-Para ambientes industriais específicos como subestações, \citeonline{Liu2016VisualNavSubstation} descreveram um método de navegação visual para robô de inspeção, e \citeonline{Fan2024MultiSensorSubstation} relatam posicionamento preciso por fusão multissensorial aplicado à navegação autônoma desse mesmo tipo de robô.
-
-\subsection{Detecção e Reconhecimento de Anomalias Visuais}
-
-Chegar ao equipamento é condição da inspeção, não a inspeção: reconhecer a anomalia é problema de visão computacional. \citeonline{Ullah2020DefectDetection} aplicaram aprendizado profundo à detecção de defeitos em equipamentos elétricos de alta tensão a partir de imagens, tarefa que é o análogo perceptivo do evento que esta tese abstrai.
-
-Parte da literatura recente reduz a dependência de dados rotulados, essencial para aplicações industriais onde dados de anomalias são escassos. \citeonline{Bergmann2020} publicaram o conjunto de dados MVTec AD, concebido para detecção não supervisionada de anomalias industriais a partir de exemplos normais, e \citeonline{Ruff2021} organizam, em revisão unificadora, as famílias de métodos rasos e profundos de detecção de anomalias.
-
-Para inspeção em subestações elétricas, \citeonline{Chi2024LMDFusion} propuseram uma rede leve de fusão de imagens infravermelha e visível para equipamentos de subestação, combinando as duas modalidades que, isoladamente, deixam escapar parte dos defeitos.
-%% Frase reescrita em 12/11/2026. A versao anterior citava Chen2024, chave que nao
-%% existia na bibliografia e imprimia [?] no PDF. A referencia foi substituida por um
-%% trabalho real e verificado (Crossref 10.3390/s24185914), e a frase foi ajustada ao
-%% conteudo desse trabalho em vez do contrario.
-\cite{Wang2024SmallTargets} atacaram uma dificuldade recorrente nesse cenário --- a
-alta taxa de deteções perdidas em alvos de pequena extensão --- com um detector leve
-dotado de mecanismos de atenção, projetado para preservar precisão sobre defeitos
-sutis sem o custo computacional dos detectores de uso geral.
-
-\subsection{Análise Crítica e Desafios Futuros}
-
-A degradação sob reflexo metálico e sob variação extrema de iluminação é o que separa o resultado de \textit{benchmark} do desempenho em pátio. Os sistemas revisados perdem acurácia exatamente nos cenários que caracterizam a subestação, e a interferência eletromagnética compromete a aquisição antes de alcançar o algoritmo.
-
-A escassez de dados rotulados de falha é estrutural: a anomalia que se quer detectar é rara no equipamento que se quer inspecionar. Aprendizado com poucos exemplos e auto-supervisão respondem a isso em conjuntos de dados industriais curados, e não em pátio instrumentado.
-
-Esta tese não ataca esse gargalo. A percepção é estipulada, com os eventos de interesse entrando no sistema como leituras já classificadas (Seção~\ref{sec:prop-sensoriamento}), justamente para que o objeto de medida seja a lógica que decide e não a cadeia que a alimenta.
-
-%% Figura removida em 13/11/2026, pelos mesmos motivos da anterior: marca d'agua
-%% "Made with Napkin" impressa, estetica decorativa fora do padrao do documento e
-%% sintese sem citacao em capitulo de revisao critica. Nao era referenciada no texto.
-%% O arquivo permanece em figuras/.
-
+Esta tese não ataca esse gargalo. A percepção é estipulada, com os eventos de interesse
+entrando no sistema como leituras já classificadas (Seção~\ref{sec:prop-sensoriamento}),
+e o objeto de estudo é o que o robô faz com elas.
+%% Secao COMPRIMIDA em 15/11/2026, de 589 para cerca de 260 palavras. Esta tese nao
+%% funde modalidade alguma: a arquitetura consome evento ja rotulado. As quatro
+%% subsecoes viraram prosa corrida, e o que se preservou foi o que tem consequencia
+%% adiante -- a distincao entre fundir ANTES e DEPOIS da decisao, que e o que situa o
+%% objeto desta tese, e a dessincronizacao temporal entre modalidades de taxa
+%% distinta, que e o vizinho direto do defeito de relogio da Secao 6.13.
 \section{Fusão Sensorial para Navegação Robusta}
 
-A fusão sensorial existe porque nenhuma modalidade isolada cobre as condições de uma subestação. Esta seção analisa criticamente os avanços recentes em técnicas de fusão sensorial heterogênea, com foco em aplicações para navegação em ambientes industriais complexos.
-%% Figura removida em 13/11/2026, junto com a frase que a chamava. Alem da marca
-%% d'agua "Made with Napkin" e da estetica fora do padrao, a frase afirmava que a
-%% figura ilustrava "a fusao sensorial PROPOSTA para o framework" -- o que contradiz
-%% diretamente a delimitacao de escopo: esta tese nao propoe nem entrega mecanismo de
-%% fusao sensorial, como declara o fecho deste capitulo. O arquivo permanece em
-%% figuras/.
+A fusão sensorial existe porque nenhuma modalidade isolada cobre as condições de uma
+subestação, e a literatura recente organiza-se em torno do desalinhamento entre
+resolução, campo de visão e taxa de amostragem das modalidades que se quer combinar
+\cite{Chen2017, Jaritz2019}. A atenção cruzada deslocou o problema da escolha de um ponto
+de fusão para a aprendizagem de \emph{onde} fundir \cite{Prakash2021}. Em instalação
+energizada acrescenta-se a interferência eletromagnética, que degrada cada modalidade de
+maneira distinta e exige ponderação sensível à confiabilidade momentânea de cada leitura
+\cite{Yan2024CombinedNav, Alatise2020Review}.
 
+Convém separar dois pontos em que a fusão entra na inspeção autônoma, porque só o segundo
+toca esta tese. Antes da decisão, ela compõe a estimativa de posição, e é aí que se
+concentra a literatura de navegação citada acima. Depois dela, compõe o \emph{diagnóstico}
+do equipamento: para descargas parciais, por exemplo, métodos elétricos e ópticos são
+combinados com detecção por rede neural \cite{Monzon2025PartialDischarge}, porque nenhuma
+das vias localiza a descarga isoladamente.
 
-\subsection{Evolução das Arquiteturas de Fusão Multimodal}
+Três limites atravessam essa literatura. A calibração extrínseca deriva em operação, com
+temperatura e vibração alterando parâmetros estimados em bancada. A dessincronização
+temporal entre modalidades de taxa distinta é o segundo, e o mais próximo do que este
+trabalho encontrou na prática: compor leituras colhidas em bases de tempo que não
+coincidem produz erro que nenhuma ponderação corrige, e a Seção~\ref{sec:res-verificacao-relogio}
+mede um caso dessa família. O terceiro, a escalabilidade em número de modalidades, pesa
+menos aqui, porque os sistemas revisados param em três ou quatro sensores.
 
-O desalinhamento entre resolução, campo de visão e taxa de amostragem organiza esta literatura. \citeonline{Chen2017} propuseram uma das primeiras arquiteturas de fusão profunda para navegação robótica, combinando dados de LiDAR e câmeras para detecção robusta de obstáculos. \citeonline{Valada2018} estenderam a abordagem com uma arquitetura que aprende representações complementares entre modalidades, com ganho medido em segmentação semântica para navegação.
-
-\citeonline{Jaritz2019} atacaram diretamente esse desalinhamento, com técnicas de fusão para sensores de resolução e campo de visão distintos. \citeonline{Bijelic2020} demonstraram uma arquitetura de fusão para condições adversas, combinando câmeras RGB, térmicas, LiDAR e radar para navegação robusta em diferentes condições ambientais.
-
-A atenção cruzada deslocou o problema da escolha de um ponto de fusão para a aprendizagem de onde fundir. \citeonline{Prakash2021} introduziram o TransFuser, uma arquitetura que utiliza mecanismos de atenção cruzada para fusão eficiente de dados visuais e LiDAR. \citeonline{Xiao2023} acrescentaram integração temporal à arquitetura, com ganho medido em cenários dinâmicos.
-
-\subsection{Técnicas de Fusão Robusta para Ambientes com Interferência}
-
-Ambientes industriais como subestações elétricas apresentam desafios específicos para sistemas de fusão sensorial, particularmente devido à interferência eletromagnética que pode afetar diferentes sensores de maneiras distintas. O tratamento desse ambiente como requisito mensurável de projeto é anterior à robótica de inspeção: \citeonline{He2007EMCSubstation} discutem índices de compatibilidade eletromagnética para o sistema secundário da subestação.
-
-%% Paragrafo substituido em 13/11/2026 (auditoria bibliografica): as duas referencias
-%% que o sustentavam nao foram localizadas em nenhuma base bibliografica e foram
-%% retiradas. O que resta e a formulacao do problema, apoiada em revisao verificada.
-A ponderação adaptativa de sensores segundo a confiabilidade momentânea de cada modalidade está entre os problemas recorrentes levantados na literatura de fusão para robótica móvel \cite{Alatise2020Review}.
-
-Para subestações elétricas especificamente, \citeonline{Yan2024CombinedNav} descrevem um sistema de navegação combinada que funde DGPS e \textit{dead reckoning} para o robô de inspeção, e \citeonline{Fan2024MultiSensorSubstation} relatam fusão multissensorial para posicionamento preciso no mesmo cenário.
-
-\subsection{Fusão Sensorial para Detecção e Classificação de Anomalias}
-
-A fusão sensorial entra em dois pontos distintos da inspeção autônoma, e convém separá-los: antes da decisão, compondo a estimativa de posição; depois dela, compondo a evidência de anomalia. No plano da estimação, \citeonline{Neto2021FiltrosRadarLidar} compararam filtro de partículas e filtro de Kalman estendido sobre dados de RADAR e LIDAR, exemplo da camada de fusão que precede qualquer decisão de inspeção.
-
-Para a detecção de descargas parciais, \citeonline{Monzon2025PartialDischarge} combinaram métodos elétricos e ópticos com detecção por rede neural, caso em que a fusão de modalidades é a condição para observar o fenômeno.
-
-%% Paragrafo removido em 13/11/2026 (auditoria bibliografica): as duas referencias que
-%% sustentavam a alegacao de tendencia --- modelos fisicos acoplados a aprendizado
-%% profundo e grafos de conhecimento para relacoes causais entre anomalias --- nao
-%% foram localizadas em nenhuma base. A alegacao foi retirada em vez de receber
-%% substitutos escolhidos apenas para preencher a lacuna.
-
-\subsection{Modelos Adaptativos de Ponderação Sensorial}
-
-Em ambiente sujeito a interferência variável, peso fixo degrada a estimativa sempre que uma modalidade perde confiabilidade: a fusão precisa reponderar cada sensor conforme a qualidade momentânea da sua leitura. A revisão de \citeonline{Alatise2020Review} sobre desafios de robôs móveis autônomos e métodos de fusão sensorial situa esse problema entre os que permanecem abertos.
-
-%% Reescrito em 13/11/2026 (auditoria bibliografica): a primeira referencia nao foi
-%% localizada em nenhuma base; a segunda e uma dissertacao sobre SLAM 3D com filtro de
-%% Kalman estendido, e nao um sistema de ponderacao otimizado por aprendizado por
-%% reforco, como a frase anterior afirmava.
-Em dissertação sobre localização e mapeamento 3D simultâneos, \citeonline{Schneider2018FusaoSensores} trata a fusão para localização com filtro de Kalman estendido, abordagem na qual os pesos relativos decorrem do modelo de covariância, e não de uma política aprendida.
-
-%% Paragrafo removido em 13/11/2026 (auditoria bibliografica): atribuia a dois
-%% trabalhos um modelo de ponderacao preditiva por padrao de interferencia e um
-%% esquema de meta-aprendizado entre subestacoes; nenhuma das duas alegacoes
-%% corresponde ao conteudo dos trabalhos publicados sob aquelas referencias.
-
-\subsection{Análise Crítica e Desafios Futuros}
-
-A calibração extrínseca deriva em operação. Temperatura e vibração alteram os parâmetros estimados em bancada, e a literatura de fusão revisada supõe, quase sempre, uma calibração que permanece válida por toda a missão.
-
-A dessincronização temporal entre modalidades de taxa distinta é o segundo limite, e o mais próximo do que esta tese encontrou na prática. Fundir uma \ac{IMU} rápida com uma câmera lenta exige uma referência de tempo comum, e a Seção~\ref{sec:res-verificacao-relogio} documenta o que ocorre quando dois relógios coexistem no mesmo sistema sem que isso esteja declarado.
-
-A escalabilidade em número de modalidades pesa menos para o problema aqui tratado. Os sistemas revisados param em três ou quatro sensores, e a arquitetura do Capítulo~\ref{cap:proposta} opera com duas modalidades de interesse e uma de risco.
-
+Nenhuma dessas técnicas é implementada nesta tese. A arquitetura do
+Capítulo~\ref{cap:proposta} recebe o evento já formado, com modalidade e intensidade
+declaradas, e o que se estuda é a decisão que vem depois.
 \section{Integração de Técnicas para Sistemas Completos}
+\label{sec:rev-integracao}
 
 Integrar aprendizado, visão e fusão num mesmo sistema introduz um problema que nenhuma das três áreas resolve isoladamente, o de atribuir a cada componente a parte do desempenho que lhe cabe. Esta seção analisa criticamente as abordagens de integração propostas na literatura recente, com foco em aplicações para subestações elétricas.
 
@@ -282,6 +245,7 @@ trata a decisão de \emph{deixar a rota} em resposta ao que se percebe, que é o
 desta tese.
 
 \subsection{Frameworks Modulares e Adaptáveis}
+\label{sec:rev-modulares}
 
 Os \textit{frameworks} modulares respondem à necessidade de trocar um componente sem reconstruir o sistema. \citeonline{Savva2019} introduziram o Habitat, uma plataforma para pesquisa em navegação visual incorporada que facilita a integração de diferentes algoritmos de percepção e controle. \citeonline{Wijmans2020} utilizaram esta plataforma para demonstrar navegação ponto-a-ponto em ambientes complexos utilizando apenas sensores visuais.
 
@@ -291,10 +255,17 @@ Os \textit{frameworks} modulares respondem à necessidade de trocar um component
 %% Os dois sao extensoes irmas da mesma plataforma, em eixos distintos.
 \citeonline{Deitke2020RoboTHOR} introduziram o RoboTHOR, que acrescenta à plataforma
 um par entre cenas simuladas e suas contrapartes físicas, voltado a medir a perda de
-desempenho na transferência do simulador para o robô real. No ano seguinte,
-\citeonline{Ehsani2021} propuseram o ManipulaTHOR, que estende a mesma plataforma em
-outro eixo --- o da manipulação, e não o da transferência ---, acrescentando um braço
-articulado à navegação visual.
+desempenho na transferência do simulador para o robô real.
+%% Acrescentado em 15/11/2026. Estas plataformas sao a resposta da area ao problema de
+%% denominador comum levantado na Secao 3.5, e omiti-las tornaria aquela secao injusta:
+%% o denominador existe, mas para outro objeto. Removido no mesmo passo o ManipulaTHOR,
+%% que estende a plataforma para manipulacao e nao tem relacao com este trabalho.
+Essas plataformas são a resposta mais direta ao problema de comparabilidade retomado na
+Seção~\ref{sec:rev-reporte}: oferecem cena, tarefa e métrica fixas, sobre as quais
+sistemas distintos podem ser confrontados. O denominador comum existe, portanto --- mas
+para a navegação visual guiada por objetivo, que é outro objeto. Não há equivalente para
+a camada que decide \emph{quando} interromper uma tarefa em favor de outra, e é por isso
+que o Capítulo~\ref{cap:avaliacao} precisa construir o seu.
 
 %% Reescrito em 13/11/2026. A redacao anterior descrevia a Iberdrola2022 como um
 %% "framework modular com configuracao flexivel de sensores" e a Lactec2022 como uma
@@ -353,7 +324,7 @@ externo, a comparação é construída \emph{internamente}, por ablações sobre
 controlador compartilhado (Capítulo~\ref{cap:avaliacao}), o que torna cada contraste
 interpretável sem depender de uma referência comum que o campo ainda não possui.
 
-\subsection{Análise Crítica e Direções Futuras}
+\subsection{Lacunas Comuns às Três Frentes}
 
 Falta a esta literatura um ponto de comparação comum. Cada trabalho integra aprendizado, visão e fusão à sua maneira, relata ganho agregado sobre uma linha de base própria e não decompõe esse ganho por componente, de modo que os resultados não são comparáveis entre si nem atribuíveis internamente.
 
@@ -372,6 +343,69 @@ Por fim, a certificação operacional em instalação energizada impõe uma exig
 %% nenhum ponto confrontava esta tese com os trabalhos que estao de fato mais perto
 %% dela -- supervisores de missao e arquiteturas hibridas com arbitragem. Sem esse
 %% confronto, a contribuicao so podia ser lida como soma de tecnologias conhecidas.
+%% Secao NOVA em 15/11/2026, e e a que faltava. A contribuicao declarada no
+%% Capitulo 7 e METODOLOGICA -- a decomposicao por ablacao com analise que declara as
+%% proprias fronteiras --, mas o capitulo nao revisava pratica metodologica alguma:
+%% "tamanho de efeito", "Holm" e "censura" ocorriam ZERO vezes aqui contra 14, 24 e 17
+%% nos capitulos posteriores. A afirmacao de que esta literatura "nao decompoe o ganho
+%% por componente" estava ASSERIDA e nao demonstrada, de sorte que a pedra sobre a qual
+%% a contribuicao se apoia era a unica do documento sem apoio proprio.
+%% O argumento foi construido sobre um fato verificavel NESTE capitulo, e nao sobre
+%% alegacao a respeito do que cada artigo reporta, que exigiria auditoria que nao foi
+%% feita -- e a limitacao esta declarada no ultimo paragrafo.
+\section{O Que Esta Literatura Reporta}
+\label{sec:rev-reporte}
+
+As quatro frentes revisadas acima resumem $66$ trabalhos, e vale observar o que esses
+resumos \emph{não} contêm: nenhuma grandeza comparável. Não há nestas páginas um único
+tamanho de efeito, intervalo de confiança, número de execuções por condição ou ganho
+percentual atribuído a um componente isolado. A ausência é parcialmente uma escolha
+deste texto, que privilegiou o mecanismo sobre o número; mas é também a razão de a
+escolha ter sido possível sem perda, e é essa segunda parte que importa.
+
+A dificuldade é de denominador. Cada trabalho define a sua própria plataforma, a sua
+própria linha de base e o seu próprio cenário, de modo que o ganho que relata está
+expresso em unidades que só valem dentro dele. Um sistema que melhora a taxa de detecção
+em relação a uma versão anterior de si mesmo, outro que reduz o tempo de percurso em
+relação a um operador humano e um terceiro que eleva a acurácia de classificação sobre um
+conjunto próprio não produzem, juntos, nenhuma ordenação. Transcrever esses números lado
+a lado daria a aparência de comparação sem a sua substância.
+
+Disso decorre a consequência que esta tese enfrenta. Quando o sistema avaliado integra
+várias técnicas --- e as arquiteturas da Seção~\ref{sec:rev-integracao} integram, por
+construção ---, um ganho relatado no agregado não diz qual das partes o produziu. A
+questão não é se o conjunto funciona, e sim quanto cada peça contribui, porque é essa a
+informação de que precisa quem for reusar uma delas. Responder a isso exige um
+denominador comum construído de propósito: o mesmo controlador, o mesmo ambiente, o mesmo
+protocolo de eventos, e variação de um mecanismo por vez. É o desenho adotado no
+Capítulo~\ref{cap:avaliacao}, e a razão de ele existir está aqui.
+
+A segunda consequência é sobre o que acompanha o número quando ele existe. Atribuir
+efeito a mecanismo em simulação estocástica exige declarar a incerteza da atribuição ---
+quantas execuções a sustentam, que fração delas foi interrompida sem concluir, e quanto
+da diferença observada sobrevive à correção para o número de comparações feitas. Essas
+declarações são o que permite distinguir um efeito de uma flutuação, e é por isso que o
+Capítulo~\ref{cap:resultados} as apresenta para cada contraste, com as suas próprias
+fronteiras ditas em voz alta.
+
+%% Ressalva acrescentada em 15/11/2026, logo depois de escrita a secao: a afirmacao de
+%% que "nao ha base comum" era forte demais e a propria Secao 3.4.2 a contradizia, ao
+%% descrever Habitat e RoboTHOR, que sao exatamente tentativas de base comum. A
+%% afirmacao correta e mais estreita, e continua suficiente.
+Duas ressalvas delimitam o que se afirmou. A primeira é que base comum \emph{existe} em
+parte do campo: as plataformas de referência da Seção~\ref{sec:rev-modulares} fixam cena,
+tarefa e métrica, e sobre elas sistemas distintos são de fato confrontáveis. Elas cobrem,
+porém, a navegação visual guiada por objetivo, e não a camada que decide quando
+interromper uma tarefa --- que é o objeto desta tese, e para o qual não se localizou
+equivalente.
+
+A segunda é que não se conduziu auditoria sistemática das práticas estatísticas das
+fontes primárias, e nada do que se disse acima afirma que elas reportem mal dentro dos
+seus próprios termos. O que se afirma é mais estreito: para o objeto aqui estudado, a
+literatura revisada não oferece base comum sobre a qual os ganhos relatados possam ser
+confrontados, e por isso a atribuição por componente precisa ser produzida, e não
+consultada.
+
 \section{Trabalhos Mais Próximos}
 \label{sec:rev-proximos}
 
