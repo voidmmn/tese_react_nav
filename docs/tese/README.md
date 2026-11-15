@@ -36,9 +36,13 @@ As figuras quantitativas são **geradas** pelos scripts em `figuras/` a partir d
 
 ## Reprodutibilidade
 
-A versão avaliada é a etiqueta **`tese-defesa-v1`**, cujas notas de lançamento
-registram o *commit* exato. O ramo `main` continua recebendo trabalho e **não** é o
-estado avaliado.
+A versão avaliada é a etiqueta anotada **`tese-defesa-v3`**. Ela resolve para um
+*commit* único por `git rev-parse tese-defesa-v3^{commit}`, sem depender de nota de
+lançamento nem de recurso do serviço de hospedagem. O ramo `main` continua recebendo
+trabalho e **não** é o estado avaliado.
+
+As etiquetas `tese-defesa-v1` (194 pp) e `tese-defesa-v2` (192 pp) identificam estados
+anteriores e não foram movidas.
 
 O pacote de reprodutibilidade (`empacotar_reprodutibilidade.sh`, na raiz do
 repositório) reúne o código, as 320 execuções analisadas com um CSV e um log de

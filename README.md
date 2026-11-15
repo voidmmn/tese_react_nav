@@ -117,8 +117,11 @@ de 600 s por tentativa.
 Use a **etiqueta anotada**, não o ramo principal, que continua recebendo trabalho:
 
 ```bash
-git rev-parse tese-defesa-v1^{commit}
+git rev-parse tese-defesa-v3^{commit}
 ```
+
+Cada entrega recebeu etiqueta própria e nenhuma foi movida: `tese-defesa-v1` (194 pp) e
+`tese-defesa-v2` (192 pp) identificam estados anteriores do mesmo documento.
 
 ## Limitações declaradas
 
