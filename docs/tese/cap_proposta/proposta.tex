@@ -628,10 +628,18 @@ $1{,}58$~s. O preço da restrição é alto --- $65\%$ dos pares são excluídos
 cauda de baixa magnitude e na fase de reobservação ---, e é esse preço que torna o
 restante interpretável. O cálculo está em
 \texttt{src/tese\_nav/scripts/analise\_decaimento.py}, com o piso, a tolerância, o
-tratamento das lacunas da série e a varredura como parâmetros declarados.}. Isso é visível nos \textit{logs},
+tratamento das lacunas da série e a varredura como parâmetros declarados.}. %% TROCADO em 16/11/2026. A sequencia anterior (0,015; 0,015; 0,013; ...) vinha da
+%% cauda ABAIXO do piso de magnitude, isto e, da regiao que o proprio estimador
+%% descarta, e as suas razoes (0,867; 0,846; 0,818) apareciam dispersas justamente
+%% porque tres casas decimais nao resolvem a razao naquela magnitude -- que e a razao
+%% de existir o piso. A ilustracao desmentia o metodo que ilustrava. A sequencia nova
+%% e do mesmo lote (CM, repeticao 6), acima do piso, e as suas razoes sao exatamente
+%% lambda nas tres casas, de sorte que o leitor as confere dividindo.
+Isso é visível nos \textit{logs},
 em que $\Phi$ repete o mesmo valor em disparos consecutivos de $1$~s antes de cair: a
-sequência $0{,}015$; $0{,}015$; $0{,}013$; $0{,}011$; $0{,}011$; $0{,}009$; $0{,}009$ é
-um trecho literal de uma execução.
+sequência $0{,}360$; $0{,}360$; $0{,}306$; $0{,}260$; $0{,}260$; $0{,}221$; $0{,}221$ é
+um trecho literal de uma execução, e cada queda tem razão $0{,}850$ --- o próprio
+$\lambda$ --- enquanto os disparos intercalados não aplicam fator algum.
 
 %% 14/11/2026: o estimador restrito foi depois AFERIDO contra contagem direta, numa
 %% bateria em que o campo instrumentado conta as aplicacoes no ponto em que ocorrem.
@@ -655,8 +663,14 @@ $1{,}60$~s.
 %% move (1,60 contra 1,61 s) porque os dois erros -- valor do estimador e direcao do
 %% vies -- se compensavam em parte.
 
-O mesmo estimador aplicado braço a braço dá períodos entre $1{,}57$ e $1{,}70$~s em
-nove configurações, com faixas por execução largamente sobrepostas, e a contagem direta
+%% CORRIGIDO em 16/11/2026. A faixa anterior (1,57 a 1,70 s em nove configuracoes)
+%% vinha do estimador no metodo antigo, e contradizia o valor de CM corrigido poucos
+%% paragrafos acima. Recalculada por analise_decaimento.py sobre todas as
+%% configuracoes historicas com pares suficientes: sao 25, e a faixa e 1,44 a 1,58 s.
+%% Quais nove o calculo original escolheu nao esta registrado em lugar nenhum, e nao
+%% se inventa um criterio para reproduzi-lo; reporta-se o conjunto inteiro.
+O mesmo estimador aplicado braço a braço dá períodos entre $1{,}44$ e $1{,}58$~s em
+vinte e cinco configurações, com faixas por execução largamente sobrepostas, e a contagem direta
 confirma a semelhança com margem bem mais estreita: $1{,}57$, $1{,}57$ e $1{,}60$~s
 em três braços. A distorção é, portanto, de magnitude semelhante em todos eles, o que era de esperar, já que o campo
 é o mesmo código. \textbf{Disso não se segue, porém, que o defeito não confunda

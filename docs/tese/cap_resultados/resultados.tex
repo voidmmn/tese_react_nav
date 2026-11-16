@@ -1399,7 +1399,8 @@ dessa ambiguidade; sem ela, a razão sozinha não identificaria o período.
 
 Sobre as dez execuções da configuração CM, $65{,}7\%$ de $999$ pares admitidos
 aplicam o fator, o que situa o período realizado em cerca de $1{,}52$~s de tempo
-simulado. A estimativa é estável sob variação do piso e da tolerância, entre $1{,}47$ e
+simulado --- valor que a Seção~\ref{sec:res-afericao-estimador} corrige para
+$1{,}60$~s depois de aferir o viés do estimador contra contagem direta. A estimativa é estável sob variação do piso e da tolerância, entre $1{,}47$ e
 $1{,}58$~s. O preço é que $65\%$ dos pares ficam de fora, concentrados na cauda de baixa
 magnitude e na fase de reobservação: limitação do método, declarada.
 
@@ -1409,9 +1410,15 @@ A segunda pergunta é se o defeito é neutro entre os braços. O argumento de qu
 o mesmo código estabelece menos do que parece: garante que a dinâmica do campo seja
 igualmente distorcida, não que a distorção pese igualmente sobre cada decisão.
 
-Aplicado braço a braço, o estimador dá períodos realizados entre $1{,}57$ e $1{,}70$~s
-em nove configurações, com faixas por execução largamente sobrepostas: a distorção é,
-de fato, de magnitude semelhante em todas. Mas a sensibilidade a ela não é a mesma: o
+%% CORRIGIDO em 16/11/2026. A faixa anterior (1,57 a 1,70 s em nove configuracoes)
+%% vinha do estimador no metodo antigo, e contradizia o valor de CM corrigido poucos
+%% paragrafos acima. Recalculada por analise_decaimento.py sobre todas as
+%% configuracoes historicas com pares suficientes: sao 25, e a faixa e 1,44 a 1,58 s.
+%% Quais nove o calculo original escolheu nao esta registrado em lugar nenhum, e nao
+%% se inventa um criterio para reproduzi-lo; reporta-se o conjunto inteiro.
+Aplicado braço a braço, o estimador dá períodos realizados entre $1{,}44$ e
+$1{,}58$~s em vinte e cinco configurações, com faixas por execução largamente
+sobrepostas: a distorção é, de fato, de magnitude semelhante em todas. Mas a sensibilidade a ela não é a mesma: o
 método e a variante de seleção disparam sobre o campo, de sorte que a memória entra no
 caminho causal da decisão, enquanto a heurística de detecção bruta não consulta a
 memória para decidir. Um defeito na memória pesa sobre quem a usa e não pesa sobre quem a
@@ -1421,6 +1428,7 @@ a medida está na Seção~\ref{sec:res-relogio-consistente}, que troca o relógi
 qual braço se move, e o argumento se confirma.
 
 \subsection{Contagem Direta e Aferição do Estimador}
+\label{sec:res-afericao-estimador}
 
 O estimador acima trabalha por inferência sobre uma série publicada, e o quanto se pode
 confiar nele é, por sua vez, uma questão empírica. Para resolvê-la, o campo foi
@@ -1506,7 +1514,7 @@ verificação é \emph{transportado} para a bateria histórica, com base na prox
 as duas estimativas do estimador, $1{,}523$ contra $1{,}525$~s; a semelhança entre duas
 médias torna o transporte plausível, e não o valida. E um período \emph{médio} global é
 usado para explicar uma janela específica, que transcorre justamente na faixa de baixa
-magnitude que o estimador cobre menos. A margem de $2$ a $5\%$ foi observada nessas
+magnitude que o estimador cobre menos. A margem de $2{,}6$ a $4{,}8\%$ foi observada nessas
 execuções e não é um limite de erro geral demonstrado.
 
 \subsection{O Comportamento sob o Relógio Especificado}
