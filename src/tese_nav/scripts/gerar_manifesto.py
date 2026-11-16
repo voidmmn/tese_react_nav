@@ -59,6 +59,10 @@ CONJUNTOS = {
 }
 
 
+_MESES = {'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6,
+          'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12}
+
+
 def pertence(rotulo, conjunto):
     """True se `rotulo` pertence ao conjunto pedido. Sem terceira via: um rotulo
     esta na verificacao ou na matriz historica."""
@@ -79,15 +83,46 @@ def ler_logs(results):
         if os.path.basename(lf).startswith('launch_'):
             continue
         data = None
+        anterior = None   # ultimo horario visto neste log, para virada de dia
         for linha in open(lf, encoding='utf-8', errors='replace'):
             if linha.startswith('>>> '):
                 brutos += 1
             m = re.search(r'(\d{4}-\d{2}-\d{2})', linha)
             if m and ('BLOCO' in linha or 'nicio' in linha or 'BATERIA' in linha):
                 data = m.group(1)
+                anterior = None
+            else:
+                # Cabecalho em formato TEXTUAL, usado pelos dois logs da
+                # verificacao do relogio:
+                #   === ... inicio Sat Nov 14 02:42:48 PM -03 2026 ===
+                # Acrescentado em 16/11/2026: o padrao anterior so reconhecia
+                # AAAA-MM-DD, de sorte que estes dois logs nao eram datados e as
+                # 60 execucoes da verificacao saiam "nao_casado", com cenario,
+                # semente, bateria e commit vazios e apenas seis run_id distintos.
+                mt = re.search(
+                    r'nicio\s+\w{3}\s+(\w{3})\s+(\d{1,2})\s+(\d{1,2}):(\d{2}):(\d{2})'
+                    r'\s*(AM|PM)?\b.*?(\d{4})', linha)
+                if mt and ('nicio' in linha):
+                    mes, dia, hh, mm, ss, ampm, ano = mt.groups()
+                    if mes in _MESES:
+                        hh = int(hh)
+                        if ampm == 'PM' and hh != 12:
+                            hh += 12
+                        elif ampm == 'AM' and hh == 12:
+                            hh = 0
+                        data = '%s-%02d-%02d' % (ano, _MESES[mes], int(dia))
+                        anterior = None
             m = re.match(r'>>> (\d{2}):(\d{2}):(\d{2}) (\S+) rep (\d+)/', linha)
             if m and data:
                 h, mi, s, rotulo, rep = m.groups()
+                # Virada de meia-noite: o lote simulado comecou 22:36 de 14/11 e
+                # terminou 02:11 de 15/11. Sem isto, as execucoes apos a meia-noite
+                # ficariam datadas no dia anterior e nao casariam com os CSVs.
+                agora = (int(h), int(mi), int(s))
+                if anterior is not None and agora < anterior:
+                    data = (datetime.datetime.fromisoformat(data)
+                            + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+                anterior = agora
                 cen = re.search(r'scen=(\S+)', linha)
                 # o commit so existe nas baterias rodadas a partir de
                 # 13/11/2026; nas anteriores o campo fica vazio, e vazio e o
@@ -186,23 +221,49 @@ def main(results, conjunto='historico'):
         c['validas' if r['validade'] == 'valida' else 'imoveis'] += 1
         if r['duracao_censurada'] == 'sim':
             c['censuradas'] += 1
-    nao_casadas = sum(1 for r in linhas if r['desfecho'] == 'nao_casado')
-    if nao_casadas:
-        print(f'AVISO: {nao_casadas} execucoes sem lancamento correspondente nos logs; '
-              f'o desfecho delas fica "nao_casado" e o censo NAO reproduz o publicado.',
-              file=sys.stderr)
+    # Contagem por desfecho EXPLICITO. Ate 15/11/2026 a linha de concluidas era
+    # calculada como validas menos censuradas, o que transforma desfecho
+    # desconhecido em conclusao: uma execucao "nao_casado" nao foi censurada e
+    # portanto entrava na conta das concluidas sem que nada a demonstrasse.
+    # Agora so conta quem tem desfecho registrado, e o desconhecido aparece em
+    # linha propria.
+    por_desfecho = Counter(r['desfecho'] for r in linhas)
+    # Separado por classe de validade: das 18 execucoes historicas com desfecho
+    # "interrompida_pelo_limite", 9 sao validas e censuradas e 9 sao imoveis --
+    # que tambem estouraram o limite, mas por nao terem saido do lugar. Somar as
+    # duas sob "validas" confundiria as duas coisas.
+    val = Counter(r['desfecho'] for r in linhas if r['validade'] == 'valida')
+    imo = Counter(r['desfecho'] for r in linhas if r['validade'] != 'valida')
+    desconhecidas = por_desfecho['nao_casado'] + por_desfecho['nao_registrado']
     print(f'conjunto: {conjunto} -- {descricao}')
     print(f'manifesto: {saida}')
     print(f'arquivos de metricas do outro conjunto, ignorados: {descartados}')
     print(f"pares configuracao-cenario: {len(set(r['config'] for r in linhas))}")
     print(f"execucoes tentadas: {c['tentadas']}")
     print(f"execucoes validas: {c['validas']}")
-    print(f"  concluiram a missao: {c['validas'] - c['censuradas']}")
-    print(f"  interrompidas pelo limite: {c['censuradas']}")
-    print(f"execucoes imoveis: {c['imoveis']}")
+    print(f"  concluiram a missao: {val['concluida']}")
+    print(f"  interrompidas pelo limite: {val['interrompida_pelo_limite']}"
+          f"  (censuradas por duracao: {c['censuradas']})")
+    if desconhecidas:
+        print(f"  DESFECHO DESCONHECIDO: {desconhecidas}"
+              f"  ({por_desfecho['nao_casado']} sem lancamento correspondente,"
+              f" {por_desfecho['nao_registrado']} casadas sem desfecho no log)")
+    print(f"execucoes imoveis: {c['imoveis']}"
+          f"  (das quais interrompidas pelo limite:"
+          f" {imo['interrompida_pelo_limite']})")
     print(f"lancamentos registrados nos logs de bateria: {brutos}"
           f"  ({len(runs)} datados; o excedente sobre as tentadas sao baterias"
           f" anteriores descartadas)")
+
+    # Interrompe com erro, em vez de imprimir um censo que nao se sustenta.
+    # O pacote completo nao tem desfecho desconhecido; se aparecer um, e defeito
+    # de associacao entre CSV e log, e nao resultado.
+    if desconhecidas:
+        print(f'ERRO: {desconhecidas} execucoes sem desfecho registrado. O censo'
+              f' acima NAO demonstra conclusao para elas: desfecho desconhecido'
+              f' nao e conclusao. Corrija a associacao entre os CSVs e os logs'
+              f' antes de publicar este manifesto.', file=sys.stderr)
+        sys.exit(2)
 
 
 if __name__ == '__main__':
