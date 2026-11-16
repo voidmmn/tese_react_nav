@@ -588,21 +588,47 @@ Quantificar isso exige cuidado, porque a queda de $\Phi$ entre amostras \emph{n�
 contador inequívoco de aplicações de $\lambda$: renovação por observação, retenção de
 máximo, saturação e troca de canal alteram $\Phi$ sem decaimento, e uma renovação que
 devolva o canal ao valor anterior mascara um decaimento que de fato ocorreu. A contagem
-restringe-se, por isso, a pares consecutivos de um mesmo canal em que as atualizações
-concorrentes podem ser descartadas: acima de um piso de magnitude em que as três casas
-decimais do registro resolvem a razão, e com razão igual a $\lambda$ --- decaimento
-aplicado, sem observação --- ou exatamente igual a $1$ --- nenhum dos dois, pois sem
-decaimento e sem observação o valor é idêntico. Toda razão fora dessas duas é indício de
-atualização concorrente, e o par é excluído.
+restringe-se, por isso, a pares consecutivos de um mesmo canal \emph{compatíveis com} a
+ausência de atualização concorrente: acima de um piso de magnitude em que as três casas
+decimais do registro resolvem a razão, e com razão igual a $\lambda$ --- compatível com
+decaimento aplicado sem observação --- ou exatamente igual a $1$ --- compatível com
+nenhum dos dois. Toda razão fora dessas duas é indício de atualização concorrente, e o
+par é excluído.
 
-Assim medido nas dez execuções da configuração CM: de $1\,002$ pares admitidos,
-$60{,}5\%$ aplicam o fator, o que situa o período de decaimento \emph{realizado} em
-cerca de $1{,}65$~s de tempo simulado, e não em $1$~s%
+%% CORRIGIDO em 16/11/2026. A redacao anterior dizia que nesses pares as atualizacoes
+%% "podem ser descartadas", e que razao 1 significaria ausencia de atualizacao. Nao
+%% significa: uma renovacao por observacao que devolva o canal ao valor anterior produz
+%% razao exatamente 1 e mascara um decaimento aplicado -- o que esta logo acima neste
+%% mesmo paragrafo e o que a Secao 6.13.1 reconhece. O criterio e de COMPATIBILIDADE,
+%% nao de identificacao, e a redacao passa a dize-lo.
+O critério é de compatibilidade e não de identificação: uma renovação por observação que
+devolva o canal exatamente ao valor anterior também produz razão $1$, de modo que o
+filtro admite pares que não distingue. É por isso que a contagem assim obtida é tratada
+como limite inferior do número de aplicações, e não como medida exata.
+
+%% CORRIGIDO em 16/11/2026. Os valores do estimador publicados nas rodadas 01-04
+%% nao se reproduzem a partir dos dados publicados. Ao implementar o estimador como
+%% script executavel (src/tese_nav/scripts/analise_decaimento.py), dois defeitos da
+%% analise original ficaram visiveis: (i) a serie de Phi incluia as leituras do
+%% stay_alert_node nas transicoes de estado, que nao sao amostras periodicas do campo
+%% e aparecem fora de sequencia, corrompendo pares; (ii) nao havia deteccao das
+%% lacunas da serie, que existe porque a linha de instrumentacao so e emitida quando
+%% |Phi| > 1e-3. Corrigidos os dois, a selecao de pares reproduz a original (999 pares
+%% contra os 1 002 publicados), mas a fracao e 65,7%% e nao 60,5%%, e o periodo
+%% estimado e 1,52 s e nao 1,65 s. As tres agregacoes possiveis -- pool de pares,
+%% media das fracoes, media dos periodos -- dao o mesmo valor, de sorte que a
+%% divergencia nao e de agregacao. A CONTAGEM DIRETA, que e a verdade de referencia,
+%% reproduz exata, e com ela o resultado que sustenta esta secao.
+Assim medido nas dez execuções da configuração CM: de $999$ pares admitidos,
+$65{,}7\%$ aplicam o fator, o que situa o período de decaimento \emph{realizado} em
+cerca de $1{,}52$~s de tempo simulado, e não em $1$~s%
 \footnote{A estimativa é estável: varrendo o piso de magnitude entre $0{,}03$ e $0{,}12$
-e a tolerância de razão entre $0{,}015$ e $0{,}04$, o período fica entre $1{,}64$ e
-$1{,}74$~s. O preço da restrição é alto --- $65\%$ dos pares são excluídos, a maioria na
+e a tolerância de razão entre $0{,}015$ e $0{,}04$, o período fica entre $1{,}47$ e
+$1{,}58$~s. O preço da restrição é alto --- $65\%$ dos pares são excluídos, a maioria na
 cauda de baixa magnitude e na fase de reobservação ---, e é esse preço que torna o
-restante interpretável.}. Isso é visível nos \textit{logs},
+restante interpretável. O cálculo está em
+\texttt{src/tese\_nav/scripts/analise\_decaimento.py}, com o piso, a tolerância, o
+tratamento das lacunas da série e a varredura como parâmetros declarados.}. Isso é visível nos \textit{logs},
 em que $\Phi$ repete o mesmo valor em disparos consecutivos de $1$~s antes de cair: a
 sequência $0{,}015$; $0{,}015$; $0{,}013$; $0{,}011$; $0{,}011$; $0{,}009$; $0{,}009$ é
 um trecho literal de uma execução.
@@ -612,10 +638,22 @@ um trecho literal de uma execução.
 %% Ele superestima o periodo em 2 a 5%. O valor corrigido para CM e ~1,61 s.
 Esse estimador foi depois aferido contra verdade de referência. O campo passou a contar
 as aplicações de $\lambda$ \emph{diretamente}, no ponto em que ocorrem, e uma bateria
-dedicada mediu os dois valores sobre as mesmas execuções: o estimador \emph{superestima}
-o período entre $2$ e $5\%$, de forma consistente e na direção conservadora
-(Seção~\ref{sec:res-verificacao-relogio}). Corrigido por esse viés, o período realizado
-na configuração CM fica em torno de $1{,}61$~s.
+dedicada mediu os dois valores sobre as mesmas execuções: o estimador
+\emph{subestima} o período, nas três configurações aferidas, entre $2{,}6$ e $4{,}8\%$
+(Seção~\ref{sec:res-verificacao-relogio}). O viés é de \emph{seleção} e não de
+classificação: o filtro de razão acerta quase todos os pares que admite, mas o piso de
+magnitude descarta justamente a cauda em que o fator \emph{não} é aplicado, de sorte
+que a fração medida sobre os pares admitidos excede a fração sobre todas as chamadas.
+Corrigido por esse viés, o período realizado na configuração CM fica em torno de
+$1{,}60$~s.
+
+%% CORRIGIDO em 16/11/2026. A direcao do vies estava invertida: as rodadas anteriores
+%% afirmavam que o estimador SUPERESTIMA o periodo entre 2 e 5%, "na direcao
+%% conservadora". A afericao contra a contagem direta, refeita com o script publicado,
+%% mostra o contrario, e de forma robusta: o vies e negativo nas tres configuracoes e
+%% em toda a varredura declarada de piso e tolerancia. O periodo corrigido quase nao se
+%% move (1,60 contra 1,61 s) porque os dois erros -- valor do estimador e direcao do
+%% vies -- se compensavam em parte.
 
 O mesmo estimador aplicado braço a braço dá períodos entre $1{,}57$ e $1{,}70$~s em
 nove configurações, com faixas por execução largamente sobrepostas, e a contagem direta
@@ -655,14 +693,41 @@ chegar entre a leitura do campo e a avaliação das guardas, caso em que ela só
 ciclo seguinte. O supervisor pode disparar sobre uma pose retida cujo evento já não
 está sendo publicado: é o redisparo descrito na Seção~\ref{sec:prop-ciclo-alvo}. E o
 decaimento pode ocorrer entre a saída de um episódio e a reavaliação da guarda, o que
-decide se um alvo falho volta a disparar. Duas propriedades do projeto limitam o efeito desses entrelaçamentos, e vale dizer o que
-elas cobrem. O campo é escalar e monótono entre observações, de modo que uma leitura
-defasada subestima a magnitude corrente, nunca a inverte de sinal; e o supervisor toma no
-máximo uma transição por ciclo, de modo que duas mensagens chegadas no mesmo intervalo
-não produzem duas transições. Nas execuções analisadas não se observou transição
-inconsistente atribuível a defasagem. As duas propriedades não constituem prova de que
-toda mensagem defasada seja inócua: a verificação foi por inspeção do registro, não por
-análise exaustiva de entrelaçamentos.
+decide se um alvo falho volta a disparar.
+
+%% CORRIGIDO em 16/11/2026. A redacao anterior afirmava que o campo e "escalar e
+%% monotono entre observacoes, de modo que uma leitura defasada subestima a magnitude
+%% corrente, nunca a inverte de sinal". A afirmacao e FALSA para o campo implementado, e
+%% os dois contraexemplos foram reproduzidos contra a classe AttractionField publicada,
+%% com os parametros padrao e sem observacao nova entre os estados:
+%%   (i)  haz=0,5 e att=0  ->  Phi passa de -0,500 a -0,425 apos uma aplicacao de
+%%        lambda. A leitura antiga tem magnitude MAIOR, nao menor: o decaimento reduz a
+%%        magnitude, de sorte que a defasada superestima. Eu havia escrito o inverso.
+%%   (ii) haz=0,0011 e att=0,5  ->  apos uma aplicacao de lambda o risco cai abaixo de
+%%        eps=1e-3 e e zerado; a precedencia passa o governo ao canal de atracao e Phi
+%%        vai de -0,0011 a +0,425. O sinal inverte sem observacao nova.
+%% O erro era de raciocinio e nao de implementacao: os dois canais decaem SEPARADAMENTE
+%% e a precedencia e categorica, de modo que o canal dominante pode trocar -- o que a
+%% propria Secao 4.3 descreve. A propriedade de uma transicao por ciclo e distinta e
+%% permanece; so a primeira foi retirada.
+Uma propriedade do projeto limita o efeito desses entrelaçamentos, e convém dizer
+exatamente o que ela cobre e o que não cobre. O supervisor toma no máximo uma transição
+por ciclo, de modo que duas mensagens chegadas no mesmo intervalo não produzem duas
+transições.
+
+O que \emph{não} se pode afirmar é que uma leitura defasada seja conservadora. Sem
+observações novas, as magnitudes dos dois canais decaem, de sorte que uma mensagem
+defasada pode \emph{superestimar} a magnitude corrente, e não subestimá-la. E como os
+canais decaem separadamente e a precedência é categórica, o canal dominante pode trocar
+entre uma leitura e a seguinte: basta que a magnitude do risco caia abaixo de
+$\varepsilon$ e seja zerada para que o campo passe a ser governado pela atração, com
+inversão de sinal sem que nada novo tenha sido observado. As duas situações são
+verificáveis diretamente sobre a classe que implementa o campo.
+
+Nas execuções analisadas não se observou transição inconsistente atribuível a
+defasagem, mas isso é resultado de inspeção do registro, e não prova de que toda
+mensagem defasada seja inócua. A avaliação aqui apresentada é empírica e não constitui
+verificação exaustiva dos entrelaçamentos.
 
 Em cada ciclo, na ordem lógica:
 

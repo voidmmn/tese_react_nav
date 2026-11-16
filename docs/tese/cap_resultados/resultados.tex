@@ -525,9 +525,15 @@ Cabe registrar aqui o que essa variante parcial acrescenta. A manipulação do r
 decaimento altera a \emph{persistência} do campo --- o período passa de cerca de
 $1{,}57$ para $1{,}016$~s --- sem tocar na fonte do disparo nem no cenário. Aplicada ao
 braço que dispara sobre o campo, ela encurta o tempo em investigação com separação
-completa ($35{,}00$ para $29{,}54$~s, $\delta=-1{,}00$) e não move mais nenhum desfecho;
-aplicada ao braço que dispara por detecção bruta, no mesmo cenário, não separa em
-desfecho algum ($|\delta|\leq0{,}40$ em todos, sem separação completa em nenhum). A persistência, portanto, não é inerte, e o seu
+completa ($35{,}00$ para $29{,}54$~s, $\delta=-1{,}00$); nos demais desfechos a
+separação é menor, com $\delta=-0{,}36$ no afastamento mínimo. Aplicada ao braço que
+dispara por detecção bruta, no mesmo cenário, nenhum desfecho separa completamente
+($|\delta|\leq0{,}40$ em todos).
+
+%% CORRIGIDO em 16/11/2026. Dizia que E3 "nao move mais nenhum desfecho" -- mas o
+%% afastamento minimo tem delta = -0,36, que nao e zero. Ausencia de separacao completa
+%% nao e ausencia de efeito, e o protocolo nao inclui teste de equivalencia que pudesse
+%% sustentar efeito nulo. A redacao passa a relatar o observado. A persistência, portanto, não é inerte, e o seu
 efeito é condicionado ao modo de disparo que a consulta, o que é a leitura proposta
 acima, agora apoiada numa manipulação e não apenas nos \textit{logs}. Duas ressalvas
 mantêm a alegação no seu tamanho: a manipulação \emph{encurta} a persistência em vez de
@@ -1018,7 +1024,7 @@ A origem dessa duração está no decaimento, mas convém dizer com que precisã
 de $h=0{,}45$, o fator $\lambda=0{,}85$ exige $38$ aplicações para levar o canal abaixo
 de $\varepsilon$. Ao período \emph{nominal} de $1$~s isso daria $38$~s, pouco mais da
 metade da janela medida: discrepância que convidaria a atribuir ao mecanismo o que é
-do relógio. Ao período \emph{realizado} de cerca de $1{,}61$~s
+do relógio. Ao período \emph{realizado} de cerca de $1{,}60$~s
 --- o valor do estimador corrigido pelo viés aferido contra contagem direta,
 Seção~\ref{sec:res-verificacao-relogio} --- a previsão sobe a aproximadamente $61$~s,
 que já é a ordem da janela medida.
@@ -1391,10 +1397,10 @@ registrado acima. É a aferição empírica contra contagem direta, na
 Seção~\ref{sec:res-verificacao-relogio}, que torna o estimador informativo a despeito
 dessa ambiguidade; sem ela, a razão sozinha não identificaria o período.
 
-Sobre as dez execuções da configuração CM, $60{,}5\%$ de $1\,002$ pares admitidos
-aplicam o fator, o que situa o período realizado em cerca de $1{,}65$~s de tempo
-simulado. A estimativa é estável sob variação do piso e da tolerância, entre $1{,}64$ e
-$1{,}74$~s. O preço é que $65\%$ dos pares ficam de fora, concentrados na cauda de baixa
+Sobre as dez execuções da configuração CM, $65{,}7\%$ de $999$ pares admitidos
+aplicam o fator, o que situa o período realizado em cerca de $1{,}52$~s de tempo
+simulado. A estimativa é estável sob variação do piso e da tolerância, entre $1{,}47$ e
+$1{,}58$~s. O preço é que $65\%$ dos pares ficam de fora, concentrados na cauda de baixa
 magnitude e na fase de reobservação: limitação do método, declarada.
 
 \subsection{A Distorção é Comum, a Sensibilidade a Ela Não}
@@ -1432,32 +1438,55 @@ rótulos próprios e sem tocar no conjunto histórico --- produziu os dois valor
 \caption{Aferição do estimador restrito contra contagem direta das aplicações de
 $\lambda$, sobre as mesmas trinta execuções. CM é o cenário de risco marginal; E3 é o
 método proposto, que dispara sobre o campo; HEU é a heurística de detecção bruta, que
-não consulta a memória para decidir. O estimador superestima o período, sempre, entre
-$2$ e $5\%$.}
+não consulta a memória para decidir. O estimador subestima o período nas três
+configurações. A coluna \emph{acerto} compara, par por par, a decisão do filtro de
+razão com o que o campo registrou: o filtro quase não erra, e o viés vem da seleção dos
+pares, não da classificação deles. Regenerável por
+\texttt{analise\_decaimento.py}.}
 \label{tab:res-afericao}
 \footnotesize
-\begin{tabular}{lrrrr}
+\begin{tabular}{lrrrrr}
 \hline
 \textbf{Configuração} & \textbf{Direto} & \textbf{Estimador} & \textbf{Viés} &
-\textbf{Aplicações (direto)}\\
+\textbf{Aplicações (direto)} & \textbf{Acerto}\\
 \hline
-CM  & $1{,}602$~s & $1{,}647$~s & $+2{,}8\%$ & $62{,}4\%$\\
-E3  & $1{,}566$~s & $1{,}638$~s & $+4{,}6\%$ & $63{,}8\%$\\
-HEU & $1{,}569$~s & $1{,}601$~s & $+2{,}0\%$ & $63{,}7\%$\\
+CM  & $1{,}602$~s & $1{,}525$~s & $-4{,}8\%$ & $62{,}4\%$ & $1\,017/1\,017$\\
+E3  & $1{,}566$~s & $1{,}518$~s & $-3{,}1\%$ & $63{,}8\%$ & $937/938$\\
+HEU & $1{,}569$~s & $1{,}528$~s & $-2{,}6\%$ & $63{,}7\%$ & $961/964$\\
 \hline
 \end{tabular}
 \end{table}
 
-Três leituras decorrem da tabela. Primeiro, \textbf{o estimador é utilizável e seu erro
-é conhecido}: ele superestima o período, sempre na mesma direção, por uma margem de $2$ a
-$5\%$. Segundo, \textbf{a distorção é comum aos três braços com margem estreita} ---
+%% CORRIGIDO em 16/11/2026. Dizia "seu erro e conhecido" e "sempre na mesma direcao",
+%% como se a margem estivesse estabelecida fora do lote em que foi medida. Ela foi
+%% medida em tres braços de uma bateria; "sempre" nao se sustenta, e a redacao passa a
+%% condicionar ao lote de afericao.
+Três leituras decorrem da tabela. Primeiro, \textbf{o estimador é utilizável, e o seu
+erro foi aferido neste lote}: nas três configurações medidas ele \emph{subestima} o
+período, na mesma direção, por uma margem de $2{,}6$ a $4{,}8\%$. A direção se mantém em
+toda a varredura de piso e tolerância da Seção~\ref{sec:prop-relogios}, com o viés
+entre $-7{,}5$ e $-1{,}3\%$, mas a margem vale para as condições em que foi aferida e
+não é propriedade demonstrada do estimador fora delas. A coluna de acerto diz de onde
+vem o erro: dos $1\,017$ pares que o filtro admite em CM, ele classifica corretamente
+todos, e a comparação par a par não registra um único falso positivo nas três
+configurações. O que distorce a estimativa é o critério de \emph{admissão} --- o piso de
+magnitude exclui a cauda em que o fator não é aplicado ---, de modo que a fração sobre os
+pares admitidos ($65{,}6\%$ em CM) excede a fração sobre todas as chamadas ($62{,}4\%$).
+É um viés de seleção, e aponta para período curto. Segundo, \textbf{a distorção é comum aos três braços com margem estreita} ---
 $1{,}57$, $1{,}57$ e $1{,}60$~s por contagem direta ---, e isso inclui a heurística de
 detecção bruta, que não usa a memória para decidir. A semelhança deixa de ser inferida
 do código compartilhado e passa a ser medida. Terceiro, o estimador aplicado às
-execuções históricas de CM dá $1{,}653$~s e às novas dá $1{,}647$~s, diferença de menos
-de meio por cento: as condições de máquina entre a bateria histórica e a de aferição são
-comparáveis, o que autoriza transportar o viés medido. Corrigido por ele, o período
-realizado na configuração CM histórica fica em torno de $\mathbf{1{,}61}$~\textbf{s}.
+execuções históricas de CM dá $1{,}523$~s e às novas dá $1{,}525$~s, diferença de pouco
+mais de um décimo de por cento: as condições de máquina entre a bateria histórica e a de aferição são
+comparáveis, o que torna \emph{plausível} transportar o viés medido --- plausível, e não
+validado, porque a aferição não foi repetida sobre a bateria histórica. Sob essa
+aproximação, o período realizado na configuração CM histórica fica em torno de
+$\mathbf{1{,}60}$~\textbf{s} --- valor que a contagem direta na bateria de
+verificação corrobora de forma independente, com $1{,}602$~s.
+
+%% CORRIGIDO em 16/11/2026. "Autoriza transportar o vies" afirmava mais do que a
+%% evidencia da: a proximidade dos dois valores torna o transporte plausivel, nao
+%% validado. A ressalva correta ja vinha depois, mas nao apagava a afirmacao forte.
 
 É esse o valor que a Seção~\ref{sec:res-custo-precedencia} usa. Com ele, a previsão de
 decaimento puro para a janela de supressão é de aproximadamente $61$~s contra os
@@ -1474,7 +1503,7 @@ período local na faixa de baixa magnitude e as reobservações não foram isola
 
 Duas aproximações sustentam o cálculo e ficam declaradas. O viés aferido no lote de
 verificação é \emph{transportado} para a bateria histórica, com base na proximidade entre
-as duas estimativas do estimador, $1{,}653$ contra $1{,}647$~s; a semelhança entre duas
+as duas estimativas do estimador, $1{,}523$ contra $1{,}525$~s; a semelhança entre duas
 médias torna o transporte plausível, e não o valida. E um período \emph{médio} global é
 usado para explicar uma janela específica, que transcorre justamente na faixa de baixa
 magnitude que o estimador cobre menos. A margem de $2$ a $5\%$ foi observada nessas
@@ -1548,7 +1577,16 @@ métrica acumula tempo nesse estado, não em \texttt{AVOID}. Alterar o relógio 
 instantes de entrada, posições de início, trajetórias, preempções e redisparos, e uma
 média agregada não distingue entre esses caminhos. O que a comparação sustenta, e é o que
 se afirma, é que a influência do defeito é \textbf{diferencial}: aparece no braço cuja
-decisão consulta a memória e não aparece no braço cujas guardas não a consultam.
+decisão consulta a memória, e não foi detectada no braço cujas guardas não a consultam.
+
+%% CORRIGIDO em 16/11/2026. "Nao aparece" lia-se como efeito zero demonstrado. O que os
+%% dados sustentam e que nao foi DETECTADA separacao naquele braço -- que e afirmacao
+%% sobre o que se mediu, e nao sobre o que existe. A estrutura das guardas explica por
+%% que nao se espera dependencia direta, mas nao substitui teste de equivalencia, que
+%% nao foi feito.
+A distinção importa: a estrutura das guardas daquele braço não depende diretamente da
+magnitude de $\Phi$, o que explica por que não se esperaria dependência funcional, mas
+ausência de separação nos ensaios não demonstra efeito nulo.
 
 \textbf{Na comparação reexecutada, os dois contrastes permanecem.} Na comparação E3
 contra HEU no cenário \texttt{default}, que é a única reexecutada, o método sob o relógio
@@ -1628,9 +1666,14 @@ limiar contra detecção bruta) e a existência de persistência temporal no can
 Nos $32$ pares configuração--cenário os dois fatores variam em conjunto, e nenhum deles,
 isoladamente, responde pelo efeito medido ali. A manipulação do relógio do decaimento
 (Seção~\ref{sec:res-relogio-consistente}) abre uma fresta nesse bloco: ela varia a
-persistência \emph{mantendo fixa} a fonte do disparo e o cenário, e mostra que a
-persistência tem efeito onde é consultada e não tem onde não é. Isso estabelece que a
-persistência não é inerte; \textbf{não} estabelece que fração do efeito no cenário de
+persistência \emph{mantendo fixa} a fonte do disparo e o cenário, e separa um desfecho no
+braço que a consulta, sem separar nenhum no braço cujas guardas não a consultam.
+
+%% CORRIGIDO em 16/11/2026. "Tem efeito onde e consultada e nao tem onde nao e" converte
+%% ausencia de separacao em ausencia de efeito, que o protocolo nao estabelece: nao ha
+%% teste de equivalencia, e no braço sem consulta os deltas nao sao nulos, so pequenos.
+%% A redacao passa a relatar o que se mediu.
+Isso estabelece que a persistência não é inerte onde é consultada; \textbf{não} estabelece que fração do efeito no cenário de
 conflito lhe cabe, porque a manipulação encurta a persistência em vez de removê-la e foi
 executada no cenário \texttt{default}. A decomposição completa continua a exigir o
 desenho fatorial nomeado na Seção~\ref{sec:conc-futuro}. Vale a ressalva integral para a
