@@ -47,9 +47,16 @@ O ESTIMADOR RESTRITO, como definido na Secao 4.5.2
 
   Toda razao fora dessas duas e indicio de atualizacao concorrente, e o par e
   excluido. O criterio e de COMPATIBILIDADE e nao de identificacao: uma
-  renovacao que devolva o canal ao valor anterior tambem produz razao 1. Por
-  isso a fracao obtida e limite inferior, e o periodo dela derivado e limite
-  superior.
+  renovacao que devolva o canal ao valor anterior tambem produz razao 1.
+
+  O FILTRO pode deixar de reconhecer aplicacoes e observa apenas um subconjunto
+  dos pares. A fracao calculada nesse subconjunto NAO constitui limite garantido
+  para a fracao global: nas tres configuracoes aferidas ela ficou ACIMA da fracao
+  direta, produzindo periodo estimado menor. Convem distinguir quatro coisas que
+  a redacao antiga confundia -- a contagem de aplicacoes reconhecidas no
+  subconjunto, a fracao dentro do subconjunto, a fracao sobre todas as chamadas,
+  e o periodo inferido a partir de uma delas. Limite inferior vale para a
+  CONTAGEM; nao se converte em limite para a fracao global.
 
   periodo estimado = periodo nominal por chamada / fracao de pares que aplicam
 
@@ -306,6 +313,167 @@ def varredura(results, lam, periodo_nominal):
     return linhas
 
 
+# ------------------------------------- modo historico: series sem contadores
+#
+# A matriz historica de 320 execucoes rodou ANTES de o campo passar a contar as
+# aplicacoes de lambda diretamente. Os seus logs trazem a serie periodica de Phi,
+# mas nenhum contador, de sorte que aqui nao ha verdade de referencia nem como
+# detectar as lacunas da serie. O estimador e o mesmo; o que muda e o que se pode
+# afirmar sobre ele.
+#
+# DUAS CAUTELAS, declaradas:
+#
+#   1. Sem contadores, um par de linhas consecutivas pode atravessar chamadas que
+#      nao deixaram registro -- a linha so e emitida quando |Phi| > 1e-3. Um par
+#      assim tem razao lambda^k com k >= 2 e e excluido pelo filtro de razao, de
+#      modo que a lacuna reduz a amostra em vez de contaminar a contagem. Esta e
+#      a unica hipotese disponivel aqui, e nao foi verificada nestes dados: no
+#      lote de verificacao, onde ha contadores, ela se confirma (19 pares de 1036
+#      atravessam lacuna em CMw, e exclui-los nao move o periodo estimado).
+#
+#   2. SO se leem as publicacoes periodicas do campo, isto e, as linhas do
+#      bellman_node. As mensagens de transicao do stay_alert_node tambem imprimem
+#      "Phi=", mas sao leituras pontuais nos instantes de mudanca de estado, fora
+#      da sequencia periodica: incluí-las foi o defeito da analise original, e
+#      deslocava o periodo estimado de CM de 1,52 para 1,59 s.
+
+_RE_HIST = re.compile(r'bellman_node\]:\s*Phi=([+-]?\d+\.\d+)')
+
+
+def serie_historica(caminho):
+    """Serie periodica de Phi do bellman_node, sem contadores."""
+    return [float(m.group(1)) for m in
+            (_RE_HIST.search(l) for l in
+             open(caminho, encoding='utf-8', errors='replace')) if m]
+
+
+def estimador_historico(arqs, piso, tolerancia, lam):
+    """Mesmo filtro do estimador restrito, sobre series sem contadores.
+
+    Devolve (candidatos, admitidos, aplicam): `candidatos` e o total de pares
+    consecutivos examinados, de que se deriva a fracao excluida pelo filtro.
+    """
+    candidatos = admitidos = aplicam = 0
+    for f in arqs:
+        serie = serie_historica(f)
+        for p, q in zip(serie, serie[1:]):
+            candidatos += 1
+            if p == 0.0 or q == 0.0:
+                continue
+            if (p > 0) != (q > 0):
+                continue
+            if abs(p) < piso:
+                continue
+            razao = abs(q) / abs(p)
+            if abs(razao - lam) <= tolerancia:
+                admitidos += 1
+                aplicam += 1
+            elif q == p:
+                admitidos += 1
+    return candidatos, admitidos, aplicam
+
+
+def rotulos_historicos(results):
+    """Rotulos de launch_<ROT>_r<N>.log que nao sao da bateria de verificacao."""
+    verificacao = {r for par in ROTULOS.values() for r in par}
+    achados = {}
+    for f in glob.glob(os.path.join(results, 'launch_*_r*.log')):
+        m = re.match(r'launch_(.+)_r(\d+)\.log$', os.path.basename(f))
+        if m and m.group(1) not in verificacao:
+            achados.setdefault(m.group(1), []).append(f)
+    for r in achados:
+        achados[r].sort(key=lambda p: int(re.search(r'_r(\d+)\.log$', p).group(1)))
+    return achados
+
+
+MIN_PARES = 100
+
+
+def tabela_historica(results, piso, tolerancia, lam, periodo_nominal):
+    """Estimador braco a braco sobre a matriz historica."""
+    com, sem = [], []
+    for rot, arqs in sorted(rotulos_historicos(results).items()):
+        cand, adm, apl = estimador_historico(arqs, piso, tolerancia, lam)
+        amostras = sum(len(serie_historica(f)) for f in arqs)
+        if amostras == 0:
+            # O braco nao sobe o bellman_node: nao ha campo atrator, logo nao ha
+            # decaimento a estimar. E o caso da patrulha fixa, da linha de base de
+            # campo potencial e dos bracos Q-driven.
+            sem.append({'config': rot, 'n_execucoes': len(arqs),
+                        'amostras_phi': 0, 'pares_candidatos': 0,
+                        'pares_admitidos': 0,
+                        'motivo': 'sem bellman_node: o braco nao mantem campo atrator'})
+            continue
+        if adm < MIN_PARES or apl == 0:
+            sem.append({'config': rot, 'n_execucoes': len(arqs),
+                        'amostras_phi': amostras, 'pares_candidatos': cand,
+                        'pares_admitidos': adm,
+                        'motivo': 'menos de %d pares admitidos' % MIN_PARES})
+            continue
+        com.append({'config': rot, 'n_execucoes': len(arqs),
+                    'amostras_phi': amostras, 'pares_candidatos': cand,
+                    'pares_admitidos': adm, 'pares_que_aplicam': apl,
+                    'fracao_admitidos': apl / adm,
+                    'fracao_excluida': 1 - adm / cand,
+                    'periodo_estimado_s': periodo_nominal * adm / apl})
+    com.sort(key=lambda r: r['periodo_estimado_s'])
+    return com, sem
+
+
+def varredura_historica(results, lam, periodo_nominal, alvo='CM'):
+    """Sensibilidade do estimador historico, no braco indicado."""
+    arqs = rotulos_historicos(results).get(alvo, [])
+    linhas = []
+    for piso in PISOS:
+        for tol in TOLERANCIAS:
+            _c, adm, apl = estimador_historico(arqs, piso, tol, lam)
+            if adm and apl:
+                linhas.append({'config': alvo, 'piso': piso, 'tolerancia': tol,
+                               'pares_admitidos': adm,
+                               'periodo_estimado_s': periodo_nominal * adm / apl})
+    return linhas
+
+
+def imprime_historico(com, sem, varr, alvo='CM'):
+    print('=' * 86)
+    print('ESTIMADOR SOBRE A MATRIZ HISTORICA (sem contadores: sem verdade de referencia)')
+    print('=' * 86)
+    print('  As 320 execucoes anteriores rodaram antes da instrumentacao direta. Aqui o')
+    print('  estimador nao pode ser aferido, e os seus valores NAO sao corrigidos pelo')
+    print('  vies medido no lote de verificacao -- esse transporte, quando feito, fica')
+    print('  declarado no texto como aproximacao.')
+    print()
+    print('%-9s %4s %9s %9s %9s %10s' % (
+        'Config', 'exec', 'candidat.', 'admitidos', 'aplicam', 'periodo'))
+    for r in com:
+        print('%-9s %4d %9d %9d %9d %9.3fs' % (
+            r['config'], r['n_execucoes'], r['pares_candidatos'],
+            r['pares_admitidos'], r['pares_que_aplicam'], r['periodo_estimado_s']))
+    if com:
+        ps = [r['periodo_estimado_s'] for r in com]
+        print()
+        print('  %d configuracoes com estimativa; faixa %.3f a %.3f s (%s a %s)' % (
+            len(com), min(ps), max(ps), com[0]['config'], com[-1]['config']))
+        alvo_r = [r for r in com if r['config'] == alvo]
+        if alvo_r:
+            r = alvo_r[0]
+            print('  %s: %d pares admitidos, %d aplicam (%.4f%%), periodo %.6f s,'
+                  ' %.2f%% dos pares excluidos' % (
+                      alvo, r['pares_admitidos'], r['pares_que_aplicam'],
+                      100 * r['fracao_admitidos'], r['periodo_estimado_s'],
+                      100 * r['fracao_excluida']))
+    if sem:
+        print()
+        print('  SEM ESTIMATIVA (%d configuracoes):' % len(sem))
+        for r in sem:
+            print('    %-9s %s' % (r['config'], r['motivo']))
+    if varr:
+        ps = [r['periodo_estimado_s'] for r in varr]
+        print()
+        print('  VARREDURA EM %s (%d combinacoes de piso e tolerancia): %.3f a %.3f s'
+              % (alvo, len(varr), min(ps), max(ps)))
+
+
 # ------------------------------------------------------------------ impressao
 def imprime(desf, afer, varr):
     print('=' * 86)
@@ -333,11 +501,15 @@ def imprime(desf, afer, varr):
             r['pares_consecutivo'], r['pares_que_atravessam_lacuna']))
     print()
     print('  O filtro de razao classifica os pares consecutivos quase sem erro, mas o')
-    print('  periodo que dele resulta e menor que o direto: o piso de magnitude e a')
-    print('  exclusao de pares descartam a cauda de baixa magnitude, onde o decaimento')
-    print('  NAO e aplicado, de sorte que a fracao medida sobre os pares admitidos')
-    print('  superestima a fracao sobre todas as chamadas. O vies e de SELECAO, nao de')
-    print('  classificacao, e aponta para periodo curto.')
+    print('  periodo que dele resulta e menor que o direto: os pares ADMITIDOS')
+    print('  apresentam fracao de aplicacoes maior que a global. O vies e de SELECAO e')
+    print('  nao de classificacao, e aponta para periodo curto.')
+    print()
+    print('  Nao se atribui aqui esse vies ao piso de magnitude isoladamente. Ausencia')
+    print('  de linha de instrumentacao nao e ausencia de aplicacao: nos intervalos de')
+    print('  CMw que atravessam lacunas do log os contadores acumulam 206 chamadas e')
+    print('  133 aplicacoes, taxa proxima da global. Separar a contribuicao de cada')
+    print('  filtro exigiria analise que estes dados nao sustentam.')
     print()
     print('=' * 86)
     print('TABELA 19 (tab:res-relogio) -- efeito do relogio dentro de cada configuracao')
@@ -392,6 +564,11 @@ def main():
                     help='segundos simulados nominais por chamada (padrao 1.0)')
     ap.add_argument('--varredura', action='store_true',
                     help='varre piso e tolerancia, como a nota da Secao 4.5.2')
+    ap.add_argument('--historico', action='store_true',
+                    help='analisa tambem a matriz historica de 320 execucoes, cujos '
+                         'logs tem a serie de Phi mas nao os contadores')
+    ap.add_argument('--alvo-historico', default='CM',
+                    help='braco historico detalhado e varrido (padrao CM)')
     ap.add_argument('--saida', default=None, help='diretorio dos CSVs (padrao: results)')
     a = ap.parse_args()
 
@@ -410,6 +587,19 @@ def main():
     grava(saida, 'verificacao_relogio_afericao.csv', afer)
     if varr:
         grava(saida, 'verificacao_relogio_varredura.csv', varr)
+
+    if a.historico:
+        com, sem = tabela_historica(a.results, a.piso, a.tolerancia, a.lam,
+                                    a.periodo_nominal)
+        hvarr = (varredura_historica(a.results, a.lam, a.periodo_nominal,
+                                     a.alvo_historico) if a.varredura else [])
+        print()
+        imprime_historico(com, sem, hvarr, a.alvo_historico)
+        print()
+        grava(saida, 'historico_estimador.csv', com)
+        grava(saida, 'historico_sem_estimativa.csv', sem)
+        if hvarr:
+            grava(saida, 'historico_varredura.csv', hvarr)
 
 
 if __name__ == '__main__':

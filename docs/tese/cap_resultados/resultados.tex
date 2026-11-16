@@ -523,7 +523,10 @@ em parte.
 %% `conflict', e isso esta dito.
 Cabe registrar aqui o que essa variante parcial acrescenta. A manipulação do relógio do
 decaimento altera a \emph{persistência} do campo --- o período passa de cerca de
-$1{,}57$ para $1{,}016$~s --- sem tocar na fonte do disparo nem no cenário. Aplicada ao
+%% AJUSTADO em 16/11/2026 (rodada 05). Os tres quocientes diretos sao 1,016700
+%% (CMs), 1,016299 (E3s) e 1,016606 (HEUs). Apresentar "1,016 s" uniforme nos tres
+%% sugere precisao que a medida nao tem; passa a faixa.
+$1{,}57$ para cerca de $1{,}02$~s --- sem tocar na fonte do disparo nem no cenário. Aplicada ao
 braço que dispara sobre o campo, ela encurta o tempo em investigação com separação
 completa ($35{,}00$ para $29{,}54$~s, $\delta=-1{,}00$); nos demais desfechos a
 separação é menor, com $\delta=-0{,}36$ no afastamento mínimo. Aplicada ao braço que
@@ -533,12 +536,20 @@ dispara por detecção bruta, no mesmo cenário, nenhum desfecho separa completa
 %% CORRIGIDO em 16/11/2026. Dizia que E3 "nao move mais nenhum desfecho" -- mas o
 %% afastamento minimo tem delta = -0,36, que nao e zero. Ausencia de separacao completa
 %% nao e ausencia de efeito, e o protocolo nao inclui teste de equivalencia que pudesse
-%% sustentar efeito nulo. A redacao passa a relatar o observado. A persistência, portanto, não é inerte, e o seu
-efeito é condicionado ao modo de disparo que a consulta, o que é a leitura proposta
-acima, agora apoiada numa manipulação e não apenas nos \textit{logs}. Duas ressalvas
-mantêm a alegação no seu tamanho: a manipulação \emph{encurta} a persistência em vez de
-removê-la, e foi executada no cenário \texttt{default}, não no de conflito. Ela sustenta
-que a persistência importa onde é consultada; não quantifica que fração do efeito no
+%% sustentar efeito nulo. A redacao passa a relatar o observado.
+%%
+%% RESTAURADO em 16/11/2026. A correcao acima truncou esta frase: o comentario
+%% terminava na mesma linha em que o texto recomeçava, e tudo o que vinha depois do
+%% %% ficou invisivel. O paragrafo abria em "efeito e condicionado ao modo de disparo
+%% que a consulta", sem sujeito. Reescrito com a redacao proposta no parecer da rodada
+%% 05, que corrige a sintaxe e a inferencia ao mesmo tempo: a reducao e COMPATIVEL com
+%% a participacao da persistencia, que e o que a manipulacao sustenta, em vez de
+%% afirmar que o efeito "e condicionado" ao modo de disparo.
+A redução do tempo em investigação em E3 é compatível com a participação da
+persistência no mecanismo de decisão desse braço. Duas ressalvas delimitam essa
+leitura: a manipulação \emph{encurta} a persistência em vez de removê-la, e foi
+executada no cenário \texttt{default}, não no de conflito. Ela sustenta que a
+persistência participa onde é consultada; não quantifica que fração do efeito no
 cenário de conflito lhe pertence.
 
 %% Secao escrita em 13/11/2026, a partir da bateria qdriven de 12/11/2026
@@ -1417,11 +1428,16 @@ igualmente distorcida, não que a distorção pese igualmente sobre cada decisã
 %% Quais nove o calculo original escolheu nao esta registrado em lugar nenhum, e nao
 %% se inventa um criterio para reproduzi-lo; reporta-se o conjunto inteiro.
 Aplicado braço a braço, o estimador dá períodos realizados entre $1{,}44$ e
-$1{,}58$~s em vinte e cinco configurações, com faixas por execução largamente
-sobrepostas: a distorção é, de fato, de magnitude semelhante em todas. Mas a sensibilidade a ela não é a mesma: o
+$1{,}58$~s em vinte e cinco das trinta e duas configurações, com faixas por execução
+largamente sobrepostas: a distorção é, de fato, de magnitude semelhante em todas. As
+sete restantes --- a patrulha fixa, a linha de base de campo potencial e os braços
+\textsc{Q-driven}, entre outras --- não mantêm campo atrator, e portanto não têm
+decaimento a estimar. Mas a sensibilidade a ela não é a mesma: o
 método e a variante de seleção disparam sobre o campo, de sorte que a memória entra no
 caminho causal da decisão, enquanto a heurística de detecção bruta não consulta a
-memória para decidir. Um defeito na memória pesa sobre quem a usa e não pesa sobre quem a
+memória para decidir. Um defeito na memória entra no caminho causal de quem a consulta
+e não entra diretamente nas guardas de HEU; isso é afirmação sobre o código, e não
+sobre quem a
 ignora. A afirmação de que o defeito não confunde contraste algum foi, por isso,
 retirada da tese. Note-se que isto ainda é argumento sobre o caminho causal, não medida:
 a medida está na Seção~\ref{sec:res-relogio-consistente}, que troca o relógio e observa
@@ -1478,7 +1494,7 @@ não é propriedade demonstrada do estimador fora delas. A coluna de acerto diz 
 vem o erro: dos $1\,017$ pares que o filtro admite em CM, ele classifica corretamente
 todos, e a comparação par a par não registra um único falso positivo nas três
 configurações. O que distorce a estimativa é o critério de \emph{admissão} --- o piso de
-magnitude exclui a cauda em que o fator não é aplicado ---, de modo que a fração sobre os
+magnitude é um deles ---, de modo que a fração sobre os
 pares admitidos ($65{,}6\%$ em CM) excede a fração sobre todas as chamadas ($62{,}4\%$).
 É um viés de seleção, e aponta para período curto. Segundo, \textbf{a distorção é comum aos três braços com margem estreita} ---
 $1{,}57$, $1{,}57$ e $1{,}60$~s por contagem direta ---, e isso inclui a heurística de
@@ -1523,7 +1539,8 @@ execuções e não é um limite de erro geral demonstrado.
 Resta a pergunta que importa para as conclusões: o que mudaria se a memória decaísse no
 período \emph{especificado}? A guarda foi alimentada com o mesmo relógio do temporizador
 e as três configurações foram reexecutadas, dez vezes cada. O período realizado passou a
-$1{,}016$~s nos três braços --- $98{,}4\%$ dos disparos aplicam o fator ---, de sorte que
+$1{,}016$ a $1{,}017$~s nos três braços --- $98{,}4\%$ dos disparos aplicam o fator
+---, de sorte que
 a especificação passa a ser cumprida.
 
 A Tabela~\ref{tab:res-relogio} traz o efeito do relógio \emph{dentro} de cada
@@ -1544,15 +1561,22 @@ elegível. Valores em média\,$\pm$\,desvio padrão.}
 \textbf{Config.} & \textbf{Desfecho} & \textbf{Parede} & \textbf{Simulado} &
 $\bm{\delta}$\\
 \hline
+%% ACRESCENTADAS em 16/11/2026 (rodada 05) as linhas de desvios de rota de HEU e de
+%% E3. O script ja as produzia e a tabela as omitia, embora a discussao falasse em
+%% "nenhum desfecho" -- justamente o desfecho omitido e o que tem o maior |delta| de
+%% HEU. Com as tres configuracoes exibindo os mesmos cinco desfechos, a sintese fica
+%% conferivel na propria tabela.
 \textsc{Heu} & Anomalias inspecionadas   & $3{,}00\pm0{,}00$ & $3{,}00\pm0{,}00$ & $0{,}00$\\
              & Tempo em investigação [s] & $41{,}14\pm0{,}19$ & $41{,}22\pm0{,}20$ & $+0{,}32$\\
              & Afastamento mínimo [m]    & $4{,}90\pm0{,}03$ & $4{,}91\pm0{,}02$ & $+0{,}26$\\
              & Recuos                    & $2{,}00\pm0{,}00$ & $2{,}00\pm0{,}00$ & $0{,}00$\\
+             & Desvios de rota           & $2{,}40\pm0{,}52$ & $2{,}00\pm0{,}00$ & $-0{,}40$\\
 \hline
 E3           & Anomalias inspecionadas   & $3{,}00\pm0{,}00$ & $3{,}00\pm0{,}00$ & $0{,}00$\\
              & Tempo em investigação [s] & $35{,}00\pm1{,}05$ & $29{,}54\pm0{,}59$ & $\bm{-1{,}00}$\\
              & Afastamento mínimo [m]    & $4{,}86\pm0{,}02$ & $4{,}85\pm0{,}04$ & $-0{,}36$\\
              & Recuos                    & $1{,}00\pm0{,}00$ & $1{,}00\pm0{,}00$ & $0{,}00$\\
+             & Desvios de rota           & $4{,}00\pm0{,}00$ & $4{,}00\pm0{,}00$ & $0{,}00$\\
 \hline
 CM           & Anomalias inspecionadas   & $3{,}00\pm0{,}00$ & $3{,}00\pm0{,}00$ & $0{,}00$\\
              & Tempo em investigação [s] & $34{,}58\pm1{,}28$ & $29{,}06\pm0{,}31$ & $\bm{-1{,}00}$\\
@@ -1584,15 +1608,18 @@ esgotamento de orçamento ou preempção por risco (Algoritmo~\ref{alg:stayalert
 métrica acumula tempo nesse estado, não em \texttt{AVOID}. Alterar o relógio pode deslocar
 instantes de entrada, posições de início, trajetórias, preempções e redisparos, e uma
 média agregada não distingue entre esses caminhos. O que a comparação sustenta, e é o que
-se afirma, é que a influência do defeito é \textbf{diferencial}: aparece no braço cuja
-decisão consulta a memória, e não foi detectada no braço cujas guardas não a consultam.
+se afirma, é que a influência do defeito é \textbf{diferencial}: em E3 a alteração do
+relógio reduziu o tempo acumulado em investigação, com separação completa das amostras;
+em HEU as contagens de inspeções e recuos permaneceram iguais, e os demais desfechos
+apresentaram diferenças sem separação completa.
 
-%% CORRIGIDO em 16/11/2026. "Nao aparece" lia-se como efeito zero demonstrado. O que os
-%% dados sustentam e que nao foi DETECTADA separacao naquele braço -- que e afirmacao
-%% sobre o que se mediu, e nao sobre o que existe. A estrutura das guardas explica por
-%% que nao se espera dependencia direta, mas nao substitui teste de equivalencia, que
-%% nao foi feito.
-A distinção importa: a estrutura das guardas daquele braço não depende diretamente da
+%% HARMONIZADO em 16/11/2026 (rodada 05). A redacao anterior -- "nao foi detectada no
+%% braço cujas guardas nao a consultam" -- usava a presenca de |delta|=1 como criterio
+%% de deteccao de efeito. |delta|=1 descreve separacao COMPLETA das amostras, que e
+%% coisa mais estreita: os proprios desfechos de HEU tem deltas nao nulos (+0,32 no
+%% tempo, +0,26 no afastamento, -0,40 nos desvios de rota, Tabela~\ref{tab:res-relogio}).
+%% Passa a relatar o que foi medido, e o argumento sobre o codigo fica separado dele.
+A distinção importa: as guardas de HEU não dependem diretamente da
 magnitude de $\Phi$, o que explica por que não se esperaria dependência funcional, mas
 ausência de separação nos ensaios não demonstra efeito nulo.
 

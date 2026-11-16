@@ -36,13 +36,23 @@ As figuras quantitativas são **geradas** pelos scripts em `figuras/` a partir d
 
 ## Reprodutibilidade
 
-A versão avaliada é a etiqueta anotada **`tese-defesa-v3`**. Ela resolve para um
-*commit* único por `git rev-parse tese-defesa-v3^{commit}`, sem depender de nota de
-lançamento nem de recurso do serviço de hospedagem. O ramo `main` continua recebendo
-trabalho e **não** é o estado avaliado.
+A versão avaliada é a etiqueta anotada **`tese-defesa-v5`**. Ela resolve para um
+*commit* único por `git rev-parse tese-defesa-v5^{commit}`, sem depender de nota de
+lançamento nem de recurso do serviço de hospedagem. A sua anotação registra o *commit*
+de origem, a contagem de páginas e a soma SHA-256 do PDF entregue, que por isso não
+precisa constar do próprio PDF. O ramo `main` continua recebendo trabalho e **não** é o
+estado avaliado.
 
-As etiquetas `tese-defesa-v1` (194 pp) e `tese-defesa-v2` (192 pp) identificam estados
-anteriores e não foram movidas.
+**O que esta etiqueta traz e as anteriores não traziam:** o manifesto da verificação
+temporal corrigido — até `tese-defesa-v4` ele deixava as 60 execuções sem desfecho
+identificado e ainda assim as contava como concluídas — e `analise_decaimento.py`, que
+regenera as duas tabelas da verificação do relógio e cuja opção `--historico` aplica o
+estimador à matriz de 320 execuções. A direção do viés do estimador está invertida em
+relação ao que as versões anteriores publicavam. Conferir sobre uma etiqueta anterior
+**não** reproduz essas correções.
+
+As etiquetas `tese-defesa-v1` (194 pp), `v2` (192 pp), `v3` (188 pp) e `v4` (181 pp)
+identificam estados anteriores e não foram movidas depois de identificar uma entrega.
 
 O pacote de reprodutibilidade (`empacotar_reprodutibilidade.sh`, na raiz do
 repositório) reúne o código, as 320 execuções analisadas com um CSV e um log de

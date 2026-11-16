@@ -627,23 +627,40 @@ Capítulo~\ref{cap:resultados}.
 %% release com notas no servico de hospedagem -- quem fosse conferir nao acharia. Passa
 %% a nomear o comando que resolve a etiqueta, que e o que de fato existe e nao depende
 %% de recurso do servico.
+%% ATUALIZADO em 16/11/2026 (rodada 05). A secao mandava conferir tese-defesa-v3, que
+%% ficou para tras: aquela etiqueta resolve para um commit cujo manifesto temporal
+%% ainda e o defeituoso e que nao contem o analisador novo. Seguir a instrucao ao pe
+%% da letra nao reproduzia as correcoes. Passa a nomear a etiqueta desta entrega e, o
+%% que importa mais, a dizer o que ela contem que as anteriores nao continham.
 A versão do repositório correspondente a esta tese é identificada pela etiqueta de
-versão \texttt{tese-defesa-v3}. Trata-se de etiqueta anotada, de modo que ela resolve
+versão \texttt{tese-defesa-v5}. Trata-se de etiqueta anotada, de modo que ela resolve
 para um \textit{commit} único, recuperável por
-\texttt{git rev-parse tese-defesa-v3\textasciicircum\{commit\}}: não é preciso confiar em
-anotação à parte, nem em recurso do serviço de hospedagem. Quem for conferir deve usar
-essa etiqueta, e não o ramo principal, que continua a receber trabalho posterior: o
-estado corrente do ramo principal \emph{não} é o estado avaliado aqui.
+\texttt{git rev-parse tese-defesa-v5\textasciicircum\{commit\}}: não é preciso confiar em
+anotação à parte, nem em recurso do serviço de hospedagem. A anotação da etiqueta
+registra o \textit{commit} de origem, a contagem de páginas e a soma SHA-256 do PDF
+efetivamente entregue --- que por isso não precisa constar do próprio PDF. Quem for
+conferir deve usar essa etiqueta, e não o ramo principal, que continua a receber
+trabalho posterior: o estado corrente do ramo principal \emph{não} é o estado avaliado
+aqui.
+
+Convém dizer o que esta etiqueta traz e as anteriores não traziam, porque não se trata
+de diferença editorial. O manifesto da verificação temporal foi corrigido --- até a
+etiqueta \texttt{tese-defesa-v4} ele deixava as $60$ execuções sem desfecho
+identificado e ainda assim as contava como concluídas --- e a análise do estimador do
+decaimento foi refeita, com a direção do seu viés invertida em relação ao que as
+versões anteriores publicavam (Seções~\ref{sec:prop-relogios}
+e~\ref{sec:res-verificacao-relogio}). O \textit{script} que regenera essa análise não
+existe nas etiquetas anteriores a esta.
 
 %% Acrescentado em 15/11/2026. As etiquetas anteriores nao foram movidas nem
 %% apagadas, e a razao de dizer isso em vez de apenas nomear a etiqueta corrente e
 %% que uma etiqueta movel nao identifica entrega alguma -- defeito que esta tese
 %% registra a respeito de `v1.0-resubmission', do artigo.
-As etiquetas \texttt{tese-defesa-v1} e \texttt{tese-defesa-v2} permanecem no
-repositório e identificam estados anteriores deste mesmo documento, de $194$ e $192$
-páginas. Nenhuma delas foi movida: cada entrega recebeu etiqueta própria, de sorte que
-uma conferência feita sobre qualquer uma das três encontra o estado que existia quando
-ela foi criada.
+As etiquetas \texttt{tese-defesa-v1} a \texttt{tese-defesa-v4} permanecem no
+repositório e identificam estados anteriores deste mesmo documento, de $194$, $192$,
+$188$ e $181$ páginas. Nenhuma delas foi movida depois de identificar uma entrega: cada
+entrega recebeu etiqueta própria, de sorte que uma conferência feita sobre qualquer uma
+das cinco encontra o estado que existia quando ela foi criada.
 
 %% CORRIGIDO em 16/11/2026. Caminhos longos dentro de \texttt nao oferecem ponto de
 %% quebra, e transbordavam a margem direita na p. 125 (79 pt, a maior da tese).
@@ -696,7 +713,11 @@ correspondência é a seguinte:
     de sensibilidade citados na Seção~\ref{sec:prop-relogios}. O script detecta as
     lacunas da série de $\Phi$, que existem porque a linha de instrumentação só é
     emitida acima de $\varepsilon$, e usa os contadores cumulativos de cada linha para
-    confrontar par a par a decisão do filtro de razão com o que o campo registrou;
+    confrontar par a par a decisão do filtro de razão com o que o campo registrou. A opção
+\texttt{-{}-historico} aplica o mesmo estimador à matriz de $320$ execuções, cujos
+registros trazem a série de $\Phi$ mas não os contadores: ali não há aferição possível,
+e o \textit{script} declara as duas cautelas que decorrem disso. Essa opção reproduz a
+tabela das vinte e cinco configurações com estimativa e nomeia as sete sem ela;
 
     \item \texttt{analise\_estatistica.py} produz os testes, tamanhos de efeito,
     intervalos \textit{bootstrap} e correções de Holm do
@@ -720,13 +741,21 @@ correspondência é a seguinte:
 
 Duas limitações são declaradas em vez de contornadas.
 
-A primeira: \textbf{o manifesto não registra o identificador de \textit{commit} de cada
-execução}, porque o \textit{script} de bateria não o gravava no momento em que as
-baterias rodaram. Isso não é recuperável retroativamente: inferir o
-\textit{commit} pela data seria conjetura apresentada como registro. A identificação
-disponível é, portanto, por etiqueta de versão e por soma de verificação dos
-resultados, e o \textit{script} de bateria passa a gravar o \textit{commit} por
-execução nas baterias seguintes.
+%% RESTRINGIDO em 16/11/2026 (rodada 05). A afirmacao era geral demais: vale para a
+%% matriz historica, nao para o lote temporal, que registra o commit por execucao --
+%% com a limitacao de que o sufixo +sujo atesta alteracao local sem reconstruir o seu
+%% conteudo.
+A primeira: \textbf{o manifesto não registra o identificador de \textit{commit} das
+execuções da matriz histórica}, porque o \textit{script} de bateria não o gravava no
+momento em que elas rodaram. Isso não é recuperável retroativamente: inferir o
+\textit{commit} pela data seria conjetura apresentada como registro. Para essas
+execuções a identificação disponível é, portanto, por etiqueta de versão e por soma de
+verificação dos resultados. O lote da verificação temporal \emph{já} o registra, por
+execução, porque o \textit{script} passou a gravá-lo: ali o manifesto traz o
+\textit{commit} literal de cada uma. A ressalva que permanece nesse lote é de outra
+natureza --- o sufixo \texttt{+sujo} atesta que havia alteração local na árvore, e não
+reconstrói o conteúdo dela, de sorte que a rastreabilidade melhora sem que as execuções
+se tornem retroativamente execuções de uma árvore limpa identificada por inteiro.
 
 A segunda: \textbf{a reexecução não reproduz os mesmos números}. Conforme a
 Seção~\ref{sec:res-ameacas}, fora das duas configurações de ruído não há aleatorização

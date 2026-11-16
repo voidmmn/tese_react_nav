@@ -563,7 +563,8 @@ Período de decaimento $T_d$ dos acumuladores & $1$~s nominal;
 $1{,}57$--$1{,}60$~s realizado & \textbf{de parede}\\
 \hline
 \quad o mesmo, com a guarda alimentada pelo relógio do temporizador
-(Seção~\ref{sec:res-relogio-consistente}) & $1$~s nominal; $1{,}016$~s realizado &
+(Seção~\ref{sec:res-relogio-consistente}) & $1$~s nominal; $1{,}016$--$1{,}017$~s
+realizado &
 simulado\\
 \hline
 \end{tabular}
@@ -604,7 +605,11 @@ par é excluído.
 O critério é de compatibilidade e não de identificação: uma renovação por observação que
 devolva o canal exatamente ao valor anterior também produz razão $1$, de modo que o
 filtro admite pares que não distingue. É por isso que a contagem assim obtida é tratada
-como limite inferior do número de aplicações, e não como medida exata.
+como limite inferior do número de aplicações \emph{reconhecidas}, e não como medida
+exata. Esse limite vale para a contagem dentro do subconjunto admitido e não se
+converte em limite para a fração sobre todas as chamadas: são quantidades distintas, e
+a aferição da Seção~\ref{sec:res-afericao-estimador} mostra que a segunda fica
+\emph{abaixo} da primeira.
 
 %% CORRIGIDO em 16/11/2026. Os valores do estimador publicados nas rodadas 01-04
 %% nao se reproduzem a partir dos dados publicados. Ao implementar o estimador como
@@ -628,18 +633,29 @@ $1{,}58$~s. O preço da restrição é alto --- $65\%$ dos pares são excluídos
 cauda de baixa magnitude e na fase de reobservação ---, e é esse preço que torna o
 restante interpretável. O cálculo está em
 \texttt{src/tese\_nav/scripts/analise\_decaimento.py}, com o piso, a tolerância, o
-tratamento das lacunas da série e a varredura como parâmetros declarados.}. %% TROCADO em 16/11/2026. A sequencia anterior (0,015; 0,015; 0,013; ...) vinha da
+tratamento das lacunas da série e a varredura como parâmetros declarados; a opção
+\texttt{-{}-historico} aplica o estimador à matriz de $320$ execuções, cujos registros
+trazem a série de $\Phi$ mas não os contadores, e por isso não admitem aferição.}. %% TROCADO em 16/11/2026. A sequencia anterior (0,015; 0,015; 0,013; ...) vinha da
 %% cauda ABAIXO do piso de magnitude, isto e, da regiao que o proprio estimador
 %% descarta, e as suas razoes (0,867; 0,846; 0,818) apareciam dispersas justamente
 %% porque tres casas decimais nao resolvem a razao naquela magnitude -- que e a razao
 %% de existir o piso. A ilustracao desmentia o metodo que ilustrava. A sequencia nova
 %% e do mesmo lote (CM, repeticao 6), acima do piso, e as suas razoes sao exatamente
 %% lambda nas tres casas, de sorte que o leitor as confere dividindo.
+%% SUAVIZADO em 16/11/2026 (rodada 05). Duas formulacoes afirmavam mais do que a
+%% ilustracao sustenta. "Cada queda tem razao 0,850" ignora que o registro tem tres
+%% casas decimais, de sorte que a razao e aproximada. E dizer que os disparos
+%% intercalados "nao aplicam fator algum" converte a repeticao de Phi em observacao
+%% inequivoca -- mas o proprio texto acima reconhece que uma renovacao por observacao
+%% pode devolver o canal ao valor anterior e mascarar um decaimento. Nao ha contadores
+%% nos logs historicos que desfacam a ambiguidade. A repeticao e COMPATIVEL com
+%% ausencia de aplicacao, e e so isso que se afirma.
 Isso é visível nos \textit{logs},
 em que $\Phi$ repete o mesmo valor em disparos consecutivos de $1$~s antes de cair: a
 sequência $0{,}360$; $0{,}360$; $0{,}306$; $0{,}260$; $0{,}260$; $0{,}221$; $0{,}221$ é
-um trecho literal de uma execução, e cada queda tem razão $0{,}850$ --- o próprio
-$\lambda$ --- enquanto os disparos intercalados não aplicam fator algum.
+um trecho literal de uma execução, em que cada queda tem razão aproximadamente
+$0{,}850$ --- o próprio $\lambda$, nas três casas decimais do registro --- e os
+disparos intercalados são \emph{compatíveis} com a ausência de aplicação do fator.
 
 %% 14/11/2026: o estimador restrito foi depois AFERIDO contra contagem direta, numa
 %% bateria em que o campo instrumentado conta as aplicacoes no ponto em que ocorrem.
@@ -649,9 +665,16 @@ as aplicações de $\lambda$ \emph{diretamente}, no ponto em que ocorrem, e uma 
 dedicada mediu os dois valores sobre as mesmas execuções: o estimador
 \emph{subestima} o período, nas três configurações aferidas, entre $2{,}6$ e $4{,}8\%$
 (Seção~\ref{sec:res-verificacao-relogio}). O viés é de \emph{seleção} e não de
-classificação: o filtro de razão acerta quase todos os pares que admite, mas o piso de
-magnitude descarta justamente a cauda em que o fator \emph{não} é aplicado, de sorte
-que a fração medida sobre os pares admitidos excede a fração sobre todas as chamadas.
+%% CORRIGIDO em 16/11/2026 (rodada 05). A explicacao categorica -- "o piso descarta a
+%% cauda em que o fator nao e aplicado" -- nao se sustenta. Ausencia de linha de
+%% instrumentacao nao e ausencia de aplicacao: nos intervalos de CMw que atravessam
+%% lacunas do log os contadores acumulam 206 chamadas e 133 aplicacoes, taxa proxima
+%% da global. O que se mede e que os pares ADMITIDOS tem fracao maior que a global;
+%% atribuir isso a um filtro em particular exigiria separa-lo dos demais.
+classificação: o filtro de razão acerta quase todos os pares que admite, mas os pares
+\emph{admitidos} apresentam fração de aplicações maior que a fração sobre todas as
+chamadas. Atribuir esse excesso a um filtro em particular --- o piso de magnitude é um
+deles --- exigiria separá-lo dos demais, o que estes dados não sustentam.
 Corrigido por esse viés, o período realizado na configuração CM fica em torno de
 $1{,}60$~s.
 
@@ -670,15 +693,19 @@ $1{,}60$~s.
 %% Quais nove o calculo original escolheu nao esta registrado em lugar nenhum, e nao
 %% se inventa um criterio para reproduzi-lo; reporta-se o conjunto inteiro.
 O mesmo estimador aplicado braço a braço dá períodos entre $1{,}44$ e $1{,}58$~s em
-vinte e cinco configurações, com faixas por execução largamente sobrepostas, e a contagem direta
+vinte e cinco das trinta e duas configurações --- as outras sete não mantêm campo
+atrator, de sorte que não há decaimento a estimar nelas ---, com faixas por execução
+largamente sobrepostas, e a contagem direta
 confirma a semelhança com margem bem mais estreita: $1{,}57$, $1{,}57$ e $1{,}60$~s
 em três braços. A distorção é, portanto, de magnitude semelhante em todos eles, o que era de esperar, já que o campo
 é o mesmo código. \textbf{Disso não se segue, porém, que o defeito não confunda
 contraste algum}, e a tese não o afirma. Distorção igual na \emph{dinâmica do campo} não
 é influência igual sobre a \emph{decisão}: o método e a variante de seleção disparam
 sobre o campo e carregam a memória para dentro da decisão, enquanto a heurística de
-detecção bruta não a consulta. Um defeito na memória pesa sobre quem a usa para decidir
-e não pesa sobre quem a ignora. O que se pode afirmar é que a dinâmica do campo é
+detecção bruta não a consulta. Um defeito na memória entra no caminho causal de quem a
+consulta e não entra diretamente nas guardas da heurística --- afirmação sobre a
+estrutura do código, que não se converte sozinha em previsão sobre cada métrica
+agregada. O que se pode afirmar é que a dinâmica do campo é
 igualmente distorcida; que os contrastes sejam insensíveis a essa distorção é afirmação
 distinta, e é verificada à parte na
 Seção~\ref{sec:res-verificacao-relogio}. As janelas de persistência relatadas no
