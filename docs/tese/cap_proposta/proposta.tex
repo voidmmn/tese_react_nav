@@ -136,19 +136,35 @@ navegação. O único braço em que uma tabela de valor governa a ação é o
 %% escalar com o limiar marcado.
 \begin{figure}[htb]
 \centering
-\includegraphics[width=\textwidth]{figuras/architecture}
-\caption{Arquitetura de duas camadas. A camada deliberativa (topo) conduz uma patrulha
-por \textit{waypoints} através do Nav2 (NavfnPlanner $+$ MPPI), que é o único produtor
-de \texttt{/cmd\_vel}, e mantém o \textit{costmap} com a zona de exclusão. A camada
-reativa (base) recebe eventos --- modalidade, intensidade e posição ---, compõe o campo
-de atração--repulsão $\Phi$ e executa a máquina de estados \textsc{Stay Alert}, cujo
-disparo é por limiar sobre $\Phi$ bruto. $\Phi$ aparece como série temporal escalar, e
-não como superfície sobre o espaço, pela razão exposta na
-Seção~\ref{sec:prop-campo}; seu decaimento desenha-se em degraus por ser aplicado uma
-vez por período. As três setas entre as camadas são, da esquerda para a direita, o
-comando da patrulha, a preempção do navegador e o canal da zona de exclusão. A figura é
-ilustrativa; o conteúdo normativo está no caminho causal enunciado acima e na
-Tabela~\ref{tab:prop-transicoes}.}
+\includegraphics[width=\textwidth]{figuras/fig_arquitetura}
+%% Figura REFEITA em 15/11/2026, agora vetorial e gerada por script
+%% (src/tese_nav/scripts/gerar_fig_arquitetura.py). A anterior era PNG de
+%% 1200x1200 px posta em \textwidth (455 pt = 6,32 pol), isto e, 190 dpi -- a
+%% figura de menor resolucao do documento. Alem disso rotulava a camada
+%% deliberativa como "Sensoriamento ativo", que nao descreve o que ela faz,
+%% repetia a maquina de estados que ja tem figura propria, e trazia miniaturas
+%% do planejador e do MPPI que nao mostravam nada -- tanto que a legenda
+%% precisava declarar-se "ilustrativa". Esta nao precisa: cada elemento
+%% corresponde a um no, topico ou taxa verificavel, e a serie de Phi e
+%% calculada com a semantica do AttractionField, nao desenhada a mao.
+\caption{Arquitetura de duas camadas, com as taxas da
+Tabela~\ref{tab:prop-taxas}. Os eventos entram à esquerda já formados ---
+modalidade, intensidade, posição e identidade ---, porque a detecção e a
+classificação são abstraídas e não são contribuição deste trabalho. A camada
+reativa (base) compõe o campo $\Phi$, cuja série aparece como escalar no tempo
+pela razão exposta na Seção~\ref{sec:prop-campo}, e resolve o conflito por
+\emph{precedência categórica}: risco acima do limiar domina qualquer atração, sem
+soma de magnitudes. A camada deliberativa (topo) conduz a ronda pelo Nav2. As três
+setas entre as camadas são, da esquerda para a direita, a pausa e retomada da
+ronda, a preempção do navegador e a zona de exclusão, que é a repulsão projetada
+no \textit{costmap}. Dois pontos que a figura torna visíveis e o texto sustenta:
+o \texttt{mission\_node} e o supervisor emitem metas pela \emph{mesma} interface
+\texttt{NavigateToPose}, marcada pelo nó em cheio --- é aí que a arbitragem
+ocorre ---, e uma única seta chega ao ambiente, saindo do Nav2, porque ele é o
+único produtor de \texttt{/cmd\_vel}. A tabela $Q$ aparece destacada e em cinza
+por ser passiva, e o decaimento de $\Phi$ aparece marcado por ser a única
+temporização governada pelo relógio de parede
+(Seção~\ref{sec:res-verificacao-relogio}).}
 \label{fig:prop-arquitetura}
 \end{figure}
 

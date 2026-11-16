@@ -169,7 +169,16 @@
 {%
 \parbox[c][4em][c]{\textwidth}{
 	\center
-    \includegraphics[width=2in]{figuras/logo-ufu2.pdf}
+%% Logotipo trocado em 15/11/2026. O anterior (logo-ufu2.pdf) era uma pagina A4
+%% contendo um JPEG de 160x160 px, o que dava 80 dpi na capa -- a imagem de menor
+%% resolucao do documento inteiro. Este e VETORIAL, extraido da p. 9 do Anexo a
+%% Resolucao 04/2011 do Conselho Universitario (Manual de Aplicacao da Marca UFU),
+%% assinatura vertical COM sigla, que e a mesma composicao usada antes.
+%% A largura foi escolhida para preservar o tamanho aparente na capa: o logotipo
+%% anterior ocupava 1,188 pol de largura, porque a caixa de 2 pol era quase toda
+%% margem branca. Este arquivo esta ajustado ao conteudo, de modo que a largura
+%% pedida e a largura vista.
+    \includegraphics[width=2in]{figuras/logo-ufu-vetor.pdf}
 	\par
 	Universidade Federal de Uberlândia
     \par
