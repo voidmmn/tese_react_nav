@@ -60,9 +60,16 @@ configurações da matriz principal. Os \textit{logs} de episódio são consiste
 uma explicação ligada à persistência, e uma verificação posterior a sustenta em parte:
 encurtar o período de decaimento \emph{mantendo fixa} a fonte do disparo encurta o
 tempo em investigação com separação completa no braço que dispara sobre o campo, e não
-move desfecho algum no braço que dispara por detecção bruta
-(§\ref{sec:res-relogio-consistente}). A persistência, portanto, não é inerte onde é
-consultada. Que fração do efeito no cenário de conflito lhe cabe permanece sem medida,
+separa nenhum desfecho no braço que dispara por detecção bruta
+(§\ref{sec:res-relogio-consistente}).
+
+%% CORRIGIDO em 16/11/2026. "Nao move desfecho algum" afirmava efeito nulo; o que houve
+%% foi ausencia de separacao completa, com deltas pequenos e nao nulos, e sem teste de
+%% equivalencia que autorizasse a leitura forte.
+Não separar não é o mesmo que não mover: os deltas naquele braço são pequenos, não
+nulos, e o protocolo não inclui teste de equivalência. A persistência, portanto, não é
+inerte onde é consultada; sobre o braço que não a consulta, o que se tem é ausência de
+separação detectada. Que fração do efeito no cenário de conflito lhe cabe permanece sem medida,
 porque essa verificação encurta a persistência em vez de removê-la e correu no cenário
 \texttt{default}.
 
@@ -237,8 +244,9 @@ este trabalho não testou e, portanto, não exclui.
     independentemente a fonte do disparo e a extensão temporal da memória, mantendo
     constantes a seleção, a prioridade e o controlador, isolaria o fator que a matriz
     principal só atribui ao par. Metade desse desenho já correu: variar a persistência
-    com o disparo fixo mostra efeito no braço que consulta o campo e nenhum no que
-    dispara por detecção bruta (Seção~\ref{sec:res-relogio-consistente}). Faltam a
+    com o disparo fixo separou um desfecho no braço que consulta o campo e não separou
+    nenhum no que dispara por detecção bruta, sem que daí se conclua efeito nulo neste
+    (Seção~\ref{sec:res-relogio-consistente}). Faltam a
     outra metade --- variar a fonte do disparo com a persistência fixa --- e a
     replicação no cenário de conflito, onde o efeito a decompor foi medido.
 
