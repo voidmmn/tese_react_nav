@@ -324,12 +324,17 @@ def varredura(results, lam, periodo_nominal):
 # DUAS CAUTELAS, declaradas:
 #
 #   1. Sem contadores, um par de linhas consecutivas pode atravessar chamadas que
-#      nao deixaram registro -- a linha so e emitida quando |Phi| > 1e-3. Um par
-#      assim tem razao lambda^k com k >= 2 e e excluido pelo filtro de razao, de
-#      modo que a lacuna reduz a amostra em vez de contaminar a contagem. Esta e
-#      a unica hipotese disponivel aqui, e nao foi verificada nestes dados: no
-#      lote de verificacao, onde ha contadores, ela se confirma (19 pares de 1036
-#      atravessam lacuna em CMw, e exclui-los nao move o periodo estimado).
+#      nao deixaram registro -- a linha so e emitida quando |Phi| > 1e-3.
+#      CONDICIONAL, corrigido em 17/11/2026: sem atualizacoes concorrentes e
+#      mantido o mesmo canal, multiplas aplicacoes produzem razao aproximadamente
+#      lambda^k, que o filtro de razao exclui; a lacuna reduziria a amostra em vez
+#      de contaminar a contagem. Isso descreve o caso de decaimento puro e NAO e
+#      regra geral: uma observacao nova no intervalo, ou troca de canal, produz
+#      razao qualquer, que pode cair dentro da tolerancia e ser admitida como se
+#      fosse par consecutivo. No lote instrumentado, excluir os pares com lacuna
+#      nao alterou a estimativa nas condicoes examinadas (19 pares de 1036 em CMw).
+#      Esse resultado nao garante identificacao das lacunas no historico, onde nao
+#      ha contador que as revele.
 #
 #   2. SO se leem as publicacoes periodicas do campo, isto e, as linhas do
 #      bellman_node. As mensagens de transicao do stay_alert_node tambem imprimem

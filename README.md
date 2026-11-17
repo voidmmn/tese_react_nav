@@ -117,18 +117,23 @@ de 600 s por tentativa.
 Use a **etiqueta anotada**, não o ramo principal, que continua recebendo trabalho:
 
 ```bash
-git rev-parse tese-defesa-v5^{commit}
+git rev-parse tese-defesa-v6^{commit}
 ```
 
-A anotação de `tese-defesa-v5` registra o *commit* de origem, a contagem de páginas e a
+A anotação de `tese-defesa-v6` registra o *commit* de origem, a contagem de páginas e a
 soma SHA-256 do PDF entregue.
 
-**O que esta etiqueta traz e as anteriores não traziam**, porque não é diferença
-editorial: o manifesto da verificação temporal corrigido — até `tese-defesa-v4` ele
-deixava as 60 execuções sem desfecho identificado e ainda assim as contava como
-concluídas — e `analise_decaimento.py`, que regenera a aferição do estimador do
-decaimento. A direção do viés desse estimador está invertida em relação ao que as
-versões anteriores publicavam.
+**Onde está a fronteira entre as etiquetas**, que não é editorial: o manifesto da
+verificação temporal corrigido — até `tese-defesa-v4` ele deixava as 60 execuções sem
+desfecho identificado e ainda assim as contava como concluídas — e
+`analise_decaimento.py`, que regenera a aferição do estimador do decaimento. A direção
+do viés desse estimador está invertida em relação ao que as versões anteriores
+publicavam. Esse analisador não existe nas etiquetas anteriores à `tese-defesa-v5`:
+conferir sobre qualquer uma das quatro primeiras **não** reproduz essas correções.
+
+As etiquetas `tese-defesa-v1` a `tese-defesa-v5` permanecem no repositório e
+identificam as entregas anteriores — 194, 192, 188, 181 e 183 páginas. Nenhuma foi
+movida depois de identificar uma entrega.
 
 Cada entrega recebeu etiqueta própria e nenhuma foi movida depois de identificar uma
 entrega: `tese-defesa-v1` (194 pp), `v2` (192 pp), `v3` (188 pp) e `v4` (181 pp)

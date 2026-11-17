@@ -36,23 +36,25 @@ As figuras quantitativas são **geradas** pelos scripts em `figuras/` a partir d
 
 ## Reprodutibilidade
 
-A versão avaliada é a etiqueta anotada **`tese-defesa-v5`**. Ela resolve para um
-*commit* único por `git rev-parse tese-defesa-v5^{commit}`, sem depender de nota de
+A versão avaliada é a etiqueta anotada **`tese-defesa-v6`**. Ela resolve para um
+*commit* único por `git rev-parse tese-defesa-v6^{commit}`, sem depender de nota de
 lançamento nem de recurso do serviço de hospedagem. A sua anotação registra o *commit*
 de origem, a contagem de páginas e a soma SHA-256 do PDF entregue, que por isso não
 precisa constar do próprio PDF. O ramo `main` continua recebendo trabalho e **não** é o
 estado avaliado.
 
-**O que esta etiqueta traz e as anteriores não traziam:** o manifesto da verificação
-temporal corrigido — até `tese-defesa-v4` ele deixava as 60 execuções sem desfecho
+**Onde está a fronteira entre as etiquetas**, que não é editorial: o manifesto da
+verificação temporal corrigido — até `tese-defesa-v4` ele deixava as 60 execuções sem desfecho
 identificado e ainda assim as contava como concluídas — e `analise_decaimento.py`, que
 regenera as duas tabelas da verificação do relógio e cuja opção `--historico` aplica o
 estimador à matriz de 320 execuções. A direção do viés do estimador está invertida em
-relação ao que as versões anteriores publicavam. Conferir sobre uma etiqueta anterior
-**não** reproduz essas correções.
+relação ao que as versões anteriores publicavam. Esse analisador não existe nas
+etiquetas anteriores à `tese-defesa-v5`: conferir sobre qualquer uma das quatro
+primeiras **não** reproduz essas correções; sobre a `v5` ou sobre esta, reproduz.
 
-As etiquetas `tese-defesa-v1` (194 pp), `v2` (192 pp), `v3` (188 pp) e `v4` (181 pp)
-identificam estados anteriores e não foram movidas depois de identificar uma entrega.
+As etiquetas `tese-defesa-v1` (194 pp), `v2` (192 pp), `v3` (188 pp), `v4` (181 pp) e
+`v5` (183 pp) identificam estados anteriores e não foram movidas depois de identificar
+uma entrega.
 
 O pacote de reprodutibilidade (`empacotar_reprodutibilidade.sh`, na raiz do
 repositório) reúne o código, as 320 execuções analisadas com um CSV e um log de

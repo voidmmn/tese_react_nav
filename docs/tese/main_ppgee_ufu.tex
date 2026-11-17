@@ -66,6 +66,15 @@
 \usepackage{hyperref}            % Controla links e informações do PDF. Movido para o final.
                                  % A classe ppgee.cls já faz um \hypersetup.
 
+%% ACRESCENTADO em 17/11/2026. Por omissao o pacote url nao quebra em hifen, de modo
+%% que uma URL longa de referencia estourava a margem em 52,70pt. O xurl resolveria,
+%% mas nao esta nesta instalacao; acrescentar o hifen a \UrlBreaks faz o mesmo sem
+%% dependencia nova. O \Urlmuskip permite espaco elastico entre os pedacos.
+\makeatletter
+\expandafter\def\expandafter\UrlBreaks\expandafter{\UrlBreaks\do\-}
+\makeatother
+\Urlmuskip=0mu plus 1mu\relax
+
 % ---
 % Informações de dados para CAPA e FOLHA DE ROSTO (mantido como no seu original)
 % ---

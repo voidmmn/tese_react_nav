@@ -605,11 +605,15 @@ par é excluído.
 O critério é de compatibilidade e não de identificação: uma renovação por observação que
 devolva o canal exatamente ao valor anterior também produz razão $1$, de modo que o
 filtro admite pares que não distingue. É por isso que a contagem assim obtida é tratada
+%% SIMPLIFICADO em 17/11/2026 (rodada 06). A formulacao anterior terminava em "a
+%% segunda fica abaixo da primeira", com referentes ambiguos: contagem e fracao sao
+%% grandezas de naturezas diferentes e a frase convidava a compara-las. Passa a
+%% enunciar as duas coisas separadamente.
 como limite inferior do número de aplicações \emph{reconhecidas}, e não como medida
-exata. Esse limite vale para a contagem dentro do subconjunto admitido e não se
-converte em limite para a fração sobre todas as chamadas: são quantidades distintas, e
-a aferição da Seção~\ref{sec:res-afericao-estimador} mostra que a segunda fica
-\emph{abaixo} da primeira.
+exata. A contagem de aplicações reconhecidas em um subconjunto não determina um limite
+para a fração global de aplicações. No lote de aferição, a fração calculada nos pares
+admitidos ficou \emph{acima} da fração medida diretamente sobre todas as chamadas
+(Seção~\ref{sec:res-afericao-estimador}).
 
 %% CORRIGIDO em 16/11/2026. Os valores do estimador publicados nas rodadas 01-04
 %% nao se reproduzem a partir dos dados publicados. Ao implementar o estimador como
@@ -956,6 +960,15 @@ diferença observada, mas não a estabelecem como fator isolado. Um desenho que 
 os dois independentemente é apontado entre os trabalhos futuros.
 
 \subsection{Tabela de Transições}
+
+%% ACRESCENTADO em 17/11/2026 (rodada 06). A subsecao nao tinha corpo: so a float, que
+%% flutuava para antes do proprio titulo, deixando-o encostado no titulo seguinte. Uma
+%% frase de remissao ancora a tabela e diz para que ela serve, que e o que faltava.
+A Tabela~\ref{tab:prop-transicoes} fecha a especificação do supervisor: ela lista as
+transições na ordem em que as guardas são avaliadas, e é essa ordem que resolve os
+casos em que mais de uma guarda está satisfeita. A figura da máquina de estados
+(Figura~\ref{fig:prop-fsm}) mostra a topologia; a tabela é a referência
+normativa, e é dela que se deve partir para reimplementar o supervisor.
 
 \begin{table}[htb]
 \centering
