@@ -131,13 +131,9 @@ do viés desse estimador está invertida em relação ao que as versões anterio
 publicavam. Esse analisador não existe nas etiquetas anteriores à `tese-defesa-v5`:
 conferir sobre qualquer uma das quatro primeiras **não** reproduz essas correções.
 
-As etiquetas `tese-defesa-v1` a `tese-defesa-v5` permanecem no repositório e
-identificam as entregas anteriores — 194, 192, 188, 181 e 183 páginas. Nenhuma foi
-movida depois de identificar uma entrega.
-
 Cada entrega recebeu etiqueta própria e nenhuma foi movida depois de identificar uma
-entrega: `tese-defesa-v1` (194 pp), `v2` (192 pp), `v3` (188 pp) e `v4` (181 pp)
-identificam estados anteriores do mesmo documento.
+entrega: `tese-defesa-v1` (194 pp), `v2` (192 pp), `v3` (188 pp), `v4` (181 pp) e
+`v5` (183 pp) identificam estados anteriores do mesmo documento.
 
 ## Limitações declaradas
 
